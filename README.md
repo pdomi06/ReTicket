@@ -1,4 +1,4 @@
-# ![alt text](logo_transparrent.svg) ReTicket
+# ![alt text](logo_transparrent_white.svg) ReTicket
 ### Colaborators:
 - Patkós Dominik (pdomi06)
 - Molnár Attila (En1ry06)
