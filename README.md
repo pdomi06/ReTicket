@@ -15,3 +15,11 @@ This page is the very first page the customer/user visits. The main purpose is q
 - At the top, there is always the navbar with a few basic links (sales page, login/register, home).
 - After that, a sliding carousel showing the biggest performances coming up.
 - Below the carousel, there is a simple card-based search option selector to lead the user directly to the genre they are interested in (music, cultural, sport, comedy).
+
+### Bootstrap measurments
+
+#### Cards
+- Small (sm): 1 card per row
+- Medium (md): 2 card per row
+- Large (lg): 3 card per row
+- Extra-large (xl): 4 cards per row
