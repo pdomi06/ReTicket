@@ -1,3 +1,8 @@
+#carouser {
+    height: 700px;
+    width: 100%;
+}
+
 #searchBar .col {
     height: 25px;
 }
