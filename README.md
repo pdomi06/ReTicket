@@ -19,8 +19,13 @@ This page is the very first page the customer/user visits. The main purpose is q
 
 ### Bootstrap measurments
 
+#### Search Bar
+- Small (xs): 1 input per row 
+- Medium (md): 3 input per row
+- Large (lg): 5 input per row
+
 #### Cards
-- Small (sm): 1 card per row
+- Small (xs): 1 card per row
 - Medium (md): 2 card per row
 - Large (lg): 3 card per row
 - Extra-large (xl): 4 cards per row
