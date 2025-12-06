@@ -1,15 +1,33 @@
+body {
+    background-color: #001a20;
+}
+
 #carouser {
     height: 700px;
     width: 100%;
 }
 
-#searchBar .col {
-    height: 25px;
+#searchBar {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-#cards .col {
-    height: 500px;
-    min-width: 300px;
+#searchBar .form-control {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
 }
+#searchBar .form-control::placeholder {
+    color: #e0e0e0;
+}
+#cards .col {
+    min-width: 300px;
+    min-height: 400px;
+}
+
+#cards img {
+    opacity: 0.5;
+    mask-image: linear-gradient(to bottom, black, transparent);
+}
+
 
 

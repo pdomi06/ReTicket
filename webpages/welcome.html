@@ -20,32 +20,63 @@
   <body>
     <nav></nav>
     <main>
-      <header id="carouser" class="container bg-primary my-2">
-        
-      </header>
-      <section id="searchBar" class="container-fluid bg-secondary my-3 py-3">
-        <div class="row row-cols-1 row-cols-md-4 row-cols-lg-6 justify-content-center">
-          <div class="col bg-info m-1"></div>
-          <div class="col bg-info m-1"></div>
-          <div class="col bg-info m-1"></div>
-          <div class="col bg-info m-1"></div>
-          <div class="col bg-info m-1"></div>
-        </div>
+      <header id="carouser" class="container bg-primary my-2"></header>
+      <section id="searchBar" class="container-fluid my-3 py-3">
+        <form
+          class="row row-cols-1 row-cols-md-4 row-cols-lg-6 justify-content-center"
+        >
+          <div class="col m-1">
+            <input type="text" class="form-control" id="nameInput" />
+          </div>
+          <div class="col m-1">
+            <input type="text" class="form-control" id="exampleInputEmail1" />
+          </div>
+          <div class="col m-1">
+            <input type="text" class="form-control" id="exampleInputEmail1" />
+          </div>
+          <div class="col m-1">
+            <input type="text" class="form-control" id="exampleInputEmail1" />
+          </div>
+          <div class="col m-1 justify-content-end">
+            <button type="button" class="btn btn-dark">Search</button>
+          </div>
+        </form>
       </section>
 
       <section id="cards" class="container">
-        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center">
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
-          <div class="col bg-primary m-1"></div>
+        <div
+          class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center"
+        >
+          <!--Card Start-->
+          <div class="col card m-1 p-0 bg-dark">
+            <img
+              src="./img/music_genre.png"
+              class="card-img-top"
+              alt="Music genre image"
+            />
+            <div class="card-img-overlay">
+              <div class="d-flex flex-column justify-content-end h-100">
+                <h1 class="card-title text-light">Music</h1>
+                <a href="#" class="btn btn-outline-light btn-lg rounded-pill w-50">Browse</a>
+              </div>
+            </div>
+          </div>
+          <!--Card End-->
+          <!--Card Start-->
+          <div class="col card m-1 p-0 bg-dark">
+            <img
+              src="./img/cultural_genre.png"
+              class="card-img-top"
+              alt="Music genre image"
+            />
+            <div class="card-img-overlay">
+              <div class="d-flex flex-column justify-content-end h-100">
+                <h1 class="card-title text-light">Cultural</h1>
+                <a href="#" class="btn btn-outline-light btn-lg rounded-pill w-50">Browse</a>
+              </div>
+            </div>
+          </div>
+          <!--Card End-->
         </div>
       </section>
     </main>
