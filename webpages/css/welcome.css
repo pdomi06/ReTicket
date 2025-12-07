@@ -19,9 +19,9 @@ body {
 #searchBar .form-control::placeholder {
     color: #e0e0e0;
 }
-#cards .col {
-    min-width: 300px;
-    min-height: 400px;
+
+.card {
+    min-height: 500px;
 }
 
 #cards img {
