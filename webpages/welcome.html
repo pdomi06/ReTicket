@@ -68,12 +68,26 @@
       <form class="row row-cols-1 row-cols-md-4 row-cols-lg-6 justify-content-center">
         <!--Input Start-->
         <div class="col m-1">
-          <input type="text" class="form-control" id="nameInput" placeholder="Event or artist name..."/>
+          <input type="text" class="form-control" id="nameInput" placeholder="Event or artist name..." list="nameSuggestions"/>
+          <datalist id="nameSuggestions">
+            <option value="Concert A">2025-01-21</option>
+            <option value="Festival B">2025-01-21</option>
+            <option value="Festival A">2025-01-21</option>
+            <option value="Play C">2025-01-21</option>
+            <option value="Artist D">2025-01-21</option>
+          </datalist>
         </div>
         <!--Input End-->
         <!--Input Start-->
         <div class="col m-1">
-          <input type="text" class="form-control" id="locationInput" placeholder="City, state, or venue..." />
+          <input type="text" class="form-control" id="locationInput" placeholder="City, state, or venue..." list="locationSuggestions"/>
+          <datalist id="locationSuggestions">
+            <option value="New York">NY, USA</option>
+            <option value="Los Angeles">CA, USA</option>
+            <option value="Chicago">IL, USA</option>
+            <option value="Houston">TX, USA</option>
+            <option value="Miami">FL, USA</option>
+          </datalist>
         </div>
         <!--Input End-->
         <!--Input Start-->
