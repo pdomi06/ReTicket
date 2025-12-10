@@ -131,6 +131,40 @@ body {
     position: relative;
 }
 
+.card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #b19cd9, #9370db);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 5;
+    transition: all 0.3s ease;
+}
+
+.card:hover .card-badge {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(177, 156, 217, 0.3);
+}
+
+.card-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.4s ease;
+    z-index: 3;
+}
+
+.card:hover .card-icon {
+    color: rgba(255, 255, 255, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
 .card:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
@@ -184,7 +218,7 @@ body {
     background: linear-gradient(135deg, #004d5c, #003a47);
     border: 2px solid #b19cd9;
     padding: 0.65rem 1.8rem;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #d8bfd8;
     border-radius: 50px;
 }
