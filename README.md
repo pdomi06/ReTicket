@@ -13,7 +13,9 @@ ReTicket is a program designed to eliminate scams in the second-hand market. It'
 - Secondary:
 - Text:
 - Highlighter:
-
+#### Font types:
+- Main: Noto Sans
+- Secondary: Playfair display
 ## Landing page
 This page is the very first page the customer/user visits. The main purpose is quick and easy access to everything the user may want, while maintaining a modern and clean look.
 
