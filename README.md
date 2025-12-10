@@ -24,6 +24,8 @@ This page is the very first page the customer/user visits. The main purpose is q
 - After that, a sliding carousel showing the biggest performances coming up.
 - Then a section with search filters for quick event discovery.
 - Below the search bar, there is a card-based category selector to lead the user directly to the genre they are interested in (music, cultural, sports, comedy).
+- Followed by a "Trending Events" section showcasing popular events with sales metrics.
+- A "Why Choose ReTicket?" feature highlights section explaining key benefits.
 - Finally, a call-to-action section encouraging users to sell tickets.
 
 ### Design & Styling
@@ -56,6 +58,50 @@ This page is the very first page the customer/user visits. The main purpose is q
   - Images scale slightly on card hover (1.05x)
   - Buttons scale on hover (1.1x) with purple glow
   - Smooth transitions throughout (0.3-0.4s ease)
+  - Smooth page scroll behavior
+  - Staggered section fade-in animations on page load
+  - Badge animations: lift and glow on card hover
+
+### Micro-interactions & Effects
+- **Smooth Scrolling**: Native smooth scroll behavior for all page navigation
+- **Scroll Animations**: 
+  - FadeInUp animations for search bar and feature sections
+  - Staggered fadeInScale animations for category cards (0.2s delays)
+- **Custom Scrollbar**: Purple gradient scrollbar matching brand colors
+- **Icon Animations**: SVG icons scale and brighten on card hover
+- **Glassmorphism**: Backdrop blur effect on search bar section
+
+### Features Section
+
+#### Search Bar
+- SVG icons for each filter type (magnifying glass, location pin, calendar, currency)
+- Glassmorphism backdrop filter blur effect (10px)
+- Icon positioning with purple accent color (#b19cd9)
+- Focus states with purple border and subtle glow
+- Responsive 1-5 column layout with proper gap spacing
+
+#### Category Cards
+- Purple gradient badges with emoji and category name in top-right
+- Category-specific SVG icons (music note, theater, sports clock, smile)
+- Icons positioned center, scale and brighten on hover
+- Badge animations: lift (-5px) and glow on hover
+- Dark teal background with smooth transitions
+
+#### Trending Events Section
+- Mini event cards with image, content overlay, and badges
+- Yellow gradient badges ("Hot" 🔥, "New" ⚡) with glow effect
+- Event metadata: title, date, tickets sold, ratings, location
+- Semi-transparent background with purple borders
+- Responsive 1-2-3 column layout
+- Hover effects: lift (-5px), border color shift, shadow glow
+
+#### Feature Highlights ("Why Choose ReTicket?")
+- Four key benefit cards: Safe & Secure, Easy Communication, Community Verified, Simple & Fast
+- SVG icons with purple gradient backgrounds
+- Icons have circular container with border accent
+- Icon animation on hover: scale (1.1x) and enhanced glow
+- Semi-transparent card backgrounds with gradient borders
+- Responsive 1-2-4 column layout
 
 ### Bootstrap Measurements
 
@@ -77,6 +123,19 @@ This page is the very first page the customer/user visits. The main purpose is q
 - Large (lg): 5 cards per row
 - Card height: min 350px with 1:1.1 aspect ratio
 - Hover effect: translateY(-8px) with shadow
+
+#### Trending Events
+- Small (xs): 1 event per row
+- Medium (md): 2 events per row
+- Large (lg): 3 events per row
+- Fixed height image: 200px with object-fit cover
+
+#### Features ("Why Choose ReTicket?")
+- Small (xs): 1 feature per row
+- Medium (md): 2 features per row
+- Large (lg): 4 features per row
+- Icon size: 60px diameter circles
+- Text-centered layout with equal padding
 
 ### Features
 - Responsive design that works on all screen sizes
