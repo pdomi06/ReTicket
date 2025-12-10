@@ -29,11 +29,12 @@ This page is the very first page the customer/user visits. The main purpose is q
 
 #### Search Bar
 - Small (xs): 1 input per row 
-- Medium (md): 3 input per row
-- Large (lg): 5 input per row
+- Small tablets (sm): 2 inputs per row
+- Medium (md): 3 inputs per row
+- Large (lg): 5 inputs per row
 
 #### Cards
-- Small (xs): 1 cards per row 
-- Medium (md): 2 cards per row
-- Extra large (xl): 3 cards per row
-- Extra extra large (xxl): 4 cards per row
+- Small (xs): 1 card per row 
+- Small tablets (sm): 2 cards per row
+- Medium (md): 3 cards per row
+- Large (lg): 5 cards per row
