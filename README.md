@@ -8,11 +8,14 @@ ReTicket is a program designed to eliminate scams in the second-hand market. It'
 
 # Front-end development
 
-#### Our color palet
-- Main: #001a20
-- Secondary:
-- Text:
-- Highlighter:
+#### Our color palette
+- Main: #001a20 (Dark Teal - primary background)
+- Secondary: #0a2e38 (Darker Teal - card backgrounds)
+- Purple Accent: #b19cd9 (Lavender - badges, borders, accents)
+- Text: #ffffff (White - primary text)
+- Text Secondary: #b0b0b0 (Light Gray - secondary text, placeholders)
+- Dark Overlay: rgba(0, 0, 0, 0.9) (Black with opacity - gradient overlays)
+- Highlighter: #ffd700 (Gold - "Hot" badges, important CTAs)
 #### Font types:
 - Main: Noto Sans
 - Secondary: Playfair display
