@@ -27,12 +27,15 @@ body {
 }
 
 .card {
-    min-height: 500px;
+    min-height: 400px;
+    aspect-ratio: 1 / 1.2;
 }
 
 #cards img {
     opacity: 0.5;
     mask-image: linear-gradient(to bottom, black, transparent);
+    object-fit: cover;
+    height: 100%;
 }
 
 
