@@ -5,20 +5,24 @@
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    color: #ffffff;
 }
 
 h1 {
     font-size: 3.5rem;
     margin-bottom: 2rem;
+    color: #ffffff;
 }
 
 h2 {
     font-size: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 h3 {
     font-size: 1.5rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -142,6 +146,15 @@ body {
     transform: scale(1.05);
 }
 
+.card-title {
+    background: linear-gradient(135deg, #b19cd9, #9370db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
 .card-img-overlay {
     z-index: 2;
 }
@@ -150,11 +163,23 @@ body {
     transition: all 0.3s ease;
     font-weight: 600;
     letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #004d5c, #003a47);
+    border: 2px solid #b19cd9;
+    padding: 0.65rem 1.8rem;
+    font-size: 1rem;
+    color: #d8bfd8;
+    border-radius: 50px;
 }
 
 .card .btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(177, 156, 217, 0.3);
+    background: linear-gradient(135deg, #005c6f, #004759);
+    color: #ffffff;
+}
+
+.card .btn:active {
+    transform: scale(0.95);
 }
 
 #start-selling {

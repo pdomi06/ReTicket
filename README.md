@@ -30,16 +30,31 @@ This page is the very first page the customer/user visits. The main purpose is q
 - **Typography**: 
   - Main font: Noto Sans (body text)
   - Display font: Playfair Display (headings)
-  - Letter spacing added to headings for elegance
+  - Letter spacing: 1px on headings for elegance
   
-- **Colors**:
+- **Color Palette**:
   - Background: #001a20 (dark teal)
-  - Text: Light gray/white for contrast
+  - Primary text: White (#ffffff)
+  - Purple accent: #b19cd9 (used on card titles and buttons)
+  - Yellow highlight: Reserved for important CTAs (sellers site, etc.)
+  
+- **Heading Styles**:
+  - h1: White, 3.5rem, clean and prominent
+  - h2: White, 2.5rem
+  - h3: White with text shadow, 1.5rem
+  - Card titles: Purple gradient with letter spacing
+  
+- **Button Styling**:
+  - Dark teal background gradient
+  - Purple border and text (#b19cd9)
+  - 48px height, rounded pill shape (50px border-radius)
+  - Hover: Scale up with purple glow effect
+  - Active: Scale down for tactile feedback
   
 - **Animations**:
-  - Cards lift up on hover with shadow effect
-  - Images scale slightly on card hover
-  - Buttons scale and glow on hover
+  - Cards lift up on hover with shadow effect (-8px translateY)
+  - Images scale slightly on card hover (1.05x)
+  - Buttons scale on hover (1.1x) with purple glow
   - Smooth transitions throughout (0.3-0.4s ease)
 
 ### Bootstrap Measurements
