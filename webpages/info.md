@@ -3,3 +3,4 @@ This folder contains all the base html sites that will be added to the proper fr
 - landing/welcome page
 - register page
 - login page
+- about page
