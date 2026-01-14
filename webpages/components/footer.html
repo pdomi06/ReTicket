@@ -1,11 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<link rel="stylesheet" href="../css/footer.css">
 </head>
+
 <body>
-    test
+    <footer>
+        <p>Copyright &copy;
+            <span id="year">
+            <script>
+                document.getElementById('year').textContent = new Date().getFullYear();
+            </script>
+            </span>
+            ReTicket. All rights reserved.
+        </p>
+        <nav>
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/about">About Us</a> |
+            <a href="/contact">Contact</a> |
+            <a href="/terms">Terms of Service</a>
+        </nav>
+    </footer>
 </body>
+
 </html>
