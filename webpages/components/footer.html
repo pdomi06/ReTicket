@@ -3,20 +3,56 @@
 
 <body>
     <footer>
-        <p>Copyright &copy;
-            <span id="year">
-            <script>
-                document.getElementById('year').textContent = new Date().getFullYear();
-            </script>
-            </span>
-            ReTicket. All rights reserved.
-        </p>
-        <nav>
-            <a href="/privacy">Privacy Policy</a> |
-            <a href="/about">About Us</a> |
-            <a href="/contact">Contact</a> |
-            <a href="/terms">Terms of Service</a>
-        </nav>
+        <div class="footer-left">
+            
+            <div class="footer-logo">
+                <img src="../../logo_transparrent_white.svg" alt="ReTicket Logo" width="150">
+                <h2>ReTicket</h2>
+            </div>
+            
+            <p>Copyright &copy;
+                <span id="year">
+                    <script>
+                        document.getElementById('year').textContent = new Date().getFullYear();
+                    </script>
+                </span>
+                ReTicket. All rights reserved.
+            </p>
+
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a> |
+                <a href="/about">About Us</a> |
+                <a href="/contact">Contact</a> |
+                <a href="/terms">Terms of Service</a>
+            </div>
+        </div>
+        <div class="footer-right">
+
+            <h3>Have questions or feedback?</h3>
+            <p>Send us a Message</p>
+
+            <form class="footer-form" id="footer-contact-form">
+                <div class="form-group">
+                    <label for="footer-email">Email Address</label>
+                    <input type="email" id="footer-email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="footer-message">Your Message</label>
+                    <textarea id="footer-message" name="message" rows="4" placeholder="How can we help?"
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Send Message
+                </button>
+
+                <div class="form-note">
+                    <p></i> We'll respond within 24 hours</p>
+                </div>
+            </form>
+        </div>
+
     </footer>
 </body>
 
