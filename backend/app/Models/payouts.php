@@ -9,4 +9,14 @@ class payouts extends Model
 {
     /** @use HasFactory<\Database\Factories\PayoutsFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'vendorId',
+        'orderItemId',
+        'status',
+        'bank',
+        'iban',
+        'paidAt',
+        'createdAt'
+    ];
 }

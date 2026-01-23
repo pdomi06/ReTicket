@@ -9,4 +9,12 @@ class email_verify extends Model
 {
     /** @use HasFactory<\Database\Factories\EmailVerifyFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'userId',
+        'token',
+        'expiresAt',
+        'verifiedAt',
+        'createdAt',
+    ];
 }

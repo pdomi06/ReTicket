@@ -9,4 +9,9 @@ class active_tickets extends Model
 {
     /** @use HasFactory<\Database\Factories\ActiveTicketsFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'originalTickedId',
+        'ticketListingId',
+    ];
 }

@@ -9,4 +9,10 @@ class ticket_forsale extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketForsaleFactory> */
     use HasFactory;
+    protected $fillable = [
+        'originalTicketId',
+        'fromUserId',
+        'price',
+        'inBasket'
+    ];
 }

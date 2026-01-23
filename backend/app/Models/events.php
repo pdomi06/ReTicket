@@ -9,4 +9,19 @@ class events extends Model
 {
     /** @use HasFactory<\Database\Factories\EventsFactory> */
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'description',
+        'venue',
+        'address',
+        'city',
+        'state',
+        'country',
+        'eventDate',
+        'eventEndDate',
+        'category',
+        'imageUrl',
+        'createdAt',
+        'updatedAt',
+    ];
 }

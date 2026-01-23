@@ -9,4 +9,11 @@ class user_settings extends Model
 {
     /** @use HasFactory<\Database\Factories\UserSettingsFactory> */
     use HasFactory;
+    protected $fillable = [
+        'emailNotification',
+        'smsNotification',
+        'profileVisibility',
+        'createdAt',
+        'updatedAt'
+    ];
 }

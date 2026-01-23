@@ -9,4 +9,11 @@ class password_reset extends Model
 {
     /** @use HasFactory<\Database\Factories\PasswordResetFactory> */
     use HasFactory;
+    protected $fillable = [
+        'userId',
+        'token',
+        'expiresAt',
+        'verifiedAt',
+        'createdAt'
+    ];
 }

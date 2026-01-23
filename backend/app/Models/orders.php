@@ -9,4 +9,22 @@ class orders extends Model
 {
     /** @use HasFactory<\Database\Factories\OrdersFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'orderNumber',
+        'buyerEmail',
+        'subtotal',
+        'platformFee',
+        'tax',
+        'status',
+        'paymentIntentId',
+        'paymentStatus',
+        'deliveryEmail',
+        'deliverStatus',
+        'deliveredAt',
+        'createdAt',
+        'updatedAt',
+        'completedAt',
+        'cancelledAt',
+    ];
 }
