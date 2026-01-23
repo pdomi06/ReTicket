@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('active_tickets', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->bigInteger('originalTicektId');
+            $table->foreign('originalTicektId')->references('id')->on('original_tickets');
+            $table->bigInteger('ticketListingId');
+            $table->foreign('ticketListingId')->references('ticketListingId')->on('order_item');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('venue_maps', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreign('venue')->references('venue')->on('events');
+            $table->text('section');
+            $table->text('row');
+            $table->text('seat');
+            $table->decimal('rate');
         });
     }
 

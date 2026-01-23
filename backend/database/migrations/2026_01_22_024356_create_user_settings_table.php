@@ -11,10 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('user_settings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->bigInteger('userid')->primary();
+            $table->foreign('userid')->references('id')->on('user');
+            $table->boolean('emailNotification');
+            $table->boolean('smsNotification');
+            $table->enum('profileVisibility', ["visible restricted banned"]);
+            $table->date('createdAt');
+            $table->date('updatedAt');
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
