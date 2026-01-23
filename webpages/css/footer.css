@@ -68,6 +68,7 @@ footer p {
 .footer-links > a {
   margin: 0 2px;
   font-size: 0.8rem;
+  white-space: nowrap;
 }
 
 footer a {
@@ -150,4 +151,22 @@ footer a:hover {
   font-size: 0.8rem;
   color: #a0c4d0;
   text-align: center;
+}
+@media (max-width: 865px) {
+  footer {
+    flex-direction: column;
+  }
+  .footer-right {
+    order: 1;
+    margin-right: 0;
+    padding-bottom: 0;
+  }
+  .footer-left {
+    order: 2;
+    margin-top: 20px;
+  }
+  
+  footer {
+    gap: 0px;
+  }
 }
