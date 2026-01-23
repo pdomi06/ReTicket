@@ -18,7 +18,6 @@ return new class extends Migration
             $table->bigInteger('originalTicektId');
             $table->foreign('originalTicektId')->references('id')->on('original_tickets');
             $table->bigInteger('ticketListingId');
-            $table->foreign('ticketListingId')->references('ticketListingId')->on('order_item');
         });
 
         Schema::enableForeignKeyConstraints();

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('orderItemId');
             $table->foreign('orderItemId')->references('id')->on('order_item');
             $table->text('reviewerName');
-            $table->bigInteger('revieweduserId');
+            $table->bigInteger('reviewedUserId');
             $table->foreign('reviewedUserId')->references('id')->on('user');
             $table->smallInteger('rating');
             $table->text('title');
