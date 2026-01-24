@@ -1,0 +1,26 @@
+.navbar {
+    background-color: var(--color-main);
+}
+.navbar-about {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+.navbar-vendor {
+    color: var(--color-highlighter);
+    margin-left: 20px;
+    text-decoration: none;
+}
+.navbar img {
+    height: 40px;
+    margin: 15px;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+}
+.navbar-links a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
