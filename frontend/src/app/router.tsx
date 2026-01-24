@@ -1,7 +1,7 @@
+import { lazy } from 'react';
 import { type RouteObject } from 'react-router';
-import Home from '../pages/test/test.tsx';
-import Scenery from '../pages/scenery/Scenery.tsx';
-
+const Home = lazy(() => import('../pages/test/test.tsx'));
+const Scenery = lazy(() => import('../pages/scenery/Scenery.tsx'));
 export const routes: RouteObject[] = [
   {
     path: '/',
