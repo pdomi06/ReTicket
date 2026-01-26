@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="./css/register.css">
+</head>
+<body>
+    <main class="register-page">
+        <div class="register-container">
+        <h2><img src="../logo_transparrent_white.svg" alt=""> ReTicket</h2>
+        <h4>Already have an account? <a href="login.html">Log in</a></h4>
+
+        <form action="?" method="post" class="register-form">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required>
+
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="telephone">Telephone number</label>
+            <input type="tel" name="telephone" id="telephone" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+
+            <label for="password_confirm">Confirm Password</label>
+            <input type="password" name="password_confirm" id="password_confirm" required>
+
+            <div class="checkbox-container">
+    <input type="checkbox" name="checkbox" id="checkbox" required>
+    <label for="checkbox" class="checkbox-label">I have read and I agree to the <a href="">Terms and Conditions</a> and <a href="">privacy policy</a>.</label>
+</div>
+            <button type="submit">Register</button>
+        </form>
+        </div>
+    </main>
+</body>
+</html>
