@@ -1,12 +1,5 @@
+import type { TextareaProps } from '../../../utils/interfaces';
 import styles from './Textarea.module.css';
-
-interface TextareaProps {
-    label: string;
-    name: string;
-    value?: string;
-    rows?: number;
-    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}
 
 const Textarea = ({ label, name, value, rows = 4, onChange }: TextareaProps) => {
     return (
