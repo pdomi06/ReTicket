@@ -31,54 +31,7 @@
     background: var(--color-accent);
     margin-bottom: 20px;
 }
-.scenery-input-group {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
 
-.scenery-input-group.floating {
-    position: relative;
-    gap: 4px;
-}
-
-.scenery-input-group.floating input {
-    padding: 14px 12px 6px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.scenery-input-group.floating input::placeholder {
-    color: transparent;
-}
-
-.scenery-input-group.floating label {
-    position: absolute;
-    left: 12px;
-    top: 14px;
-    color: var(--color-text-secondary);
-    font-size: 0.95rem;
-    background-color: var(--color-secondary);
-    padding: 0 4px;
-    pointer-events: none;
-    transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;
-}
-
-.scenery-input-group.floating input:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
-}
-
-.scenery-input-group.floating input:focus + label,
-.scenery-input-group.floating input:not(:placeholder-shown) + label {
-    transform: translateY(-18px);
-    font-size: 0.75rem;
-    color: var(--color-accent);
-}
 .scenery-form button {
     margin-top: 15px;
     padding: 10px 15px;

@@ -1,5 +1,7 @@
 import { Link } from 'react-router';
 import logo from '../../../assets/logo_transparrent_white.svg';
+import Input from '../../ui/input/Input';
+import Textarea from '../../ui/textarea/Textarea';
 import styles from './footer.module.css';
 
 const Footer = () => {
@@ -35,16 +37,9 @@ const Footer = () => {
             <p>Send us a Message</p>
 
             <form className={styles['footer-form']} id={styles['footer-contact-form']}>
-                <div className={styles['form-group']}>
-                    <label htmlFor="footer-email">Email Address</label>
-                    <input type="email" id={styles['footer-email']} name="email" placeholder="Email" required />
-                </div>
+                <Input type="email" name="footer-email" label="Email Address" />
 
-                <div className={styles['form-group']}>
-                    <label htmlFor="footer-message">Your Message</label>
-                    <textarea id={styles['footer-message']} name="message" rows={4} placeholder="How can we help?"
-                        required></textarea>
-                </div>
+                <Textarea name="footer-message" label="Your Message" rows={4} />
 
                 <button type="submit" className={styles['submit-btn']}>
                     Send Message

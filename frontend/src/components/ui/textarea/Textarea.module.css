@@ -1,0 +1,51 @@
+.textarea-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.textarea-group.floating {
+    position: relative;
+    gap: 4px;
+}
+
+.textarea-group.floating textarea {
+    padding: 14px 12px 6px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.textarea-group.floating textarea::placeholder {
+    color: transparent;
+}
+
+.textarea-group.floating label {
+    position: absolute;
+    left: 12px;
+    top: 14px;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    background-color: var(--color-secondary);
+    padding: 0 4px;
+    pointer-events: none;
+    transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;
+}
+
+.textarea-group.floating textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
+}
+
+.textarea-group.floating textarea:focus + label,
+.textarea-group.floating textarea:not(:placeholder-shown) + label {
+    transform: translateY(-18px);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+}
