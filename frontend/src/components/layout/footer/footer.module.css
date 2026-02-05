@@ -1,34 +1,24 @@
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  color: #ffffff;
+.footer {
+  padding: 40px 10%;
   background-color: #001a20;
-  font-family: "Noto Sans", sans-serif;
-}
-
-main,
-.content-wrapper {
-  flex: 1;
-}
-
-footer {
-  padding: 40px 20px;
-  background-color: #0a2e38;
   margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 30px;
+  width: 100%;
+  box-sizing: border-box;
 }
-.footer-left > h3 {
+
+.footer-left h3 {
   font-size: 1.8rem;
   margin: 0;
   padding: 0;
+  color: #ffffff;
+  font-family: "Playfair Display", serif;
 }
+
 .footer-left,
 .footer-links {
   text-align: center;
@@ -39,9 +29,10 @@ footer {
   text-align: center;
 }
 
-footer h3 {
+.footer-left h2 {
   font-family: "Playfair Display", serif;
   margin-top: 0;
+  color: #ffffff;
 }
 
 .footer-logo {
@@ -54,10 +45,11 @@ footer h3 {
   width: 100px;
 }
 
-footer p {
+.footer-left p {
   font-weight: bold;
   font-size: 1rem;
   margin-bottom: 15px;
+  color: #ffffff;
 }
 
 .footer-links {
@@ -65,22 +57,18 @@ footer p {
   padding: 0;
   flex-wrap: wrap;
 }
-.footer-links > a {
+.footer-links a {
   margin: 0 2px;
   font-size: 0.8rem;
   white-space: nowrap;
-}
-
-footer a {
   color: #ffffff;
   font-family: "Playfair Display", serif;
   text-decoration: none;
-  font-size: 0.85rem;
   letter-spacing: 1px;
   transition: opacity 0.3s;
 }
 
-footer a:hover {
+.footer-links a:hover {
   text-decoration: underline;
   opacity: 0.8;
 }
@@ -92,11 +80,12 @@ footer a:hover {
   text-align: left;
   margin-right: 10%;
 }
-.footer-right > h3,
-.footer-right > p {
+.footer-right h3,
+.footer-right p {
   margin: 10px;
   padding: 0;
   text-align: center;
+  color: #ffffff;
 }
 .footer-form {
   margin-top: 10px;
@@ -113,6 +102,7 @@ footer a:hover {
   display: block;
   margin-bottom: 5px;
   font-size: 0.85rem;
+  color: #ffffff;
 }
 
 .form-group input,
@@ -153,8 +143,9 @@ footer a:hover {
   text-align: center;
 }
 @media (max-width: 865px) {
-  footer {
+  .footer {
     flex-direction: column;
+    gap: 0px;
   }
   .footer-right {
     order: 1;
@@ -164,9 +155,5 @@ footer a:hover {
   .footer-left {
     order: 2;
     margin-top: 20px;
-  }
-  
-  footer {
-    gap: 0px;
   }
 }
