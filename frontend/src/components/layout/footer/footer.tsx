@@ -16,10 +16,8 @@ const Footer = () => {
             </div>
             
             <p>Copyright &copy;
-                <span id={styles['year']}>
-                    <script>
-                        document.getElementById('year').textContent = new Date().getFullYear();
-                    </script>
+                <span className={styles['year']}>
+                    {new Date().getFullYear()}
                 </span>
                 ReTicket. All rights reserved.
             </p>
