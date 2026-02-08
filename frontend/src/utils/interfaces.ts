@@ -169,7 +169,7 @@ export interface TicketForSale {
 
 export interface ActiveTickets {
     id: number;
-    originalTicektId: number;
+    originalTicketId: number;
     ticketListingId: number;
 }
 
@@ -188,7 +188,7 @@ export interface Orders {
     paymentIntentId: string;
     paymentStatus: PaymentStatus;
     deliveryEmail: string;
-    deliverStatus: DeliveryStatus;
+    deliveryStatus: DeliveryStatus;
     deliveredAt: string;
     createdAt: string;
     updatedAt: string;
