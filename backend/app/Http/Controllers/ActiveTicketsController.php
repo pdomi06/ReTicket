@@ -13,7 +13,8 @@ class ActiveTicketsController extends Controller
      */
     public function index()
     {
-        //
+        $active_tickets = active_tickets::all();
+        return response()->json($active_tickets);
     }
 
     /**
@@ -21,7 +22,7 @@ class ActiveTicketsController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -29,7 +30,8 @@ class ActiveTicketsController extends Controller
      */
     public function store(Storeactive_ticketsRequest $request)
     {
-        //
+        $active_tickets = active_tickets::create($request->all());
+        return response()->json($active_tickets);
     }
 
     /**
@@ -37,7 +39,8 @@ class ActiveTicketsController extends Controller
      */
     public function show(active_tickets $active_tickets)
     {
-        //
+        $active_tickets = active_tickets::find($active_tickets->id);
+        return response()->json($active_tickets);
     }
 
     /**
@@ -53,7 +56,9 @@ class ActiveTicketsController extends Controller
      */
     public function update(Updateactive_ticketsRequest $request, active_tickets $active_tickets)
     {
-        //
+        $active_tickets = active_tickets::find($active_tickets->id);
+        $active_tickets->update($request->all());
+        return response()->json($active_tickets);
     }
 
     /**
@@ -61,6 +66,12 @@ class ActiveTicketsController extends Controller
      */
     public function destroy(active_tickets $active_tickets)
     {
-        //
+        $active_tickets = active_tickets::find($active_tickets->id);
+        if($active_tickets){
+            $active_tickets->delete();
+            return response()->json(["msg" => "Deleted successfully"]);
+        } else {
+            return response()->json(["msg" => "Not found"]);
+        }
     }
 }
