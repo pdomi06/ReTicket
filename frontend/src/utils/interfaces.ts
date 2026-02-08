@@ -2,32 +2,32 @@
 // Enums for Status Fields
 // ============================================
 
-export enum KYCStatus {
+export const enum KYCStatus {
     PENDING = "pending",
     REJECTED = "rejected",
     APPROVED = "approved"
 }
 
-export enum ProfileVisibility {
+export const enum ProfileVisibility {
     VISIBLE = "visible",
     RESTRICTED = "restricted",
     BANNED = "banned"
 }
 
-export enum EventCategory {
+export const enum EventCategory {
     CULTURAL = "cultural",
     MUSIC = "music",
     SPORT = "sport"
 }
 
-export enum TicketStatus {
+export const enum TicketStatus {
     PRE_RELEASE = "pre-release",
     ACTIVE = "active",
     CANCELLED = "cancelled",
     EXPIRED = "expired"
 }
 
-export enum OrderStatus {
+export const enum OrderStatus {
     PENDING = "pending",
     PROCESSING = "processing",
     COMPLETED = "completed",
@@ -35,7 +35,7 @@ export enum OrderStatus {
     REFUNDED = "refunded"
 }
 
-export enum PaymentStatus {
+export const enum PaymentStatus {
     PENDING = "pending",
     AUTHORIZED = "authorized",
     CAPTURED = "captured",
@@ -43,13 +43,13 @@ export enum PaymentStatus {
     REFUNDED = "refunded"
 }
 
-export enum DeliveryStatus {
+export const enum DeliveryStatus {
     PENDING = "pending",
     SENT = "sent",
     DELIVERED = "delivered"
 }
 
-export enum PayoutStatus {
+export const enum PayoutStatus {
     CREATED = "created",
     PENDING = "pending",
     CANCELLED = "cancelled",
@@ -76,7 +76,7 @@ export interface User {
 }
 
 export interface UserSettings {
-    userid: number;
+    userId: number;
     emailNotification: boolean;
     smsNotification: boolean;
     profileVisibility: ProfileVisibility;
