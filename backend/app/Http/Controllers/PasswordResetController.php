@@ -13,23 +13,18 @@ class PasswordResetController extends Controller
      */
     public function index()
     {
-        //
+        $password_resets = password_reset::all();
+        return response()->json($password_resets, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Storepassword_resetRequest $request)
     {
-        //
+        $password_reset = password_reset::create($request->validated());
+        return response()->json($password_reset, 201);
     }
 
     /**
@@ -37,15 +32,7 @@ class PasswordResetController extends Controller
      */
     public function show(password_reset $password_reset)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(password_reset $password_reset)
-    {
-        //
+        return response()->json($password_reset, 200);
     }
 
     /**
@@ -53,7 +40,8 @@ class PasswordResetController extends Controller
      */
     public function update(Updatepassword_resetRequest $request, password_reset $password_reset)
     {
-        //
+        $password_reset->update($request->validated());
+        return response()->json($password_reset, 200);
     }
 
     /**
@@ -61,6 +49,7 @@ class PasswordResetController extends Controller
      */
     public function destroy(password_reset $password_reset)
     {
-        //
+        $password_reset->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

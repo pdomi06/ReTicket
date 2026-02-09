@@ -31,7 +31,7 @@ class EmailVerifyController extends Controller
      */
     public function show(email_verify $email_verify)
     {
-        return response()->json($email_verify);
+        return response()->json($email_verify, 200);
     }
 
     /**

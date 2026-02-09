@@ -13,15 +13,8 @@ class OrderItemsController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $order_items = order_items::all();
+        return response()->json($order_items, 200);
     }
 
     /**
@@ -29,38 +22,34 @@ class OrderItemsController extends Controller
      */
     public function store(Storeorder_itemsRequest $request)
     {
-        //
+        $order_item = order_items::create($request->validated());
+        return response()->json($order_item, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(order_items $order_items)
+    public function show(order_items $order_item)
     {
-        //
+        return response()->json($order_item, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(order_items $order_items)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateorder_itemsRequest $request, order_items $order_items)
+    public function update(Updateorder_itemsRequest $request, order_items $order_item)
     {
-        //
+        $order_item->update($request->validated());
+        return response()->json($order_item, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(order_items $order_items)
+    public function destroy(order_items $order_item)
     {
-        //
+        $order_item->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

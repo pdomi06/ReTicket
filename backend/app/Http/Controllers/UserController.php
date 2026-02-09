@@ -13,23 +13,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = user::all();
+        return response()->json($users, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreuserRequest $request)
     {
-        //
+        $user = user::create($request->validated());
+        return response()->json($user, 201);
     }
 
     /**
@@ -37,23 +32,17 @@ class UserController extends Controller
      */
     public function show(user $user)
     {
-        //
+        return response()->json($user, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(user $user)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateuserRequest $request, user $user)
     {
-        //
+        $user->update($request->validated());
+        return response()->json($user, 200);
     }
 
     /**
@@ -61,6 +50,7 @@ class UserController extends Controller
      */
     public function destroy(user $user)
     {
-        //
+        $user->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

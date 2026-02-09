@@ -13,23 +13,18 @@ class TicketHistoryController extends Controller
      */
     public function index()
     {
-        //
+        $ticket_histories = ticket_history::all();
+        return response()->json($ticket_histories, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Storeticket_historyRequest $request)
     {
-        //
+        $ticket_history = ticket_history::create($request->validated());
+        return response()->json($ticket_history, 201);
     }
 
     /**
@@ -37,23 +32,18 @@ class TicketHistoryController extends Controller
      */
     public function show(ticket_history $ticket_history)
     {
-        //
+        return response()->json($ticket_history, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ticket_history $ticket_history)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Updateticket_historyRequest $request, ticket_history $ticket_history)
     {
-        //
+        $ticket_history->update($request->validated());
+        return response()->json($ticket_history, 200);
     }
 
     /**
@@ -61,6 +51,7 @@ class TicketHistoryController extends Controller
      */
     public function destroy(ticket_history $ticket_history)
     {
-        //
+        $ticket_history->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

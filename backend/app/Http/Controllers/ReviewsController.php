@@ -13,47 +13,36 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        //
+        $reviews = reviews::all();
+        return response()->json($reviews, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorereviewsRequest $request)
     {
-        //
+        $review = reviews::create($request->validated());
+        return response()->json($review, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(reviews $reviews)
+    public function show(reviews $review)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(reviews $reviews)
-    {
-        //
+        return response()->json($review, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatereviewsRequest $request, reviews $reviews)
+    public function update(UpdatereviewsRequest $request, reviews $review)
     {
-        //
+        $review->update($request->validated());
+        return response()->json($review, 200);
     }
 
     /**
@@ -61,6 +50,7 @@ class ReviewsController extends Controller
      */
     public function destroy(reviews $reviews)
     {
-        //
+        $reviews->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

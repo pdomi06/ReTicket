@@ -13,15 +13,8 @@ class TicketForsaleController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $tickets_forsale = ticket_forsale::all();
+        return response()->json($tickets_forsale, 200);
     }
 
     /**
@@ -29,7 +22,8 @@ class TicketForsaleController extends Controller
      */
     public function store(Storeticket_forsaleRequest $request)
     {
-        //
+        $ticket_forsale = ticket_forsale::create($request->validated());
+        return response()->json($ticket_forsale, 201);
     }
 
     /**
@@ -37,23 +31,18 @@ class TicketForsaleController extends Controller
      */
     public function show(ticket_forsale $ticket_forsale)
     {
-        //
+        return response()->json($ticket_forsale, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ticket_forsale $ticket_forsale)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Updateticket_forsaleRequest $request, ticket_forsale $ticket_forsale)
     {
-        //
+        $ticket_forsale->update($request->validated());
+        return response()->json($ticket_forsale, 200);
     }
 
     /**
@@ -61,6 +50,7 @@ class TicketForsaleController extends Controller
      */
     public function destroy(ticket_forsale $ticket_forsale)
     {
-        //
+        $ticket_forsale->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

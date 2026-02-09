@@ -13,23 +13,18 @@ class PayoutsController extends Controller
      */
     public function index()
     {
-        //
+        $payouts = payouts::all();
+        return response()->json($payouts, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorepayoutsRequest $request)
     {
-        //
+        $payout = payouts::create($request->validated());
+        return response()->json($payout, 201);
     }
 
     /**
@@ -37,23 +32,17 @@ class PayoutsController extends Controller
      */
     public function show(payouts $payouts)
     {
-        //
+        return response()->json($payouts, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(payouts $payouts)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdatepayoutsRequest $request, payouts $payouts)
     {
-        //
+        $payouts->update($request->validated());
+        return response()->json($payouts, 200);
     }
 
     /**
@@ -61,6 +50,7 @@ class PayoutsController extends Controller
      */
     public function destroy(payouts $payouts)
     {
-        //
+        $payouts->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }

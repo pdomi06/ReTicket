@@ -51,6 +51,6 @@ class ActiveTicketsController extends Controller
     public function destroy(active_tickets $active_ticket)
     {        
         $active_ticket->delete();
-        return response()->json(["msg" => "Deleted successfully"], 200);
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }
