@@ -14,64 +14,43 @@ class ActiveTicketsController extends Controller
     public function index()
     {
         $active_tickets = active_tickets::all();
-        return response()->json($active_tickets);
+        return response()->json($active_tickets, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        
-    }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Storeactive_ticketsRequest $request)
     {
-        $active_tickets = active_tickets::create($request->all());
-        return response()->json($active_tickets);
+        $active_ticket = active_tickets::create($request->validated());
+        return response()->json($active_ticket, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(active_tickets $active_tickets)
+    public function show(active_tickets $active_ticket)
     {
-        $active_tickets = active_tickets::find($active_tickets->id);
-        return response()->json($active_tickets);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(active_tickets $active_tickets)
-    {
-        //
+        return response()->json($active_ticket, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateactive_ticketsRequest $request, active_tickets $active_tickets)
+    public function update(Updateactive_ticketsRequest $request, active_tickets $active_ticket)
     {
-        $active_tickets = active_tickets::find($active_tickets->id);
-        $active_tickets->update($request->all());
-        return response()->json($active_tickets);
+        $active_ticket->update($request->validated());
+        return response()->json($active_ticket, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(active_tickets $active_tickets)
-    {
-        $active_tickets = active_tickets::find($active_tickets->id);
-        if($active_tickets){
-            $active_tickets->delete();
-            return response()->json(["msg" => "Deleted successfully"]);
-        } else {
-            return response()->json(["msg" => "Not found"]);
-        }
+    public function destroy(active_tickets $active_ticket)
+    {        
+        $active_ticket->delete();
+        return response()->json(["msg" => "Deleted successfully"], 200);
     }
 }

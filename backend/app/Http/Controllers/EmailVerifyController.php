@@ -13,15 +13,8 @@ class EmailVerifyController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $email_verifies = email_verify::all();
+        return response()->json($email_verifies, 200);
     }
 
     /**
@@ -29,7 +22,8 @@ class EmailVerifyController extends Controller
      */
     public function store(Storeemail_verifyRequest $request)
     {
-        //
+        $email_verify = email_verify::create($request->validated());
+        return response()->json($email_verify, 201);
     }
 
     /**
@@ -37,15 +31,7 @@ class EmailVerifyController extends Controller
      */
     public function show(email_verify $email_verify)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(email_verify $email_verify)
-    {
-        //
+        return response()->json($email_verify);
     }
 
     /**
@@ -53,7 +39,8 @@ class EmailVerifyController extends Controller
      */
     public function update(Updateemail_verifyRequest $request, email_verify $email_verify)
     {
-        //
+        $email_verify->update($request->validated());
+        return response()->json($email_verify, 200);
     }
 
     /**
@@ -61,6 +48,7 @@ class EmailVerifyController extends Controller
      */
     public function destroy(email_verify $email_verify)
     {
-        //
+        $email_verify->delete();
+        return response()->json(['message' => 'Deleted successfully'], 200);
     }
 }
