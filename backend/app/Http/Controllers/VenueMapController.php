@@ -14,15 +14,8 @@ class VenueMapController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $venue_maps = venue_map::all();
+        return response()->json($venue_maps, 200);
     }
 
     /**
@@ -30,7 +23,8 @@ class VenueMapController extends Controller
      */
     public function store(Storevenue_mapRequest $request)
     {
-        //
+        $venue_map = venue_map::create($request->validated());
+        return response()->json($venue_map, 201);
     }
 
     /**
@@ -38,23 +32,17 @@ class VenueMapController extends Controller
      */
     public function show(venue_map $venue_map)
     {
-        //
+        return response()->json($venue_map, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(venue_map $venue_map)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Updatevenue_mapRequest $request, venue_map $venue_map)
     {
-        //
+        $venue_map->update($request->validated());
+        return response()->json($venue_map, 200);
     }
 
     /**
@@ -62,6 +50,7 @@ class VenueMapController extends Controller
      */
     public function destroy(venue_map $venue_map)
     {
-        //
+        $venue_map->delete();
+        return response()->json(["message" => "Deleted successfully"], 200);
     }
 }
