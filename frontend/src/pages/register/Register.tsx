@@ -10,15 +10,14 @@ const Register = () => {
                 <h4>Already have an account? <Link to="/login">Log in</Link></h4>
 
                 <form action="?" method="post" className={style["register-form"]}>
-                    <Input type="text" name="username" label="Username" />
+                    <Input type="text" name="username" label="Username" theme="dark"/>
 
-                    <Input type="email" name="email" label="Email" />
+                    <Input type="email" name="email" label="Email" theme="dark"/>
 
-                    <Input type="tel" name="telephone" label="Telephone number" />
+                    <Input type="tel" name="telephone" label="Telephone number" theme="dark"/>
+                    <Input type="password" name="password" label="Password" theme="dark"/>
 
-                    <Input type="password" name="password" label="Password" />
-
-                    <Input type="password" name="password_confirm" label="Confirm Password" />
+                    <Input type="password" name="password_confirm" label="Confirm Password" theme="dark"/>
 
                     <div className={style["checkbox-container"]}>
                         <input type="checkbox" name="checkbox" id="checkbox" required />

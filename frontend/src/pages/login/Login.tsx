@@ -10,13 +10,11 @@ const Login = () => {
         <h4>Don't have an account? <Link to="/register">Register</Link></h4>
 
         <form action="?" method="post" className={style["login-form"]}>
-          <Input type="text" name="username" label="Username" />
+          <Input type="text" name="username" label="Username" theme="dark" />
 
-          <Input type="email" name="email" label="Email" />
+          <Input type="email" name="email" label="Email" theme="dark" />
 
-          <Input type="tel" name="telephone" label="Telephone number" />
-
-          <Input type="password" name="password" label="Password" />
+          <Input type="password" name="password" label="Password" theme="dark" />
 
           <button type="submit">Login</button>
         </form>
