@@ -18,8 +18,6 @@ const Login = () => {
 
           <Input type="password" name="password" label="Password" />
 
-          <Input type="password" name="password_confirm" label="Confirm Password" />
-
           <button type="submit">Login</button>
         </form>
       </div>
