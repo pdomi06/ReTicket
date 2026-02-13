@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
+import LoginButton from "../../components/ui/loginButton/loginButton";
 
 const Login = () => {
   return (
@@ -10,15 +11,12 @@ const Login = () => {
         <h4>Don't have an account? <Link to="/register">Register</Link></h4>
 
         <form action="?" method="post" className={style["login-form"]}>
-          <Input type="text" name="username" label="Username" />
 
           <Input type="email" name="email" label="Email" />
 
-          <Input type="tel" name="telephone" label="Telephone number" />
-
           <Input type="password" name="password" label="Password" />
 
-          <button type="submit">Login</button>
+          <LoginButton />
         </form>
       </div>
     </main>
