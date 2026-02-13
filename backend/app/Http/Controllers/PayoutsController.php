@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\payouts;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StorepayoutsRequest;
 use App\Http\Requests\UpdatepayoutsRequest;
 
@@ -17,40 +18,56 @@ class PayoutsController extends Controller
         return response()->json($payouts, 200);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorepayoutsRequest $request)
     {
-        $payout = payouts::create($request->validated());
+        $payout = payouts::create($request->all());
         return response()->json($payout, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(payouts $payouts)
+    public function show(payouts $payouts, $id)
     {
-        return response()->json($payouts, 200);
+        $payout = payouts::find($id);
+        
+        if (!$payout) {
+            return response()->json(["message" => "Payout not found"], 404);
+        }
+        
+        return response()->json($payout, 200);
     }
-
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatepayoutsRequest $request, payouts $payouts)
+    public function update(UpdatepayoutsRequest $request, payouts $payouts, $id)
     {
-        $payouts->update($request->validated());
-        return response()->json($payouts, 200);
+        $payout = payouts::find($id);
+        
+        if (!$payout) {
+            return response()->json(["message" => "Payout not found"], 404);
+        }
+        
+        $payout->update($request->all());
+        return response()->json($payout, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(payouts $payouts)
+    public function destroy(payouts $payouts, $id)
     {
-        $payouts->delete();
-        return response()->json(["message" => "Deleted successfully"], 200);
+        $payout = payouts::find($id);
+        
+        if (!$payout) {
+            return response()->json(["message" => "Payout not found"], 404);
+        }
+        
+        $payout->delete();
+        return response()->json(["message" => "Payout deleted successfully"], 200);
     }
 }
