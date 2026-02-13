@@ -9,6 +9,8 @@ class events extends Model
 {
     /** @use HasFactory<\Database\Factories\EventsFactory> */
     use HasFactory;
+
+    protected $table = 'events';
     protected $fillable = [
         'name',
         'description',
@@ -24,4 +26,13 @@ class events extends Model
         'createdAt',
         'updatedAt',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+
+    protected $casts= [
+        'eventDate' => 'datetime',
+        'eventEndDate' => 'datetime'
+    ];
+
+    //public $timestamps = false;
 }

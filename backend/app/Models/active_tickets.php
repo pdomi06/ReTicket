@@ -10,8 +10,11 @@ class active_tickets extends Model
     /** @use HasFactory<\Database\Factories\ActiveTicketsFactory> */
     use HasFactory;
 
+    protected $table = "active_tickets";
     protected $fillable = [
         'originalTickedId',
         'ticketListingId',
     ];
+    
+    //public $timestamps = false;
 }

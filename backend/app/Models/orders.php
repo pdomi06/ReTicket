@@ -10,6 +10,7 @@ class orders extends Model
     /** @use HasFactory<\Database\Factories\OrdersFactory> */
     use HasFactory;
 
+    protected $table = "orders";
     protected $fillable = [
         'orderNumber',
         'buyerEmail',
@@ -27,4 +28,13 @@ class orders extends Model
         'completedAt',
         'cancelledAt',
     ];
+
+    protected $casts = [
+        'completedAt'=> 'datetime',
+        'cancelledAt' => 'datetime',
+    ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+    
+    /*public $timestamps = "false";*/
 }

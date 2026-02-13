@@ -11,7 +11,7 @@ class Storeoriginal_ticketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**

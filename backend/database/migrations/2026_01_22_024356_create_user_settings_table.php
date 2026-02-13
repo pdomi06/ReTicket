@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('userid')->references('id')->on('user');
             $table->boolean('emailNotification');
             $table->boolean('smsNotification');
-            $table->enum('profileVisibility', ["visible restricted banned"]);
+            $table->enum('profileVisibility', ["visible", "restricted", "banned"]);
             $table->date('createdAt');
             $table->date('updatedAt');
         });

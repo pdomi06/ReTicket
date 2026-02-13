@@ -9,6 +9,8 @@ class reviews extends Model
 {
     /** @use HasFactory<\Database\Factories\ReviewsFactory> */
     use HasFactory;
+
+    protected $table = "reviews";
     protected $fillable = [
         'orderItemId',
         'reviewerName',
@@ -20,4 +22,8 @@ class reviews extends Model
         'createdAt',
         'updatedAt'
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+
+    /*public $timestamps = "false";*/
 }
