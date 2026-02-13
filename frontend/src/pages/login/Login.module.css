@@ -22,8 +22,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 500px;
-  width: 100%;
+  max-width: 350px;
 }
 .login-container img {
   width: 50px;
@@ -52,24 +51,35 @@ body {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   margin-top: 20px;
-  width: 100%;
 }
 .login-form label {
   font-weight: bold;
   text-align: left;
 }
+.login-form input{
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  width: 330px;
+  margin-bottom: 10px;
+  background-color: #001a20a1;
+  color: white;
+}
 .login-form button {
   background-color: #b19cd9;
   color: #001a20d0;
   border: none;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
-  width: 100%;
+}
+.login-form input:focus {
+  outline: 3px solid #b19cd9;
 }
 
 .login-form button:hover {

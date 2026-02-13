@@ -28,8 +28,8 @@
     top: 14px;
     color: var(--color-text-secondary);
     font-size: 0.95rem;
-    padding: 0 4px;
     background-color: var(--color-secondary);
+    padding: 0 4px;
     pointer-events: none;
     transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;
 }
@@ -45,29 +45,4 @@
     transform: translateY(-18px);
     font-size: 0.75rem;
     color: var(--color-accent);
-}
-
-.input-light input {
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-}
-.input-light label {
-    background-color: var(--color-secondary);
-}
-.input-light input:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
-}
-
-.input-dark.floating input {
-    background-color: var(--color-main) !important;
-    color: var(--color-text);
-    border: 1px solid rgba(177, 156, 217, 0.15);
-}
-.input-dark label {
-    background-color: var(--color-main) !important;
-}
-.input-dark.floating input:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
 }
