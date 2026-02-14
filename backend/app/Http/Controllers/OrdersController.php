@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\orders;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreordersRequest;
 use App\Http\Requests\UpdateordersRequest;
 
@@ -13,15 +14,8 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $orders = orders::all();
+        return response()->json($orders, 200);
     }
 
     /**
@@ -29,38 +23,51 @@ class OrdersController extends Controller
      */
     public function store(StoreordersRequest $request)
     {
-        //
+        $order = orders::create($request->all());
+        return response()->json($order, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(orders $orders)
+    public function show(orders $order, $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(orders $orders)
-    {
-        //
+        $order = orders::find($id);
+        
+        if (!$order) {
+            return response()->json(["message" => "Order not found"], 404);
+        }
+        
+        return response()->json($order, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateordersRequest $request, orders $orders)
+    public function update(UpdateordersRequest $request, orders $order, $id)
     {
-        //
+        $order = orders::find($id);
+        
+        if (!$order) {
+            return response()->json(["message" => "Order not found"], 404);
+        }
+        
+        $order->update($request->all());
+        return response()->json($order, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(orders $orders)
+    public function destroy(orders $order, $id)
     {
-        //
+        $order = orders::find($id);
+        
+        if (!$order) {
+            return response()->json(["message" => "Order not found"], 404);
+        }
+        
+        $order->delete();
+        return response()->json(["message" => "Order deleted successfully"], 200);
     }
 }

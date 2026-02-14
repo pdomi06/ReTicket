@@ -14,15 +14,8 @@ class VenueMapController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $venue_maps = venue_map::all();
+        return response()->json($venue_maps, 200);
     }
 
     /**
@@ -30,38 +23,48 @@ class VenueMapController extends Controller
      */
     public function store(Storevenue_mapRequest $request)
     {
-        //
+        $venue_map = venue_map::create($request->all());
+        return response()->json($venue_map, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(venue_map $venue_map)
+    public function show(venue_map $venue_map, $id)
     {
-        //
+    $venue_map = venue_map::find($id);
+    
+    if (!$venue_map) {
+        return response()->json(["message" => "Venue map not found"], 404);
+    }
+    
+    return response()->json($venue_map, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(venue_map $venue_map)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updatevenue_mapRequest $request, venue_map $venue_map)
+    public function update(Updatevenue_mapRequest $request, venue_map $venue_map, $id)
     {
-        //
-    }
+        $venue_map=venue_map::find($id);
+            if(!$venue_map){
+                return response()->json(["message" => "Venue map not found"], 404); 
+                } 
+            $venue_map->update($request->all()); 
+            return response()->json($venue_map, 200);
+        }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(venue_map $venue_map)
+    public function destroy(venue_map $venue_map, $id)
     {
-        //
+        $venue_map = venue_map::find($id);
+        if(!$venue_map){ 
+            return response()->json(["message" => "Venue map not found"], 404); 
+            } 
+            $venue_map->delete(); 
+            return response()->json(["message" => "Venue map deleted successfully"], 200);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\order_items;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Storeorder_itemsRequest;
 use App\Http\Requests\Updateorder_itemsRequest;
 
@@ -13,15 +14,8 @@ class OrderItemsController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $order_items = order_items::all();
+        return response()->json($order_items, 200);
     }
 
     /**
@@ -29,38 +23,51 @@ class OrderItemsController extends Controller
      */
     public function store(Storeorder_itemsRequest $request)
     {
-        //
+        $order_item = order_items::create($request->all());
+        return response()->json($order_item, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(order_items $order_items)
+    public function show(order_items $order_item, $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(order_items $order_items)
-    {
-        //
+        $order_item = order_items::find($id);
+        
+        if (!$order_item) {
+            return response()->json(["message" => "Order item not found"], 404);
+        }
+        
+        return response()->json($order_item, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateorder_itemsRequest $request, order_items $order_items)
+    public function update(Updateorder_itemsRequest $request, order_items $order_item, $id)
     {
-        //
+        $order_item = order_items::find($id);
+        
+        if (!$order_item) {
+            return response()->json(["message" => "Order item not found"], 404);
+        }
+        
+        $order_item->update($request->all());
+        return response()->json($order_item, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(order_items $order_items)
+    public function destroy(order_items $order_item, $id)
     {
-        //
+        $order_item = order_items::find($id);
+        
+        if (!$order_item) {
+            return response()->json(["message" => "Order item not found"], 404);
+        }
+        
+        $order_item->delete();
+        return response()->json(["message" => "Order item deleted successfully"], 200);
     }
 }

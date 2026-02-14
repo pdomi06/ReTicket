@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\events;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreeventsRequest;
 use App\Http\Requests\UpdateeventsRequest;
 
@@ -13,15 +14,8 @@ class EventsController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $events = events::all();
+        return response()->json($events, 200);
     }
 
     /**
@@ -29,38 +23,51 @@ class EventsController extends Controller
      */
     public function store(StoreeventsRequest $request)
     {
-        //
+        $event = events::create($request->all());
+        return response()->json($event, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(events $events)
+    public function show(events $event, $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(events $events)
-    {
-        //
+        $event = events::find($id);
+        
+        if (!$event) {
+            return response()->json(["message" => "Event not found"], 404);
+        }
+        
+        return response()->json($event, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateeventsRequest $request, events $events)
+    public function update(UpdateeventsRequest $request, events $event, $id)
     {
-        //
+        $event = events::find($id);
+        
+        if (!$event) {
+            return response()->json(["message" => "Event not found"], 404);
+        }
+        
+        $event->update($request->all());
+        return response()->json($event, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(events $events)
+    public function destroy(events $event, $id)
     {
-        //
+        $event = events::find($id);
+        
+        if (!$event) {
+            return response()->json(["message" => "Event not found"], 404);
+        }
+        
+        $event->delete();
+        return response()->json(["message" => "Event deleted successfully"], 200);
     }
 }

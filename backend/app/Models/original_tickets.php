@@ -9,6 +9,8 @@ class original_tickets extends Model
 {
     /** @use HasFactory<\Database\Factories\OriginalTicketsFactory> */
     use HasFactory;
+
+    protected $table = "original_tickets";
     protected $fillable = [
         'eventId',
         'section',
@@ -20,4 +22,9 @@ class original_tickets extends Model
         'createdAt',
         'updatedAt'
     ];
-    }
+
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+
+    /*public $timestamps = "false";*/
+}
