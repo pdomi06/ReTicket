@@ -195,7 +195,13 @@ export interface TextareaProps {
 }
 
 export interface ButtonProps {
-    type: 'button' | 'submit' | 'reset';
+    type?: 'button' | 'submit' | 'reset';
     text: string;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    disabled?: boolean;
+    className?: string;
+    id?: string;
+    name?: string;
+    'aria-label'?: string;
 }
 
