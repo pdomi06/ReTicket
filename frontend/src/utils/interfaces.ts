@@ -181,7 +181,6 @@ export interface InputProps {
     label: string;
     name: string;
     value?: string | number;
-    theme?: 'light' | 'dark';
     step?: number;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
