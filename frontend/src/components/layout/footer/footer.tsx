@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import logo from '../../../assets/logo_transparrent_white.svg';
+import logo from '../../../../public/img/logo_transparrent_white.svg';
 import Input from '../../ui/input/Input';
 import Textarea from '../../ui/textarea/Textarea';
 import styles from './footer.module.css';
