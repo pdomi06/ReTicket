@@ -10,6 +10,8 @@ class email_verify extends Model
     /** @use HasFactory<\Database\Factories\EmailVerifyFactory> */
     use HasFactory;
 
+    protected $table = "email_verify";
+
     protected $fillable = [
         'userId',
         'token',
@@ -17,4 +19,11 @@ class email_verify extends Model
         'verifiedAt',
         'createdAt',
     ];
+    protected $casts= [
+        'expiresAt' => 'datetime',
+        'verifiedAt' => 'datetime',
+    ];
+
+    //const CREATED_AT = 'createdAt';
+    public $timestamps = false;
 }

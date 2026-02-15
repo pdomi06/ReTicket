@@ -3,6 +3,7 @@ import logo from '../../../assets/logo_transparrent_white.svg';
 import Input from '../../ui/input/Input';
 import Textarea from '../../ui/textarea/Textarea';
 import styles from './footer.module.css';
+import Button from '../../ui/button/Button';
 
 const Footer = () => {
 
@@ -39,9 +40,7 @@ const Footer = () => {
 
                 <Textarea name="footer-message" label="Your Message" rows={4} />
 
-                <button type="submit" className={styles['submit-btn']}>
-                    Send Message
-                </button>
+                <Button type="submit" text="Send Message"/>
 
                 <div className={styles['form-note']}>
                     <p> We'll respond within 24 hours</p>

@@ -9,6 +9,8 @@ class venue_map extends Model
 {
     /** @use HasFactory<\Database\Factories\VenueMapFactory> */
     use HasFactory;
+
+    protected $table = 'venue_maps';
     protected $fillable = [
         'venue',
         'section',
@@ -16,4 +18,5 @@ class venue_map extends Model
         'seat',
         'rate'
     ];
+    public $timestamps = false;
 }

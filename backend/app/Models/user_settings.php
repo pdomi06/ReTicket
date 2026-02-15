@@ -9,6 +9,7 @@ class user_settings extends Model
 {
     /** @use HasFactory<\Database\Factories\UserSettingsFactory> */
     use HasFactory;
+    protected $table = "user_settings";
     protected $fillable = [
         'emailNotification',
         'smsNotification',
@@ -16,4 +17,8 @@ class user_settings extends Model
         'createdAt',
         'updatedAt'
     ];
+
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+    /*public $timestamps = "false";*/
 }

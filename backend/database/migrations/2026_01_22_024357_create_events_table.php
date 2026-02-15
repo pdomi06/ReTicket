@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('country');
             $table->date('eventDate');
             $table->date('eventEndDate');
-            $table->enum('category', ["cultural music sport"]);
+            $table->enum('category', ["cultural", "music", "sport"]);
             $table->text('imageUrl');
             $table->date('createdAt');
             $table->date('updatedAt');

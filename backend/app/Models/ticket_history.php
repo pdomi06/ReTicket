@@ -9,6 +9,8 @@ class ticket_history extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketHistoryFactory> */
     use HasFactory;
+
+    protected $table = "ticket_history";
     protected $fillable = [
         'originalTicketId',
         'ticketListingId',
@@ -17,4 +19,6 @@ class ticket_history extends Model
         'price',
         'platformFee',
     ];
+
+    public $timestamps = false;
 }

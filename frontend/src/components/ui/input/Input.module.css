@@ -29,6 +29,7 @@
     color: var(--color-text-secondary);
     font-size: 0.95rem;
     background-color: var(--color-secondary);
+    font-family: var(--font-main);
     padding: 0 4px;
     pointer-events: none;
     transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;

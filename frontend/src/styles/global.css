@@ -9,11 +9,13 @@
     --color-text-secondary: #b0b0b0;
     --color-dark-overlay: rgba(0, 0, 0, 0.9);
     --color-highlighter: #ffd700;
+    --font-main: 'Noto Sans', sans-serif;
+    --font-secondary: 'Playfair Display', serif;
 }
 
 
 * {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--font-main);
     scroll-behavior: smooth;
 }
 

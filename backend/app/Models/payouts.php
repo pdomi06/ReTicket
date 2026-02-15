@@ -10,6 +10,7 @@ class payouts extends Model
     /** @use HasFactory<\Database\Factories\PayoutsFactory> */
     use HasFactory;
 
+    protected $table = "payouts";
     protected $fillable = [
         'vendorId',
         'orderItemId',
@@ -19,4 +20,11 @@ class payouts extends Model
         'paidAt',
         'createdAt'
     ];
+
+    protected $casts = [
+        'paidAt' => "datetime",
+    ];
+    //const CREATED_AT = "createdAt";
+
+    public $timestamps = false;
 }
