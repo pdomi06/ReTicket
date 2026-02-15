@@ -1,0 +1,24 @@
+
+body {
+    background-color: var(--color-primary);
+}
+.notFound-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+}
+.notFound-title {
+    font-size: 2.5rem;
+    color: var(--color-text);
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+}
+.notFound-message {
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+    font-family: var(--font-main);
+}
