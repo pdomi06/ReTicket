@@ -2,12 +2,13 @@ import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Register.module.css'
 import Button from "../../components/ui/button/Button";
+import logo from "../../assets/logo_transparrent_white.svg";
 
 const Register = () => {
     return (
         <main className={style["register-page"]}>
             <div className={style["register-container"]}>
-                <h2><img src="../logo_transparrent_white.svg"/> ReTicket</h2>
+                <h2><img src={logo} alt="ReTicket Logo" /> ReTicket</h2>
                 <h4>Already have an account? <Link to="/login">Log in</Link></h4>
 
                 <form action="?" method="post" className={style["register-form"]}>
