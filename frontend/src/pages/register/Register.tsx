@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Register.module.css'
+import Button from "../../components/ui/button/Button";
 
 const Register = () => {
     return (
@@ -26,7 +27,7 @@ const Register = () => {
                             <Link to="/terms">Terms and Conditions</Link> and
                             <Link to="/privacy">privacy policy</Link>.</label>
                     </div>
-                    <button type="submit">Register</button>
+                    <Button type="submit" text="Register"/>
                 </form>
             </div>
         </main>

@@ -194,3 +194,14 @@ export interface TextareaProps {
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
+export interface ButtonProps {
+    type?: 'button' | 'submit' | 'reset';
+    text: string;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    disabled?: boolean;
+    className?: string;
+    id?: string;
+    name?: string;
+    'aria-label'?: string;
+}
+

@@ -30,6 +30,7 @@
     font-size: 0.95rem;
     padding: 0 4px;
     background-color: var(--color-secondary);
+    font-family: var(--font-main);
     pointer-events: none;
     transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;
 }
