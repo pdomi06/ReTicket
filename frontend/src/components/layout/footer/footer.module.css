@@ -1,6 +1,6 @@
 .footer {
   padding: 40px 10%;
-  background-color: var(--font-main);
+  background-color: var(--color-main);
   margin-top: auto;
   display: flex;
   justify-content: space-between;
@@ -16,7 +16,7 @@
   margin: 0;
   padding: 0;
   color: #ffffff;
-  font-family: var(--font-secoundary);
+  font-family: var(--font-secondary);
 }
 
 .footer-left,
@@ -30,7 +30,7 @@
 }
 
 .footer-left h2 {
-  font-family: var(--font-secoundary);
+  font-family: var(--font-secondary);
   margin-top: 0;
   color: #ffffff;
 }
@@ -62,7 +62,7 @@
   font-size: 0.8rem;
   white-space: nowrap;
   color: #ffffff;
-  font-family: var(--font-secoundary);
+  font-family: var(--font-secondary);
   text-decoration: none;
   letter-spacing: 1px;
   transition: opacity 0.3s;
