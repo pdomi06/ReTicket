@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = () => {
   const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
+    }
+  }, [isAuthenticated, loginWithRedirect]);
+
   if (!isAuthenticated) {
-    loginWithRedirect()
     return <div>Redirecting to login...</div>;
   }
   return (
