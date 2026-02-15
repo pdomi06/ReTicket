@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #001a20;
+    background-color: var(--font-main);
     padding: 0 10%;
     height: 64px;
     position: sticky;
@@ -21,7 +21,7 @@
 
 .brand span {
     color: #ffffff;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--font-main);
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -39,7 +39,7 @@
 
 .navbar-about {
     color: #b0b0b0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--font-main);
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
@@ -60,7 +60,7 @@
     text-decoration: none;
     padding: 8px 20px;
     border-radius: 6px;
-    background-color: #ffd700;
+    background-color: var(--color-highlighter);
     transition: background-color 0.2s ease;
 }
 
