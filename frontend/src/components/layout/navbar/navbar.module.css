@@ -54,7 +54,7 @@
 
 .navbar-vendor {
     color: #001a20;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--font-main);
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;

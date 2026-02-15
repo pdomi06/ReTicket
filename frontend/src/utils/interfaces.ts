@@ -194,3 +194,8 @@ export interface TextareaProps {
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
+export interface ButtonProps {
+    type: 'button' | 'submit' | 'reset';
+    text: string;
+}
+

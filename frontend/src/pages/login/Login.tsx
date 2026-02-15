@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
+import Button from "../../components/ui/button/Button";
 
 const Login = () => {
   return (
@@ -16,7 +17,7 @@ const Login = () => {
 
           <Input type="password" name="password" label="Password" theme="dark" />
 
-          <button type="submit">Login</button>
+          <Button type="submit" text="Login"/>
         </form>
       </div>
     </main>
