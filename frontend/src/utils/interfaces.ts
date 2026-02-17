@@ -182,6 +182,7 @@ export interface InputProps {
     name: string;
     value?: string | number;
     step?: number;
+    theme?: 'light' | 'dark';
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -190,6 +191,7 @@ export interface TextareaProps {
     name: string;
     value?: string;
     rows?: number;
+    theme?: 'light' | 'dark';
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 

@@ -36,9 +36,9 @@ const Footer = () => {
             <p>Send us a Message</p>
 
             <form className={styles['footer-form']} id={styles['footer-contact-form']}>
-                <Input type="email" name="footer-email" label="Email Address" />
+                <Input type="email" name="footer-email" label="Email Address" theme="dark"/>
 
-                <Textarea name="footer-message" label="Your Message" rows={4} />
+                <Textarea name="footer-message" label="Your Message" rows={4} theme="dark" />
 
                 <Button type="submit" text="Send Message"/>
 

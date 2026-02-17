@@ -13,7 +13,6 @@
     padding: 14px 12px 6px;
     border: 1px solid transparent;
     border-radius: 8px;
-    background-color: var(--color-secondary);
     color: var(--color-text);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -28,7 +27,6 @@
     top: 14px;
     color: var(--color-text-secondary);
     font-size: 0.95rem;
-    background-color: var(--color-secondary);
     font-family: var(--font-main);
     padding: 0 4px;
     pointer-events: none;
@@ -46,4 +44,11 @@
     transform: translateY(-18px);
     font-size: 0.75rem;
     color: var(--color-accent);
+}
+
+.dark label, .dark input {
+    background-color: var(--color-main);
+}
+.light label, .light input {
+    background-color: var(--color-secondary);
 }
