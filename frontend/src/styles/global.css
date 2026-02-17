@@ -16,10 +16,11 @@
 
 * {
     font-family: var(--font-main);
+    color: var(--color-text);
     scroll-behavior: smooth;
 }
 
-html {
+html, body {
     scroll-behavior: smooth;
     background-color: var(--color-main);
 }
