@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import logo from '../../../../public/img/logo_transparrent_white.svg';
+import logo from '../../../../public/img/logo/logo_transparrent_white.svg';
 import styles from './navbar.module.css';
 
 const Navbar = () => {

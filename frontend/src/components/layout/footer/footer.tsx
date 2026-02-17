@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import logo from '../../../../public/img/logo_transparrent_white.svg';
+import logo from '../../../../public/img/logo/logo_transparrent_white.svg';
 import Input from '../../ui/input/Input';
 import Textarea from '../../ui/textarea/Textarea';
 import styles from './footer.module.css';
@@ -16,10 +16,10 @@ const Footer = () => {
                 <h2>ReTicket</h2>
             </div>
             
-            <p>Copyright &copy;
+            <p>Copyright &copy;{" "}
                 <span className={styles['year']}>
                     {new Date().getFullYear()}
-                </span>
+                </span>{" "}
                 ReTicket. All rights reserved.
             </p>
 

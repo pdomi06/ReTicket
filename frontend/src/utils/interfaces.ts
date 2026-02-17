@@ -204,3 +204,10 @@ export interface ButtonProps {
     'aria-label'?: string;
 }
 
+export interface CardProps {
+    title: string;
+    description: string;
+    imageUrl?: string;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+}
+
