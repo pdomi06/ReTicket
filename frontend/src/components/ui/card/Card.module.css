@@ -1,0 +1,14 @@
+.card-footer {
+    min-width: 180px;
+    width: 40%;
+}
+.card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.card {
+    cursor: pointer;
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}

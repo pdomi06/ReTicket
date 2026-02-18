@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import logo from '../../../assets/logo_transparrent_white.svg';
+import logo from '../../../../public/img/logo/logo_transparrent_white.svg';
 import Input from '../../ui/input/Input';
 import Textarea from '../../ui/textarea/Textarea';
 import styles from './footer.module.css';
@@ -16,10 +16,10 @@ const Footer = () => {
                 <h2>ReTicket</h2>
             </div>
             
-            <p>Copyright &copy;
+            <p>Copyright &copy;{" "}
                 <span className={styles['year']}>
                     {new Date().getFullYear()}
-                </span>
+                </span>{" "}
                 ReTicket. All rights reserved.
             </p>
 
@@ -36,9 +36,9 @@ const Footer = () => {
             <p>Send us a Message</p>
 
             <form className={styles['footer-form']} id={styles['footer-contact-form']}>
-                <Input type="email" name="footer-email" label="Email Address" />
+                <Input type="email" name="footer-email" label="Email Address" theme="dark"/>
 
-                <Textarea name="footer-message" label="Your Message" rows={4} />
+                <Textarea name="footer-message" label="Your Message" rows={4} theme="dark" />
 
                 <Button type="submit" text="Send Message"/>
 

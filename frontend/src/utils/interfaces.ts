@@ -182,6 +182,8 @@ export interface InputProps {
     name: string;
     value?: string | number;
     step?: number;
+    theme?: 'light' | 'dark';
+    size?: 'small' | 'medium' | 'large';
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -190,6 +192,7 @@ export interface TextareaProps {
     name: string;
     value?: string;
     rows?: number;
+    theme?: 'light' | 'dark';
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
@@ -201,6 +204,16 @@ export interface ButtonProps {
     className?: string;
     id?: string;
     name?: string;
+    link?: string;
     'aria-label'?: string;
+}
+
+export interface CardProps {
+    title: string;
+    description: string;
+    imageUrl?: string;
+    buttonText?: string;
+    link?: string;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 

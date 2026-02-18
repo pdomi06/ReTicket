@@ -15,3 +15,14 @@
 .button:hover {
   background-color: #b19cd9de;
 }
+
+.button-link {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+.button-link a {
+  width: 100%;
+  text-decoration: none;
+}

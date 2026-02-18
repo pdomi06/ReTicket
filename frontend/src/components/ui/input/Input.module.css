@@ -10,10 +10,8 @@
 }
 
 .input-group.floating input {
-    padding: 14px 12px 6px;
     border: 1px solid transparent;
     border-radius: 8px;
-    background-color: var(--color-secondary);
     color: var(--color-text);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -28,9 +26,7 @@
     top: 14px;
     color: var(--color-text-secondary);
     font-size: 0.95rem;
-    background-color: var(--color-secondary);
     font-family: var(--font-main);
-    padding: 0 4px;
     pointer-events: none;
     transition: transform 0.18s ease, font-size 0.18s ease, color 0.18s ease;
 }
@@ -46,4 +42,32 @@
     transform: translateY(-18px);
     font-size: 0.75rem;
     color: var(--color-accent);
+}
+
+.dark label, .dark input {
+    background-color: var(--color-main);
+}
+.light label, .light input {
+    background-color: var(--color-secondary);
+}
+
+.size-small input {
+    padding: 10px 8px 4px;
+}
+.size-small label {
+    top: 10px;
+    padding: 0 2px;
+}
+.size-medium input {
+    padding: 14px 12px 6px;
+}
+.size-medium label {
+    padding: 0 4px;
+}
+.size-large input {
+    padding: 18px 16px 8px;
+}
+.size-large label {
+    top: 18px;
+    padding: 0 6px;
 }

@@ -1,0 +1,44 @@
+/* Features Section */
+.features {
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, rgba(177, 156, 217, 0.05), rgba(177, 156, 217, 0.08));
+    border-top: 1px solid rgba(177, 156, 217, 0.1);
+}
+
+.feature-item {
+    padding: 2rem;
+    border-radius: 12px;
+    background: rgba(0, 26, 32, 0.4);
+    border: 1px solid rgba(177, 156, 217, 0.15);
+    text-align: center;
+    transition: all 0.4s ease;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, rgba(177, 156, 217, 0.2), rgba(147, 112, 219, 0.2));
+    border: 1px solid rgba(177, 156, 217, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b19cd9;
+    transition: all 0.3s ease;
+}
+
+.feature-item p {
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.feature-title {
+    font-family: var(--font-main);
+    font-size: 1.2rem;
+    margin: 1rem 0 0.75rem;
+    letter-spacing: 0.5px;
+    color: var(--color-accent);
+}

@@ -1,6 +1,6 @@
 .footer {
   padding: 40px 10%;
-  background-color: var(--color-main);
+  background-color: var(--color-secondary);
   margin-top: auto;
   display: flex;
   justify-content: space-between;
