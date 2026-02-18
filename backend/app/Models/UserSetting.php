@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class user_settings extends Model
+class UserSetting extends Model
 {
     /** @use HasFactory<\Database\Factories\UserSettingsFactory> */
     use HasFactory;
@@ -20,5 +20,5 @@ class user_settings extends Model
 
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
-    /*public $timestamps = "false";*/
+    //public $timestamps = false;
 }

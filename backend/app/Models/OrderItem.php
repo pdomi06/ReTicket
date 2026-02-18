@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class order_items extends Model
+class OrderItem extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderItemsFactory> */
     use HasFactory;
@@ -17,7 +17,7 @@ class order_items extends Model
         'price',
         'createdAt'
     ];
-    const CREATED_AT = 'createdAt';
+    //const CREATED_AT = 'createdAt';
 
-    /*public $timestamps = "false";*/
+    public $timestamps = false;
 }

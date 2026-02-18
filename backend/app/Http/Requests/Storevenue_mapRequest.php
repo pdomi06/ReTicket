@@ -22,7 +22,6 @@ class Storevenue_mapRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
         ];
     }
 }

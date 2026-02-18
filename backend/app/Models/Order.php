@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class orders extends Model
+class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrdersFactory> */
     use HasFactory;
@@ -30,11 +30,12 @@ class orders extends Model
     ];
 
     protected $casts = [
+        'deliveredAt' => 'datetime',
         'completedAt'=> 'datetime',
         'cancelledAt' => 'datetime',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
     
-    /*public $timestamps = "false";*/
+    //public $timestamps = false;
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class password_reset extends Model
+class PasswordReset extends Model
 {
     /** @use HasFactory<\Database\Factories\PasswordResetFactory> */
     use HasFactory;
@@ -21,7 +21,7 @@ class password_reset extends Model
     protected $casts = [
         'expiresAt' => 'datetime',
     ];
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-    /*public $timestamps = "false";*/
+    //const CREATED_AT = 'createdAt';
+
+    public $timestamps = false;
 }

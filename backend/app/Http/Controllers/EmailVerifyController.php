@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\email_verify;
+use App\Models\EmailVerify;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storeemail_verifyRequest;
 use App\Http\Requests\Updateemail_verifyRequest;
@@ -14,7 +14,7 @@ class EmailVerifyController extends Controller
      */
     public function index()
     {
-        $email_verifies = email_verify::all();
+        $email_verifies = EmailVerify::all();
         return response()->json($email_verifies, 200);
     }
 
@@ -23,51 +23,33 @@ class EmailVerifyController extends Controller
      */
     public function store(Storeemail_verifyRequest $request)
     {
-        $email_verify = email_verify::create($request->all());
+        $email_verify = EmailVerify::create($request->all());
         return response()->json($email_verify, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(email_verify $email_verify, $id)
+    public function show(EmailVerify $emailVerify)
     {
-        $email_verify = email_verify::find($id);
-        
-        if (!$email_verify) {
-            return response()->json(["message" => "Email verification not found"], 404);
-        }
-        
-        return response()->json($email_verify, 200);
+        return response()->json($emailVerify, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateemail_verifyRequest $request, email_verify $email_verify, $id)
+    public function update(Updateemail_verifyRequest $request, EmailVerify $emailVerify)
     {
-        $email_verify = email_verify::find($id);
-        
-        if (!$email_verify) {
-            return response()->json(["message" => "Email verification not found"], 404);
-        }
-        
-        $email_verify->update($request->all());
-        return response()->json($email_verify, 200);
+        $emailVerify->update($request->all());
+        return response()->json($emailVerify, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(email_verify $email_verify, $id)
+    public function destroy(EmailVerify $emailVerify)
     {
-        $email_verify = email_verify::find($id);
-        
-        if (!$email_verify) {
-            return response()->json(["message" => "Email verification not found"], 404);
-        }
-        
-        $email_verify->delete();
+        $emailVerify->delete();
         return response()->json(["message" => "Email verification deleted successfully"], 200);
     }
 }
