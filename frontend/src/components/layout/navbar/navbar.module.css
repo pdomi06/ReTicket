@@ -60,10 +60,10 @@
     text-decoration: none;
     padding: 8px 20px;
     border-radius: 6px;
-    background-color: var(--color-highlighter);
+    background-color: var(--color-accent);
     transition: background-color 0.2s ease;
 }
 
 .navbar-vendor:hover {
-    background-color: #ffdf33;
+    background-color: #b19cd9de;
 }
