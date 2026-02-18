@@ -1,10 +1,10 @@
 import type { InputProps } from '../../../utils/interfaces';
 import styles from './Input.module.css';
 
-const Input = ({ type = 'text', label, name, value, step, theme = "dark", onChange }: InputProps) => {
+const Input = ({ type = 'text', label, name, value, step, theme = "dark", size = "medium", onChange }: InputProps) => {
     if (theme === 'dark') {
     return (
-        <div className={`${styles['input-group']} ${styles.floating} ${styles.dark}`}>
+        <div className={`${styles['input-group']} ${styles.floating} ${styles.dark} ${size ? styles["size-"+size] : ''}`}>
             <input
                 type={type}
                 name={name}
@@ -19,7 +19,7 @@ const Input = ({ type = 'text', label, name, value, step, theme = "dark", onChan
     );
     }
     return (
-        <div className={`${styles['input-group']} ${styles.floating} ${styles.light}`}>
+        <div className={`${styles['input-group']} ${styles.floating} ${styles.light} ${size ? styles["size-"+size] : ''}`}>
             <input
                 type={type}
                 name={name}

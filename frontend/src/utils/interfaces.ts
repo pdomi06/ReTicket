@@ -183,6 +183,7 @@ export interface InputProps {
     value?: string | number;
     step?: number;
     theme?: 'light' | 'dark';
+    size?: 'small' | 'medium' | 'large';
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

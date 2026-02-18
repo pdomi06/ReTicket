@@ -1,0 +1,12 @@
+
+.carouser {
+    background-color: black;
+    margin: 0;
+    padding: 0;
+}
+
+.carousel-img {
+    height: 500px;
+    object-fit: cover;
+    opacity: 1;
+}
