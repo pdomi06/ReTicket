@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function store(StoreuserRequest $request)
     {
-        $user = User::create($request->all());
+        $user = User::create(attributes: $request->validated());
         return response()->json($user, 201);
     }
 
@@ -40,7 +40,7 @@ class UserController extends Controller
      */
     public function update(UpdateuserRequest $request, User $user)
     {
-        $user->update($request->all());
+        $user->update($request->validated());
         return response()->json($user, 200);
     }
 

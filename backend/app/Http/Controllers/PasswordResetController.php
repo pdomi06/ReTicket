@@ -23,7 +23,7 @@ class PasswordResetController extends Controller
      */
     public function store(Storepassword_resetRequest $request)
     {
-        $password_reset = PasswordReset::create($request->all());
+        $password_reset = PasswordReset::create($request->validated());
         return response()->json($password_reset, 201);
     }
 
@@ -40,7 +40,7 @@ class PasswordResetController extends Controller
      */
     public function update(Updatepassword_resetRequest $request, PasswordReset $passwordReset)
     {
-        $passwordReset->update($request->all());
+        $passwordReset->update($request->validated());
         return response()->json($passwordReset, 200);
     }
 

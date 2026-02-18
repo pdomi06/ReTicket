@@ -23,7 +23,7 @@ class UserSettingsController extends Controller
      */
     public function store(Storeuser_settingsRequest $request)
     {
-        $user_setting = UserSetting::create($request->all());
+        $user_setting = UserSetting::create($request->validated());
         return response()->json($user_setting, 201);
     }
 
@@ -40,7 +40,7 @@ class UserSettingsController extends Controller
      */
     public function update(Updateuser_settingsRequest $request, UserSetting $userSetting)
     {
-        $userSetting->update($request->all());
+        $userSetting->update($request->validated());
         return response()->json($userSetting, 200);
     }
 

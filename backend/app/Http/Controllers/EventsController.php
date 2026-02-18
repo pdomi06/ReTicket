@@ -23,7 +23,7 @@ class EventsController extends Controller
      */
     public function store(StoreeventsRequest $request)
     {
-        $event = Event::create($request->all());
+        $event = Event::create($request->validated());
         return response()->json($event, 201);
     }
 
@@ -40,7 +40,7 @@ class EventsController extends Controller
      */
     public function update(UpdateeventsRequest $request, Event $event)
     {
-        $event->update($request->all());
+        $event->update($request->validated());
         return response()->json($event, 200);
     }
 

@@ -23,7 +23,7 @@ class OrderItemsController extends Controller
      */
     public function store(Storeorder_itemsRequest $request)
     {
-        $order_item = OrderItem::create($request->all());
+        $order_item = OrderItem::create(attributes: $request->validated());
         return response()->json($order_item, 201);
     }
 
@@ -40,7 +40,7 @@ class OrderItemsController extends Controller
      */
     public function update(Updateorder_itemsRequest $request, OrderItem $orderItem)
     {
-        $orderItem->update($request->all());
+        $orderItem->update($request->validated());
         return response()->json($orderItem, 200);
     }
 

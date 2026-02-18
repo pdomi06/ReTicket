@@ -23,7 +23,7 @@ class PayoutsController extends Controller
      */
     public function store(StorepayoutsRequest $request)
     {
-        $payout = Payout::create($request->all());
+        $payout = Payout::create($request->validated());
         return response()->json($payout, 201);
     }
 
@@ -40,7 +40,7 @@ class PayoutsController extends Controller
      */
     public function update(UpdatepayoutsRequest $request, Payout $payout)
     {
-        $payout->update($request->all());
+        $payout->update($request->validated());
         return response()->json($payout, 200);
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VenueMap; // Make sure this matches your model name
+use App\Models\VenueMap;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storevenue_mapRequest;
 use App\Http\Requests\Updatevenue_mapRequest;
@@ -23,14 +23,14 @@ class VenueMapController extends Controller
      */
     public function store(Storevenue_mapRequest $request)
     {
-        $venue_map = VenueMap::create($request->all());
+        $venue_map = VenueMap::create($request->validated());
         return response()->json($venue_map, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(VenueMap $venue) // Parameter MUST match route {venue}
+    public function show(VenueMap $venue)
     {
         return response()->json($venue, 200);
     }
@@ -38,16 +38,16 @@ class VenueMapController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updatevenue_mapRequest $request, VenueMap $venue) // Parameter MUST match route {venue}
+    public function update(Updatevenue_mapRequest $request, VenueMap $venue)
     {
-        $venue->update($request->all());
+        $venue->update($request->validated());
         return response()->json($venue, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VenueMap $venue) // Parameter MUST match route {venue}
+    public function destroy(VenueMap $venue)
     {
         $venue->delete();
         return response()->json(["message" => "Venue map deleted successfully"], 200);

@@ -23,7 +23,7 @@ class OriginalTicketsController extends Controller
      */
     public function store(Storeoriginal_ticketsRequest $request)
     {
-        $original_ticket = OriginalTicket::create($request->all());
+        $original_ticket = OriginalTicket::create($request->validated());
         return response()->json($original_ticket, 201);
     }
 
@@ -40,7 +40,7 @@ class OriginalTicketsController extends Controller
      */
     public function update(Updateoriginal_ticketsRequest $request, OriginalTicket $originalTicket)
     {
-        $originalTicket->update($request->all());
+        $originalTicket->update($request->validated());
         return response()->json($originalTicket, 200);
     }
 

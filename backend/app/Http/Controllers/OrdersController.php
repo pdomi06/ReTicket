@@ -23,7 +23,7 @@ class OrdersController extends Controller
      */
     public function store(StoreordersRequest $request)
     {
-        $order = Order::create($request->all());
+        $order = Order::create($request->validated());
         return response()->json($order, 201);
     }
 
@@ -40,7 +40,7 @@ class OrdersController extends Controller
      */
     public function update(UpdateordersRequest $request, Order $order)
     {
-        $order->update($request->all());
+        $order->update($request->validated());
         return response()->json($order, 200);
     }
 

@@ -23,7 +23,7 @@ class EmailVerifyController extends Controller
      */
     public function store(Storeemail_verifyRequest $request)
     {
-        $email_verify = EmailVerify::create($request->all());
+        $email_verify = EmailVerify::create($request->validated());
         return response()->json($email_verify, 201);
     }
 
@@ -40,7 +40,7 @@ class EmailVerifyController extends Controller
      */
     public function update(Updateemail_verifyRequest $request, EmailVerify $emailVerify)
     {
-        $emailVerify->update($request->all());
+        $emailVerify->update($request->validated());
         return response()->json($emailVerify, 200);
     }
 

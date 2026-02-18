@@ -23,7 +23,7 @@ class TicketForsaleController extends Controller
      */
     public function store(Storeticket_forsaleRequest $request)
     {
-        $ticket_forsale = TicketForSale::create($request->all());
+        $ticket_forsale = TicketForSale::create(attributes: $request->validated());
         return response()->json($ticket_forsale, 201);
     }
 
@@ -40,7 +40,7 @@ class TicketForsaleController extends Controller
      */
     public function update(Updateticket_forsaleRequest $request, TicketForSale $ticketForSale)
     {
-        $ticketForSale->update($request->all());
+        $ticketForSale->update($request->validated());
         return response()->json($ticketForSale, 200);
     }
 

@@ -23,7 +23,7 @@ class ActiveTicketsController extends Controller
      */
     public function store(Storeactive_ticketsRequest $request)
     {
-        $active_ticket = ActiveTicket::create($request->all());
+        $active_ticket = ActiveTicket::create($request->validated());
         return response()->json($active_ticket, 201);
     }
 
@@ -40,7 +40,7 @@ class ActiveTicketsController extends Controller
      */
     public function update(Updateactive_ticketsRequest $request, ActiveTicket $activeTicket)
     {
-        $activeTicket->update($request->all());
+        $activeTicket->update($request->validated());
         return response()->json($activeTicket, 200);
     }
 

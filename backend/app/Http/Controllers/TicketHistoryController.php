@@ -23,7 +23,7 @@ class TicketHistoryController extends Controller
      */
     public function store(Storeticket_historyRequest $request)
     {
-        $ticket_history = TicketHistory::create($request->all());
+        $ticket_history = TicketHistory::create($request->validated());
         return response()->json($ticket_history, 201);
     }
 
@@ -40,7 +40,7 @@ class TicketHistoryController extends Controller
      */
     public function update(Updateticket_historyRequest $request, TicketHistory $ticketHistory)
     {
-        $ticketHistory->update($request->all());
+        $ticketHistory->update($request->validated());
         return response()->json($ticketHistory, 200);
     }
 
