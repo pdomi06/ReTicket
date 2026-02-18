@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ticket_forsale;
+use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storeticket_forsaleRequest;
 use App\Http\Requests\Updateticket_forsaleRequest;
@@ -14,7 +14,7 @@ class TicketForsaleController extends Controller
      */
     public function index()
     {
-        $tickets_forsale = ticket_forsale::all();
+        $tickets_forsale = TicketForSale::all();
         return response()->json($tickets_forsale, 200);
     }
 
@@ -23,51 +23,33 @@ class TicketForsaleController extends Controller
      */
     public function store(Storeticket_forsaleRequest $request)
     {
-        $ticket_forsale = ticket_forsale::create($request->all());
+        $ticket_forsale = TicketForSale::create($request->all());
         return response()->json($ticket_forsale, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ticket_forsale $ticket_forsale, $id)
+    public function show(TicketForSale $ticketForSale)
     {
-        $ticket_forsale = ticket_forsale::find($id);
-        
-        if (!$ticket_forsale) {
-            return response()->json(["message" => "Ticket for sale not found"], 404);
-        }
-        
-        return response()->json($ticket_forsale, 200);
+        return response()->json($ticketForSale, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateticket_forsaleRequest $request, ticket_forsale $ticket_forsale, $id)
+    public function update(Updateticket_forsaleRequest $request, TicketForSale $ticketForSale)
     {
-        $ticket_forsale = ticket_forsale::find($id);
-        
-        if (!$ticket_forsale) {
-            return response()->json(["message" => "Ticket for sale not found"], 404);
-        }
-        
-        $ticket_forsale->update($request->all());
-        return response()->json($ticket_forsale, 200);
+        $ticketForSale->update($request->all());
+        return response()->json($ticketForSale, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ticket_forsale $ticket_forsale, $id)
+    public function destroy(TicketForSale $ticketForSale)
     {
-        $ticket_forsale = ticket_forsale::find($id);
-        
-        if (!$ticket_forsale) {
-            return response()->json(["message" => "Ticket for sale not found"], 404);
-        }
-        
-        $ticket_forsale->delete();
+        $ticketForSale->delete();
         return response()->json(["message" => "Ticket for sale deleted successfully"], 200);
     }
 }

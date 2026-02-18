@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ticket_history;
+use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storeticket_historyRequest;
 use App\Http\Requests\Updateticket_historyRequest;
@@ -14,7 +14,7 @@ class TicketHistoryController extends Controller
      */
     public function index()
     {
-        $ticket_histories = ticket_history::all();
+        $ticket_histories = TicketHistory::all();
         return response()->json($ticket_histories, 200);
     }
 
@@ -23,51 +23,33 @@ class TicketHistoryController extends Controller
      */
     public function store(Storeticket_historyRequest $request)
     {
-        $ticket_history = ticket_history::create($request->all());
+        $ticket_history = TicketHistory::create($request->all());
         return response()->json($ticket_history, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ticket_history $ticket_history, $id)
+    public function show(TicketHistory $ticketHistory)
     {
-        $ticket_history = ticket_history::find($id);
-        
-        if (!$ticket_history) {
-            return response()->json(["message" => "Ticket history not found"], 404);
-        }
-        
-        return response()->json($ticket_history, 200);
+        return response()->json($ticketHistory, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateticket_historyRequest $request, ticket_history $ticket_history, $id)
+    public function update(Updateticket_historyRequest $request, TicketHistory $ticketHistory)
     {
-        $ticket_history = ticket_history::find($id);
-        
-        if (!$ticket_history) {
-            return response()->json(["message" => "Ticket history not found"], 404);
-        }
-        
-        $ticket_history->update($request->all());
-        return response()->json($ticket_history, 200);
+        $ticketHistory->update($request->all());
+        return response()->json($ticketHistory, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ticket_history $ticket_history, $id)
+    public function destroy(TicketHistory $ticketHistory)
     {
-        $ticket_history = ticket_history::find($id);
-        
-        if (!$ticket_history) {
-            return response()->json(["message" => "Ticket history not found"], 404);
-        }
-        
-        $ticket_history->delete();
+        $ticketHistory->delete();
         return response()->json(["message" => "Ticket history deleted successfully"], 200);
     }
 }

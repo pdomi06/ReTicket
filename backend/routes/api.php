@@ -14,7 +14,6 @@ use App\Http\Controllers\TicketHistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\VenueMapController;
-use App\Models\orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

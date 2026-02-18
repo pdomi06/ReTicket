@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\original_tickets;
+use App\Models\OriginalTicket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storeoriginal_ticketsRequest;
 use App\Http\Requests\Updateoriginal_ticketsRequest;
@@ -14,7 +14,7 @@ class OriginalTicketsController extends Controller
      */
     public function index()
     {
-        $original_tickets = original_tickets::all();
+        $original_tickets = OriginalTicket::all();
         return response()->json($original_tickets, 200);
     }
 
@@ -23,51 +23,33 @@ class OriginalTicketsController extends Controller
      */
     public function store(Storeoriginal_ticketsRequest $request)
     {
-        $original_ticket = original_tickets::create($request->all());
+        $original_ticket = OriginalTicket::create($request->all());
         return response()->json($original_ticket, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(original_tickets $original_ticket, $id)
+    public function show(OriginalTicket $originalTicket)
     {
-        $original_ticket = original_tickets::find($id);
-        
-        if (!$original_ticket) {
-            return response()->json(["message" => "Original ticket not found"], 404);
-        }
-        
-        return response()->json($original_ticket, 200);
+        return response()->json($originalTicket, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateoriginal_ticketsRequest $request, original_tickets $original_ticket, $id)
+    public function update(Updateoriginal_ticketsRequest $request, OriginalTicket $originalTicket)
     {
-        $original_ticket = original_tickets::find($id);
-        
-        if (!$original_ticket) {
-            return response()->json(["message" => "Original ticket not found"], 404);
-        }
-        
-        $original_ticket->update($request->all());
-        return response()->json($original_ticket, 200);
+        $originalTicket->update($request->all());
+        return response()->json($originalTicket, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(original_tickets $original_ticket, $id)
+    public function destroy(OriginalTicket $originalTicket)
     {
-        $original_ticket = original_tickets::find($id);
-        
-        if (!$original_ticket) {
-            return response()->json(["message" => "Original ticket not found"], 404);
-        }
-        
-        $original_ticket->delete();
+        $originalTicket->delete();
         return response()->json(["message" => "Original ticket deleted successfully"], 200);
     }
 }

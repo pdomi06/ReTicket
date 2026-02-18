@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\orders;
+use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreordersRequest;
 use App\Http\Requests\UpdateordersRequest;
@@ -14,7 +14,7 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = orders::all();
+        $orders = Order::all();
         return response()->json($orders, 200);
     }
 
@@ -23,35 +23,23 @@ class OrdersController extends Controller
      */
     public function store(StoreordersRequest $request)
     {
-        $order = orders::create($request->all());
+        $order = Order::create($request->all());
         return response()->json($order, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(orders $order, $id)
+    public function show(Order $order)
     {
-        $order = orders::find($id);
-        
-        if (!$order) {
-            return response()->json(["message" => "Order not found"], 404);
-        }
-        
         return response()->json($order, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateordersRequest $request, orders $order, $id)
+    public function update(UpdateordersRequest $request, Order $order)
     {
-        $order = orders::find($id);
-        
-        if (!$order) {
-            return response()->json(["message" => "Order not found"], 404);
-        }
-        
         $order->update($request->all());
         return response()->json($order, 200);
     }
@@ -59,14 +47,8 @@ class OrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(orders $order, $id)
+    public function destroy(Order $order)
     {
-        $order = orders::find($id);
-        
-        if (!$order) {
-            return response()->json(["message" => "Order not found"], 404);
-        }
-        
         $order->delete();
         return response()->json(["message" => "Order deleted successfully"], 200);
     }

@@ -25,5 +25,5 @@ class reviews extends Model
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
 
-    /*public $timestamps = "false";*/
+    //public $timestamps = false;
 }

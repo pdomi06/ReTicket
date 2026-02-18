@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\reviews;
+use App\Models\Review;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorereviewsRequest;
 use App\Http\Requests\UpdatereviewsRequest;
@@ -14,7 +14,7 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        $reviews = reviews::all();
+        $reviews = Review::all();
         return response()->json($reviews, 200);
     }
 
@@ -23,35 +23,23 @@ class ReviewsController extends Controller
      */
     public function store(StorereviewsRequest $request)
     {
-        $review = reviews::create($request->all());
+        $review = Review::create($request->all());
         return response()->json($review, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(reviews $review, $id)
+    public function show(Review $review)
     {
-        $review = reviews::find($id);
-        
-        if (!$review) {
-            return response()->json(["message" => "Review not found"], 404);
-        }
-        
         return response()->json($review, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatereviewsRequest $request, reviews $review, $id)
+    public function update(UpdatereviewsRequest $request, Review $review)
     {
-        $review = reviews::find($id);
-        
-        if (!$review) {
-            return response()->json(["message" => "Review not found"], 404);
-        }
-        
         $review->update($request->all());
         return response()->json($review, 200);
     }
@@ -59,14 +47,8 @@ class ReviewsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(reviews $reviews, $id)
+    public function destroy(Review $review)
     {
-        $review = reviews::find($id);
-        
-        if (!$review) {
-            return response()->json(["message" => "Review not found"], 404);
-        }
-        
         $review->delete();
         return response()->json(["message" => "Review deleted successfully"], 200);
     }
