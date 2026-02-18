@@ -204,6 +204,7 @@ export interface ButtonProps {
     className?: string;
     id?: string;
     name?: string;
+    link?: string;
     'aria-label'?: string;
 }
 
@@ -211,6 +212,8 @@ export interface CardProps {
     title: string;
     description: string;
     imageUrl?: string;
+    buttonText?: string;
+    link?: string;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
