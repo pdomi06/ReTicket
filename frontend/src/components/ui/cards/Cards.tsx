@@ -8,7 +8,7 @@ interface CardsProps {
 
 
 const Cards: React.FC<CardsProps> = ({ children, maximumcols = 4 }) => {
-  // Build the row-cols-lg-{maximumcols} class dynamically
+  // row-cols-lg-{maximumcols} dynamic
   const rowColsLgClass = `row-cols-lg-${maximumcols}`;
   const rowColsMdClass = `row-cols-md-${Math.min(maximumcols, 3)}`; // Limit to 3 columns on medium screens
   const rowColsSmClass = `row-cols-sm-${Math.min(maximumcols, 2)}`; // Limit to 2 columns on small screens
