@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\ticket_history;
+use App\Models\TicketHistory;
 use Illuminate\Auth\Access\Response;
 
 class TicketHistoryPolicy
@@ -19,7 +19,7 @@ class TicketHistoryPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ticket_history $ticketHistory): bool
+    public function view(User $user, TicketHistory $ticketHistory): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class TicketHistoryPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ticket_history $ticketHistory): bool
+    public function update(User $user, TicketHistory $ticketHistory): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class TicketHistoryPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ticket_history $ticketHistory): bool
+    public function delete(User $user, TicketHistory $ticketHistory): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class TicketHistoryPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, ticket_history $ticketHistory): bool
+    public function restore(User $user, TicketHistory $ticketHistory): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class TicketHistoryPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, ticket_history $ticketHistory): bool
+    public function forceDelete(User $user, TicketHistory $ticketHistory): bool
     {
         return false;
     }

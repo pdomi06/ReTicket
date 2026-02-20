@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\email_verify;
+use App\Models\EmailVerify;
 use Illuminate\Auth\Access\Response;
 
 class EmailVerifyPolicy
@@ -19,7 +19,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, email_verify $emailVerify): bool
+    public function view(User $user, EmailVerify $emailVerify): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, email_verify $emailVerify): bool
+    public function update(User $user, EmailVerify $emailVerify): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, email_verify $emailVerify): bool
+    public function delete(User $user, EmailVerify $emailVerify): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, email_verify $emailVerify): bool
+    public function restore(User $user, EmailVerify $emailVerify): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, email_verify $emailVerify): bool
+    public function forceDelete(User $user, EmailVerify $emailVerify): bool
     {
         return false;
     }

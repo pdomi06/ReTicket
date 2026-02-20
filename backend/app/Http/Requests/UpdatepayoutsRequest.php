@@ -22,7 +22,13 @@ class UpdatepayoutsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'vendorId' => ['sometimes', 'integer', 'exists:user,id'],
+        'orderItemId' => ['sometimes', 'integer', 'exists:order_item,id'],
+        'status' => ['sometimes', 'in:created,pending,cancelled,fulfilled'],
+        'bank' => ['sometimes', 'string'],
+        'iban' => ['sometimes', 'string'],
+        'paidAt' => ['sometimes', 'date'],
+        'createdAt' => ['sometimes', 'date'],
         ];
     }
 }

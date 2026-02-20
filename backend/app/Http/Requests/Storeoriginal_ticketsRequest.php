@@ -22,7 +22,15 @@ class Storeoriginal_ticketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'eventId' => ['required', 'integer', 'exists:events,id'],
+        'section' => ['required', 'string'],
+        'row' => ['required', 'string'],
+        'seatNumber' => ['required', 'string'],
+        'price' => ['required', 'integer', 'min:0'],
+        'status' => ['required', 'in:pre-release,active,cancelled,expired'],
+        'ticketPdfUrl' => ['required', 'string', 'url'],
+        'createdAt' => ['required', 'date'],
+        'updatedAt' => ['required', 'date'],
         ];
     }
 }

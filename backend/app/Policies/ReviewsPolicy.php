@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\reviews;
+use App\Models\Review;
 use Illuminate\Auth\Access\Response;
 
 class ReviewsPolicy
@@ -19,7 +19,7 @@ class ReviewsPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, reviews $reviews): bool
+    public function view(User $user, Review $reviews): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class ReviewsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, reviews $reviews): bool
+    public function update(User $user, Review $reviews): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class ReviewsPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, reviews $reviews): bool
+    public function delete(User $user, Review $reviews): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class ReviewsPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, reviews $reviews): bool
+    public function restore(User $user, Review $reviews): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class ReviewsPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, reviews $reviews): bool
+    public function forceDelete(User $user, Review $reviews): bool
     {
         return false;
     }

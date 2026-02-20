@@ -22,7 +22,7 @@ class Updatepassword_resetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'userId' => ['required', 'integer', 'exists:users,id']
         ];
     }
 }

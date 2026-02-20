@@ -22,7 +22,15 @@ class Updateoriginal_ticketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'eventId' => ['sometimes', 'integer', 'exists:events,id'],
+        'section' => ['sometimes', 'string'],
+        'row' => ['sometimes', 'string'],
+        'seatNumber' => ['sometimes', 'string'],
+        'price' => ['sometimes', 'integer', 'min:0'],
+        'status' => ['sometimes', 'in:pre-release,active,cancelled,expired'],
+        'ticketPdfUrl' => ['sometimes', 'string', 'url'],
+        'createdAt' => ['sometimes', 'date'],
+        'updatedAt' => ['sometimes', 'date'],
         ];
     }
 }
