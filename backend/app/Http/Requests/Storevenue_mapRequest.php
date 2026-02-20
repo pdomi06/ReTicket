@@ -22,6 +22,11 @@ class Storevenue_mapRequest extends FormRequest
     public function rules(): array
     {
         return [
+        'venue'   => ['required', 'string', 'max:255'],
+        'section' => ['required', 'string', 'max:255'],
+        'row'     => ['required', 'string', 'max:50'],
+        'seat'    => ['required', 'string', 'max:50'],
+        'rate'    => ['required', 'numeric', 'min:1', 'max:5'],
         ];
     }
 }

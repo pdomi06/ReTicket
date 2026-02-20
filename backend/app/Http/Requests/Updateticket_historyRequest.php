@@ -22,7 +22,12 @@ class Updateticket_historyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
+        'ticketListingId' => ['sometimes', 'integer', 'exists:ticket_forsale,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'toUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'price' => ['sometimes', 'numeric', 'min:0'],
+        'platformFee' => ['sometimes', 'numeric', 'min:0'],
         ];
     }
 }

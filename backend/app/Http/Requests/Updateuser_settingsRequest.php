@@ -22,7 +22,10 @@ class Updateuser_settingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'userId' => ['sometimes', 'integer', 'exists:users,id'],
+        'emailNotifications' => ['sometimes', 'boolean'],
+        'smsNotifications' => ['sometimes', 'boolean'],
+        'profileVisibility' => ['sometimes', 'in:visible,restricted,banned'],
         ];
     }
 }

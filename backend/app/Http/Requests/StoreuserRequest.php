@@ -22,7 +22,14 @@ class StoreuserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:user,email'],
+        'password' => ['required', 'string', 'min:8'],
+        'name' => ['required', 'string', 'max:255'],
+        'phone' => ['required', 'string', 'max:20'],
+        'isVerified' => ['sometimes', 'boolean'],
+        'isActive' => ['sometimes', 'boolean'],
+        'isOnline' => ['sometimes', 'boolean'],
+        'kycStatus' => ['sometimes', 'in:pending,rejected,approved'],
         ];
     }
 }

@@ -22,7 +22,14 @@ class UpdateuserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'email'      => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,' . $this->route('user')],
+        'password'   => ['sometimes', 'string', 'min:8'],
+        'name'       => ['sometimes', 'string', 'max:255'],
+        'phone'      => ['sometimes', 'string', 'max:20'],
+        'isVerified' => ['sometimes', 'boolean'],
+        'isActive'   => ['sometimes', 'boolean'],
+        'isOnline'   => ['sometimes', 'boolean'],
+        'kycStatus'  => ['sometimes', 'in:pending,rejected,approved'],
         ];
     }
 }

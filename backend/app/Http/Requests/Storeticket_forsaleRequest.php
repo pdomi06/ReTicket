@@ -22,7 +22,10 @@ class Storeticket_forsaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'originalTicketId' => ['required', 'integer', 'exists:original_tickets,id'],
+        'fromUserId' => ['required', 'integer', 'exists:user,id'],
+        'price' => ['required', 'numeric', 'min:0'],
+        'inBasket' => ['required', 'boolean'],
         ];
     }
 }

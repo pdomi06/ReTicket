@@ -22,7 +22,10 @@ class Updateticket_forsaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'price' => ['sometimes', 'numeric', 'min:0'],
+        'inBasket' => ['sometimes', 'boolean'],
         ];
     }
 }

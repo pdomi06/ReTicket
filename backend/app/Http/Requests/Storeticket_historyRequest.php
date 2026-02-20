@@ -22,7 +22,12 @@ class Storeticket_historyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'originalTicketId' => ['required', 'integer', 'exists:original_tickets,id'],
+        'ticketListingId' => ['required', 'integer', 'exists:ticket_forsale,id'],
+        'fromUserId' => ['required', 'integer', 'exists:user,id'],
+        'toUserId' => ['required', 'integer', 'exists:user,id'],
+        'price' => ['required', 'numeric', 'min:0'],
+        'platformFee' => ['required', 'numeric', 'min:0'],
         ];
     }
 }
