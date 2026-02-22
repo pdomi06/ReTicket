@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeorder_itemsRequest;
-use App\Http\Requests\Updateorder_itemsRequest;
+use App\Http\Requests\StoreOrderItemsRequest;
+use App\Http\Requests\UpdateOrderItemsRequest;
 
 class OrderItemsController extends Controller
 {
@@ -21,7 +21,7 @@ class OrderItemsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeorder_itemsRequest $request)
+    public function store(StoreOrderItemsRequest $request)
     {
         $order_item = OrderItem::create(attributes: $request->validated());
         return response()->json($order_item, 201);
@@ -38,7 +38,7 @@ class OrderItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateorder_itemsRequest $request, OrderItem $orderItem)
+    public function update(UpdateOrderItemsRequest $request, OrderItem $orderItem)
     {
         $orderItem->update($request->validated());
         return response()->json($orderItem, 200);

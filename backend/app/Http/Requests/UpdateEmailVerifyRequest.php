@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storevenue_mapRequest extends FormRequest
+class UpdateEmailVerifyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,11 @@ class Storevenue_mapRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'venue'   => ['required', 'string', 'max:255'],
-        'section' => ['required', 'string', 'max:255'],
-        'row'     => ['required', 'string', 'max:50'],
-        'seat'    => ['required', 'string', 'max:50'],
-        'rate'    => ['required', 'numeric', 'min:1', 'max:5'],
+            'userId' => ['sometimes','exists:user,id'],
+            'token' => ['sometimes','string','unique:email_verifies,token'],
+            'expiresAt' => ['sometimes','date'],
+            'verifiedAt' => ['nullable','date'],
+            'createdAt' => ['sometimes','date'],
         ];
     }
 }

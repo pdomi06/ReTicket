@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PasswordReset;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storepassword_resetRequest;
-use App\Http\Requests\Updatepassword_resetRequest;
+use App\Http\Requests\StorePasswordResetRequest;
+use App\Http\Requests\UpdatePasswordResetRequest;
 
 class PasswordResetController extends Controller
 {
@@ -21,7 +21,7 @@ class PasswordResetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storepassword_resetRequest $request)
+    public function store(StorePasswordResetRequest $request)
     {
         $password_reset = PasswordReset::create($request->validated());
         return response()->json($password_reset, 201);
@@ -38,7 +38,7 @@ class PasswordResetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updatepassword_resetRequest $request, PasswordReset $passwordReset)
+    public function update(UpdatePasswordResetRequest $request, PasswordReset $passwordReset)
     {
         $passwordReset->update($request->validated());
         return response()->json($passwordReset, 200);

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\OriginalTicket;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeoriginal_ticketsRequest;
-use App\Http\Requests\Updateoriginal_ticketsRequest;
+use App\Http\Requests\StoreOriginalTicketsRequest;
+use App\Http\Requests\UpdateOriginalTicketsRequest;
 
 class OriginalTicketsController extends Controller
 {
@@ -21,7 +21,7 @@ class OriginalTicketsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeoriginal_ticketsRequest $request)
+    public function store(StoreOriginalTicketsRequest $request)
     {
         $original_ticket = OriginalTicket::create($request->validated());
         return response()->json($original_ticket, 201);
@@ -38,7 +38,7 @@ class OriginalTicketsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateoriginal_ticketsRequest $request, OriginalTicket $originalTicket)
+    public function update(UpdateOriginalTicketsRequest $request, OriginalTicket $originalTicket)
     {
         $originalTicket->update($request->validated());
         return response()->json($originalTicket, 200);

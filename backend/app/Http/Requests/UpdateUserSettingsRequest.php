@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storeuser_settingsRequest extends FormRequest
+class UpdateUserSettingsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,10 +22,12 @@ class Storeuser_settingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'userId' => ['required', 'integer', 'exists:users,id'],
-        'emailNotifications' => ['required', 'boolean'],
-        'smsNotifications' => ['required', 'boolean'],
-        'profileVisibility' => ['required', 'in:visible,restricted,banned'],
+        'userId' => ['sometimes', 'integer', 'exists:user,id'],
+        'emailNotifications' => ['sometimes', 'boolean'],
+        'smsNotifications' => ['sometimes', 'boolean'],
+        'profileVisibility' => ['sometimes', 'in:visible,restricted,banned'],
+        'createdAt' => ['sometimes', 'date'],
+        'updatedAt' => ['sometimes', 'date'],
         ];
     }
 }

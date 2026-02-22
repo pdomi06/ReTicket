@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storeoriginal_ticketsRequest extends FormRequest
+class StorePasswordResetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,11 @@ class Storeoriginal_ticketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'eventId' => ['required', 'integer', 'exists:events,id'],
-        'section' => ['required', 'string'],
-        'row' => ['required', 'string'],
-        'seatNumber' => ['required', 'string'],
-        'price' => ['required', 'integer', 'min:0'],
-        'status' => ['required', 'in:pre-release,active,cancelled,expired'],
-        'ticketPdfUrl' => ['required', 'string', 'url'],
+        'userId' => ['required', 'integer', 'exists:user,id'],
+        'token' => ['required', 'string', 'unique:password_resets,token'],
+        'expiresAt' => ['required', 'date'],
+        'verifiedAt' => ['nullable', 'date'],
         'createdAt' => ['required', 'date'],
-        'updatedAt' => ['required', 'date'],
         ];
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeticket_forsaleRequest;
-use App\Http\Requests\Updateticket_forsaleRequest;
+use App\Http\Requests\StoreTicketForsaleRequest;
+use App\Http\Requests\UpdateTicketForsaleRequest;
 
 class TicketForsaleController extends Controller
 {
@@ -21,7 +21,7 @@ class TicketForsaleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeticket_forsaleRequest $request)
+    public function store(StoreTicketForsaleRequest $request)
     {
         $ticket_forsale = TicketForSale::create(attributes: $request->validated());
         return response()->json($ticket_forsale, 201);
@@ -38,7 +38,7 @@ class TicketForsaleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateticket_forsaleRequest $request, TicketForSale $ticketForSale)
+    public function update(UpdateTicketForsaleRequest $request, TicketForSale $ticketForSale)
     {
         $ticketForSale->update($request->validated());
         return response()->json($ticketForSale, 200);

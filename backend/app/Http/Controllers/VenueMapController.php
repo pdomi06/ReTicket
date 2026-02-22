@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\VenueMap;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storevenue_mapRequest;
-use App\Http\Requests\Updatevenue_mapRequest;
+use App\Http\Requests\StoreVenueMapRequest;
+use App\Http\Requests\UpdateVenueMapRequest;
 
 class VenueMapController extends Controller
 {
@@ -21,7 +21,7 @@ class VenueMapController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storevenue_mapRequest $request)
+    public function store(StoreVenueMapRequest $request)
     {
         $venue_map = VenueMap::create($request->validated());
         return response()->json($venue_map, 201);
@@ -38,7 +38,7 @@ class VenueMapController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updatevenue_mapRequest $request, VenueMap $venue)
+    public function update(UpdateVenueMapRequest $request, VenueMap $venue)
     {
         $venue->update($request->validated());
         return response()->json($venue, 200);

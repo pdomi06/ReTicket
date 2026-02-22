@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\EmailVerify;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeemail_verifyRequest;
-use App\Http\Requests\Updateemail_verifyRequest;
+use App\Http\Requests\StoreEmailVerifyRequest;
+use App\Http\Requests\UpdateEmailVerifyRequest;
 
 class EmailVerifyController extends Controller
 {
@@ -21,7 +21,7 @@ class EmailVerifyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeemail_verifyRequest $request)
+    public function store(StoreEmailVerifyRequest $request)
     {
         $email_verify = EmailVerify::create($request->validated());
         return response()->json($email_verify, 201);
@@ -38,7 +38,7 @@ class EmailVerifyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateemail_verifyRequest $request, EmailVerify $emailVerify)
+    public function update(UpdateEmailVerifyRequest $request, EmailVerify $emailVerify)
     {
         $emailVerify->update($request->validated());
         return response()->json($emailVerify, 200);

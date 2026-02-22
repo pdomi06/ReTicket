@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Updateemail_verifyRequest extends FormRequest
+class StoreEmailVerifyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class Updateemail_verifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'userId' => ['required','exists:user,id'],
+            'token' => ['required','string','unique:email_verifies,token'],
+            'expiresAt' => ['required','date'],
+            'verifiedAt' => ['nullable','date'],
+            'createdAt' => ['required','date'],
         ];
     }
 }

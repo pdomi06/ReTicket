@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreuserRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,14 +22,17 @@ class StoreuserRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:user,email'],
-        'password' => ['required', 'string', 'min:8'],
-        'name' => ['required', 'string', 'max:255'],
-        'phone' => ['required', 'string', 'max:20'],
-        'isVerified' => ['sometimes', 'boolean'],
-        'isActive' => ['sometimes', 'boolean'],
-        'isOnline' => ['sometimes', 'boolean'],
-        'kycStatus' => ['sometimes', 'in:pending,rejected,approved'],
+            'email' => ['required','email','unique:user,email'],
+            'password' => ['required','string','min:8','confirmed'],
+            'name' => ['required','string'],
+            'phone' => ['required','string'],
+            'isVerified' => ['required', 'boolean'],
+            'isActive'   => ['required', 'boolean'],
+            'isOnline'   => ['required', 'boolean'],
+            'kycStatus'  => ['required', 'in:pending,rejected,approved'],
+            'createdAt' => ['required', 'date'],
+            'updatedAt' => ['required', 'date'],
+            'lastLogin' => ['required', 'date'],
         ];
     }
 }

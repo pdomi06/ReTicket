@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Payout;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorepayoutsRequest;
-use App\Http\Requests\UpdatepayoutsRequest;
+use App\Http\Requests\StorePayoutsRequest;
+use App\Http\Requests\UpdatePayoutsRequest;
 
 class PayoutsController extends Controller
 {
@@ -21,7 +21,7 @@ class PayoutsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorepayoutsRequest $request)
+    public function store(StorePayoutsRequest $request)
     {
         $payout = Payout::create($request->validated());
         return response()->json($payout, 201);
@@ -38,7 +38,7 @@ class PayoutsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatepayoutsRequest $request, Payout $payout)
+    public function update(UpdatePayoutsRequest $request, Payout $payout)
     {
         $payout->update($request->validated());
         return response()->json($payout, 200);

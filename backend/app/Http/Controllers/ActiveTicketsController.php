@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ActiveTicket;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeactive_ticketsRequest;
-use App\Http\Requests\Updateactive_ticketsRequest;
+use App\Http\Requests\StoreActiveTicketsRequest;
+use App\Http\Requests\UpdateActiveTicketsRequest;
 
 class ActiveTicketsController extends Controller
 {
@@ -21,7 +21,7 @@ class ActiveTicketsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeactive_ticketsRequest $request)
+    public function store(StoreActiveTicketsRequest $request)
     {
         $active_ticket = ActiveTicket::create($request->validated());
         return response()->json($active_ticket, 201);
@@ -38,7 +38,7 @@ class ActiveTicketsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateactive_ticketsRequest $request, ActiveTicket $activeTicket)
+    public function update(UpdateActiveTicketsRequest $request, ActiveTicket $activeTicket)
     {
         $activeTicket->update($request->validated());
         return response()->json($activeTicket, 200);

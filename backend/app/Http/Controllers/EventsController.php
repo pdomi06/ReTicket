@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreeventsRequest;
-use App\Http\Requests\UpdateeventsRequest;
+use App\Http\Requests\StoreEventsRequest;
+use App\Http\Requests\UpdateEventsRequest;
 
 class EventsController extends Controller
 {
@@ -21,7 +21,7 @@ class EventsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreeventsRequest $request)
+    public function store(StoreEventsRequest $request)
     {
         $event = Event::create($request->validated());
         return response()->json($event, 201);
@@ -38,7 +38,7 @@ class EventsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateeventsRequest $request, Event $event)
+    public function update(UpdateEventsRequest $request, Event $event)
     {
         $event->update($request->validated());
         return response()->json($event, 200);

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Updateticket_forsaleRequest extends FormRequest
+class UpdateActiveTicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,10 +22,8 @@ class Updateticket_forsaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
-        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
-        'price' => ['sometimes', 'numeric', 'min:0'],
-        'inBasket' => ['sometimes', 'boolean'],
+            'originalTicketId' => ['sometimes','exists:original_tickets,id'],
+            'ticketListingId' => ['sometimes','exists:ticket_forsales,id'],
         ];
     }
 }

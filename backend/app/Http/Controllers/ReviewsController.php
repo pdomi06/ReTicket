@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorereviewsRequest;
-use App\Http\Requests\UpdatereviewsRequest;
+use App\Http\Requests\StoreReviewsRequest;
+use App\Http\Requests\UpdateReviewsRequest;
 
 class ReviewsController extends Controller
 {
@@ -21,7 +21,7 @@ class ReviewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorereviewsRequest $request)
+    public function store(StoreReviewsRequest $request)
     {
         $review = Review::create(attributes: $request->validated());
         return response()->json($review, 201);
@@ -38,7 +38,7 @@ class ReviewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatereviewsRequest $request, Review $review)
+    public function update(UpdateReviewsRequest $request, Review $review)
     {
         $review->update($request->validated());
         return response()->json($review, 200);

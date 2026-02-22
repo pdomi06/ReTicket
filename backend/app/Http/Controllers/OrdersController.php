@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreordersRequest;
-use App\Http\Requests\UpdateordersRequest;
+use App\Http\Requests\StoreOrdersRequest;
+use App\Http\Requests\UpdateOrdersRequest;
 
 class OrdersController extends Controller
 {
@@ -21,7 +21,7 @@ class OrdersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreordersRequest $request)
+    public function store(StoreOrdersRequest $request)
     {
         $order = Order::create($request->validated());
         return response()->json($order, 201);
@@ -38,7 +38,7 @@ class OrdersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateordersRequest $request, Order $order)
+    public function update(UpdateOrdersRequest $request, Order $order)
     {
         $order->update($request->validated());
         return response()->json($order, 200);
