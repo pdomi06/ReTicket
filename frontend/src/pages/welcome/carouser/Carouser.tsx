@@ -1,4 +1,4 @@
-import mockPicture from '../../../../public/img/mock/music_genre.png';
+const mockPicture = '/img/mock/music_genre.png';
 
 import style from './Carouser.module.css';
 

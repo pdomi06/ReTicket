@@ -1,17 +1,18 @@
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+//import { useSearchParams } from "react-router-dom";
 import type { IEvent } from "../../utils/interfaces";
 import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
 import Sidebar from "./sidebar/Sidebar";
 
 const Search = () => {
-    const [searchParams] = useSearchParams();
-    const event = searchParams.get("event");
-    const venue = searchParams.get("venue");
-    const date = searchParams.get("date");
-    const maxPrice = searchParams.get("maxPrice");
+    // TODO: Implement search functionality using URL query parameters
+    //const [searchParams] = useSearchParams();
+    //const event = searchParams.get("event");
+    //const venue = searchParams.get("venue");
+    //const date = searchParams.get("date");
+    //const maxPrice = searchParams.get("maxPrice");
 
     const [events, setEvents] = useState<IEvent[]>([]);
 
@@ -27,7 +28,7 @@ const Search = () => {
         });
     }, []);
     return (
-        <main className="row container-fluid">
+        <main className="row container m-0 p-0">
             <div className={`${"sidebar"} col-lg-3`}>
                 <Sidebar />
             </div>

@@ -1,9 +1,10 @@
 import { Link } from 'react-router';
-import logo from '../../../../public/img/logo/logo_transparrent_white.svg';
 import Input from '../../ui/input/Input';
 import Textarea from '../../ui/textarea/Textarea';
 import styles from './footer.module.css';
 import Button from '../../ui/button/Button';
+
+const logo = '/img/logo/logo_transparrent_white.svg';
 
 const Footer = () => {
 

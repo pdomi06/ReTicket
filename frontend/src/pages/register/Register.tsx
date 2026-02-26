@@ -2,7 +2,8 @@ import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Register.module.css'
 import Button from "../../components/ui/button/Button";
-import logo from '../../../../public/img/logo_transparrent_white.svg';
+
+const logo = '/img/logo/logo_transparrent_white.svg';
 
 const Register = () => {
     return (

@@ -16,7 +16,7 @@ const SearchBar = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const query = new URLSearchParams(formData).toString();
-        navigate(`/search?${query}`);
+        navigate(`/browse?${query}`);
     };
 
     return (
