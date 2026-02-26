@@ -208,6 +208,16 @@ export interface ButtonProps {
     'aria-label'?: string;
 }
 
+export interface SelectProps {
+  label: string;
+  name?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  children?: React.ReactNode;
+  theme?: 'light' | 'dark';
+  size?: 'small' | 'medium' | 'large';
+}
+
 export interface CardProps {
     title: string;
     description: string;

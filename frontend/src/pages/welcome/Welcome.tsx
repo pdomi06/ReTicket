@@ -6,7 +6,7 @@ import Features from './features/Features.tsx';
 import SearchBar from './searchbar/Searchbar.tsx';
 import Carosuser from './carouser/Carouser.tsx';
 
-import mockPicture from '../../../public/img/mock/music_genre.png';
+const mockPicture = '/img/mock/music_genre.png';
 
 const Welcome = () => {
     return (
