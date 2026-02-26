@@ -50,7 +50,7 @@ const Browse = () => {
     }, []);
     return (
         <main className="row container m-0 p-0">
-            <div className={`${"sidebar"} col-lg-3`}>
+            <div className="sidebar col-lg-3">
                 <Sidebar />
             </div>
             <div className="col-lg-9">
