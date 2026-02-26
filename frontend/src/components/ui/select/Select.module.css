@@ -6,18 +6,18 @@
     background-color: var(--color-secondary);
 }
 
-.dark select {
+.dark {
     background-color: var(--color-main);
 }
-.light select {
+.light {
     background-color: var(--color-secondary);
 }
-.size-small select {
+.size-small {
     padding: 10px 8px 4px;
 }
-.size-medium select {
+.size-medium {
     padding: 14px 12px 6px;
 }
-.size-large select {
+.size-large {
     padding: 18px 16px 8px;
 }
