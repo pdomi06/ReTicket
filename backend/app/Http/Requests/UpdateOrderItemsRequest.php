@@ -23,7 +23,7 @@ class UpdateOrderItemsRequest extends FormRequest
     {
         return [
             'orderId' => ['sometimes','integer','exists:orders,id'],
-            'ticketListingId' => ['sometimes','exists:ticket_forsale,id'],
+            'ticketListingId' => ['sometimes', 'integer', 'exists:ticket_forsale,id'],
             'price' => ['sometimes','numeric','min:0'],
         ];
     }
