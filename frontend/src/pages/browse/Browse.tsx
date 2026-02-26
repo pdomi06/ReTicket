@@ -40,7 +40,7 @@ const Search = () => {
                         events.length > 0 ? (
                             <Cards maximumcols={3}>
                                 {events.map((event) => (
-                                    <Card title={event.name} description={event.description} buttonText="View Details" link={`/event?name=${event.name}`}/>
+                                    <Card key={event.id} title={event.name} description={event.description} buttonText="View Details" link={`/event?name=${event.name}`}/>
                                 ))}
                             </Cards>
                         ) : (
