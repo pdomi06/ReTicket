@@ -5,10 +5,11 @@ import { Analytics } from "@vercel/analytics/react";
 
 export default function App() {
   return (
+    <>
+      <Analytics />
       <Suspense fallback={<div>Loading...</div>}>
         {useRoutes(routes)}
-        <Analytics />
       </Suspense>
-    
+    </>
   );
 }
