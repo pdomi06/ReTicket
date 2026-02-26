@@ -6,7 +6,7 @@ import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
 import Sidebar from "./sidebar/Sidebar";
 
-const Search = () => {
+const Browse = () => {
     // TODO: Implement search functionality using URL query parameters
     //const [searchParams] = useSearchParams();
     //const event = searchParams.get("event");
@@ -76,4 +76,4 @@ const Search = () => {
     );
 }
 
-export default Search;
+export default Browse;
