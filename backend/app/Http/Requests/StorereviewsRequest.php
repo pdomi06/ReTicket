@@ -24,7 +24,7 @@ class StoreReviewsRequest extends FormRequest
         return [
         'orderItemId' => ['required', 'integer', 'exists:order_items,id'],
         'reviewerName' => ['required', 'string', 'max:255'],
-        'reviewerUserId'=> ['required', 'integer', 'exists:user,id'],
+        'reviewedUserId'=> ['required', 'integer', 'exists:user,id'],
         'rating' => ['required', 'integer', 'min:1', 'max:5'],
         'title' => ['required', 'string', 'max:255'],
         'comment' => ['required', 'string'],
