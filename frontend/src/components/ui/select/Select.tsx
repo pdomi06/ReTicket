@@ -13,7 +13,11 @@ const Select: React.FC<SelectProps> = ({
     return (
         <div>
             <select
-                className={style['form-select'] + (theme ? ` ${theme}` : '') + (size ? ` size-${size}` : '')}
+                className={
+                    style['form-select'] +
+                    (theme && style[theme] ? ` ${style[theme]}` : '') +
+                    (size && style[`size-${size}`] ? ` ${style[`size-${size}`]}` : '')
+                }
                 aria-label={label}
                 name={name}
                 value={value}
