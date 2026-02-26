@@ -50,12 +50,12 @@ const Sidebar = () => {
                 <Input label="Country" name="country" theme="light" size="large" value={searchForm.country} onChange={handleChange} />
                 <Input type="date" label="Event Date" name="eventDate" theme="light" size="large" value={searchForm.eventDate} onChange={handleChange} />
                 <Input type="date" label="Event End Date" name="eventEndDate" theme="light" size="large" value={searchForm.eventEndDate} onChange={handleChange} />
-                <Select label="Category" name="category" theme="light" size="large"> 
-                    <option value="">Select Category</option>
-                    <option value="concert">Concert</option>
-                    <option value="sports">Sports</option>
-                    <option value="theater">Theater</option>
-                    <option value="comedy">Comedy</option>
+                <Select label="Category" name="category" theme="light" size="large" value={searchForm.category} onChange={handleChange}> 
+                    <option value="" disabled>Select Category</option>
+                    <option value="">None</option>
+                    <option value="cultural">Cultural</option>
+                    <option value="music">Music</option>
+                    <option value="sport">Sport</option>
                 </Select>
                 <Button type="submit" text="Search Events" />
             </form>
