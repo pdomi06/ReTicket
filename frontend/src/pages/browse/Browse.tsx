@@ -15,17 +15,38 @@ const Search = () => {
     //const maxPrice = searchParams.get("maxPrice");
 
     const [events, setEvents] = useState<IEvent[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     async function getEvents() {
-        const response = await fetch(`http://127.0.0.1:8000/api/events`);
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${apiBaseUrl}/events`);
+        const contentType = response.headers.get('content-type') || '';
+
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        if (!contentType.includes('application/json')) {
+            throw new Error('API did not return JSON. Check your API base URL and backend server.');
+        }
+
         const data = await response.json();
-        return data;
+        return data as IEvent[];
     }
 
     useEffect(() => {
-        getEvents().then((data) => {
-            setEvents(data);
-        });
+        getEvents()
+            .then((data) => {
+                setEvents(data);
+            })
+            .catch((err: unknown) => {
+                const message = err instanceof Error ? err.message : 'Failed to load events';
+                setError(message);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, []);
     return (
         <main className="row container m-0 p-0">
@@ -34,8 +55,10 @@ const Search = () => {
             </div>
             <div className="col-lg-9">
                 <div className="container my-5">
-                    {events.length === 0 ? (
+                    {isLoading ? (
                         <p>Loading...</p>
+                    ) : error ? (
+                        <p>{error}</p>
                     ) : (
                         events.length > 0 ? (
                             <Cards maximumcols={3}>
