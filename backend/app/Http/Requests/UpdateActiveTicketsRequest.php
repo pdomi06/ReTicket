@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storevenue_mapRequest extends FormRequest
+class UpdateActiveTicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,6 +22,8 @@ class Storevenue_mapRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'originalTicketId' => ['sometimes','exists:original_tickets,id'],
+            'ticketListingId' => ['sometimes','exists:ticket_forsale,id'],
         ];
     }
 }

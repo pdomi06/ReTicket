@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storeuser_settingsRequest extends FormRequest
+class UpdateVenueMapRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class Storeuser_settingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'venue' => ['sometimes', 'string', 'max:255'],
+        'section' => ['sometimes', 'string', 'max:255'],
+        'row' => ['sometimes', 'string', 'max:50'],
+        'seat' => ['sometimes', 'string', 'max:50'],
+        'rate' => ['sometimes', 'numeric', 'min:1', 'max:5'],
         ];
     }
 }

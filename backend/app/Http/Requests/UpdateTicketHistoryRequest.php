@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreReviewsRequest extends FormRequest
+class UpdateTicketHistoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,12 @@ class StoreReviewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'orderItemId' => ['required', 'integer', 'exists:order_items,id'],
-        'reviewerName' => ['required', 'string', 'max:255'],
-        'reviewedUserId'=> ['required', 'integer', 'exists:user,id'],
-        'rating' => ['required', 'integer', 'min:1', 'max:5'],
-        'title' => ['required', 'string', 'max:255'],
-        'comment' => ['required', 'string'],
-        'isVisible' => ['required', 'boolean'],
+        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
+        'ticketListingId' => ['sometimes', 'integer', 'exists:ticket_forsale,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'toUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'price' => ['sometimes', 'numeric', 'min:0'],
+        'platformFee' => ['sometimes', 'numeric', 'min:0'],
         ];
     }
 }

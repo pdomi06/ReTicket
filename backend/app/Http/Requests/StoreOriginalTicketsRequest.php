@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Updateoriginal_ticketsRequest extends FormRequest
+class StoreOriginalTicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class Updateoriginal_ticketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'eventId' => ['required', 'integer', 'exists:events,id'],
+        'section' => ['required', 'string'],
+        'row' => ['required', 'string'],
+        'seatNumber' => ['required', 'string'],
+        'price' => ['required', 'integer', 'min:0'],
+        'status' => ['required', 'in:pre-release,active,cancelled,expired'],
+        'ticketPdfUrl' => ['required', 'string', 'url'],
         ];
     }
 }

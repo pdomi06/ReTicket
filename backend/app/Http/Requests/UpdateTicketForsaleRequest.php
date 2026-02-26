@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class Storeemail_verifyRequest extends FormRequest
+class UpdateTicketForsaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,10 @@ class Storeemail_verifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'price' => ['sometimes', 'numeric', 'min:0'],
+        'inBasket' => ['sometimes', 'boolean'],
         ];
     }
 }

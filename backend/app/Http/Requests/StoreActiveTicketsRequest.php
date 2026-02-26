@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storepassword_resetRequest extends FormRequest
+class StoreActiveTicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class Storepassword_resetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'originalTicketId' => ['required','exists:original_tickets,id'],
+            'ticketListingId' => ['required','exists:ticket_forsale,id'],
         ];
     }
 }

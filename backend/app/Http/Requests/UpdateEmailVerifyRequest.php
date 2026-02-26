@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Updateticket_historyRequest extends FormRequest
+class UpdateEmailVerifyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class Updateticket_historyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'userId' => ['sometimes','exists:user,id'],
+            'token' => ['sometimes','string','unique:email_verifies,token'],
         ];
     }
 }

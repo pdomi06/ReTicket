@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storeticket_historyRequest extends FormRequest
+class StoreOrderItemsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class Storeticket_historyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'orderId' => ['required','integer','exists:orders,id'],
+            'ticketListingId' => ['required','exists:ticket_forsale,id'],
+            'price' => ['required','numeric','min:0'],
         ];
     }
 }

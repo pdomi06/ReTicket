@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storeoriginal_ticketsRequest extends FormRequest
+class StoreTicketHistoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,12 @@ class Storeoriginal_ticketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'originalTicketId' => ['required', 'integer', 'exists:original_tickets,id'],
+        'ticketListingId' => ['required', 'integer', 'exists:ticket_forsale,id'],
+        'fromUserId' => ['required', 'integer', 'exists:user,id'],
+        'toUserId' => ['required', 'integer', 'exists:user,id'],
+        'price' => ['required', 'numeric', 'min:0'],
+        'platformFee' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatepayoutsRequest extends FormRequest
+class UpdatePayoutsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class UpdatepayoutsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'vendorId' => ['sometimes', 'integer', 'exists:user,id'],
+        'orderItemId' => ['sometimes', 'integer', 'exists:order_item,id'],
+        'status' => ['sometimes', 'in:created,pending,cancelled,fulfilled'],
+        'bank' => ['sometimes', 'string'],
+        'iban' => ['sometimes', 'string'],
+        'paidAt' => ['sometimes', 'nullable', 'date'],
         ];
     }
 }

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Storeticket_forsaleRequest extends FormRequest
+class UpdateOriginalTicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class Storeticket_forsaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'section' => ['sometimes', 'string'],
+            'row' => ['sometimes', 'string'],
+            'seatNumber' => [ 'sometimes', 'string'],
+            'price' => ['sometimes', 'integer', 'min:0'],
+            'status' => ['sometimes', 'in:pre-release,active,cancelled,expired'],
         ];
     }
 }

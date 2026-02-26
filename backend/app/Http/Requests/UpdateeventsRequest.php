@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateeventsRequest extends FormRequest
+class UpdateEventsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class UpdateeventsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['sometimes','string'],
+            'description' => ['sometimes','string'],
+            'venue' => ['sometimes','string'],
+            'address' => ['sometimes','string'],
+            'city' => ['sometimes','string'],
+            'state' => ['sometimes','string'],
+            'country' => ['sometimes','string'],
+            'eventDate' => ['sometimes','date'],
+            'eventEndDate' => ['sometimes','date','after_or_equal:eventDate'],
+            'category' => ['sometimes','in:cultural,music,sport'],
+            'imageUrl' => ['sometimes','url'],
         ];
     }
 }

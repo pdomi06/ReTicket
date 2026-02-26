@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use Illuminate\Auth\Access\Response;
-use App\Models\venue_map;
+use App\Models\VenueMap;
 use App\Models\User;
 
 class VenueMapPolicy
@@ -19,7 +19,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, venue_map $venueMap): bool
+    public function view(User $user, VenueMap $venueMap): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, venue_map $venueMap): bool
+    public function update(User $user, VenueMap $venueMap): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, venue_map $venueMap): bool
+    public function delete(User $user, VenueMap $venueMap): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, venue_map $venueMap): bool
+    public function restore(User $user, VenueMap $venueMap): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, venue_map $venueMap): bool
+    public function forceDelete(User $user, VenueMap $venueMap): bool
     {
         return false;
     }

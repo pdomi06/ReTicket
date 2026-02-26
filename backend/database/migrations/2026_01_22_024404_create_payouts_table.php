@@ -20,10 +20,10 @@ return new class extends Migration
             $table->bigInteger('orderItemId');
             $table->foreign('orderItemId')->references('id')->on('order_item');
             $table->enum('status', ["created", "pending", "cancelled", "fulfilled"]);
-            $table->bigInteger('bank');
-            $table->bigInteger('iban');
-            $table->bigInteger('paidAt');
-            $table->bigInteger('createdAt');
+            $table->text('bank');
+            $table->text('iban');
+            $table->date('paidAt');
+            $table->date('createdAt');
         });
 
         Schema::enableForeignKeyConstraints();

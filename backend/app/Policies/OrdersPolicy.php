@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\orders;
+use App\Models\Order;
 use Illuminate\Auth\Access\Response;
 
 class OrdersPolicy
@@ -19,7 +19,7 @@ class OrdersPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, orders $orders): bool
+    public function view(User $user, Order $orders): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class OrdersPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, orders $orders): bool
+    public function update(User $user, Order $orders): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class OrdersPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, orders $orders): bool
+    public function delete(User $user, Order $orders): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class OrdersPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, orders $orders): bool
+    public function restore(User $user, Order $orders): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class OrdersPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, orders $orders): bool
+    public function forceDelete(User $user, Order $orders): bool
     {
         return false;
     }

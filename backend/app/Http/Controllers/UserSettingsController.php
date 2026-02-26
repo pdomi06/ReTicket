@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UserSetting;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeuser_settingsRequest;
-use App\Http\Requests\Updateuser_settingsRequest;
+use App\Http\Requests\StoreUserSettingsRequest;
+use App\Http\Requests\UpdateUserSettingsRequest;
 
 class UserSettingsController extends Controller
 {
@@ -21,9 +21,9 @@ class UserSettingsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeuser_settingsRequest $request)
+    public function store(StoreUserSettingsRequest $request)
     {
-        $user_setting = UserSetting::create($request->all());
+        $user_setting = UserSetting::create($request->validated());
         return response()->json($user_setting, 201);
     }
 
@@ -38,9 +38,9 @@ class UserSettingsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateuser_settingsRequest $request, UserSetting $userSetting)
+    public function update(UpdateUserSettingsRequest $request, UserSetting $userSetting)
     {
-        $userSetting->update($request->all());
+        $userSetting->update($request->validated());
         return response()->json($userSetting, 200);
     }
 

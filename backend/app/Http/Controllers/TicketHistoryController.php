@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Storeticket_historyRequest;
-use App\Http\Requests\Updateticket_historyRequest;
+use App\Http\Requests\StoreTicketHistoryRequest;
+use App\Http\Requests\UpdateTicketHistoryRequest;
 
 class TicketHistoryController extends Controller
 {
@@ -21,9 +21,9 @@ class TicketHistoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeticket_historyRequest $request)
+    public function store(StoreTicketHistoryRequest $request)
     {
-        $ticket_history = TicketHistory::create($request->all());
+        $ticket_history = TicketHistory::create($request->validated());
         return response()->json($ticket_history, 201);
     }
 
@@ -38,9 +38,9 @@ class TicketHistoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateticket_historyRequest $request, TicketHistory $ticketHistory)
+    public function update(UpdateTicketHistoryRequest $request, TicketHistory $ticketHistory)
     {
-        $ticketHistory->update($request->all());
+        $ticketHistory->update($request->validated());
         return response()->json($ticketHistory, 200);
     }
 

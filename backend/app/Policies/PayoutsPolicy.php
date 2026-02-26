@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\payouts;
+use App\Models\Payout;
 use Illuminate\Auth\Access\Response;
 
 class PayoutsPolicy
@@ -19,7 +19,7 @@ class PayoutsPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, payouts $payouts): bool
+    public function view(User $user, Payout $payouts): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class PayoutsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, payouts $payouts): bool
+    public function update(User $user, Payout $payouts): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class PayoutsPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, payouts $payouts): bool
+    public function delete(User $user, Payout $payouts): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class PayoutsPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, payouts $payouts): bool
+    public function restore(User $user, Payout $payouts): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class PayoutsPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, payouts $payouts): bool
+    public function forceDelete(User $user, Payout $payouts): bool
     {
         return false;
     }
