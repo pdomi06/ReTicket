@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
 import LoginButton from "../../components/ui/loginButton/loginButton";
-import logo from '../../../../public/img/logo_transparrent_white.svg';
+import logo from '../../../public/img/logo/logo_transparrent_white.svg';
 
 const Login = () => {
   return (
