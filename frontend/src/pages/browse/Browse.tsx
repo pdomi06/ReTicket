@@ -27,19 +27,19 @@ const Search = () => {
         });
     }, []);
     return (
-        <main className="row">
-            <div className={`${"sidebar"} col-md-3`}>
+        <main className="row container-fluid">
+            <div className={`${"sidebar"} col-lg-3`}>
                 <Sidebar />
             </div>
-            <div className="col-md-9">
-                <div className="container-fluid my-5">
+            <div className="col-lg-9">
+                <div className="container my-5">
                     {events.length === 0 ? (
                         <p>Loading...</p>
                     ) : (
                         events.length > 0 ? (
                             <Cards maximumcols={3}>
                                 {events.map((event) => (
-                                    <Card title={event.name} description={event.description} buttonText="View Details" />
+                                    <Card title={event.name} description={event.description} buttonText="View Details" link={`/event?name=${event.name}`}/>
                                 ))}
                             </Cards>
                         ) : (

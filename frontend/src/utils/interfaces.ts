@@ -210,7 +210,10 @@ export interface ButtonProps {
 
 export interface SelectProps {
     label: string;
-    child?: React.ReactNode;
+  name?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  children?: React.ReactNode;
     theme?: 'light' | 'dark';
     size?: 'small' | 'medium' | 'large';
 }
