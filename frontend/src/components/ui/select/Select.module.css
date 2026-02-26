@@ -1,0 +1,23 @@
+.form-select {
+    width: 100%;
+    padding: 18px 16px 8px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background-color: var(--color-secondary);
+}
+
+.dark select {
+    background-color: var(--color-main);
+}
+.light select {
+    background-color: var(--color-secondary);
+}
+.size-small select {
+    padding: 10px 8px 4px;
+}
+.size-medium select {
+    padding: 14px 12px 6px;
+}
+.size-large select {
+    padding: 18px 16px 8px;
+}

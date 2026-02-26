@@ -7,7 +7,7 @@ const SearchBar = () => {
     return (
         <div className={`${style.searchbar} justify-content-center my-4`}>
             <hr />
-            <form action="/search" method="GET">
+            <form action="/browse" method="GET">
                 <div className="row g-3 mx-2">
                     <div className={`${style['searchbar-input']} col`}>
                         <Input label="Event or artist name..." name="event" theme="light" size="large" onChange={() => { }} />

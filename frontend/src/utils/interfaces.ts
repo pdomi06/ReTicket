@@ -208,6 +208,13 @@ export interface ButtonProps {
     'aria-label'?: string;
 }
 
+export interface SelectProps {
+    label: string;
+    child?: React.ReactNode;
+    theme?: 'light' | 'dark';
+    size?: 'small' | 'medium' | 'large';
+}
+
 export interface CardProps {
     title: string;
     description: string;
