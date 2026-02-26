@@ -35,8 +35,6 @@ class StoreOrdersRequest extends FormRequest
         'deliveredAt' => ['nullable', 'date'],
         'completedAt' => ['nullable', 'date'],
         'cancelledAt' => ['nullable', 'date'],
-        'createdAt' => ['sometimes', 'date'],
-        'updatedAt' => ['sometimes', 'date'],
         ];
     }
 }

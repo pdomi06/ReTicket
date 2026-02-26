@@ -29,8 +29,6 @@ class StoreReviewsRequest extends FormRequest
         'title' => ['required', 'string', 'max:255'],
         'comment' => ['required', 'string'],
         'isVisible' => ['required', 'boolean'],
-        'createdAt' => ['required', 'date'],
-        'updatedAt' => ['required', 'date'],
         ];
     }
 }

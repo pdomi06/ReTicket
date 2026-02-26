@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateReviewsRequest extends FormRequest
 {
@@ -22,15 +23,13 @@ class UpdateReviewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'orderItemId' => ['sometimes', 'integer', 'exists:order_items,id'],
+        'orderItemId' => ['sometimes', 'integer', 'exists:order_items,id', Rule::unique('reviews')->ignore($this->route('review'))],
         'reviewerName' => ['sometimes', 'string', 'max:255'],
         'reviewerUserId'=> ['sometimes', 'integer', 'exists:user,id'],
         'rating' => ['sometimes', 'integer', 'min:1', 'max:5'],
         'title' => ['sometimes', 'string', 'max:255'],
         'comment' => ['sometimes', 'string'],
         'isVisible' => ['sometimes', 'boolean'],
-        'createdAt' => ['sometimes', 'date'],
-        'updatedAt' => ['sometimes', 'date'],
         ];
     }
 }

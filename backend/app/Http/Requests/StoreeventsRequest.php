@@ -33,8 +33,6 @@ class StoreEventsRequest extends FormRequest
             'eventEndDate' => ['required','date','after_or_equal:eventDate'],
             'category' => ['required','in:cultural,music,sport'],
             'imageUrl' => ['required','url'],
-            'createdAt' => ['required','date'],
-            'updatedAt' => ['required','date'],
         ];
     }
 }

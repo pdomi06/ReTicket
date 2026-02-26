@@ -24,9 +24,6 @@ class StoreEmailVerifyRequest extends FormRequest
         return [
             'userId' => ['required','exists:user,id'],
             'token' => ['required','string','unique:email_verifies,token'],
-            'expiresAt' => ['required','date'],
-            'verifiedAt' => ['nullable','date'],
-            'createdAt' => ['required','date'],
         ];
     }
 }

@@ -26,8 +26,6 @@ class StoreUserSettingsRequest extends FormRequest
             'emailNotifications' => ['required', 'boolean'],
             'smsNotifications' => ['required', 'boolean'],
             'profileVisibility' => ['required', 'in:visible,restricted,banned'],
-            'createdAt' => ['required', 'date'],
-            'updatedAt' => ['required', 'date'],
         ];
     }
 }

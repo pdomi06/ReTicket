@@ -23,7 +23,7 @@ class StoreActiveTicketsRequest extends FormRequest
     {
         return [
             'originalTicketId' => ['required','exists:original_tickets,id'],
-            'ticketListingId' => ['required','exists:ticket_forsales,id'],
+            'ticketListingId' => ['required','exists:ticket_forsale,id'],
         ];
     }
 }

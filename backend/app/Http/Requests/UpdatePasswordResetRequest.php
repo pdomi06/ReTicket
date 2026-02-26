@@ -26,7 +26,6 @@ class UpdatePasswordResetRequest extends FormRequest
             'token' => ['required', 'string'],
             'expiresAt' => ['required', 'date'],
             'verifiedAt' => ['required', 'date'],
-            'createdAt' => ['required', 'date'],
         ];
     }
 }

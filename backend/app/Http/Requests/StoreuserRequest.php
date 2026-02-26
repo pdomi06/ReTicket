@@ -30,9 +30,6 @@ class StoreUserRequest extends FormRequest
             'isActive'   => ['required', 'boolean'],
             'isOnline'   => ['required', 'boolean'],
             'kycStatus'  => ['required', 'in:pending,rejected,approved'],
-            'createdAt' => ['required', 'date'],
-            'updatedAt' => ['required', 'date'],
-            'lastLogin' => ['required', 'date'],
         ];
     }
 }

@@ -24,9 +24,6 @@ class UpdateEmailVerifyRequest extends FormRequest
         return [
             'userId' => ['sometimes','exists:user,id'],
             'token' => ['sometimes','string','unique:email_verifies,token'],
-            'expiresAt' => ['sometimes','date'],
-            'verifiedAt' => ['nullable','date'],
-            'createdAt' => ['sometimes','date'],
         ];
     }
 }

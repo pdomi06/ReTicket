@@ -28,7 +28,6 @@ class StorePayoutsRequest extends FormRequest
         'bank' => ['required', 'string'],
         'iban' => ['required', 'string'],
         'paidAt' => ['required', 'date'],
-        'createdAt' => ['required', 'date'],
         ];
     }
 }

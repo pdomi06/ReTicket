@@ -29,8 +29,6 @@ class StoreOriginalTicketsRequest extends FormRequest
         'price' => ['required', 'integer', 'min:0'],
         'status' => ['required', 'in:pre-release,active,cancelled,expired'],
         'ticketPdfUrl' => ['required', 'string', 'url'],
-        'createdAt' => ['required', 'date'],
-        'updatedAt' => ['required', 'date'],
         ];
     }
 }

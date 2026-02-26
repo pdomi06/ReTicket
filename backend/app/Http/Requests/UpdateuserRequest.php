@@ -30,8 +30,6 @@ class UpdateUserRequest extends FormRequest
             'isActive'   => ['sometimes', 'boolean'],
             'isOnline'   => ['sometimes', 'boolean'],
             'kycStatus'  => ['sometimes', 'in:pending,rejected,approved'],
-            'createdAt' => ['sometimes', 'date'],
-            'updatedAt' => ['sometimes', 'date'],
             'lastLogin' => ['sometimes', 'date'],
         ];
     }

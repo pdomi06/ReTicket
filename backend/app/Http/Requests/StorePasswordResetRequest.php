@@ -22,11 +22,10 @@ class StorePasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'userId' => ['required', 'integer', 'exists:user,id'],
-        'token' => ['required', 'string', 'unique:password_resets,token'],
+        'userId' => ['required', 'exists:users,id'],
+        'token' => ['required', 'string'],
         'expiresAt' => ['required', 'date'],
-        'verifiedAt' => ['nullable', 'date'],
-        'createdAt' => ['required', 'date'],
+        'verifiedAt'=> ['nullable', 'date'],
         ];
     }
 }

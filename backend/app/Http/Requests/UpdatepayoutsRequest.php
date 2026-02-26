@@ -27,8 +27,7 @@ class UpdatePayoutsRequest extends FormRequest
         'status' => ['sometimes', 'in:created,pending,cancelled,fulfilled'],
         'bank' => ['sometimes', 'string'],
         'iban' => ['sometimes', 'string'],
-        'paidAt' => ['sometimes', 'date'],
-        'createdAt' => ['sometimes', 'date'],
+        'paidAt' => ['sometimes', 'nullable', 'date'],
         ];
     }
 }

@@ -33,8 +33,6 @@ class UpdateEventsRequest extends FormRequest
             'eventEndDate' => ['sometimes','date','after_or_equal:eventDate'],
             'category' => ['sometimes','in:cultural,music,sport'],
             'imageUrl' => ['sometimes','url'],
-            'createdAt' => ['sometimes','date'],
-            'updatedAt' => ['sometimes','date'],
         ];
     }
 }
