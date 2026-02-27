@@ -31,26 +31,27 @@ class Event extends Model
         return $this->hasMany(OriginalTicket::class, 'eventId');
     }
 
-    public function search($query, array $filters) {
-        return $query
-        ->when($filters['event'] ?? null, fn ($q, $value) =>
+    public function scopeSearch($query, array $filters) {
+    return $query
+        ->when($filters['event'] ?? null, fn($q, $value) =>
             $q->where('name', 'like', '%' . $value . '%')
         )
-        ->when($filters['venue'] ?? null, fn ($q, $value) =>
+        ->when($filters['venue'] ?? null, fn($q, $value) =>
             $q->where('venue', 'like', '%' . $value . '%')
         )
-        ->when($filters['city'] ?? null, fn ($q, $value) =>
+        ->when($filters['city'] ?? null, fn($q, $value) =>
             $q->where('city', 'like', '%' . $value . '%')
         )
-        ->when($filters['date'] ?? null, fn ($q, $value) =>
+        ->when($filters['date'] ?? null, fn($q, $value) =>
             $q->whereDate('eventDate', '=', $value)
-        ->when($filters['category'] ?? null, fn ($q, $value) =>
-            $q->where('category', $value)
-        ->when($filters['maxPrice'] ?? null, fn ($q, $value) =>
-            $q->whereHas('originalTickets', function ($q) use ($value) {
-                $q->where('price', '<=', $value);
-            }))
         )
+        ->when($filters['category'] ?? null, fn($q, $value) =>
+            $q->where('category', $value)
+        )
+        ->when($filters['maxPrice'] ?? null, fn($q, $value) =>
+            $q->whereHas('originalTickets', fn($q) =>
+                $q->where('price', '<=', $value)
+            )
         );
     }
     const CREATED_AT = 'createdAt';
