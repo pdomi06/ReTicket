@@ -159,7 +159,7 @@ export interface IReview {
 }
 
 export interface IVenueMap {
-  id: number;
+  id?: number;
   venue: string;
   section: string;
   row: string;
@@ -170,7 +170,7 @@ export interface IVenueMap {
 // Components
 
 export interface ISceneryMap {
-    name: string;
+    venue: string;
     width: number;
     height: number;
     rate: number;
@@ -230,26 +230,4 @@ export interface CardProps {
 export interface IEventContext {
   event: IEvent | undefined,
   getEvent: (id: string) => Promise<boolean>
-}
-
-export const defaultIEvent: IEvent = {
-  id: 0,
-  name: '',
-  description: '',
-  venue: '',
-  address: '',
-  city: '',
-  state: '',
-  country: '',
-  eventDate: '',
-  eventEndDate: '',
-  category: 'music' as const,
-  imageUrl: '',
-  createdAt: '',
-  updatedAt: ''
-}
-
-export const defaultIEventContext: IEventContext = {
-  event: defaultIEvent,
-  getEvent: async () => false
 }
