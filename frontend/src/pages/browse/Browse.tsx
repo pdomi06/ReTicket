@@ -63,7 +63,7 @@ const Browse = () => {
                         events.length > 0 ? (
                             <Cards maximumcols={3}>
                                 {events.map((event) => (
-                                    <Card key={event.id} title={event.name} description={event.description} buttonText="View Details" link={`/browse?event=${encodeURIComponent(event.name)}`}/>
+                                    <Card key={event.id} title={event.name} description={event.description} buttonText="View Details" link={`/event?event=${event.id}`} imageUrl={event.imageUrl}/>
                                 ))}
                             </Cards>
                         ) : (

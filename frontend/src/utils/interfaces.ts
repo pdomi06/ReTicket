@@ -1,6 +1,6 @@
 import {
+  EventCategory,
   type KycStatus,
-  type EventCategory,
   type TicketStatus,
   type OrderStatus,
   type PaymentStatus,
@@ -64,7 +64,7 @@ export interface IEvent {
   country: string;
   eventDate: string;
   eventEndDate: string;
-  category: typeof EventCategory;
+  category: typeof EventCategory[keyof typeof EventCategory];
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -227,3 +227,29 @@ export interface CardProps {
     onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
+export interface IEventContext {
+  event: IEvent | undefined,
+  getEvent: (id: string) => Promise<boolean>
+}
+
+export const defaultIEvent: IEvent = {
+  id: 0,
+  name: '',
+  description: '',
+  venue: '',
+  address: '',
+  city: '',
+  state: '',
+  country: '',
+  eventDate: '',
+  eventEndDate: '',
+  category: 'music' as const,
+  imageUrl: '',
+  createdAt: '',
+  updatedAt: ''
+}
+
+export const defaultIEventContext: IEventContext = {
+  event: defaultIEvent,
+  getEvent: async () => false
+}

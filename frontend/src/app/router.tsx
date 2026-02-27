@@ -11,6 +11,8 @@ const Profile = lazy(() => import("../pages/profile/Profile.tsx"));
 const NotFound = lazy(() => import("../pages/notfound/NotFound.tsx"));
 const Welcome = lazy(() => import("../pages/welcome/Welcome.tsx"));
 const Browse = lazy(() => import("../pages/browse/Browse.tsx"));
+const Event = lazy(() => import("../pages/event/Event.tsx"));
+
 
 export const routes: RouteObject[] = [
   {
@@ -24,6 +26,7 @@ export const routes: RouteObject[] = [
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <Profile /> },
       { path: "/browse", element: <Browse /> },
+      { path: "/event", element: <Event/>},
       { path: "*", element: <NotFound /> },
     ],
   },
