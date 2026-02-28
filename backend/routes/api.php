@@ -24,7 +24,7 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource("activeTickets", ActiveTicketsController::class);
 Route::apiResource("emailVerify", EmailVerifyController::class);
-Route::get('/events/search', [EventsController::class, 'search']);
+Route::get("events/search", [EventsController::class, "search"]);
 Route::apiResource("events", EventsController::class);
 Route::apiResource("orderItems", OrderItemsController::class);
 Route::apiResource("orders", OrdersController::class);
