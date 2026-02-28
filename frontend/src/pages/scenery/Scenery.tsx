@@ -69,7 +69,7 @@ const Scenery = () => {
         const parsedCols = Number(sceneryParams.cols);
         const isValidRows = Number.isInteger(parsedRows) && parsedRows >= 1;
         const isValidCols = Number.isInteger(parsedCols) && parsedCols >= 1;
-        const isValidRate = Number.isFinite(sceneryParams.rate) && sceneryParams.rate > 0;
+        const isValidRate = Number.isFinite(sceneryParams.rate) && sceneryParams.rate >= 1 && sceneryParams.rate <= 5;
         if (sceneryParams.venue && sceneryParams.section && isValidRows && isValidCols && isValidRate) {
             try {
                 const newVenue: IVenueMap = {
