@@ -40,7 +40,7 @@ const Scenery = () => {
     async function storeVenue(venue: IVenueMap): Promise<{ success: boolean; message: string }> {
         const existing = await checkExistingScenery();
         if(existing) {
-            return { success: false, message: 'A scenery with this name already exists. Please choose a different name.' };
+            return { success: false, message: 'A scenery with this venue already exists. Please choose a different venue.' };
         }
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
