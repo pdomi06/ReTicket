@@ -65,6 +65,7 @@ export interface IEvent {
   eventDate: string;
   eventEndDate: string;
   category: typeof EventCategory[keyof typeof EventCategory];
+  basePrice: number;
   imageUrl: string;
   createdAt: string;
   updatedAt: string;

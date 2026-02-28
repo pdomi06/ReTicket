@@ -12,6 +12,7 @@ export const defaultIEvent: IEvent = {
   eventDate: '',
   eventEndDate: '',
   category: 'music' as const,
+  basePrice: 0,
   imageUrl: '',
   createdAt: '',
   updatedAt: ''
