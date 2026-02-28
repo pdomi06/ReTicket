@@ -26,7 +26,7 @@ export const defaultIEventContext: IEventContext = {
 export const defaultIVenueMap: IVenueMap = {
   venue: '',
   section: '',
-  rows: '',
-  cols: '',
+  rows: 0,
+  cols: 0,
   rate: 0
 }
