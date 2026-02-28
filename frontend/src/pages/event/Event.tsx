@@ -7,14 +7,17 @@ const Event = () => {
     const [searchParams] = useSearchParams()
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setLoading(true)
-        try {
-        getEvent(searchParams.get("event") || "")
-        } catch (err) {
-            console.error(err)
-        } finally {
-            setLoading(false)
+        async function fetchEvent() {
+            setLoading(true)
+            try {
+                await getEvent(searchParams.get("event") || "")
+            } catch (err) {
+                console.error(err)
+            } finally {
+                setLoading(false)
+            }
         }
+        fetchEvent()
     }, [getEvent, searchParams])
     return (
         <div className="container my-5">

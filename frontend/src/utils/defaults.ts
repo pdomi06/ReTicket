@@ -1,4 +1,4 @@
-import type { IEvent, IEventContext } from "./interfaces"
+import type { IEvent, IEventContext, IVenueMap } from "./interfaces"
 
 export const defaultIEvent: IEvent = {
   id: 0,
@@ -22,7 +22,7 @@ export const defaultIEventContext: IEventContext = {
   getEvent: async () => false
 }
 
-export const defaultIVenueMap = {
+export const defaultIVenueMap: IVenueMap = {
   venue: '',
   section: '',
   rows: '',

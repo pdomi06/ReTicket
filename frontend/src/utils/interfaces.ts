@@ -174,6 +174,7 @@ export interface InputProps {
     label: string;
     name: string;
     value?: string | number;
+    min?: number;
     step?: number;
     theme?: 'light' | 'dark';
     size?: 'small' | 'medium' | 'large';

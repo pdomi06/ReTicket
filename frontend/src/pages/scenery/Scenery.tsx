@@ -48,7 +48,7 @@ const Scenery = () => {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-        if (sceneryParams.venue && sceneryParams.rows && sceneryParams.cols && sceneryParams.rate > 0) {
+        if (sceneryParams.venue && sceneryParams.rows && sceneryParams.section && sceneryParams.cols && sceneryParams.rate > 0) {
             try {
                 const newVenue: IVenueMap = {
                     venue: sceneryParams.venue,
@@ -81,9 +81,9 @@ const Scenery = () => {
                     <div className="d-grid gap-3">
                         <Input type="text" name="venue" label="Venue" onChange={(e) => setSceneryParams({ ...sceneryParams, venue: e.target.value })} />
                         <Input type="text" name="section" label="Section" onChange={(e) => setSceneryParams({ ...sceneryParams, section: e.target.value })} />
-                        <Input type="number" name="rows" label="Rows" onChange={(e) => setSceneryParams({ ...sceneryParams, rows: e.target.value })} />
-                        <Input type="number" name="cols" label="Columns" onChange={(e) => setSceneryParams({ ...sceneryParams, cols: e.target.value })} />
-                        <Input type="number" name="rate" label="Rate" step={0.01} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} />
+                        <Input type="number" name="rows" label="Rows" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, rows: e.target.value })} />
+                        <Input type="number" name="cols" label="Columns" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, cols: e.target.value })} />
+                        <Input type="number" name="rate" label="Rate" min={1} step={0.01} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} />
                         {loading ? <Button type="button" text="Creating Scenery..." disabled={true} /> : <Button type="submit" text="Create Scenery" />}
                     </div>
                 </div>
