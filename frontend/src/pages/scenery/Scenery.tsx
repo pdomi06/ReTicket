@@ -11,8 +11,25 @@ const Scenery = () => {
 
     async function checkExistingScenery(): Promise<boolean> {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`)
-            const data = await response.json()
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`);
+
+            if (!response.ok) {
+                console.error('Error checking existing scenery: Non-OK response', response.status, response.statusText);
+                return false;
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.toLowerCase().includes('application/json')) {
+                console.error('Error checking existing scenery: Unexpected content-type', contentType);
+                return false;
+            }
+
+            const data: unknown = await response.json();
+
+            if (!Array.isArray(data)) {
+                console.error('Error checking existing scenery: Response JSON is not an array');
+                return false;
+            }
             return data.some((venue: IVenueMap) => venue.venue === sceneryParams.venue);
         } catch (error) {
             console.error('Error checking existing scenery:', error);
@@ -23,7 +40,7 @@ const Scenery = () => {
     async function storeVenue(venue: IVenueMap): Promise<{ success: boolean; message: string }> {
         const existing = await checkExistingScenery();
         if(existing) {
-            return { success: false, message: 'A scenery with this name already exists. Please choose a different name.' };
+            return { success: false, message: 'A scenery with this venue already exists. Please choose a different venue.' };
         }
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
@@ -48,13 +65,18 @@ const Scenery = () => {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-        if (sceneryParams.venue && sceneryParams.rows && sceneryParams.section && sceneryParams.cols && sceneryParams.rate > 0) {
+        const parsedRows = Number(sceneryParams.rows);
+        const parsedCols = Number(sceneryParams.cols);
+        const isValidRows = Number.isInteger(parsedRows) && parsedRows >= 1;
+        const isValidCols = Number.isInteger(parsedCols) && parsedCols >= 1;
+        const isValidRate = Number.isFinite(sceneryParams.rate) && sceneryParams.rate > 0;
+        if (sceneryParams.venue && sceneryParams.section && isValidRows && isValidCols && isValidRate) {
             try {
                 const newVenue: IVenueMap = {
                     venue: sceneryParams.venue,
                     section: sceneryParams.section,
-                    rows: String(sceneryParams.rows),
-                    cols: String(sceneryParams.cols),
+                    rows: String(parsedRows),
+                    cols: String(parsedCols),
                     rate: sceneryParams.rate
                 }
                 const result = await storeVenue(newVenue);
