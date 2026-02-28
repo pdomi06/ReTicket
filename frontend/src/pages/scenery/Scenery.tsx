@@ -65,13 +65,18 @@ const Scenery = () => {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-        if (sceneryParams.venue && sceneryParams.rows && sceneryParams.section && sceneryParams.cols && sceneryParams.rate > 0) {
+        const parsedRows = Number(sceneryParams.rows);
+        const parsedCols = Number(sceneryParams.cols);
+        const isValidRows = Number.isInteger(parsedRows) && parsedRows >= 1;
+        const isValidCols = Number.isInteger(parsedCols) && parsedCols >= 1;
+        const isValidRate = Number.isFinite(sceneryParams.rate) && sceneryParams.rate > 0;
+        if (sceneryParams.venue && sceneryParams.section && isValidRows && isValidCols && isValidRate) {
             try {
                 const newVenue: IVenueMap = {
                     venue: sceneryParams.venue,
                     section: sceneryParams.section,
-                    rows: String(sceneryParams.rows),
-                    cols: String(sceneryParams.cols),
+                    rows: String(parsedRows),
+                    cols: String(parsedCols),
                     rate: sceneryParams.rate
                 }
                 const result = await storeVenue(newVenue);
