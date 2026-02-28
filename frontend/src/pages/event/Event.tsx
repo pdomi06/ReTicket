@@ -15,7 +15,7 @@ const Event = () => {
         } finally {
             setLoading(false)
         }
-    }, [event, getEvent, searchParams])
+    }, [getEvent, searchParams])
     return (
         <div className="container my-5">
             {loading ? (
