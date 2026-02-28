@@ -79,11 +79,11 @@ const Scenery = () => {
                     <h1>Scenery Designer</h1>
                     <hr />
                     <div className="d-grid gap-3">
-                        <Input type="text" name="venue" label="Venue" onChange={(e) => setSceneryParams({ ...sceneryParams, venue: e.target.value })} />
-                        <Input type="text" name="section" label="Section" onChange={(e) => setSceneryParams({ ...sceneryParams, section: e.target.value })} />
-                        <Input type="number" name="rows" label="Rows" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, rows: e.target.value })} />
-                        <Input type="number" name="cols" label="Columns" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, cols: e.target.value })} />
-                        <Input type="number" name="rate" label="Rate" min={1} step={0.01} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} />
+                        <Input type="text" name="venue" label="Venue" onChange={(e) => setSceneryParams({ ...sceneryParams, venue: e.target.value })} value={sceneryParams.venue || ''} />
+                        <Input type="text" name="section" label="Section" onChange={(e) => setSceneryParams({ ...sceneryParams, section: e.target.value })} value={sceneryParams.section || ''} />
+                        <Input type="number" name="rows" label="Rows" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, rows: e.target.value })} value={sceneryParams.rows || ''} />
+                        <Input type="number" name="cols" label="Columns" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, cols: e.target.value })} value={sceneryParams.cols || ''} />
+                        <Input type="number" name="rate" label="Rate" min={1} step={0.01} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} value={sceneryParams.rate || ''} />
                         {loading ? <Button type="button" text="Creating Scenery..." disabled={true} /> : <Button type="submit" text="Create Scenery" />}
                     </div>
                 </div>
