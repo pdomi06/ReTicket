@@ -163,8 +163,8 @@ export interface IVenueMap {
   id?: number;
   venue: string;
   section: string;
-  rows: string;
-  cols: string;
+  rows: number;
+  cols: number;
   rate: number;
 }
 
