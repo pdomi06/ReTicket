@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('eventDate');
             $table->date('eventEndDate');
             $table->enum('category', ["cultural", "music", "sport"]);
+            $table->unsignedInteger('basePrice');
             $table->text('imageUrl');
             $table->date('createdAt');
             $table->date('updatedAt');

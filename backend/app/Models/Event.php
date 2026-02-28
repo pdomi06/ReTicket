@@ -22,6 +22,7 @@ class Event extends Model
         'eventDate',
         'eventEndDate',
         'category',
+        'basePrice',
         'imageUrl',
         'createdAt',
         'updatedAt',

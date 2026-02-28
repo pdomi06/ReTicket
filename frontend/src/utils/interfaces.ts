@@ -65,6 +65,7 @@ export interface IEvent {
   eventDate: string;
   eventEndDate: string;
   category: typeof EventCategory[keyof typeof EventCategory];
+  basePrice: number;
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -159,28 +160,22 @@ export interface IReview {
 }
 
 export interface IVenueMap {
-  id: number;
+  id?: number;
   venue: string;
   section: string;
-  row: string;
-  seat: string;
+  rows: number;
+  cols: number;
   rate: number;
 }
 
 // Components
-
-export interface ISceneryMap {
-    name: string;
-    width: number;
-    height: number;
-    rate: number;
-}
 
 export interface InputProps {
     type?: string;
     label: string;
     name: string;
     value?: string | number;
+    min?: number;
     step?: number;
     theme?: 'light' | 'dark';
     size?: 'small' | 'medium' | 'large';
@@ -230,26 +225,4 @@ export interface CardProps {
 export interface IEventContext {
   event: IEvent | undefined,
   getEvent: (id: string) => Promise<boolean>
-}
-
-export const defaultIEvent: IEvent = {
-  id: 0,
-  name: '',
-  description: '',
-  venue: '',
-  address: '',
-  city: '',
-  state: '',
-  country: '',
-  eventDate: '',
-  eventEndDate: '',
-  category: 'music' as const,
-  imageUrl: '',
-  createdAt: '',
-  updatedAt: ''
-}
-
-export const defaultIEventContext: IEventContext = {
-  event: defaultIEvent,
-  getEvent: async () => false
 }
