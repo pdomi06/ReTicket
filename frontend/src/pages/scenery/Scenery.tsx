@@ -11,8 +11,25 @@ const Scenery = () => {
 
     async function checkExistingScenery(): Promise<boolean> {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`)
-            const data = await response.json()
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`);
+
+            if (!response.ok) {
+                console.error('Error checking existing scenery: Non-OK response', response.status, response.statusText);
+                return false;
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.toLowerCase().includes('application/json')) {
+                console.error('Error checking existing scenery: Unexpected content-type', contentType);
+                return false;
+            }
+
+            const data: unknown = await response.json();
+
+            if (!Array.isArray(data)) {
+                console.error('Error checking existing scenery: Response JSON is not an array');
+                return false;
+            }
             return data.some((venue: IVenueMap) => venue.venue === sceneryParams.venue);
         } catch (error) {
             console.error('Error checking existing scenery:', error);
