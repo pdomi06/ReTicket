@@ -14,8 +14,8 @@ class VenueMap extends Model
     protected $fillable = [
         'venue',
         'section',
-        'row',
-        'seat',
+        'rows',
+        'cols',
         'rate'
     ];
     public $timestamps = false;

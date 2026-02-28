@@ -1,29 +1,29 @@
 import { useState } from "react";
-import type { ISceneryMap, IVenueMap } from "../../utils/interfaces";
+import type { IVenueMap } from "../../utils/interfaces";
 import Input from "../../components/ui/input/Input";
 import style from './Scenery.module.css'
 import Button from "../../components/ui/button/Button";
-import { defaultISceneryMap } from "../../utils/defaults";
+import { defaultIVenueMap } from "../../utils/defaults";
 
 const Scenery = () => {
-    const [sceneryParams, setSceneryParams] = useState<ISceneryMap>(defaultISceneryMap);
+    const [sceneryParams, setSceneryParams] = useState<IVenueMap>(defaultIVenueMap);
     const [loading, setLoading] = useState(false);
 
     async function checkExistingScenery(): Promise<boolean> {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`)
             const data = await response.json()
-            return data.some((venue: ISceneryMap) => venue.venue === sceneryParams.venue);
+            return data.some((venue: IVenueMap) => venue.venue === sceneryParams.venue);
         } catch (error) {
             console.error('Error checking existing scenery:', error);
             return false;
         }
     }
 
-    async function storeVenue(venue: IVenueMap) {
-        if(await checkExistingScenery()) {
-            alert('A scenery with this name already exists. Please choose a different name.');
-            return;
+    async function storeVenue(venue: IVenueMap): Promise<{ success: boolean; message: string }> {
+        const existing = await checkExistingScenery();
+        if(existing) {
+            return { success: false, message: 'A scenery with this name already exists. Please choose a different name.' };
         }
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
@@ -38,34 +38,29 @@ const Scenery = () => {
             }
             const data = await response.json();
             console.log('Venue stored successfully:', data);
-            alert('Scenery created successfully!');
+            return { success: true, message: 'Scenery created successfully!' };
         } catch (error) {
             console.error('Error storing venue:', error);
+            return { success: false, message: 'An error occurred while storing the scenery. Please try again.' };
         }
     }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-        if (sceneryParams.venue && sceneryParams.width > 0 && sceneryParams.height > 0 && sceneryParams.rate > 0) {
+        if (sceneryParams.venue && sceneryParams.rows && sceneryParams.cols && sceneryParams.rate > 0) {
             try {
-                const newScenery = {
+                const newVenue: IVenueMap = {
                     venue: sceneryParams.venue,
-                    width: sceneryParams.width,
-                    height: sceneryParams.height,
+                    section: sceneryParams.section,
+                    rows: String(sceneryParams.rows),
+                    cols: String(sceneryParams.cols),
                     rate: sceneryParams.rate
                 }
-                for (let row = 1; row <= sceneryParams.height; row++) {
-                    for (let col = 1; col <= sceneryParams.width; col++) {
-                        const venue: IVenueMap = {
-                            venue: newScenery.venue,
-                            section: `Section ${row}`,
-                            row: String(row),
-                            seat: String(col),
-                            rate: newScenery.rate
-                        }
-                        await storeVenue(venue);
-                    }
+                const result = await storeVenue(newVenue);
+                alert(result.message);
+                if (result.success) {
+                    setSceneryParams(defaultIVenueMap);
                 }
             } catch (error) {
                 alert('An error occurred while creating the scenery. Please try again.');
@@ -85,8 +80,9 @@ const Scenery = () => {
                     <hr />
                     <div className="d-grid gap-3">
                         <Input type="text" name="venue" label="Venue" onChange={(e) => setSceneryParams({ ...sceneryParams, venue: e.target.value })} />
-                        <Input type="number" name="width" label="Width" onChange={(e) => setSceneryParams({ ...sceneryParams, width: Number(e.target.value) })} />
-                        <Input type="number" name="height" label="Height" onChange={(e) => setSceneryParams({ ...sceneryParams, height: Number(e.target.value) })} />
+                        <Input type="text" name="section" label="Section" onChange={(e) => setSceneryParams({ ...sceneryParams, section: e.target.value })} />
+                        <Input type="number" name="rows" label="Rows" onChange={(e) => setSceneryParams({ ...sceneryParams, rows: e.target.value })} />
+                        <Input type="number" name="cols" label="Columns" onChange={(e) => setSceneryParams({ ...sceneryParams, cols: e.target.value })} />
                         <Input type="number" name="rate" label="Rate" step={0.01} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} />
                         {loading ? <Button type="button" text="Creating Scenery..." disabled={true} /> : <Button type="submit" text="Create Scenery" />}
                     </div>

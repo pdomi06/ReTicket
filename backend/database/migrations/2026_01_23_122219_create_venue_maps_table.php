@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->text('venue');
             $table->text('section');
-            $table->text('row');
-            $table->text('seat');
+            $table->text('rows');
+            $table->text('cols');
             $table->decimal('rate');
         });
     }

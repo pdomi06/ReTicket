@@ -162,19 +162,12 @@ export interface IVenueMap {
   id?: number;
   venue: string;
   section: string;
-  row: string;
-  seat: string;
+  rows: string;
+  cols: string;
   rate: number;
 }
 
 // Components
-
-export interface ISceneryMap {
-    venue: string;
-    width: number;
-    height: number;
-    rate: number;
-}
 
 export interface InputProps {
     type?: string;
