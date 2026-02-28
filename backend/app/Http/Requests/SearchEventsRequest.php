@@ -22,13 +22,13 @@ class SearchEventsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'event' => ['nullable', 'string', 'max:255'],
-        'venue' => ['nullable', 'string', 'max:255'],
-        'city' => ['nullable', 'string', 'max:255'],
-        'date' => ['nullable', 'date'],
-        'maxPrice' => ['nullable', 'numeric', 'min:0'],
-        'category' => ['nullable', 'in:cultural,music,sport'],
-        'page' => ['nullable', 'integer', 'min:1'],
-    ];
+            'event' => ['nullable', 'string', 'max:255'],
+            'venue' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'date' => ['nullable', 'date'],
+            'maxPrice' => ['nullable', 'numeric', 'min:0'],
+            'category' => ['nullable', 'in:cultural,music,sport'],
+            'page' => ['nullable', 'integer', 'min:1'],
+        ];
     }
 }
