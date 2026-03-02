@@ -54,7 +54,16 @@ const Event = () => {
         async function fetchSubEvents() {
             setLoadingEvents(true)
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${event!.name}`)
+                const encodedName = encodeURIComponent(event!.name)
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${encodedName}`)
+                const contentType = response.headers.get("content-type") || ""
+                if (!response.ok || !contentType.includes("application/json")) {
+                    console.error("Unexpected response when fetching sub-events", {
+                        status: response.status,
+                        contentType,
+                    })
+                    return
+                }
                 const data = await response.json()
                 if (!cancelled) {
                     setEvents(data)
