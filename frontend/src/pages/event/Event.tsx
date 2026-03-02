@@ -13,9 +13,15 @@ const Event = () => {
     const [loadingEvents, setLoadingEvents] = useState(true)
     useEffect(() => {
         async function fetchEvent(): Promise<boolean> {
+            const eventId = searchParams.get("event")
+            if (!eventId) {
+                // Missing or invalid event id; skip fetch to avoid unnecessary requests.
+                setLoadingEvent(false)
+                return false
+            }
             setLoadingEvent(true)
             try {
-                await getEvent(searchParams.get("event") || "")
+                await getEvent(eventId)
             } catch (err) {
                 console.error(err)
                 return false
