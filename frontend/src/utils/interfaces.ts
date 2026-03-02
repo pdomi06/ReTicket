@@ -1,5 +1,5 @@
 import {
-  EventCategory,
+  type EventCategory,
   type KycStatus,
   type TicketStatus,
   type OrderStatus,
