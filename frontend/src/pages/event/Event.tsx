@@ -1,36 +1,110 @@
 import { useContext, useEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
 import { useSearchParams } from "react-router-dom";
+import type { IEvent } from "../../utils/interfaces";
+import style from "./Event.module.css"
 
 const Event = () => {
     const { event, getEvent } = useContext(EventContext)
+    const [events, setEvents] = useState<IEvent[]>([])
     const [searchParams] = useSearchParams()
-    const [loading, setLoading] = useState(true)
+    const [loadingEvent, setLoadingEvent] = useState(true)
+    const [loadingEvents, setLoadingEvents] = useState(true)
     useEffect(() => {
-        async function fetchEvent() {
-            setLoading(true)
+        async function fetchEvent(): Promise<boolean> {
+            setLoadingEvent(true)
             try {
                 await getEvent(searchParams.get("event") || "")
             } catch (err) {
                 console.error(err)
+                return false
             } finally {
-                setLoading(false)
+                setLoadingEvent(false)
+
+            }
+            return true
+        }
+        async function fetchSubEvents() {
+            setLoadingEvents(true)
+            try {
+                const data = await (await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${event?.name}`)).json()
+                setEvents(data)
+            } catch (err) {
+                console.error(err)
+            } finally {
+                setLoadingEvents(false)
             }
         }
-        fetchEvent()
+        (async () => {
+            const result = await fetchEvent()
+            if (result) {
+                await fetchSubEvents()
+            } else {
+                setLoadingEvents(false)
+            }
+        })()
+
     }, [searchParams])
     return (
         <div className="container my-5">
-            {loading ? (
+            {loadingEvent ? (
                 <p>Loading...</p>
             ) : event ? (
-            <div className="card bg-black text-white">
-                <div className="card-body">
-                    <img src={event?.imageUrl || ""} alt={event?.name || "Event image"} className="card-img-top" />
-                    <h5 className="card-title">{event?.name}</h5>
-                    <p className="card-text">{event?.description}</p>
+                <div className="row">
+                    <div className={`col-12 col-md-7 text-white mb-4 p-0`}>
+                        <div className={`w-100 ${style.backgroundColorMain} rounded-2 overflow-hidden`}>
+                            <div className={`position-relative ${style.eventImage}`}>
+                                <img src={event?.imageUrl || ""} alt={event?.name || "Event image"} className={`w-100 h-100 ${style.eventImageTag}`} />
+                            </div>
+                            <div className={`${style.backgroundColorSecondary} p-4`}>
+                                <div className="mb-3">
+                                    {event?.category && <span className={`badge ${style.categoryBadge} small fw-semibold mb-2 d-inline-block`}>{event.category}</span>}
+                                </div>
+                                <h1 className={`fw-bold mb-3 lh-1 ${style.eventTitle}`}>{event?.name}</h1>
+                                <div className="border-top border-white border-opacity-25 pt-3 mb-3">
+                                    <p className="text-white-50 small mb-1">📍 Venue</p>
+                                    <p className={`mb-2 ${style.venueInfo}`}>{event?.venue}</p>
+                                </div>
+                                <p className="text-white-75 mb-0 lh-lg">{event?.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 col-md-5">
+                        {loadingEvents ? (
+                            <div className="text-white text-center py-4">Loading dates...</div>
+                        ) : (
+                            <div className={`rounded-2 ${style.backgroundColorMain} text-white ${style.datesList}`}>
+                                <div className="p-4 pb-3 flex-shrink-0">
+                                    <h2 className="mb-2 fw-bold">Available Dates</h2>
+                                </div>
+                                <hr className="border-white opacity-25 my-0 flex-shrink-0" />
+                                <div className={`flex-grow-1 px-3 ${style.datesScrollArea}`}>
+                            {events.map((e: IEvent) => {
+                                const eventDate = new Date(e.eventDate);
+                                const dayName = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
+                                const formattedDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                return (
+                                <div key={e.id} className={`${style.backgroundColorSecondary} mb-3 rounded-2 overflow-hidden ${style.dateCard}`}>
+                                    <div className="p-4">
+                                        <div className="d-flex justify-content-between align-items-start mb-3">
+                                            <div className="flex-grow-1">
+                                                <p className={`small fw-semibold letter-spacing mb-1 ${style.dayLabel}`}>{dayName.toUpperCase()}</p>
+                                                <h5 className="mb-0 fw-bold fs-5 text-white">{formattedDate}</h5>
+                                            </div>
+                                        </div>
+                                        <div className={`border-top border-white border-opacity-25 pt-3 ${style.accentBorder}`}>
+                                            <p className={`small mb-2 ${style.priceLabel}`}>From</p>
+                                            <p className={`mb-0 fs-4 fw-bold ${style.priceValue}`}>{e.basePrice.toLocaleString()}ft</p>
+                                        </div>
+                                        {e.venue && <p className="text-white-50 small mt-3 mb-0">📍 {e.venue}</p>}
+                                    </div>
+                                </div>
+                            )})}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
             ) : (
                 <p>Event not found.</p>
             )}
