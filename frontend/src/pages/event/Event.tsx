@@ -11,12 +11,6 @@ const Event = () => {
     const [searchParams] = useSearchParams()
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEvents, setLoadingEvents] = useState(true)
-    useEffect(() => {
-        async function fetchEvent(): Promise<boolean> {
-            const eventId = searchParams.get("event")
-            if (!eventId) {
-                // Missing or invalid event id; skip fetch to avoid unnecessary requests.
-                setLoadingEvent(false)
     const eventId = searchParams.get("event") || ""
 
     useEffect(() => {
@@ -60,7 +54,7 @@ const Event = () => {
         async function fetchSubEvents() {
             setLoadingEvents(true)
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${event.name}`)
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${event!.name}`)
                 const data = await response.json()
                 if (!cancelled) {
                     setEvents(data)
