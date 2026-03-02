@@ -17,41 +17,69 @@ const Event = () => {
             if (!eventId) {
                 // Missing or invalid event id; skip fetch to avoid unnecessary requests.
                 setLoadingEvent(false)
-                return false
-            }
+    const eventId = searchParams.get("event") || ""
+
+    useEffect(() => {
+        let cancelled = false
+
+        async function fetchEvent() {
             setLoadingEvent(true)
             try {
                 await getEvent(eventId)
             } catch (err) {
                 console.error(err)
-                return false
+                if (!cancelled) {
+                    setLoadingEvents(false)
+                }
             } finally {
-                setLoadingEvent(false)
-
+                if (!cancelled) {
+                    setLoadingEvent(false)
+                }
             }
-            return true
         }
+
+        if (eventId) {
+            void fetchEvent()
+        } else {
+            setLoadingEvent(false)
+            setLoadingEvents(false)
+        }
+
+        return () => {
+            cancelled = true
+        }
+    }, [eventId, getEvent])
+
+    useEffect(() => {
+        if (!event?.name) {
+            return
+        }
+
+        let cancelled = false
+
         async function fetchSubEvents() {
             setLoadingEvents(true)
             try {
-                const data = await (await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${event?.name}`)).json()
-                setEvents(data)
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events?name=${event.name}`)
+                const data = await response.json()
+                if (!cancelled) {
+                    setEvents(data)
+                }
             } catch (err) {
                 console.error(err)
             } finally {
-                setLoadingEvents(false)
+                if (!cancelled) {
+                    setLoadingEvents(false)
+                }
             }
         }
-        (async () => {
-            const result = await fetchEvent()
-            if (result) {
-                await fetchSubEvents()
-            } else {
-                setLoadingEvents(false)
-            }
-        })()
 
-    }, [searchParams])
+        void fetchSubEvents()
+
+        return () => {
+            cancelled = true
+        }
+    }, [event?.name])
     return (
         <div className="container my-5">
             {loadingEvent ? (
