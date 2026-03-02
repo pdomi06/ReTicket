@@ -223,6 +223,6 @@ export interface CardProps {
 }
 
 export interface IEventContext {
-  event: IEvent | undefined,
-  getEvent: (id: string) => Promise<boolean>
+  event: IEvent | undefined;
+  getEvent: (id: string) => Promise<boolean>;
 }
