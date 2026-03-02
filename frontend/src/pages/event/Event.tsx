@@ -83,7 +83,13 @@ const Event = () => {
                     <div className={`col-12 col-md-7 text-white mb-4 p-0`}>
                         <div className={`w-100 ${style.backgroundColorMain} rounded-2 overflow-hidden`}>
                             <div className={`position-relative ${style.eventImage}`}>
-                                <img src={event?.imageUrl || ""} alt={event?.name || "Event image"} className={`w-100 h-100 ${style.eventImageTag}`} />
+                                {event?.imageUrl && (
+                                    <img
+                                        src={event.imageUrl}
+                                        alt={event?.name || "Event image"}
+                                        className={`w-100 h-100 ${style.eventImageTag}`}
+                                    />
+                                )}
                             </div>
                             <div className={`${style.backgroundColorSecondary} p-4`}>
                                 <div className="mb-3">
