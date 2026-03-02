@@ -62,11 +62,34 @@ const Event = () => {
                                     {event?.category && <span className={`badge ${style.categoryBadge} small fw-semibold mb-2 d-inline-block`}>{event.category}</span>}
                                 </div>
                                 <h1 className={`fw-bold mb-3 lh-1 ${style.eventTitle}`}>{event?.name}</h1>
-                                <div className="border-top border-white border-opacity-25 pt-3 mb-3">
-                                    <p className="text-white-50 small mb-1">📍 Venue</p>
-                                    <p className={`mb-2 ${style.venueInfo}`}>{event?.venue}</p>
-                                </div>
                                 <p className="text-white-75 mb-0 lh-lg">{event?.description}</p>
+                                <div className="row border-top border-white border-opacity-25 pt-3 mb-3">
+                                    {/* TODO: (Not urgent at all) Implement google maps integration for locations and map links */}
+                                    <div className="col">
+                                        <p className="text-white-50 small mb-1">📍 Venue</p>
+                                        <p className={`mb-2 ${style.venueInfo}`}>{event?.venue}</p>
+                                    </div>
+                                    <div className="col">
+                                        <p className="text-white-50 small mb-1">🌍 Location</p>
+                                        <p className={`mb-2 ${style.venueInfo}`}>{event?.country}, {event?.state}, {event?.city}</p>
+                                    </div>
+                                    <div className="col">
+                                        <p className="text-white-50 small mb-1">📬 Address</p>
+                                        
+                                        <p className={`mb-2 ${style.venueInfo}`}>{event?.address}</p>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div className="row">
+                                    <div className="col">
+                                        <p className="text-white-50 small mb-1">Event start:</p>
+                                        <p className="mb-0">{new Date(event?.eventDate || "").toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                    </div>
+                                    <div className="col">
+                                        <p className="text-white-50 small mb-1">Event end:</p>
+                                        <p className="mb-0">{new Date(event?.eventEndDate || "").toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -106,7 +129,7 @@ const Event = () => {
                                                                     </span>
                                                                 </p>
                                                             </div>
-                                                            {e.venue && <p className="text-white-50 small mb-0 text-end">📍 {e.venue}<br/>{e.city}</p>}
+                                                            {e.venue && <p className="text-white-50 small mb-0 text-end">📍 {e.venue}<br />{e.city}</p>}
                                                         </div>
                                                     </div>
                                                     <div className="d-flex gap-2">
