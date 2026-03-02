@@ -71,7 +71,7 @@ const Event = () => {
                                     </div>
                                     <div className="col">
                                         <p className="text-white-50 small mb-1">🌍 Location</p>
-                                        <p className={`mb-2 ${style.venueInfo}`}>{event?.country}, {event?.state}, {event?.city}</p>
+                                        <p className={`mb-2 ${style.venueInfo}`}>{event?.city}, {event?.state}, {event?.country}</p>
                                     </div>
                                     <div className="col">
                                         <p className="text-white-50 small mb-1">📬 Address</p>
