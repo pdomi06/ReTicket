@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('section');
             $table->unsignedSmallInteger('rows');
             $table->unsignedSmallInteger('cols');
-            $table->decimal('rate');
+            $table->decimal('rate', 8, 2);
         });
     }
 
