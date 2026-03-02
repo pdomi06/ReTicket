@@ -13,9 +13,15 @@ const Event = () => {
     const [loadingEvents, setLoadingEvents] = useState(true)
     useEffect(() => {
         async function fetchEvent(): Promise<boolean> {
+            const eventId = searchParams.get("event")
+            if (!eventId) {
+                // Missing or invalid event id; skip fetch to avoid unnecessary requests.
+                setLoadingEvent(false)
+                return false
+            }
             setLoadingEvent(true)
             try {
-                await getEvent(searchParams.get("event") || "")
+                await getEvent(eventId)
             } catch (err) {
                 console.error(err)
                 return false
@@ -115,7 +121,7 @@ const Event = () => {
                                                             <p className={`small fw-semibold letter-spacing mb-1 ${style.dayLabel}`}>{dayName.toUpperCase()}</p>
                                                             <h5 className="mb-0 fw-bold fs-5 text-white">{formattedDate}</h5>
                                                         </div>
-                                                        {event?.category && <span className={`badge ${style.categoryBadge} small fw-semibold`}>{e.category}</span>}
+                                                        {e.category && <span className={`badge ${style.categoryBadge} small fw-semibold`}>{e.category}</span>}
                                                     </div>
                                                     <div className={`border-top border-white border-opacity-25 pt-3 mb-3 ${style.accentBorder}`}>
                                                         <div className="d-flex justify-content-between align-items-start">

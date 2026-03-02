@@ -34,6 +34,7 @@ class StoreEventsRequest extends FormRequest
             'category' => ['required','in:cultural,music,sport'],
             'basePrice' => ['required','integer','min:0'],
             'imageUrl' => ['required','url'],
+
         ];
     }
 }

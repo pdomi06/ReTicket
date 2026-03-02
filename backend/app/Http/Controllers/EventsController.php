@@ -6,16 +6,38 @@ use App\Models\Event;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventsRequest;
 use App\Http\Requests\UpdateEventsRequest;
+use App\Http\Requests\SearchEventsRequest;
 
 class EventsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(){
+        $events = Event::orderByDesc('createdAt')->paginate(20);
+
+        return response()->json(['success' => true,
+            'data' => $events->items(),
+            'pagination' => [
+            'current_page' => $events->currentPage(),
+            'total_results' => $events->total(),
+            'total_pages' => $events->lastPage(),
+            'per_page' => $events->perPage(),]], 200);
+    }
+
+     public function search(SearchEventsRequest $request)
     {
-        $events = Event::all();
-        return response()->json($events, 200);
+        $filters = $request->validated();
+
+        $events = Event::search($filters)->orderByDesc('createdAt')->paginate(20);
+
+        return response()->json(['success' => true,
+            'data' => $events->items(),
+            'pagination' => [
+            'current_page' => $events->currentPage(),
+            'total_results' => $events->total(),
+            'total_pages' => $events->lastPage(),
+            'per_page' => $events->perPage(),]], 200);
     }
 
     /**
@@ -24,15 +46,16 @@ class EventsController extends Controller
     public function store(StoreEventsRequest $request)
     {
         $event = Event::create($request->validated());
-        return response()->json($event, 201);
+
+        return response()->json(['success' => true, 'data' => $event], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+     public function show(Event $event)
     {
-        return response()->json($event, 200);
+        return response()->json(['success' => true, 'data' => $event], 200);
     }
 
     /**
@@ -41,7 +64,8 @@ class EventsController extends Controller
     public function update(UpdateEventsRequest $request, Event $event)
     {
         $event->update($request->validated());
-        return response()->json($event, 200);
+
+        return response()->json(['success' => true, 'data' => $event], 200);
     }
 
     /**
@@ -50,6 +74,7 @@ class EventsController extends Controller
     public function destroy(Event $event)
     {
         $event->delete();
-        return response()->json(["message" => "Event deleted successfully"], 200);
+
+        return response()->json(['success' => true, 'message' => 'Event deleted successfully'], 200);
     }
 }

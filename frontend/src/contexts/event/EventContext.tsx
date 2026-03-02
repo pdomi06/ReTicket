@@ -16,8 +16,9 @@ const EventContextProvider = ({children}: {children: ReactNode}) =>{
         if (!contentType.includes('application/json')) {
             return false;
         }
-        const data = await response.json();
-        setEvent(data as IEvent);
+        const json = await response.json();
+        const eventData = (json as { data?: unknown }).data ?? json;
+        setEvent(eventData as IEvent);
         return true;
     }
 
