@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->text('venue');
             $table->text('section');
-            $table->text('rows');
-            $table->text('cols');
+            $table->unsignedSmallInteger('rows');
+            $table->unsignedSmallInteger('cols');
             $table->decimal('rate');
         });
     }
