@@ -1,6 +1,6 @@
 import {
-  type KycStatus,
   type EventCategory,
+  type KycStatus,
   type TicketStatus,
   type OrderStatus,
   type PaymentStatus,
@@ -64,7 +64,8 @@ export interface IEvent {
   country: string;
   eventDate: string;
   eventEndDate: string;
-  category: typeof EventCategory;
+  category: typeof EventCategory[keyof typeof EventCategory];
+  basePrice: number;
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -159,28 +160,22 @@ export interface IReview {
 }
 
 export interface IVenueMap {
-  id: number;
+  id?: number;
   venue: string;
   section: string;
-  row: string;
-  seat: string;
+  rows: number;
+  cols: number;
   rate: number;
 }
 
 // Components
-
-export interface ISceneryMap {
-    name: string;
-    width: number;
-    height: number;
-    rate: number;
-}
 
 export interface InputProps {
     type?: string;
     label: string;
     name: string;
     value?: string | number;
+    min?: number;
     step?: number;
     theme?: 'light' | 'dark';
     size?: 'small' | 'medium' | 'large';
@@ -227,3 +222,7 @@ export interface CardProps {
     onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
+export interface IEventContext {
+  event: IEvent | undefined;
+  getEvent: (id: string) => Promise<boolean>;
+}
