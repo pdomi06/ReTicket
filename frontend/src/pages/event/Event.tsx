@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
 import { useSearchParams } from "react-router-dom";
 import type { IEvent } from "../../utils/interfaces";
+import Button from "../../components/ui/button/Button"
 import style from "./Event.module.css"
 
 const Event = () => {
@@ -78,13 +79,13 @@ const Event = () => {
                                     <h2 className="mb-2 fw-bold">Available Dates</h2>
                                 </div>
                                 <hr className="border-white opacity-25 my-0 flex-shrink-0" />
-                                <div className={`flex-grow-1 px-3 ${style.datesScrollArea}`}>
+                                <div className={style.datesScrollArea}>
                             {events.map((e: IEvent) => {
                                 const eventDate = new Date(e.eventDate);
                                 const dayName = eventDate.toLocaleDateString('en-US', { weekday: 'long' });
                                 const formattedDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                                 return (
-                                <div key={e.id} className={`${style.backgroundColorSecondary} mb-3 rounded-2 overflow-hidden ${style.dateCard}`}>
+                                <div key={e.id} className={`${style.backgroundColorSecondary} mx-3 mb-3 rounded-2 overflow-hidden ${style.dateCard}`}>
                                     <div className="p-4">
                                         <div className="d-flex justify-content-between align-items-start mb-3">
                                             <div className="flex-grow-1">
@@ -92,11 +93,18 @@ const Event = () => {
                                                 <h5 className="mb-0 fw-bold fs-5 text-white">{formattedDate}</h5>
                                             </div>
                                         </div>
-                                        <div className={`border-top border-white border-opacity-25 pt-3 ${style.accentBorder}`}>
+                                        <div className={`border-top border-white border-opacity-25 pt-3 mb-3 ${style.accentBorder}`}>
                                             <p className={`small mb-2 ${style.priceLabel}`}>From</p>
-                                            <p className={`mb-0 fs-4 fw-bold ${style.priceValue}`}>{e.basePrice.toLocaleString()}ft</p>
+                                            <p className={`mb-0 fs-4 fw-bold`}>{e.basePrice.toLocaleString()} Ft</p>
                                         </div>
-                                        {e.venue && <p className="text-white-50 small mt-3 mb-0">📍 {e.venue}</p>}
+                                        <div className="d-flex justify-content-between align-items-end gap-2">
+                                            <div className="flex-grow-1">
+                                                {e.venue && <p className="text-white-50 small mb-0">📍 {e.venue}</p>}
+                                            </div>
+                                            <div style={{ width: '120px' }}>
+                                                <Button type="button" text="Book Now" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )})}
