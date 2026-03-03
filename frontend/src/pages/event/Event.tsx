@@ -53,7 +53,6 @@ const Event = () => {
             try {
                 const eventNameQuery = encodeURIComponent(event!.name)
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?name=${eventNameQuery}`)
-                console.log(`Fetching sub-events with URL: ${import.meta.env.VITE_API_BASE_URL}/events/search?name=${eventNameQuery}`)
                 const contentType = response.headers.get("content-type") || ""
                 if (!response.ok || !contentType.includes("application/json")) {
                     console.error("Unexpected response when fetching sub-events", {

@@ -15,9 +15,8 @@ const SearchBar = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Only include non-empty values in the query
         const filteredData = Object.fromEntries(
-            Object.entries(formData).filter(([_, value]) => value !== '')
+            Object.entries(formData).filter(([, value]) => value !== '') // Az a "," valahogy megoldja hogy csak azokat adja át paraméterben amik nem üresk. Nem tudom, hogy de az kell oda.
         );
         const query = new URLSearchParams(filteredData).toString();
         navigate(`/browse?${query}`);

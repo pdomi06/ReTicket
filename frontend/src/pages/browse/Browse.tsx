@@ -18,8 +18,6 @@ const Browse = () => {
     async function getEvents(q: string, signal?: AbortSignal) {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
         const url = `${apiBaseUrl}/events/search?${q}`;
-        console.log(`Fetching events with URL: ${url}`);
-        console.log("Search params:", Object.fromEntries(searchParams.entries()));
 
         const response = await fetch(url, { signal });
         const contentType = response.headers.get("content-type") || "";
