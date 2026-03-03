@@ -7,15 +7,19 @@ import { useState } from 'react';
 const SearchBar = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        event: '',
+        name: '',
         venue: '',
-        date: '',
+        eventDate: '',
         maxPrice: ''
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const query = new URLSearchParams(formData).toString();
+        // Only include non-empty values in the query
+        const filteredData = Object.fromEntries(
+            Object.entries(formData).filter(([_, value]) => value !== '')
+        );
+        const query = new URLSearchParams(filteredData).toString();
         navigate(`/browse?${query}`);
     };
 
@@ -27,10 +31,10 @@ const SearchBar = () => {
                     <div className={`${style['searchbar-input']} col`}>
                         <Input 
                             label="Event or artist name..." 
-                            name="event" 
+                            name="name" 
                             theme="light" 
                             size="large" 
-                            onChange={(e) => setFormData({...formData, event: e.target.value})} 
+                            onChange={(e) => setFormData({...formData, name: e.target.value})} 
                         />
                     </div>
                     <div className={`${style['searchbar-input']} col`}>
@@ -49,7 +53,7 @@ const SearchBar = () => {
                             name="date" 
                             theme="light" 
                             size="large" 
-                            onChange={(e) => setFormData({...formData, date: e.target.value})} 
+                            onChange={(e) => setFormData({...formData, eventDate: e.target.value})} 
                         />
                     </div>
                     <div className={`${style['searchbar-input']} col`}>

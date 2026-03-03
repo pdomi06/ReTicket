@@ -31,12 +31,13 @@ class EventsController extends Controller
         
         // Debug: Log the filters to see what we're getting
         \Log::info('Search filters:', $filters);
+        \Log::info('All request data:', $request->all());
 
         $query = Event::query();
         
         // Apply filters manually to ensure they work
-        if (!empty($filters['event'])) {
-            $query->where('name', 'like', '%' . $filters['event'] . '%');
+        if (!empty($filters['name'])) {
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
         }
         
         if (!empty($filters['country'])) {
@@ -55,14 +56,12 @@ class EventsController extends Controller
             $query->where('category', $filters['category']);
         }
         
-        if (!empty($filters['date'])) {
-            $query->whereDate('eventDate', '=', $filters['date']);
+        if (!empty($filters['eventDate'])) {
+            $query->whereDate('eventDate', '=', $filters['eventDate']);
         }
         
         if (!empty($filters['maxPrice'])) {
-            $query->whereHas('originalTickets', function($q) use ($filters) {
-                $q->where('price', '<=', $filters['maxPrice']);
-            });
+            $query->where('basePrice', '<=', $filters['maxPrice']);
         }
 
         $events = $query->orderByDesc('createdAt')->paginate(20);

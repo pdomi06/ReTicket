@@ -46,16 +46,14 @@ class Event extends Model
             ->when($filters['country'] ?? null, fn($q, $value) =>
                 $q->where('country', 'like', '%' . $value . '%')
             )
-            ->when($filters['date'] ?? null, fn($q, $value) =>
+            ->when($filters['eventDate'] ?? null, fn($q, $value) =>
                 $q->whereDate('eventDate', '=', $value)
             )
             ->when($filters['category'] ?? null, fn($q, $value) =>
                 $q->where('category', $value)
             )
             ->when($filters['maxPrice'] ?? null, fn($q, $value) =>
-                $q->whereHas('originalTickets', fn($q) =>
-                    $q->where('price', '<=', $value)
-                )
+                $q->where('basePrice', '<=', $value)
             );
     }
     const CREATED_AT = 'createdAt';
