@@ -18,11 +18,17 @@
     font-family: var(--font-main);
     color: var(--color-text);
     scroll-behavior: smooth;
+    box-sizing: border-box;
 }
 
 html, body {
     scroll-behavior: smooth;
     background-color: var(--color-main);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 

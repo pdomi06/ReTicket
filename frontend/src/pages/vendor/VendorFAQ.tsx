@@ -58,7 +58,7 @@ const VendorFAQ = () => {
   };
 
   return (
-    <section className={styles.faq}>
+    <section className={styles.faq} id='faq'>
       <div className={styles.sectionHeader}>
         <h2>Frequently Asked Questions</h2>
         <p>Got questions? We\'ve got answers</p>

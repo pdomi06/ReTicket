@@ -14,10 +14,10 @@ const VendorHero = () => {
                 </p>
                 <div className={`${styles.heroButtons} row`}>
                     <div className="col">
-                        <Button text="Start Selling Today" variant="primary" />
+                        <Button text="Start Selling Today" variant="primary" link='/register'/>
                     </div>
                     <div className="col">
-                        <Button text="Learn More" variant="outline" />
+                        <Button text="Learn More" variant="outline" link='#faq'/>
                     </div>
                 </div>
             </div>

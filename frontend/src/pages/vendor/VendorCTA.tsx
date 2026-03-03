@@ -12,10 +12,10 @@ const VendorCTA = () => {
                 </p>
                 <div className={`${styles.ctaButtons} row`}>
                     <div className="col">
-                        <Button text='Create Vendor Account' />
+                        <Button text='Create Vendor Account' link='/register'/>
                     </div>
                     <div className="col">
-                        <Button text='Contact Sales' variant='outline' />
+                        <Button text='Contact Sales' variant='outline' link='/contact'/>
                     </div>
                 </div>
                 <p className={styles.ctaFooter}>
