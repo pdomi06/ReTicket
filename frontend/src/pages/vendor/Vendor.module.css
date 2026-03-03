@@ -102,6 +102,13 @@
   gap: var(--spacing-md);
   margin-top: var(--spacing-md);
   flex-wrap: wrap;
+  max-width: 600px;
+}
+
+.heroButtons > * {
+  flex: 1;
+  min-width: 150px;
+  max-width: 280px;
 }
 
 .heroImage {
