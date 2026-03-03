@@ -59,64 +59,6 @@
 }
 
 /* ============================================
-   BUTTONS
-   ============================================ */
-
-.btnPrimary,
-.btnSecondary,
-.btnOutline {
-  padding: 12px 32px;
-  border: none;
-  border-radius: var(--radius-lg);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  text-decoration: none;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.btnPrimary {
-  background-color: var(--color-accent);
-  color: var(--color-text);
-  box-shadow: var(--shadow-md);
-}
-
-.btnPrimary:hover {
-  background-color: var(--color-secondary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.btnPrimary:active {
-  transform: translateY(0);
-}
-
-.btnSecondary {
-  background-color: transparent;
-  color: var(--color-accent);
-  border: 2px solid var(--color-accent);
-}
-
-.btnSecondary:hover {
-  background-color: var(--color-accent);
-  color: var(--color-text);
-}
-
-.btnOutline {
-  background-color: transparent;
-  color: var(--color-text);
-  border: 2px solid rgba(177, 156, 217, 0.3);
-}
-
-.btnOutline:hover {
-  background-color: var(--color-main);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-/* ============================================
    HERO SECTION
    ============================================ */
 
@@ -468,26 +410,6 @@
   flex-wrap: wrap;
 }
 
-.ctaButtons .btnPrimary {
-  background-color: var(--color-text);
-  color: var(--color-accent);
-}
-
-.ctaButtons .btnPrimary:hover {
-  background-color: var(--color-main);
-  transform: translateY(-2px);
-}
-
-.ctaButtons .btnOutline {
-  color: var(--color-text);
-  border-color: var(--color-text);
-  background-color: transparent;
-}
-
-.ctaButtons .btnOutline:hover {
-  background-color: rgba(177, 156, 217, 0.2);
-}
-
 .ctaFooter {
   font-size: 0.9rem;
   opacity: 0.8;
@@ -557,12 +479,6 @@
 
   .heroButtons {
     flex-direction: column;
-  }
-
-  .btnPrimary,
-  .btnSecondary,
-  .btnOutline {
-    width: 100%;
   }
 
   .sectionHeader h2 {
@@ -635,10 +551,6 @@
   .ctaButtons {
     flex-direction: column;
     gap: var(--spacing-md);
-  }
-
-  .ctaButtons button {
-    width: 100%;
   }
 }
 
