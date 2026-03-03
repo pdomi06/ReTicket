@@ -12,7 +12,7 @@ const NotFound = lazy(() => import("../pages/notfound/NotFound.tsx"));
 const Welcome = lazy(() => import("../pages/welcome/Welcome.tsx"));
 const Browse = lazy(() => import("../pages/browse/Browse.tsx"));
 const Event = lazy(() => import("../pages/event/Event.tsx"));
-
+const Vendor = lazy(() => import("../pages/vendor/Vendor.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -27,6 +27,7 @@ export const routes: RouteObject[] = [
       { path: "/profile", element: <Profile /> },
       { path: "/browse", element: <Browse /> },
       { path: "/event", element: <Event/>},
+      { path : "/vendor", element : <Vendor/>},
       { path: "*", element: <NotFound /> },
     ],
   },

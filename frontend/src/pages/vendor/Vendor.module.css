@@ -1,0 +1,593 @@
+/* ============================================
+   VENDOR PAGE - COMPREHENSIVE STYLING
+   ============================================ */
+
+/* Vendor Page Specific Variables */
+:root {
+  --radius: 8px;
+  --radius-lg: 12px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Global Resets */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.vendorPage {
+  width: 100%;
+  background-color: var(--color-main);
+  overflow-x: hidden;
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.2;
+}
+
+.sectionHeader p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  align-items: center;
+  padding: var(--spacing-3xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 600px;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--color-text);
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.heroButtons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.heroImage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.heroImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ============================================
+   BENEFITS SECTION
+   ============================================ */
+
+.benefits {
+  padding: var(--spacing-3xl);
+  background-color: var(--color-secondary);
+}
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-2xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.benefitCard {
+  background: var(--color-main);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+  border: 2px solid rgba(177, 156, 217, 0.3);
+  text-align: center;
+}
+
+.benefitCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-accent);
+}
+
+.benefitIcon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+  display: inline-block;
+}
+
+.benefitCard h3 {
+  font-size: 1.25rem;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+}
+
+.benefitCard p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ============================================
+   STATS SECTION
+   ============================================ */
+
+.stats {
+  padding: var(--spacing-3xl);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+}
+
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-2xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.statCard {
+  text-align: center;
+  color: var(--color-text);
+  padding: var(--spacing-xl);
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: var(--spacing-sm);
+  display: block;
+}
+
+.statLabel {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  display: block;
+}
+
+.statSubtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  display: block;
+}
+
+/* ============================================
+   PROCESS SECTION
+   ============================================ */
+
+.process {
+  padding: var(--spacing-3xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--color-main);
+}
+
+.processSteps {
+  display: grid;
+  gap: var(--spacing-3xl);
+  margin-top: var(--spacing-3xl);
+}
+
+.processStep {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--spacing-2xl);
+  align-items: flex-start;
+  position: relative;
+  padding: var(--spacing-2xl);
+  background: var(--color-secondary);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+}
+
+.processStep:hover {
+  background: rgba(177, 156, 217, 0.1);
+  box-shadow: var(--shadow-md);
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+  color: var(--color-text);
+  font-size: 2rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.stepContent h3 {
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+}
+
+.stepContent p {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.stepConnector {
+  position: absolute;
+  left: 40px;
+  top: 80px;
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--color-accent), transparent);
+  display: none;
+}
+
+/* ============================================
+   FAQ SECTION
+   ============================================ */
+
+.faq {
+  padding: var(--spacing-3xl);
+  background-color: var(--color-secondary);
+}
+
+.faqContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.faqItem {
+  background: var(--color-main);
+  border: 2px solid rgba(177, 156, 217, 0.3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.faqItem:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.faqItem.active {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.faqQuestion {
+  width: 100%;
+  padding: var(--spacing-xl);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: left;
+  transition: var(--transition);
+}
+
+.faqQuestion:hover {
+  color: var(--color-accent);
+}
+
+.faqIcon {
+  font-size: 1.5rem;
+  font-weight: 300;
+  transition: var(--transition);
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.faqAnswer {
+  padding: 0 var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+  animation: slideDown 300ms ease-out;
+  border-top: 2px solid rgba(177, 156, 217, 0.3);
+  padding-top: var(--spacing-md);
+}
+
+.faqAnswer p {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   CTA SECTION
+   ============================================ */
+
+.cta {
+  padding: var(--spacing-3xl);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+  text-align: center;
+}
+
+.ctaContent {
+  max-width: 700px;
+  margin: 0 auto;
+  color: white;
+}
+
+.ctaContent h2 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.ctaContent p {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-2xl);
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin-bottom: var(--spacing-2xl);
+  flex-wrap: wrap;
+}
+
+.ctaFooter {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-2xl);
+    gap: var(--spacing-2xl);
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroImage {
+    min-height: 300px;
+  }
+
+  .sectionHeader h2 {
+    font-size: 2rem;
+  }
+
+  .benefitsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .processStep {
+    grid-template-columns: 1fr;
+  }
+
+  .stepNumber {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .stepConnector {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --spacing-2xl: 32px;
+    --spacing-xl: 20px;
+    --spacing-lg: 16px;
+  }
+
+  .hero {
+    padding: var(--spacing-xl);
+    gap: var(--spacing-xl);
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .heroButtons {
+    flex-direction: column;
+  }
+
+  .sectionHeader h2 {
+    font-size: 1.75rem;
+  }
+
+  .sectionHeader p {
+    font-size: 1rem;
+  }
+
+  .sectionHeader {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .benefitCard {
+    padding: var(--spacing-lg);
+  }
+
+  .benefitIcon {
+    font-size: 2.5rem;
+  }
+
+  .statsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .statCard {
+    padding: var(--spacing-lg);
+  }
+
+  .statNumber {
+    font-size: 2rem;
+  }
+
+  .statLabel {
+    font-size: 1rem;
+  }
+
+  .processStep {
+    padding: var(--spacing-lg);
+  }
+
+  .stepNumber {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .stepContent h3 {
+    font-size: 1.25rem;
+  }
+
+  .faqQuestion {
+    padding: var(--spacing-lg);
+  }
+
+  .faqAnswer {
+    padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+  }
+
+  .ctaContent h2 {
+    font-size: 1.75rem;
+  }
+
+  .ctaContent p {
+    font-size: 1rem;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .statsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .benefitsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .faqContainer {
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY & ANIMATIONS
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}

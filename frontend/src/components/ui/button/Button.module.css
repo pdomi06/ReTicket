@@ -1,19 +1,18 @@
 .button {
-  background-color: #b19cd9;
-  color: #001a20d0;
   border: none;
-  padding: 12px;
+  padding: 12px 28px;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
   width: 100%;
-  transition: background-color 0.3s;
   font-family: var(--font-main);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.5px;
 }
 
-.button:hover {
-  background-color: #b19cd9de;
+.button:active {
+  transform: scale(0.98);
 }
 
 .button-link {
@@ -22,7 +21,37 @@
   justify-content: center;
   text-align: center;
 }
+
 .button-link a {
   width: 100%;
   text-decoration: none;
+  display: flex;
+  justify-content: center;
+}
+
+.primary {
+  background-color: var(--color-accent);
+  color: var(--color-main);
+  box-shadow: 0 4px 15px rgba(177, 156, 217, 0.3);
+}
+
+.primary:hover {
+  background-color: var(--color-accent);
+  color: var(--color-main);
+  box-shadow: 0 8px 25px rgba(177, 156, 217, 0.5);
+  transform: translateY(-2px);
+}
+
+.outline {
+  background-color: transparent;
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 2px 8px rgba(177, 156, 217, 0.2);
+}
+
+.outline:hover {
+  background-color: var(--color-accent);
+  color: var(--color-main);
+  box-shadow: 0 8px 20px rgba(177, 156, 217, 0.4);
+  transform: translateY(-2px);
 }
