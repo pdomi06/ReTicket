@@ -1,53 +1,62 @@
-
 import { useEffect, useState } from "react";
-//import { useSearchParams } from "react-router-dom";
 import type { IEvent } from "../../utils/interfaces";
 import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
 import Sidebar from "./sidebar/Sidebar";
+import { useSearchParams } from "react-router";
 
 const Browse = () => {
-    // TODO: Implement search functionality using URL query parameters
-    //const [searchParams] = useSearchParams();
-    //const event = searchParams.get("event");
-    //const venue = searchParams.get("venue");
-    //const date = searchParams.get("date");
-    //const maxPrice = searchParams.get("maxPrice");
+    const [searchParams] = useSearchParams();
+    const query = searchParams.toString();
 
     const [events, setEvents] = useState<IEvent[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [lastCompletedQuery, setLastCompletedQuery] = useState<string | null>(null);
 
-    async function getEvents() {
+    const isLoading = lastCompletedQuery !== query;
+
+    async function getEvents(q: string, signal?: AbortSignal) {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/events`);
-        const contentType = response.headers.get('content-type') || '';
+        const url = `${apiBaseUrl}/events/search?${q}`;
+        console.log(`Fetching events with URL: ${url}`);
+        console.log("Search params:", Object.fromEntries(searchParams.entries()));
+
+        const response = await fetch(url, { signal });
+        const contentType = response.headers.get("content-type") || "";
 
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
         }
 
-        if (!contentType.includes('application/json')) {
-            throw new Error('API did not return JSON. Check your API base URL and backend server.');
+        if (!contentType.includes("application/json")) {
+            throw new Error("API did not return JSON. Check your API base URL and backend server.");
         }
 
-        const data = await response.json();
-        return data as IEvent[];
+        const json = await response.json();
+        console.log("API Response:", json);
+        return json.data as IEvent[];
     }
 
     useEffect(() => {
-        getEvents()
+        const controller = new AbortController();
+
+        getEvents(query, controller.signal)
             .then((data) => {
                 setEvents(data);
+                setError(null);
             })
             .catch((err: unknown) => {
-                const message = err instanceof Error ? err.message : 'Failed to load events';
+                if (err instanceof DOMException && err.name === "AbortError") return;
+                const message = err instanceof Error ? err.message : "Failed to load events";
                 setError(message);
             })
             .finally(() => {
-                setIsLoading(false);
+                setLastCompletedQuery(query);
             });
-    }, []);
+
+        return () => controller.abort();
+    }, [query]);
+
     return (
         <main className="row container m-0 p-0">
             <div className="sidebar col-lg-3">
@@ -59,21 +68,26 @@ const Browse = () => {
                         <p>Loading...</p>
                     ) : error ? (
                         <p>{error}</p>
+                    ) : events.length > 0 ? (
+                        <Cards maximumcols={3}>
+                            {events.map((event) => (
+                                <Card
+                                    key={event.id}
+                                    title={event.name}
+                                    description={event.description}
+                                    buttonText="View Details"
+                                    link={`/event?event=${event.id}`}
+                                    imageUrl={event.imageUrl}
+                                />
+                            ))}
+                        </Cards>
                     ) : (
-                        events.length > 0 ? (
-                            <Cards maximumcols={3}>
-                                {events.map((event) => (
-                                    <Card key={event.id} title={event.name} description={event.description} buttonText="View Details" link={`/event?event=${event.id}`} imageUrl={event.imageUrl}/>
-                                ))}
-                            </Cards>
-                        ) : (
-                            <p>No events found.</p>
-                        )
+                        <p>No events found.</p>
                     )}
                 </div>
             </div>
         </main>
     );
-}
+};
 
 export default Browse;

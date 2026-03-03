@@ -43,6 +43,9 @@ class Event extends Model
             ->when($filters['city'] ?? null, fn($q, $value) =>
                 $q->where('city', 'like', '%' . $value . '%')
             )
+            ->when($filters['country'] ?? null, fn($q, $value) =>
+                $q->where('country', 'like', '%' . $value . '%')
+            )
             ->when($filters['date'] ?? null, fn($q, $value) =>
                 $q->whereDate('eventDate', '=', $value)
             )

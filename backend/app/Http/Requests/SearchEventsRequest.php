@@ -25,6 +25,7 @@ class SearchEventsRequest extends FormRequest
             'event' => ['nullable', 'string', 'max:255'],
             'venue' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
+            'country' => ['nullable', 'string', 'max:255'],
             'date' => ['nullable', 'date'],
             'maxPrice' => ['nullable', 'numeric', 'min:0'],
             'category' => ['nullable', 'in:cultural,music,sport'],

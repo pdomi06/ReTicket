@@ -30,9 +30,15 @@ const Sidebar = () => {
         e.preventDefault();
 
         const params: Record<string, string> = {};
-        Object.entries(searchForm).forEach(([key, value]) => {
-            if (value) params[key] = value;
-        });
+        
+        // Map frontend field names to backend parameter names
+        if (searchForm.name) params.event = searchForm.name;
+        if (searchForm.venue) params.venue = searchForm.venue;
+        if (searchForm.city) params.city = searchForm.city;
+        if (searchForm.country) params.country = searchForm.country;
+        if (searchForm.eventDate) params.date = searchForm.eventDate;
+        if (searchForm.category) params.category = searchForm.category;
+        
         navigate({
             pathname: '/browse',
             search: `?${createSearchParams(params)}`
