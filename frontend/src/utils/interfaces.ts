@@ -199,6 +199,7 @@ export interface ButtonProps {
     className?: string;
     id?: string;
     name?: string;
+    variant?: 'primary' | 'outline';
     link?: string;
     'aria-label'?: string;
 }

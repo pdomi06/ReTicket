@@ -1,3 +1,5 @@
+
+import Button from '../../components/ui/button/Button';
 import styles from './Vendor.module.css';
 
 const VendorHero = () => {
@@ -11,12 +13,8 @@ const VendorHero = () => {
           Join thousands of vendors selling tickets on the fastest-growing resale platform
         </p>
         <div className={styles.heroButtons}>
-          <button className={styles.btnPrimary}>
-            Start Selling Today
-          </button>
-          <button className={styles.btnSecondary}>
-            Learn More
-          </button>
+            <Button text="Start Selling Today" variant="primary" />
+            <Button text="Learn More" variant="outline" />
         </div>
       </div>
       <div className={styles.heroImage}>

@@ -1,3 +1,4 @@
+import Button from '../../components/ui/button/Button';
 import styles from './Vendor.module.css';
 
 const VendorCTA = () => {
@@ -10,12 +11,8 @@ const VendorCTA = () => {
           Sign up today and list your first tickets within minutes.
         </p>
         <div className={styles.ctaButtons}>
-          <button className={styles.btnPrimary}>
-            Create Vendor Account
-          </button>
-          <button className={styles.btnOutline}>
-            Contact Sales
-          </button>
+            <Button text='Create Vendor Account' />
+            <Button text='Contact Sales' variant='outline' />            
         </div>
         <p className={styles.ctaFooter}>
           No credit card required. 30-minute onboarding. Start selling today.
