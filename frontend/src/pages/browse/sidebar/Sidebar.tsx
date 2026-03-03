@@ -31,7 +31,6 @@ const Sidebar = () => {
 
         const params: Record<string, string> = {};
         
-        // Map frontend field names to backend parameter names
         if (searchForm.name) params.event = searchForm.name;
         if (searchForm.venue) params.venue = searchForm.venue;
         if (searchForm.city) params.city = searchForm.city;

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/button/Button';
 import Input from '../../../components/ui/input/Input';
 import style from './Searchbar.module.css';
@@ -15,11 +15,16 @@ const SearchBar = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const filteredData = Object.fromEntries(
-            Object.entries(formData).filter(([, value]) => value !== '') // Az a "," valahogy megoldja hogy csak azokat adja át paraméterben amik nem üresk. Nem tudom, hogy de az kell oda.
-        );
-        const query = new URLSearchParams(filteredData).toString();
-        navigate(`/browse?${query}`);
+        const params: Record<string, string> = {};
+        
+        if (formData.name) params.event = formData.name;
+        if (formData.venue) params.venue = formData.venue;
+        if (formData.eventDate) params.date = formData.eventDate;
+        if (formData.maxPrice) params.maxPrice = formData.maxPrice;
+         navigate({
+            pathname: '/browse',
+            search: `?${createSearchParams(params)}`
+        });
     };
 
     return (
