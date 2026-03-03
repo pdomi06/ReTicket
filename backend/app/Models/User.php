@@ -19,6 +19,23 @@ class User extends Authenticatable
      */
 
     protected $table = "user";
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
+    public function ticketForSale(){
+        return $this->hasMany(TicketForSale::class);
+    }
+
+    public function userSettings(){
+        return $this->hasOne(UserSettings::class);
+    }
+
+    public function reviews(){
+        return $this->hasMany(Review::class);
+    }
+
     protected $fillable = [
         'email',
         'passwordHash',
