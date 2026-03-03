@@ -11,6 +11,23 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $table = "order_items";
+
+    public function order(){
+        return $this->belongsTo(Order::class);
+    }
+
+    public function ticketForSale(){
+        return $this->belongsTo(TicketForSale::class);
+    }
+
+    public function payout(){
+        return $this->hasOne(Payout::class);
+    }
+
+    public function review(){
+        return $this->hasOne(Review::class);
+    }
+    
     protected $fillable = [
         'orderId',
         'ticketListingId',
