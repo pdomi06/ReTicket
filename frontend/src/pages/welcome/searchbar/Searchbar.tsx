@@ -17,9 +17,9 @@ const SearchBar = () => {
         e.preventDefault();
         const params: Record<string, string> = {};
         
-        if (formData.name) params.event = formData.name;
+        if (formData.name) params.name = formData.name;
         if (formData.venue) params.venue = formData.venue;
-        if (formData.eventDate) params.date = formData.eventDate;
+        if (formData.eventDate) params.eventDate = formData.eventDate;
         if (formData.maxPrice) params.maxPrice = formData.maxPrice;
          navigate({
             pathname: '/browse',

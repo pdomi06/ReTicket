@@ -31,11 +31,11 @@ const Sidebar = () => {
 
         const params: Record<string, string> = {};
         
-        if (searchForm.name) params.event = searchForm.name;
+        if (searchForm.name) params.name = searchForm.name;
         if (searchForm.venue) params.venue = searchForm.venue;
         if (searchForm.city) params.city = searchForm.city;
         if (searchForm.country) params.country = searchForm.country;
-        if (searchForm.eventDate) params.date = searchForm.eventDate;
+        if (searchForm.eventDate) params.eventDate = searchForm.eventDate;
         if (searchForm.category) params.category = searchForm.category;
         
         navigate({
