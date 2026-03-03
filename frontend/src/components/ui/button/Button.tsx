@@ -3,16 +3,15 @@ import type { ButtonProps } from "../../../utils/interfaces";
 import styles from './Button.module.css';
 
 const Button = ({ type = "button", text, link, variant = "primary" }: ButtonProps) => {
-    const buttonClass = `${styles.button} ${styles[variant]}`;
     if (link) {
         return (
             <div className={styles['button-link']}>
-            <Link to={link} className={buttonClass}>{text}</Link>
+            <Link to={link} className={`${styles.button} ${styles[variant]}`}>{text}</Link>
             </div>
         );
     }
     return (
-        <button type={type} className={buttonClass}>{text}</button>
+        <button type={type} className={`${styles.button} ${styles[variant]}`}>{text}</button>
     )
 }
 export default Button;
