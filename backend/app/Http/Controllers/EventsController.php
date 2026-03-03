@@ -68,7 +68,7 @@ class EventsController extends Controller
 
         return response()->json(['success' => true,
             'data' => $events->items(),
-            'filters_applied' => $filters, // Debug: include filters in response
+            'filters_applied' => $filters,
             'pagination' => [
             'current_page' => $events->currentPage(),
             'total_results' => $events->total(),
