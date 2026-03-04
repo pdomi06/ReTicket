@@ -5,9 +5,11 @@ import { type IVenueMap, type IEvent } from "../../utils/interfaces";
 import Button from "../../components/ui/button/Button"
 import style from "./Event.module.css"
 import { defaultIVenueMap } from "../../utils/defaults";
+import { CartContext } from "../../contexts/cart/CartContextDef";
 
 const Event = () => {
     const { event, getEvent } = useContext(EventContext)
+    const { addToCart } = useContext(CartContext)
     const [events, setEvents] = useState<IEvent[]>([])
     const [searchParams] = useSearchParams()
     const [venue, setVenue] = useState<IVenueMap>(defaultIVenueMap)
@@ -15,6 +17,7 @@ const Event = () => {
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEvents, setLoadingEvents] = useState(true)
     const [loadingVenue, setLoadingVenue] = useState(true)
+    const [addingToCart, setAddingToCart] = useState(false)
     const eventId = searchParams.get("event") || ""
 
     useEffect(() => {
@@ -129,13 +132,19 @@ const Event = () => {
         }
     }, [event?.venue])
 
-    async function addToCart() {
+    async function handleAddToCart() {
+        setAddingToCart(true)
         if (checkedSeats.length === 0) {
             alert("Please select at least one seat before adding to cart.");
             return;
         }
-        alert(`Added ${checkedSeats.length} seat(s) to cart.`);
-        console.log("Selected seats:", checkedSeats);
+        
+        for (const seat of checkedSeats) {
+            const [row, col] = seat.split('');
+            await addToCart(eventId, row, col);
+        }
+        setAddingToCart(false);
+        return alert("Selected tickets have been added to your cart!");
     }
 
     return (
@@ -212,7 +221,7 @@ const Event = () => {
                                                 ))}
                                             </div>
                                         ))}
-                                        <Button text="Add to Cart" className="w-100 mt-3" onClick={addToCart}/>
+                                        <Button text="Add to Cart" className="w-100 mt-3" onClick={handleAddToCart} disabled={addingToCart}/>
                                     </div>
                                 ) : (
                                     <p className="mb-0">Tickets are not available for this event.</p>

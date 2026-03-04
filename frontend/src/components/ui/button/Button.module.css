@@ -55,3 +55,9 @@
   box-shadow: 0 8px 20px rgba(177, 156, 217, 0.4);
   transform: translateY(-2px);
 }
+.disabled {
+  background-color: rgba(177, 156, 217, 0.3);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  box-shadow: none;
+}

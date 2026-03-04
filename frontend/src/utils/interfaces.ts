@@ -229,7 +229,7 @@ export interface IEventContext {
 }
 
 export interface ICartContext {
-  items: ITicketForsale[];
+  tickets: ITicketForsale[];
   addToCart: (eventId: string, row: string, seat: string) => Promise<void>;
   removeFromCart: (ticket: ITicketForsale) => void;
   clearCart: () => void;

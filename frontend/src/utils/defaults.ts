@@ -32,7 +32,7 @@ export const defaultIVenueMap: IVenueMap = {
 }
 
 export const defaultICartContext: ICartContext = {
-  items: [],
+  tickets: [],
   addToCart: async () => {},
   removeFromCart: () => {},
   clearCart: () => {}
