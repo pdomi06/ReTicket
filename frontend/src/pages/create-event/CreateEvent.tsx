@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../utils/defaults";
-import type { IEvent } from "../../utils/interfaces";
+import type { IEvent, IVenueMap } from "../../utils/interfaces";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
 import Select from "../../components/ui/select/Select";
@@ -10,12 +10,51 @@ import style from "./CreateEvent.module.css";
 const CreateEvent = () => {
     const [eventParams, setEventParams] = useState<IEvent>(defaultIEvent);
     const [loading, setLoading] = useState(false);
+    const [venues, setVenues] = useState<IVenueMap[]>([]);
+
+    useEffect(() => {
+        async function fetchVenues() {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`);
+                if (!response.ok) {
+                    console.error('Failed to fetch venues:', response.status, response.statusText);
+                    return;
+                }
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.toLowerCase().includes('application/json')) {
+                    console.error('Unexpected content-type when fetching venues:', contentType);
+                    return;
+                }
+                const data: unknown = await response.json();
+                if (!Array.isArray(data)) {
+                    console.error('Expected an array of venues but got:', data);
+                    return;
+                }
+                setVenues(data as IVenueMap[]);
+            } catch (error) {
+                console.error('Error fetching venues:', error);
+            }
+        }
+        fetchVenues();
+    }, []);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         try {
-            // Add your API call here
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(eventParams),
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to create event: ${response.status} ${response.statusText} - ${errorText}`);
+            }
+            alert("Event created successfully!");
+            
         } catch (error) {
             console.error("Error creating event:", error);
         } finally {
@@ -32,7 +71,13 @@ const CreateEvent = () => {
                     <div className="d-grid gap-3">
                         <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />
                         <Input type="text" name="description" label="Description" onChange={(e) => setEventParams({ ...eventParams, description: e.target.value })} value={eventParams.description || ''} />
-                        <Input type="text" name="venue" label="Venue" onChange={(e) => setEventParams({ ...eventParams, venue: e.target.value })} value={eventParams.venue || ''} />
+                        <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEventParams({ ...eventParams, venue: e.target.value })} value={eventParams.venue || ''} >
+                            <option value="" disabled>Select Venue</option>
+                            <option value="">None</option>
+                            {venues.map((venue) => (
+                                <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows*venue.cols} seats</option>
+                            ))}
+                        </Select>
                         <Input type="text" name="address" label="Address" onChange={(e) => setEventParams({ ...eventParams, address: e.target.value })} value={eventParams.address || ''} />
                         <Input type="text" name="city" label="City" onChange={(e) => setEventParams({ ...eventParams, city: e.target.value })} value={eventParams.city || ''} />
                         <Input type="text" name="state" label="State" onChange={(e) => setEventParams({ ...eventParams, state: e.target.value })} value={eventParams.state || ''} />
@@ -44,10 +89,11 @@ const CreateEvent = () => {
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
                             <option value="" disabled>Select Category</option>
                             <option value="">None</option>
-                            {Object.values(EventCategory).map((cat: string) => (<option key={cat} value={cat}>{cat}</option>
+                            {Object.entries(EventCategory).map(([, value]) => (
+                                <option key={value} value={value}>{value}</option>
                             ))}
                         </Select>
-                       {loading ? <Button type="button" text="Creating Event..." disabled={true} /> : <Button type="submit" text="Create Event" />}
+                        {loading ? <Button type="button" text="Creating Event..." disabled={true} /> : <Button type="submit" text="Create Event" />}
                     </div>
                 </div>
             </form>

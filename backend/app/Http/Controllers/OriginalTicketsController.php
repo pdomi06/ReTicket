@@ -52,4 +52,5 @@ class OriginalTicketsController extends Controller
         $originalTicket->delete();
         return response()->json(["message" => "Original ticket deleted successfully"], 200);
     }
+
 }
