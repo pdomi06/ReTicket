@@ -227,3 +227,10 @@ export interface IEventContext {
   event: IEvent | undefined;
   getEvent: (id: string) => Promise<boolean>;
 }
+
+export interface ICartContext {
+  items: ITicketForsale[];
+  addToCart: (eventId: string, row: string, seat: string) => Promise<void>;
+  removeFromCart: (ticket: ITicketForsale) => void;
+  clearCart: () => void;
+}

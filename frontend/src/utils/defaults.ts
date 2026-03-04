@@ -1,4 +1,4 @@
-import type { IEvent, IEventContext, IVenueMap } from "./interfaces"
+import type { ICartContext, IEvent, IEventContext, IVenueMap } from "./interfaces"
 
 export const defaultIEvent: IEvent = {
   id: 0,
@@ -29,4 +29,11 @@ export const defaultIVenueMap: IVenueMap = {
   rows: 0,
   cols: 0,
   rate: 0
+}
+
+export const defaultICartContext: ICartContext = {
+  items: [],
+  addToCart: async () => {},
+  removeFromCart: () => {},
+  clearCart: () => {}
 }
