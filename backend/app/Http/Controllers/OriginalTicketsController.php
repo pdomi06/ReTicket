@@ -6,6 +6,7 @@ use App\Models\OriginalTicket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOriginalTicketsRequest;
 use App\Http\Requests\UpdateOriginalTicketsRequest;
+use App\Http\Requests\BulkStoreOriginalTicektsRequest;
 
 class OriginalTicketsController extends Controller
 {
@@ -52,5 +53,34 @@ class OriginalTicketsController extends Controller
         $originalTicket->delete();
         return response()->json(["message" => "Original ticket deleted successfully"], 200);
     }
+    
+    public function bulkStore(BulkStoreOriginalTicektsRequest $request)
+    {
+        $eventId = $request->eventId;
+        $venues = $request->venue;
+        $basePrice = $request->eventBasePrice;
 
+        $originalTickets = [];
+        foreach ($venues as $venue) {
+            for ($i = 1; $i <= $venue['row']; $i++) {
+                for ($j = 1; $j <= $venue['col']; $j++) {
+                    $originalTickets[] = [
+                        'eventId' => $eventId,
+                        'section' => $venue['section'],
+                        'row' => $i,
+                        'seatNumber' => $j,
+                        'price' => round($basePrice * $venue['rate'], 2),
+                        'status' => 'pre-release',
+                        'ticketPdfUrl' => null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+        }
+
+        OriginalTicket::insert($originalTickets);
+        return response()->json(["message" => "Original tickets created successfully"], 201)
+            ->header('Access-Control-Allow-Origin', '*');
+    }
 }

@@ -23,6 +23,7 @@ class BulkStoreOriginalTicektsRequest extends FormRequest
     {
         return [
             'eventId' => ['required', 'integer', 'exists:events,id'],
+            'eventBasePrice' => ['required', 'integer'],
             'venue' => ['required', 'array', 'min:1'],
         ];
     }

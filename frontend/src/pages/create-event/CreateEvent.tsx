@@ -13,9 +13,13 @@ const CreateEvent = () => {
     const [venues, setVenues] = useState<IVenueMap[]>([]);
 
     useEffect(() => {
+        const abortController = new AbortController();
+
         async function fetchVenues() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+                    signal: abortController.signal,
+                });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
                     return;
@@ -32,10 +36,14 @@ const CreateEvent = () => {
                 }
                 setVenues(data as IVenueMap[]);
             } catch (error) {
-                console.error('Error fetching venues:', error);
+                if (error instanceof Error && error.name !== 'AbortError') {
+                    console.error('Error fetching venues:', error);
+                }
             }
         }
         fetchVenues();
+
+        return () => abortController.abort();
     }, []);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -54,7 +62,25 @@ const CreateEvent = () => {
                 throw new Error(`Failed to create event: ${response.status} ${response.statusText} - ${errorText}`);
             }
             alert("Event created successfully!");
-            
+            try {
+                const createdOriginalTickets = await fetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        eventId: eventParams.id,
+                        eventBasePrice: eventParams.basePrice,
+                        venue: eventParams.venue
+                    }),
+                });
+                if (!createdOriginalTickets.ok) {
+                    const errorText = await createdOriginalTickets.text();
+                    throw new Error(`Failed to create original tickets: ${createdOriginalTickets.status} ${createdOriginalTickets.statusText} - ${errorText}`);
+                }
+            } catch (error) {
+                console.error("Error creating original tickets:", error);
+            }
         } catch (error) {
             console.error("Error creating event:", error);
         } finally {
@@ -75,7 +101,7 @@ const CreateEvent = () => {
                             <option value="" disabled>Select Venue</option>
                             <option value="">None</option>
                             {venues.map((venue) => (
-                                <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows*venue.cols} seats</option>
+                                <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
                             ))}
                         </Select>
                         <Input type="text" name="address" label="Address" onChange={(e) => setEventParams({ ...eventParams, address: e.target.value })} value={eventParams.address || ''} />
