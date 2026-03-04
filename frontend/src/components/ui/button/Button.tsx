@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import type { ButtonProps } from "../../../utils/interfaces";
 import styles from './Button.module.css';
 
-const Button = ({ type = "button", text, link, variant = "primary" }: ButtonProps) => {
+const Button = ({ type = "button", text, link, variant = "primary", onClick }: ButtonProps) => {
     if (link) {
         return (
             <div className={styles['button-link']}>
@@ -11,7 +11,7 @@ const Button = ({ type = "button", text, link, variant = "primary" }: ButtonProp
         );
     }
     return (
-        <button type={type} className={`${styles.button} ${styles[variant]}`}>{text}</button>
+        <button type={type} onClick={onClick} className={`${styles.button} ${styles[variant]}`}>{text}</button>
     )
 }
 export default Button;

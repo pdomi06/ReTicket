@@ -26,7 +26,7 @@ class StoreVenueMapRequest extends FormRequest
         'section' => ['required', 'string', 'max:255'],
         'rows'     => ['required', 'integer', 'min:1'],
         'cols'    => ['required', 'integer', 'min:1'],
-        'rate'    => ['required', 'numeric', 'min:1', 'max:5'],
+        'rate'    => ['required', 'numeric', 'min:0.1', 'max:9.9'],
         ];
     }
 }

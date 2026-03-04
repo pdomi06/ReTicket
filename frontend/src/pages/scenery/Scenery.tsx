@@ -53,8 +53,6 @@ const Scenery = () => {
             if (!response.ok) {
                 throw new Error(`Failed to store venue: ${response.statusText}`);
             }
-            const data = await response.json();
-            console.log('Venue stored successfully:', data);
             return { success: true, message: 'Scenery created successfully!' };
         } catch (error) {
             console.error('Error storing venue:', error);
@@ -69,7 +67,7 @@ const Scenery = () => {
         const parsedCols = Number(sceneryParams.cols);
         const isValidRows = Number.isInteger(parsedRows) && parsedRows >= 1;
         const isValidCols = Number.isInteger(parsedCols) && parsedCols >= 1;
-        const isValidRate = Number.isFinite(sceneryParams.rate) && sceneryParams.rate >= 1 && sceneryParams.rate <= 5;
+        const isValidRate = Number.isFinite(sceneryParams.rate) && sceneryParams.rate >= 0.1 && sceneryParams.rate <= 9.9;
         if (sceneryParams.venue && sceneryParams.section && isValidRows && isValidCols && isValidRate) {
             try {
                 const newVenue: IVenueMap = {
@@ -105,7 +103,7 @@ const Scenery = () => {
                         <Input type="text" name="section" label="Section" onChange={(e) => setSceneryParams({ ...sceneryParams, section: e.target.value })} value={sceneryParams.section || ''} />
                         <Input type="number" name="rows" label="Rows" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, rows: Number(e.target.value) })} value={sceneryParams.rows || ''} />
                         <Input type="number" name="cols" label="Columns" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, cols: Number(e.target.value) })} value={sceneryParams.cols || ''} />
-                        <Input type="number" name="rate" label="Rate" min={1} step={0.01} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} value={sceneryParams.rate || ''} />
+                        <Input type="number" name="rate" label="Rate" min={0.1} step={0.1} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} value={sceneryParams.rate || ''} />
                         {loading ? <Button type="button" text="Creating Scenery..." disabled={true} /> : <Button type="submit" text="Create Scenery" />}
                     </div>
                 </div>

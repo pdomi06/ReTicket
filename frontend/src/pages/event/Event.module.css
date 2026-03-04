@@ -135,3 +135,42 @@
 .accentBorder {
     border-color: var(--color-accent) !important;
 }
+
+.seatSelector {
+    position: relative;
+    display: inline-block;
+}
+
+.seatSelector input {
+    display: none;
+}
+
+.seatSelector label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    padding: 0.5rem;
+    border: 2px solid var(--color-accent);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    text-align: center;
+}
+
+.seatSelector label:hover {
+    background-color: rgba(177, 156, 217, 0.1);
+    border-color: var(--color-accent);
+}
+
+.seatSelector:has(input:checked) label {
+    background-color: var(--color-accent);
+    color: #001a20;
+    border-color: var(--color-accent);
+}

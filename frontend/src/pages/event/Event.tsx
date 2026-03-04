@@ -1,16 +1,20 @@
 import { useContext, useEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
 import { useSearchParams } from "react-router-dom";
-import type { IEvent } from "../../utils/interfaces";
+import { type IVenueMap, type IEvent } from "../../utils/interfaces";
 import Button from "../../components/ui/button/Button"
 import style from "./Event.module.css"
+import { defaultIVenueMap } from "../../utils/defaults";
 
 const Event = () => {
     const { event, getEvent } = useContext(EventContext)
     const [events, setEvents] = useState<IEvent[]>([])
     const [searchParams] = useSearchParams()
+    const [venue, setVenue] = useState<IVenueMap>(defaultIVenueMap)
+    const [checkedSeats, setCheckedSeats] = useState<string[]>([])
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEvents, setLoadingEvents] = useState(true)
+    const [loadingVenue, setLoadingVenue] = useState(true)
     const eventId = searchParams.get("event") || ""
 
     useEffect(() => {
@@ -80,6 +84,60 @@ const Event = () => {
             cancelled = true
         }
     }, [event?.name])
+    async function getMockVenue() {
+        const v = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue/1`).then(res => res.json())
+        setVenue(v)
+    }
+    useEffect(() => {
+        if (!event?.venue) {
+            setLoadingVenue(false)
+            return
+        }
+        let cancelled = false
+
+        async function fetchVenue() {
+            setLoadingVenue(true)
+            try {
+                const venueQuery = encodeURIComponent(event!.venue)
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venues/search?venue=${venueQuery}`)
+                const contentType = response.headers.get("content-type") || ""
+                if (!response.ok || !contentType.includes("application/json")) {
+                    console.error("Unexpected response when fetching venue", {
+                        status: response.status,
+                        contentType,
+                    })
+                    return
+                }
+                const json = await response.json()
+                if (!cancelled) {
+                    setVenue(json.data[0])
+                }
+            } catch (err) {
+                console.error(err)
+            } finally {
+                if (!cancelled) {
+                    setLoadingVenue(false)
+                }
+            }
+        }
+
+        void fetchVenue()
+        getMockVenue()
+
+        return () => {
+            cancelled = true
+        }
+    }, [event?.venue])
+
+    async function addToCart() {
+        if (checkedSeats.length === 0) {
+            alert("Please select at least one seat before adding to cart.");
+            return;
+        }
+        alert(`Added ${checkedSeats.length} seat(s) to cart.`);
+        console.log("Selected seats:", checkedSeats);
+    }
+
     return (
         <div className="container my-5">
             {loadingEvent ? (
@@ -115,7 +173,7 @@ const Event = () => {
                                     </div>
                                     <div className="col">
                                         <p className="text-white-50 small mb-1">📬 Address</p>
-                                        
+
                                         <p className={`mb-2 ${style.venueInfo}`}>{event?.address}</p>
                                     </div>
                                 </div>
@@ -130,6 +188,35 @@ const Event = () => {
                                         <p className="mb-0">{new Date(event?.eventEndDate || "").toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                                     </div>
                                 </div>
+                            </div>
+                            <div className={`${style.backgroundColorSecondary} p-4 mt-3`}>
+                                <h2 className="fw-bold mb-3 lh-1">Tickets</h2>
+                                {loadingVenue ? (
+                                    <p>Loading venue information...</p>
+                                ) : venue.venue ? (
+                                    <div className="container">
+                                        {Array.from({ length: venue.rows }, (_, i) => (
+                                            <div className="d-flex justify-content-center mb-2 gap-2" key={`row-${i}`}>
+
+                                                {Array.from({ length: venue.cols }, (_, j) => (
+                                                    <div key={`seat-${i}-${j}`} className={style.seatSelector}>
+                                                        <input type="checkbox" name={`seat-${i + 1}-${j + 1}`} id={`seat-${i + 1}-${j + 1}`} onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setCheckedSeats(prev => [...prev, `${i + 1}${j + 1}`]);
+                                                            } else {
+                                                                setCheckedSeats(prev => prev.filter(seat => seat !== `${i + 1}${j + 1}`));
+                                                            }
+                                                        }}/>
+                                                        <label htmlFor={`seat-${i + 1}-${j + 1}`}>{i + 1}-{j + 1}</label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ))}
+                                        <Button text="Add to Cart" className="w-100 mt-3" onClick={addToCart}/>
+                                    </div>
+                                ) : (
+                                    <p className="mb-0">Tickets are not available for this event.</p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -172,14 +259,7 @@ const Event = () => {
                                                             {e.venue && <p className="text-white-50 small mb-0 text-end">📍 {e.venue}<br />{e.city}</p>}
                                                         </div>
                                                     </div>
-                                                    <div className="d-flex gap-2">
-                                                        <div style={{ flex: 1 }}>
-                                                            <Button type="button" text="View Details" link={`/event?event=${e.id}`} />
-                                                        </div>
-                                                        <div style={{ flex: 1 }}>
-                                                            <Button type="button" text="Book Now" link={`/venue/${e.id}`} />
-                                                        </div>
-                                                    </div>
+                                                    <Button text="Book Now" link={`/event?event=${e.id}`} />
                                                 </div>
                                             </div>
                                         )
