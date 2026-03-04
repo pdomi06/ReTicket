@@ -5,6 +5,7 @@ import MainLayout from "../components/layout/MainLayout.tsx";
 
 const Home = lazy(() => import("../pages/test/test.tsx"));
 const Scenery = lazy(() => import("../pages/scenery/Scenery.tsx"));
+const CreateEvent = lazy(() => import("../pages/create-event/CreateEvent.tsx"));
 const Login = lazy(() => import("../pages/login/Login.tsx"));
 const Register = lazy(() => import("../pages/register/Register.tsx"));
 const Profile = lazy(() => import("../pages/profile/Profile.tsx"));
@@ -23,6 +24,7 @@ export const routes: RouteObject[] = [
       { path: "/welcome", element: <Welcome /> },
       { path: "/test", element: <Home /> },
       { path: "/scenery", element: <Scenery /> },
+      { path: "/create-event", element: <CreateEvent /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <Profile /> },
