@@ -41,7 +41,7 @@ const CreateEvent = () => {
                         <Input type="date" name="eventEndDate" label="Event End Date" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={eventParams.eventEndDate || ''} />
                         <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
-                        <Select name="category" label="Category" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
+                        <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
                             <option value="" disabled>Select Category</option>
                             <option value="">None</option>
                             {Object.values(EventCategory).map((cat: string) => (<option key={cat} value={cat}>{cat}</option>
