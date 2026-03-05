@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BulkStoreOriginalTicektsRequest extends FormRequest
 {
@@ -27,4 +29,16 @@ class BulkStoreOriginalTicektsRequest extends FormRequest
             'venue' => ['required', 'array', 'min:1'],
         ];
     }
+
+    /**
+     * Ensure validation errors return JSON instead of a redirect for API clients.
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'The given data was invalid.',
+            'errors' => $validator->errors(),
+        ], 422));
+    }
 }
+    
