@@ -71,6 +71,25 @@ const CreateEvent = () => {
                 );
             }
 
+            const createdEvent = await eventResponse.json();
+            const createdEventId = createdEvent?.data?.id ?? createdEvent?.id;
+            if (!createdEventId) {
+                throw new Error("Event created but no id returned by API");
+            }
+
+            const selectedVenue = venues
+                .filter((venue) => venue.venue === eventParams.venue)
+                .map((venue) => ({
+                    section: venue.section,
+                    row: venue.rows,
+                    col: venue.cols,
+                    rate: venue.rate,
+                }));
+
+            if (selectedVenue.length === 0) {
+                throw new Error("Failed to create tickets: no matching venue found for the event");
+            }
+
             const ticketsResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
@@ -79,9 +98,9 @@ const CreateEvent = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        eventId: eventParams.id,
+                        eventId: createdEventId,
                         eventBasePrice: eventParams.basePrice,
-                        venue: eventParams.venue,
+                        venue: selectedVenue,
                     }),
                 }
             );
