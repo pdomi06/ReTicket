@@ -11,6 +11,7 @@ const CreateEvent = () => {
     const [eventParams, setEventParams] = useState<IEvent>(defaultIEvent);
     const [loading, setLoading] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
+    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -49,21 +50,30 @@ const CreateEvent = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
+        setMessage(null);
+
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(eventParams),
-            });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to create event: ${response.status} ${response.statusText} - ${errorText}`);
+            const eventResponse = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/events`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(eventParams),
+                }
+            );
+
+            if (!eventResponse.ok) {
+                const errorText = await eventResponse.text();
+                throw new Error(
+                    `Failed to create event: ${eventResponse.status} ${eventResponse.statusText} - ${errorText}`
+                );
             }
-            alert("Event created successfully!");
-            try {
-                const createdOriginalTickets = await fetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`, {
+
+            const ticketsResponse = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
+                {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -71,18 +81,28 @@ const CreateEvent = () => {
                     body: JSON.stringify({
                         eventId: eventParams.id,
                         eventBasePrice: eventParams.basePrice,
-                        venue: eventParams.venue
+                        venue: eventParams.venue,
                     }),
-                });
-                if (!createdOriginalTickets.ok) {
-                    const errorText = await createdOriginalTickets.text();
-                    throw new Error(`Failed to create original tickets: ${createdOriginalTickets.status} ${createdOriginalTickets.statusText} - ${errorText}`);
                 }
-            } catch (error) {
-                console.error("Error creating original tickets:", error);
+            );
+
+            if (!ticketsResponse.ok) {
+                const errorText = await ticketsResponse.text();
+                throw new Error(
+                    `Failed to create tickets: ${ticketsResponse.status} ${ticketsResponse.statusText} - ${errorText}`
+                );
             }
+
+            setMessage({
+                type: "success",
+                text: "Event and tickets created successfully!",
+            });
+            setEventParams(defaultIEvent);
         } catch (error) {
-            console.error("Error creating event:", error);
+            const errorMessage =
+                error instanceof Error ? error.message : "An unexpected error occurred";
+            setMessage({ type: "error", text: errorMessage });
+            console.error("Error:", error);
         } finally {
             setLoading(false);
         }
@@ -94,6 +114,15 @@ const CreateEvent = () => {
                 <div className={`rounded p-4 ${style['event-form']}`}>
                     <h1>Create Event</h1>
                     <hr />
+                    {message && (
+                        <div
+                            className={`alert alert-${message.type === "success" ? "success" : "danger"
+                                } mb-3`}
+                            role="alert"
+                        >
+                            {message.text}
+                        </div>
+                    )}
                     <div className="d-grid gap-3">
                         <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />
                         <Input type="text" name="description" label="Description" onChange={(e) => setEventParams({ ...eventParams, description: e.target.value })} value={eventParams.description || ''} />
