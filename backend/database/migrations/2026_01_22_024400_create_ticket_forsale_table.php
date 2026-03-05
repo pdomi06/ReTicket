@@ -15,10 +15,8 @@ return new class extends Migration
 
         Schema::create('ticket_forsale', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('originalTicketId');
-            $table->foreign('originalTicketId')->references('id')->on('original_tickets');
-            $table->bigInteger('fromUserId');
-            $table->foreign('fromUserId')->references('id')->on('user');
+            $table->foreignId('originalTicketId')->constrained('original_tickets');
+            $table->foreignId('fromUserId')->nullable()->constrained('user');
             $table->decimal('price');
             $table->boolean('inBasket');
         });

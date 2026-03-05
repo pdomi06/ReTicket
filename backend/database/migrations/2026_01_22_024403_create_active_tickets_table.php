@@ -15,9 +15,8 @@ return new class extends Migration
 
         Schema::create('active_tickets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('originalTicektId');
-            $table->foreign('originalTicektId')->references('id')->on('original_tickets');
-            $table->bigInteger('ticketListingId');
+            $table->foreignId('originalTicektId')->constrained('original_tickets');
+            $table->text('ticketListingId');
         });
 
         Schema::enableForeignKeyConstraints();
