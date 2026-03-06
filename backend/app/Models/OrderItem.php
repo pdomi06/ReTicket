@@ -10,7 +10,10 @@ class OrderItem extends Model
     /** @use HasFactory<\Database\Factories\OrderItemsFactory> */
     use HasFactory;
 
-    protected $table = "order_items";
+    protected $table = "order_item";
+
+
+
     protected $fillable = [
         'orderId',
         'ticketListingId',
@@ -20,4 +23,15 @@ class OrderItem extends Model
     //const CREATED_AT = 'createdAt';
 
     public $timestamps = false;
+
+
+    public function ticketForSale()
+    {
+        return $this->belongsTo(TicketForSale::class, 'ticketListingId');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'orderId');
+    }
 }

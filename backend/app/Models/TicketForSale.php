@@ -11,6 +11,8 @@ class TicketForSale extends Model
     use HasFactory;
 
     protected $table = "ticket_forsale";
+
+
     protected $fillable = [
         'originalTicketId',
         'fromUserId',
@@ -19,4 +21,14 @@ class TicketForSale extends Model
     ];
 
     public $timestamps = false;
+
+    public function originalTicket()
+    {
+        return $this->belongsTo(OriginalTicket::class, 'originalTicketId');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'fromUserId');
+    }
 }
