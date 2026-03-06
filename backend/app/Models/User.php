@@ -20,25 +20,6 @@ class User extends Authenticatable
 
     protected $table = "user";
 
-    public function orders(){
-        return $this->hasMany(Order::class, 'buyerEmail', 'email');
-    }
-
-    public function ticketForSale(){
-        return $this->hasMany(TicketForSale::class, 'fromUserId');
-    }
-
-    public function userSetting(){
-        return $this->hasOne(UserSettings::class, 'userId');
-    }
-
-    public function payouts(){
-        return $this->hasMany(Payout::class, 'vendorId');
-    }
-
-    public function reviews(){
-        return $this->hasMany(Review::class, 'reviewedUserId');
-    }
 
     protected $fillable = [
         'email',
@@ -82,7 +63,33 @@ class User extends Authenticatable
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
 
-    public function getAuthPassword(){
+    public function getAuthPassword()
+    {
         return $this->passwordHash;
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'buyerEmail', 'email');
+    }
+
+    public function ticketForSale()
+    {
+        return $this->hasMany(TicketForSale::class, 'fromUserId');
+    }
+
+    public function userSetting()
+    {
+        return $this->hasOne(UserSettings::class, 'userId');
+    }
+
+    public function payouts()
+    {
+        return $this->hasMany(Payout::class, 'vendorId');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'reviewedUserId');
     }
 }

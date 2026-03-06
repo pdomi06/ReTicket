@@ -12,14 +12,6 @@ class Order extends Model
 
     protected $table = "orders";
 
-    public function user(){
-        return $this->belongsTo(User::class, 'buyerEmail', 'email');
-    }
-
-    public function orderItems(){
-        return $this->hasMany(OrderItem::class, 'orderId');
-    }
-
     protected $fillable = [
         'orderNumber',
         'buyerEmail',
@@ -40,11 +32,22 @@ class Order extends Model
 
     protected $casts = [
         'deliveredAt' => 'datetime',
-        'completedAt'=> 'datetime',
+        'completedAt' => 'datetime',
         'cancelledAt' => 'datetime',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
-    
+
     //public $timestamps = false;
+
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'orderId');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'buyerEmail', 'email');
+    }
 }

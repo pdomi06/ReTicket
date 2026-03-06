@@ -12,14 +12,8 @@ class OrderItem extends Model
 
     protected $table = "order_items";
 
-    public function order(){
-        return $this->belongsTo(Order::class);
-    }
 
-    public function ticketForSale(){
-        return $this->belongsTo(TicketForSale::class, 'ticketListingId');
-    }
-    
+
     protected $fillable = [
         'orderId',
         'ticketListingId',
@@ -29,4 +23,15 @@ class OrderItem extends Model
     //const CREATED_AT = 'createdAt';
 
     public $timestamps = false;
+
+
+    public function ticketForSale()
+    {
+        return $this->belongsTo(TicketForSale::class, 'ticketListingId');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'orderId');
+    }
 }
