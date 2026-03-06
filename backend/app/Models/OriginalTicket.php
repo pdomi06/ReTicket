@@ -32,7 +32,7 @@ class OriginalTicket extends Model
         return $this->belongsTo(Event::class, 'eventId');
     }
 
-    public function ticketForSale(){
+    public function ticketsForSale(){
         return $this->hasMany(TicketForSale::class, 'originalTicketId');
     }
 }

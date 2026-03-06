@@ -73,14 +73,14 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'buyerEmail', 'email');
     }
 
-    public function ticketForSale()
+    public function ticketsForSale()
     {
         return $this->hasMany(TicketForSale::class, 'fromUserId');
     }
 
     public function userSetting()
     {
-        return $this->hasOne(UserSettings::class, 'userId');
+        return $this->hasOne(UserSettings::class, 'userid');
     }
 
     public function payouts()

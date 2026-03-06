@@ -10,7 +10,7 @@ class OrderItem extends Model
     /** @use HasFactory<\Database\Factories\OrderItemsFactory> */
     use HasFactory;
 
-    protected $table = "order_items";
+    protected $table = "order_item";
 
 
 
