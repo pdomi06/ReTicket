@@ -6,7 +6,7 @@ use App\Models\OriginalTicket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOriginalTicketsRequest;
 use App\Http\Requests\UpdateOriginalTicketsRequest;
-use App\Http\Requests\BulkStoreOriginalTicektsRequest;
+use App\Http\Requests\BulkStoreOriginalTicketsRequest;
 
 class OriginalTicketsController extends Controller
 {
@@ -54,7 +54,7 @@ class OriginalTicketsController extends Controller
         return response()->json(["message" => "Original ticket deleted successfully"], 200);
     }
     
-    public function bulkStore(BulkStoreOriginalTicektsRequest $request)
+    public function bulkStore(BulkStoreOriginalTicketsRequest $request)
     {
         $eventId = $request->eventId;
         $venues = $request->venue;
