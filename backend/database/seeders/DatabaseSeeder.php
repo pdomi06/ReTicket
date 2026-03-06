@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);*/
 
         $this->call([
+            
             VenueMapSeeder::class,
             EventsSeeder::class,
             OriginalTicketSeeder::class,
@@ -30,6 +31,9 @@ class DatabaseSeeder extends Seeder
             PasswordResetSeeder::class,
             EmailVerifySeeder::class,
             UserSettingsSeeder::class,
+            OrdersSeeder::class,
+            TicketForsaleSeeder::class,
+            
         ]);
     }
 }

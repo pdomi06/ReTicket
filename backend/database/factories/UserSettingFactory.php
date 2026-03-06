@@ -19,7 +19,7 @@ class UserSettingFactory extends Factory
     {
         $visibility = ["visible", "restricted", "banned"];
         return [
-            'userid' => User::factory(),
+            'userid' => User::inRandomOrder()->first()->id ?? User::factory(),
             'emailNotification' => fake()->boolean(50),
             'smsNotification' => fake()->boolean(50),
             'profileVisibility' => fake()->randomElement($visibility),

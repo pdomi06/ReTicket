@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\OriginalTicket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,10 @@ class TicketForsaleFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
+            'fromUserId' => User::inRandomOrder()->first()->id ?? User::factory(),
+            'price' => fake()->randomFloat(2, 10, 100),
+            'inBasket' => fake()->boolean(),
         ];
     }
 }

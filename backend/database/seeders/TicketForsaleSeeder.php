@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\TicketForSale;
+use Database\Factories\TicketForsaleFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +14,6 @@ class TicketForsaleSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        TicketForSale::factory(10)->create();
     }
 }

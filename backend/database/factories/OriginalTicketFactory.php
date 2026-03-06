@@ -19,7 +19,7 @@ class OriginalTicketFactory extends Factory
     {
         $status = ["pre-release", "active", "cancelled", "expired"];
         return [
-            'eventId' => Event::factory(),
+            'eventId' => Event::inRandomOrder()->first()->id ?? Event::factory(),
             'section' => fake()->randomLetter(),
             'row' => fake()->numberBetween(1, 100),
             'seatNumber' => fake()->numberBetween(1, 100),
