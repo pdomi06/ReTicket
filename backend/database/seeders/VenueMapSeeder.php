@@ -13,6 +13,6 @@ class VenueMapSeeder extends Seeder
      */
     public function run(): void
     {
-        //VenueMap::factory(10)->create();
+        VenueMap::factory(10)->create();
     }
 }

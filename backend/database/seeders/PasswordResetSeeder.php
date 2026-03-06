@@ -13,6 +13,6 @@ class PasswordResetSeeder extends Seeder
      */
     public function run(): void
     {
-        //PasswordReset::factory(10)->create();
+        PasswordReset::factory(10)->create();
     }
 }

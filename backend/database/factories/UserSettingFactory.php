@@ -19,12 +19,19 @@ class UserSettingFactory extends Factory
     {
         $visibility = ["visible", "restricted", "banned"];
         return [
-            'userId' => User::factory(),
-            'emailNotifications' => fake()->boolean(50),
-            'smsNotifications' => fake()->boolean(50),
+            'userid' => User::factory(),
+            'emailNotification' => fake()->boolean(50),
+            'smsNotification' => fake()->boolean(50),
             'profileVisibility' => fake()->randomElement($visibility),
             'createdAt' => now(),
             'updatedAt' => now(),
         ];
+    }
+    public function forUser(User $user){
+        return $this->state(function (array $attributes) use ($user) {
+            return [
+                'userid' => $user->id,
+            ];
+        });
     }
 }

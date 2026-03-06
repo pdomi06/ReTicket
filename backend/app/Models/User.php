@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function userSetting()
     {
-        return $this->hasOne(UserSettings::class, 'userid');
+        return $this->hasOne(UserSetting::class, 'userid');
     }
 
     public function payouts()

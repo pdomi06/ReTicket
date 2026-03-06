@@ -28,29 +28,42 @@ class Event extends Model
         'updatedAt',
     ];
 
-    public function originalTickets(){
-        return $this->hasMany(OriginalTicket::class, 'eventId');
-    }
 
-    public function scopeSearch($query, array $filters) {
+
+    public function scopeSearch($query, array $filters)
+    {
         return $query
-            ->when($filters['event'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['event'] ?? null,
+                fn($q, $value) =>
                 $q->where('name', 'like', '%' . $value . '%')
             )
-            ->when($filters['venue'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['venue'] ?? null,
+                fn($q, $value) =>
                 $q->where('venue', 'like', '%' . $value . '%')
             )
-            ->when($filters['city'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['city'] ?? null,
+                fn($q, $value) =>
                 $q->where('city', 'like', '%' . $value . '%')
             )
-            ->when($filters['date'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['date'] ?? null,
+                fn($q, $value) =>
                 $q->whereDate('eventDate', '=', $value)
             )
-            ->when($filters['category'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['category'] ?? null,
+                fn($q, $value) =>
                 $q->where('category', $value)
             )
-            ->when($filters['maxPrice'] ?? null, fn($q, $value) =>
-                $q->whereHas('originalTickets', fn($q) =>
+            ->when(
+                $filters['maxPrice'] ?? null,
+                fn($q, $value) =>
+                $q->whereHas(
+                    'originalTickets',
+                    fn($q) =>
                     $q->where('price', '<=', $value)
                 )
             );
@@ -58,10 +71,15 @@ class Event extends Model
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
 
-    protected $casts= [
+    protected $casts = [
         'eventDate' => 'datetime',
         'eventEndDate' => 'datetime'
     ];
 
     //public $timestamps = false;
+
+    public function originalTickets()
+    {
+        return $this->hasMany(OriginalTicket::class, 'eventId');
+    }
 }

@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ticket_history>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TicketHistory>
  */
 class TicketHistoryFactory extends Factory
 {

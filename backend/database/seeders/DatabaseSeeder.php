@@ -23,12 +23,12 @@ class DatabaseSeeder extends Seeder
         ]);*/
 
         $this->call([
-            /*VenueMapSeeder::class,
+            VenueMapSeeder::class,
             EventsSeeder::class,
             OriginalTicketSeeder::class,
             UserSeeder::class,
             PasswordResetSeeder::class,
-            EmailVerifySeeder::class,*/
+            EmailVerifySeeder::class,
             UserSettingsSeeder::class,
         ]);
     }
