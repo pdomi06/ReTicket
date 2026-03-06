@@ -29,8 +29,8 @@ class BulkStoreOriginalTicketsRequest extends FormRequest
             'venue' => ['required', 'array', 'min:1'],
             'venue.*.row' => ['required', 'integer'],
             'venue.*.col' => ['required', 'integer'],
-            'venue.*.section' => ['required', 'integer'],
-            'venue.*.rate' => ['required', 'integer'],
+            'venue.*.section' => ['required', 'string', 'max:255'],
+            'venue.*.rate' => ['required', 'numeric', 'decimal:1'],
         ];
     }
 
