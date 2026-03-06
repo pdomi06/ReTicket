@@ -6,7 +6,7 @@ use App\Models\VenueMap;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVenueMapRequest;
 use App\Http\Requests\UpdateVenueMapRequest;
-
+use App\Http\Requests\SearchVenueMapRequest;
 class VenueMapController extends Controller
 {
     /**
