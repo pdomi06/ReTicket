@@ -35,4 +35,8 @@ class OriginalTicket extends Model
     public function ticketsForSale(){
         return $this->hasMany(TicketForSale::class, 'originalTicketId');
     }
+
+    public function ticketForSale(){
+        return $this->ticketForSale();
+    }
 }
