@@ -138,7 +138,7 @@ const Event = () => {
             alert("Please select at least one seat before adding to cart.");
             return;
         }
-        
+
         for (const seat of checkedSeats) {
             const [row, col] = seat.split('');
             await addToCart(eventId, row, col);
@@ -215,13 +215,13 @@ const Event = () => {
                                                             } else {
                                                                 setCheckedSeats(prev => prev.filter(seat => seat !== `${i + 1}${j + 1}`));
                                                             }
-                                                        }}/>
+                                                        }} />
                                                         <label htmlFor={`seat-${i + 1}-${j + 1}`}>{i + 1}-{j + 1}</label>
                                                     </div>
                                                 ))}
                                             </div>
                                         ))}
-                                        <Button text="Add to Cart" className="w-100 mt-3" onClick={handleAddToCart} disabled={addingToCart}/>
+                                        <Button text="Add to Cart" className="w-100 mt-3" onClick={handleAddToCart} disabled={addingToCart} />
                                     </div>
                                 ) : (
                                     <p className="mb-0">Tickets are not available for this event.</p>
