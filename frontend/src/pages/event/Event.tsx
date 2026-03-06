@@ -87,10 +87,7 @@ const Event = () => {
             cancelled = true
         }
     }, [event?.name])
-    async function getMockVenue() {
-        const v = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue/1`).then(res => res.json())
-        setVenue(v)
-    }
+
     useEffect(() => {
         if (!event?.venue) {
             setLoadingVenue(false)
@@ -125,7 +122,6 @@ const Event = () => {
         }
 
         void fetchVenue()
-        getMockVenue()
 
         return () => {
             cancelled = true
