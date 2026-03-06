@@ -21,19 +21,23 @@ class User extends Authenticatable
     protected $table = "user";
 
     public function orders(){
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'buyerEmail', 'email');
     }
 
     public function ticketForSale(){
-        return $this->hasMany(TicketForSale::class);
+        return $this->hasMany(TicketForSale::class, 'fromUserId');
     }
 
-    public function userSettings(){
-        return $this->hasOne(UserSettings::class);
+    public function userSetting(){
+        return $this->hasOne(UserSettings::class, 'userId');
+    }
+
+    public function payouts(){
+        return $this->hasMany(Payout::class, 'vendorId');
     }
 
     public function reviews(){
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class, 'reviewedUserId');
     }
 
     protected $fillable = [

@@ -17,15 +17,7 @@ class OrderItem extends Model
     }
 
     public function ticketForSale(){
-        return $this->belongsTo(TicketForSale::class);
-    }
-
-    public function payout(){
-        return $this->hasOne(Payout::class);
-    }
-
-    public function review(){
-        return $this->hasOne(Review::class);
+        return $this->belongsTo(TicketForSale::class, 'ticketListingId');
     }
     
     protected $fillable = [

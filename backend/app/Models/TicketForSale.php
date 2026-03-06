@@ -11,6 +11,15 @@ class TicketForSale extends Model
     use HasFactory;
 
     protected $table = "ticket_forsale";
+
+    public function originalTicket(){
+        return $this->belongsTo(OriginalTicket::class, 'originalTicketId');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'fromUserId');
+    }
+
     protected $fillable = [
         'originalTicketId',
         'fromUserId',

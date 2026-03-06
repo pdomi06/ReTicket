@@ -13,11 +13,11 @@ class Order extends Model
     protected $table = "orders";
 
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'buyerEmail', 'email');
     }
 
     public function orderItems(){
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'orderId');
     }
 
     protected $fillable = [
