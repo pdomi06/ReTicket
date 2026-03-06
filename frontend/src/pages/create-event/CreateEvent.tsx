@@ -147,7 +147,6 @@ const CreateEvent = () => {
                         <Input type="text" name="description" label="Description" onChange={(e) => setEventParams({ ...eventParams, description: e.target.value })} value={eventParams.description || ''} />
                         <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEventParams({ ...eventParams, venue: e.target.value })} value={eventParams.venue || ''} >
                             <option value="" disabled>Select Venue</option>
-                            <option value="">None</option>
                             {venues.map((venue) => (
                                 <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
                             ))}
@@ -162,7 +161,6 @@ const CreateEvent = () => {
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
                             <option value="" disabled>Select Category</option>
-                            <option value="">None</option>
                             {Object.entries(EventCategory).map(([, value]) => (
                                 <option key={value} value={value}>{value}</option>
                             ))}
