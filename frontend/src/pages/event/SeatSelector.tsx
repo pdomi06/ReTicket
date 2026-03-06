@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { CartContext } from "../../contexts/cart/CartContextDef"
-import { type IVenueMap } from "../../utils/interfaces"
+import { type IVenueMap, type IOriginalTicket } from "../../utils/interfaces"
 import Button from "../../components/ui/button/Button"
 import style from "./Event.module.css"
 
@@ -8,12 +8,26 @@ interface SeatSelectorProps {
     venue: IVenueMap
     eventId: string
     loading: boolean
+    tickets: IOriginalTicket[]
 }
 
-const SeatSelector = ({ venue, eventId, loading }: SeatSelectorProps) => {
+const SeatSelector = ({ venue, eventId, loading, tickets }: SeatSelectorProps) => {
     const { addToCart } = useContext(CartContext)
     const [checkedSeats, setCheckedSeats] = useState<string[]>([])
     const [addingToCart, setAddingToCart] = useState(false)
+    const [zoom, setZoom] = useState(1)
+
+    const seatExists = (row: number, col: number) => {
+        return tickets.some(t => Number(t.row) === row && Number(t.seatNumber) === col)
+    }
+
+    const handleZoomIn = () => {
+        setZoom(prev => Math.min(3, prev + 0.2))
+    }
+
+    const handleZoomOut = () => {
+        setZoom(prev => Math.max(0.5, prev - 0.2))
+    }
 
     async function handleAddToCart() {
         if (checkedSeats.length === 0) {
@@ -35,29 +49,65 @@ const SeatSelector = ({ venue, eventId, loading }: SeatSelectorProps) => {
             {loading ? (
                 <p>Loading venue information...</p>
             ) : venue.venue ? (
-                <div className="container">
-                    {Array.from({ length: venue.rows }, (_, i) => (
-                        <div className="d-flex justify-content-center mb-2 gap-2" key={`row-${i}`}>
-                            {Array.from({ length: venue.cols }, (_, j) => (
-                                <div key={`seat-${i}-${j}`} className={style.seatSelector}>
-                                    <input
-                                        type="checkbox"
-                                        name={`seat-${i + 1}-${j + 1}`}
-                                        id={`seat-${i + 1}-${j + 1}`}
-                                        onChange={(e) => {
-                                            const seatKey = `${i + 1}${j + 1}`
-                                            if (e.target.checked) {
-                                                setCheckedSeats(prev => [...prev, seatKey])
-                                            } else {
-                                                setCheckedSeats(prev => prev.filter(s => s !== seatKey))
-                                            }
-                                        }}
-                                    />
-                                    <label htmlFor={`seat-${i + 1}-${j + 1}`}>{i + 1}-{j + 1}</label>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
+                <div>
+                    <div className="d-flex gap-2 mb-3">
+                        <button
+                            onClick={handleZoomOut}
+                            className="btn btn-sm btn-outline-light"
+                            disabled={zoom <= 0.5}
+                        >
+                            −
+                        </button>
+                        <span className="align-self-center" style={{ minWidth: '60px', textAlign: 'center' }}>
+                            {Math.round(zoom * 100)}%
+                        </span>
+                        <button
+                            onClick={handleZoomIn}
+                            className="btn btn-sm btn-outline-light"
+                            disabled={zoom >= 3}
+                        >
+                            +
+                        </button>
+                    </div>
+                    <div
+                        className={style.seatGridContainer}
+                        style={{ '--seat-zoom': zoom } as React.CSSProperties}
+                    >
+                        {Array.from({ length: venue.rows }, (_, i) => (
+                            <div className={style.seatRow} key={`row-${i}`}>
+                                {Array.from({ length: venue.cols }, (_, j) => {
+                                    const row = i + 1
+                                    const col = j + 1
+                                    const available = seatExists(row, col)
+
+                                    return (
+                                        <div
+                                            key={`seat-${i}-${j}`}
+                                            className={`${style.seatSelector} ${!available ? style.seatUnavailable : ""}`}
+                                            title={available ? "Click to select" : "Seat not available"}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                name={`seat-${row}-${col}`}
+                                                id={`seat-${row}-${col}`}
+                                                disabled={!available}
+                                                onChange={(e) => {
+                                                    if (!available) return
+                                                    const seatKey = `${row}${col}`
+                                                    if (e.target.checked) {
+                                                        setCheckedSeats(prev => [...prev, seatKey])
+                                                    } else {
+                                                        setCheckedSeats(prev => prev.filter(s => s !== seatKey))
+                                                    }
+                                                }}
+                                            />
+                                            <label htmlFor={`seat-${row}-${col}`}>{row}-{col}</label>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        ))}
+                    </div>
                     <Button text="Add to Cart" className="w-100 mt-3" onClick={handleAddToCart} disabled={addingToCart} />
                 </div>
             ) : (

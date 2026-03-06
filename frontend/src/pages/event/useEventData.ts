@@ -1,15 +1,50 @@
 import { useContext, useEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
-import { type IVenueMap, type IEvent } from "../../utils/interfaces"
+import { type IVenueMap, type IEvent, type IOriginalTicket } from "../../utils/interfaces"
 import { defaultIVenueMap } from "../../utils/defaults"
+
+// Deduplicate simultaneous ticket requests for the same eventId
+const inFlightTicketRequests = new Map<string, Promise<IOriginalTicket[]>>()
+
+async function fetchOriginalTickets(eventId: string): Promise<IOriginalTicket[]> {
+    const key = eventId.trim()
+    const existing = inFlightTicketRequests.get(key)
+    if (existing) return existing
+
+    const request = fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/originalTickets/forSale/${encodeURIComponent(key)}`
+    )
+        .then(async (response) => {
+            const contentType = response.headers.get("content-type") || ""
+            if (!response.ok || !contentType.includes("application/json")) {
+                console.error(`Failed to fetch tickets for event ${key}`, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    contentType,
+                })
+                return []
+            }
+
+            const json = await response.json()
+            return json.data ?? json
+        })
+        .finally(() => {
+            inFlightTicketRequests.delete(key)
+        })
+
+    inFlightTicketRequests.set(key, request)
+    return request
+}
 
 export function useEventData(eventId: string) {
     const { event, getEvent } = useContext(EventContext)
     const [events, setEvents] = useState<IEvent[]>([])
     const [venue, setVenue] = useState<IVenueMap>(defaultIVenueMap)
+    const [tickets, setTickets] = useState<IOriginalTicket[]>([])
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEvents, setLoadingEvents] = useState(true)
     const [loadingVenue, setLoadingVenue] = useState(true)
+
 
     useEffect(() => {
         let cancelled = false
@@ -33,11 +68,18 @@ export function useEventData(eventId: string) {
             setLoadingEvent(false)
             setLoadingEvents(false)
         }
+        if (eventId) {
+            void fetchOriginalTickets(eventId).then(tickets => {
+                if (!cancelled) {
+                    setTickets(tickets.filter(t => String(t.status) === "active"))
+                }
+            })
+        }
 
         return () => {
             cancelled = true
         }
-    }, [eventId, getEvent])
+    }, [eventId])
 
     useEffect(() => {
         if (!event?.name) {
@@ -120,5 +162,6 @@ export function useEventData(eventId: string) {
         }
     }, [event?.venue])
 
-    return { event, events, venue, loadingEvent, loadingEvents, loadingVenue }
+
+    return { event, events, venue, tickets, loadingEvent, loadingEvents, loadingVenue }
 }

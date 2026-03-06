@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OriginalTicket;
+use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOriginalTicketsRequest;
 use App\Http\Requests\UpdateOriginalTicketsRequest;
@@ -118,5 +119,16 @@ class OriginalTicketsController extends Controller
 
         OriginalTicket::insert($originalTickets);
         return response()->json(["message" => "Original tickets created successfully"], 201);
+    }
+    public function getOnlyAvailableTicketsInForSale($eventId)
+    {
+        $ticketsForSale = TicketForSale::where('eventId', $eventId)
+            ->where('inBasket', false)
+            ->get();
+        $availableOriginalTickets = OriginalTicket::where('eventId', $eventId)
+            ->where('status', 'active')
+            ->whereIn('id', $ticketsForSale->pluck('originalTicketId'))
+            ->get();
+        return response()->json($availableOriginalTickets, 200);
     }
 }

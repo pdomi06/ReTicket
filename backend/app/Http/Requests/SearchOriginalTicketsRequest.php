@@ -22,13 +22,13 @@ class SearchOriginalTicketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'eventId' => ['nullable', 'bigInteger'],
+            'eventId' => ['nullable', 'integer'],
             'section' => ['nullable', 'string', 'max:255'],
             'row' => ['nullable', 'string', 'max:255'],
             'seatNumber' => ['nullable', 'string', 'max:255'],
             'price' => ['nullable', 'numeric', 'min:0'],
-            'status' => ['nullable', 'in:available,reserved,sold'],
-            'ticketPdfUrl' => ['nullable', 'in:pre-release,active,cancelled,expired'],
+            'status' => ['nullable', 'in:available,reserved,sold,pre-release,active,cancelled,expired'],
+            'ticketPdfUrl' => ['nullable', 'string', 'url'],
         ];
     }
 }

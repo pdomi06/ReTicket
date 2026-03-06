@@ -6,6 +6,7 @@ use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForsaleRequest;
 use App\Http\Requests\UpdateTicketForsaleRequest;
+use App\Http\Requests\SearchTicketForSale;
 
 class TicketForsaleController extends Controller
 {
@@ -16,6 +17,34 @@ class TicketForsaleController extends Controller
     {
         $tickets_forsale = TicketForSale::all();
         return response()->json($tickets_forsale, 200);
+    }
+
+    public function search(SearchTicketForSale $request)
+    {
+        $filters = $request->validated();
+        $query = TicketForSale::query();
+
+        if (!empty($filters['originalTicketId'])) {
+            $query->where('originalTicketId', $filters['originalTicketId']);
+        }
+
+        if( !empty($filters['fromUserId'])) {
+            $query->where('fromUserId', $filters['fromUserId']);
+        }
+
+        if (!empty($filters['eventId'])) {
+            $query->where('eventId', $filters['eventId']);
+        }
+
+        if (!empty($filters['price'])) {
+            $query->where('price', $filters['price']);
+        }
+
+        if (!empty($filters['inBasket'])) {
+            $query->where('inBasket', $filters['inBasket']);
+        }
+
+        return response()->json(['success' => true, 'data' => $query->get()], 200);
     }
 
     /**
