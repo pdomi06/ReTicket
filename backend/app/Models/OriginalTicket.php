@@ -23,6 +23,31 @@ class OriginalTicket extends Model
         'updatedAt'
     ];
 
+        public function scopeSearch($query, array $filters) {
+        return $query
+            ->when($filters['eventId'] ?? null, fn($q, $value) =>
+                $q->where('eventId', $value)
+            )
+            ->when($filters['section'] ?? null, fn($q, $value) =>
+                $q->where('section', 'like', '%' . $value . '%')
+            )
+            ->when($filters['row'] ?? null, fn($q, $value) =>
+                $q->where('row', 'like', '%' . $value . '%')
+            )
+            ->when($filters['seatNumber'] ?? null, fn($q, $value) =>
+                $q->where('seatNumber', 'like', '%' . $value . '%')
+            )
+            ->when($filters['price'] ?? null, fn($q, $value) =>
+                $q->where('price', $value)
+            )
+            ->when($filters['status'] ?? null, fn($q, $value) =>
+                $q->where('status', $value)
+            )
+            ->when($filters['ticketPdfUrl'] ?? null, fn($q, $value) =>
+                $q->where('ticketPdfUrl', $value)
+            );
+    }
+
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
 

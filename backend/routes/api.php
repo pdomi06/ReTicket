@@ -29,6 +29,7 @@ Route::apiResource("events", EventsController::class);
 Route::apiResource("orderItems", OrderItemsController::class);
 Route::apiResource("orders", OrdersController::class);
 Route::post("originalTickets/bulk", [OriginalTicketsController::class, "bulkStore"]);
+Route::get("originalTickets/search", [OriginalTicketsController::class, "search"]);
 Route::apiResource("originalTickets", OriginalTicketsController::class);
 Route::apiResource("passwordReset", PasswordResetController::class);
 Route::apiResource("payouts", PayoutsController::class);
