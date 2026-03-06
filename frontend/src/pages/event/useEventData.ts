@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
 import { type IVenueMap, type IEvent, type IOriginalTicket } from "../../utils/interfaces"
 import { defaultIVenueMap } from "../../utils/defaults"
@@ -163,5 +163,11 @@ export function useEventData(eventId: string) {
     }, [event?.venue])
 
 
-    return { event, events, venue, tickets, loadingEvent, loadingEvents, loadingVenue }
+    const refreshTickets = useCallback(async () => {
+        if (!eventId) return
+        const tickets = await fetchOriginalTickets(eventId)
+        setTickets(tickets.filter(t => String(t.status) === "active"))
+    }, [eventId])
+
+    return { event, events, venue, tickets, loadingEvent, loadingEvents, loadingVenue, refreshTickets }
 }

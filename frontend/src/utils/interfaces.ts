@@ -193,7 +193,7 @@ export interface TextareaProps {
 
 export interface ButtonProps {
     type?: 'button' | 'submit' | 'reset';
-    text: string;
+    text: string | React.ReactNode;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     disabled?: boolean;
     className?: string;

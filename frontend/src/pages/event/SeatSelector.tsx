@@ -9,13 +9,15 @@ interface SeatSelectorProps {
     eventId: string
     loading: boolean
     tickets: IOriginalTicket[]
+    onReload: () => Promise<void>
 }
 
-const SeatSelector = ({ venue, eventId, loading, tickets }: SeatSelectorProps) => {
+const SeatSelector = ({ venue, eventId, loading, tickets, onReload }: SeatSelectorProps) => {
     const { addToCart } = useContext(CartContext)
     const [checkedSeats, setCheckedSeats] = useState<string[]>([])
     const [addingToCart, setAddingToCart] = useState(false)
     const [zoom, setZoom] = useState(1)
+    const [isReloading, setIsReloading] = useState(false)
 
     const seatExists = (row: number, col: number) => {
         return tickets.some(t => Number(t.row) === row && Number(t.seatNumber) === col)
@@ -27,6 +29,15 @@ const SeatSelector = ({ venue, eventId, loading, tickets }: SeatSelectorProps) =
 
     const handleZoomOut = () => {
         setZoom(prev => Math.max(0.5, prev - 0.2))
+    }
+
+    const handleReload = async () => {
+        setIsReloading(true)
+        try {
+            await onReload()
+        } finally {
+            setIsReloading(false)
+        }
     }
 
     async function handleAddToCart() {
@@ -50,24 +61,19 @@ const SeatSelector = ({ venue, eventId, loading, tickets }: SeatSelectorProps) =
                 <p>Loading venue information...</p>
             ) : venue.venue ? (
                 <div>
-                    <div className="d-flex gap-2 mb-3">
-                        <button
-                            onClick={handleZoomOut}
-                            className="btn btn-sm btn-outline-light"
-                            disabled={zoom <= 0.5}
-                        >
-                            −
-                        </button>
-                        <span className="align-self-center" style={{ minWidth: '60px', textAlign: 'center' }}>
+                    <div className={style.controlBar}>
+                        <div className={style.zoomButtonWrapper}>
+                            <Button text="−" variant="outline" onClick={handleZoomOut} disabled={zoom <= 0.5} />
+                        </div>
+                        <span className={style.zoomDisplay}>
                             {Math.round(zoom * 100)}%
                         </span>
-                        <button
-                            onClick={handleZoomIn}
-                            className="btn btn-sm btn-outline-light"
-                            disabled={zoom >= 3}
-                        >
-                            +
-                        </button>
+                        <div className={style.zoomButtonWrapper}>
+                            <Button text="+" variant="outline" onClick={handleZoomIn} disabled={zoom >= 3} />
+                        </div>
+                        <div className={style.reloadButtonWrapper}>
+                            <Button text={<><span className={`${style.reloadIcon} ${isReloading ? style.spinning : ''}`}>↻</span> Reload</>} variant="outline" onClick={handleReload} disabled={isReloading} />
+                        </div>
                     </div>
                     <div
                         className={style.seatGridContainer}
