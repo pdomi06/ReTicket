@@ -23,12 +23,20 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
+        $kycStatus = ["pending", "rejected", "approved"];
         return [
-            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'passwordHash' => Hash::make('password'),
+            'name' => fake()->name(),
+            'phone' => fake()->phoneNumber(),
+            'isVerified' => fake()->boolean(90),
+            'isActive' => fake()->boolean(95),
+            'isOnline' => fake()->boolean(50),
+            'kycStatus' => fake()->randomElement($kycStatus),
+            'createdAt' => now(),
+            'updatedAt' => now(),
+            'lastLogin' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 

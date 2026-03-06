@@ -13,6 +13,6 @@ class OriginalTicketSeeder extends Seeder
      */
     public function run(): void
     {
-        OriginalTicket::factory(10)->create();
+        //OriginalTicket::factory(10)->create();
     }
 }
