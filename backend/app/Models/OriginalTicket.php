@@ -27,4 +27,12 @@ class OriginalTicket extends Model
     const UPDATED_AT = 'updatedAt';
 
     //public $timestamps = false;
+
+    public function event(){
+        return $this->belongsTo(Event::class, 'eventId');
+    }
+
+    public function ticketsForSale(){
+        return $this->hasMany(TicketForSale::class, 'originalTicketId');
+    }
 }
