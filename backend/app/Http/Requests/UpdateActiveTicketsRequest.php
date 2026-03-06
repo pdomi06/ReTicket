@@ -23,7 +23,7 @@ class UpdateActiveTicketsRequest extends FormRequest
     {
         return [
             'originalTicketId' => ['sometimes','exists:original_tickets,id'],
-            'ticketListingId' => ['sometimes','exists:ticket_forsale,id'],
+            'ticketListingId' => ['sometimes', 'string'],
         ];
     }
 }

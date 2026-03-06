@@ -23,9 +23,9 @@ class UpdateTicketHistoryRequest extends FormRequest
     {
         return [
         'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
-        'ticketListingId' => ['sometimes', 'integer', 'exists:ticket_forsale,id'],
+        'ticketListingId' => ['sometimes', 'string'],
         'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
-        'toUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'toUser' => ['sometimes', 'string'],
         'price' => ['sometimes', 'numeric', 'min:0'],
         'platformFee' => ['sometimes', 'numeric', 'min:0'],
         ];
