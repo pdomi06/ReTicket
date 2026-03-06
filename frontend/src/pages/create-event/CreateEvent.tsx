@@ -146,7 +146,9 @@ const CreateEvent = () => {
                         <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />
                         <Input type="text" name="description" label="Description" onChange={(e) => setEventParams({ ...eventParams, description: e.target.value })} value={eventParams.description || ''} />
                         <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEventParams({ ...eventParams, venue: e.target.value })} value={eventParams.venue || ''} >
-                            <option value="" disabled>Select Venue</option>
+                            <option value="" disabled aria-hidden="true">
+                                Select Venue
+                            </option>
                             {venues.map((venue) => (
                                 <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
                             ))}
@@ -160,7 +162,9 @@ const CreateEvent = () => {
                         <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
-                            <option value="" disabled>Select Category</option>
+                            <option value="" disabled aria-hidden="true">
+                                Select Category
+                            </option>
                             {Object.entries(EventCategory).map(([, value]) => (
                                 <option key={value} value={value}>{value}</option>
                             ))}
