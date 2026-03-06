@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\email_verify>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EmailVerify>
  */
 class EmailVerifyFactory extends Factory
 {

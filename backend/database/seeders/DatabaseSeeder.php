@@ -27,8 +27,9 @@ class DatabaseSeeder extends Seeder
             EventsSeeder::class,
             OriginalTicketSeeder::class,
             UserSeeder::class,
-            PasswordResetSeeder::class,*/
-            EmailVerifySeeder::class,
+            PasswordResetSeeder::class,
+            EmailVerifySeeder::class,*/
+            UserSettingsSeeder::class,
         ]);
     }
 }
