@@ -80,7 +80,6 @@ class OriginalTicketsController extends Controller
         }
 
         OriginalTicket::insert($originalTickets);
-        return response()->json(["message" => "Original tickets created successfully"], 201)
-            ->header('Access-Control-Allow-Origin', '*');
+        return response()->json(["message" => "Original tickets created successfully"], 201);
     }
 }
