@@ -302,7 +302,7 @@
 
 .spinning {
     display: inline-block;
-    animation: rotate360 1s cubic-bezier(0.2, 0, 0.3, 0.5);
+    animation: rotate360 1s cubic-bezier(0.2, 0, 0.3, 0.5) infinite;
 }
 
 .reloadIcon {
