@@ -41,4 +41,3 @@ class BulkStoreOriginalTicketsRequest extends FormRequest
         ], 422));
     }
 }
-    
