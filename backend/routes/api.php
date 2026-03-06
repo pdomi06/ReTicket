@@ -38,4 +38,5 @@ Route::apiResource("ticketForSale", TicketForsaleController::class);
 Route::apiResource("ticketHistory", TicketHistoryController::class);
 Route::apiResource("user", UserController::class);
 Route::apiResource("userSettings", UserSettingsController::class);
+Route::get("venues/search", [VenueMapController::class, "search"]);
 Route::apiResource("venue", VenueMapController::class);

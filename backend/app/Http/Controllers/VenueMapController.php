@@ -17,7 +17,33 @@ class VenueMapController extends Controller
         $venue_maps = VenueMap::all();
         return response()->json($venue_maps, 200);
     }
+     public function search(SearchVenueMapRequest $request)
+    {
+        $filters = $request->validated();
+        $query = VenueMap::query();
 
+        if (!empty($filters['venue'])) {
+            $query->where('venue', 'like', '%' . $filters['venue'] . '%');
+        }
+
+        if (!empty($filters['section'])) {
+            $query->where('section', 'like', '%' . $filters['section'] . '%');
+        }
+
+        if (!empty($filters['rows'])) {
+            $query->where('rows', $filters['rows']);
+        }
+
+        if (!empty($filters['cols'])) {
+            $query->where('cols', $filters['cols']);
+        }
+
+        if (!empty($filters['rate'])) {
+            $query->where('rate', $filters['rate']);
+        }
+
+        return response()->json(['success' => true, 'data' => $query->get()], 200);
+    }
     /**
      * Store a newly created resource in storage.
      */

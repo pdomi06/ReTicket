@@ -18,5 +18,25 @@ class VenueMap extends Model
         'cols',
         'rate'
     ];
+
+      public function scopeSearch($query, array $filters) {
+        return $query
+            ->when($filters['venue'] ?? null, fn($q, $value) =>
+                $q->where('venue', 'like', '%' . $value . '%')
+            )
+            ->when($filters['section'] ?? null, fn($q, $value) =>
+                $q->where('section', 'like', '%' . $value . '%')
+            )
+            ->when($filters['rows'] ?? null, fn($q, $value) =>
+                $q->where('rows', $value)
+            )
+            ->when($filters['cols'] ?? null, fn($q, $value) =>
+                $q->where('cols', $value)
+            )
+            ->when($filters['rate'] ?? null, fn($q, $value) =>
+                $q->where('rate', $value)
+            );
+    }
+
     public $timestamps = false;
 }
