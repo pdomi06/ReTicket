@@ -26,4 +26,12 @@ class Review extends Model
     const UPDATED_AT = 'updatedAt';
 
     //public $timestamps = false;
+
+    public function orderItem(){
+        return $this->belongsTo(OrderItem::class, 'orderItemId');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'reviewedUserId');
+    }
 }
