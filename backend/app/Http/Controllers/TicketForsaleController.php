@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForsaleRequest;
 use App\Http\Requests\UpdateTicketForsaleRequest;
 use App\Http\Requests\SearchTicketForSale;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TicketForsaleController extends Controller
@@ -92,7 +91,7 @@ class TicketForsaleController extends Controller
         return response()->json($ticketForSale, 200);
     }
 
-    public function addToBasket(Request $request, TicketForSale $ticketForSale)
+    public function addToBasket(TicketForSale $ticketForSale)
     {
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
@@ -110,7 +109,7 @@ class TicketForsaleController extends Controller
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }
 
-    public function removeFromBasket(Request $request, TicketForSale $ticketForSale)
+    public function removeFromBasket(TicketForSale $ticketForSale)
     {
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)

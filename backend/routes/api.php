@@ -39,7 +39,7 @@ Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForsaleControll
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForsaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForsaleController::class, 'removeFromBasket']);
 Route::get("ticketForSale/search", [TicketForsaleController::class, "search"]);
-Route::apiResource("ticketForSale", TicketForSaleController::class);
+Route::apiResource("ticketForSale", TicketForsaleController::class);
 Route::apiResource("ticketHistory", TicketHistoryController::class);
 Route::apiResource("user", UserController::class);
 Route::apiResource("userSettings", UserSettingsController::class);

@@ -50,12 +50,18 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const removeFromCart = async (ticket: ITicketForsale) => {
-        setCart(prevCart => prevCart.filter(item => item.id !== ticket.id));
         try {
-            await fetch(`${apiBaseUrl}/ticketForSale/removeFromBasket/${ticket.id}`, {
+            const res = await fetch(`${apiBaseUrl}/ticketForSale/removeFromBasket/${ticket.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             });
+
+            if (!res.ok) {
+                console.error("Failed to remove ticket from basket.");
+                return;
+            }
+
+            setCart(prevCart => prevCart.filter(item => item.id !== ticket.id));
         } catch (error) {
             console.error("Error removing ticket from cart:", error);
         }
