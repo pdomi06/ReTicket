@@ -14,6 +14,7 @@ const Event = lazy(() => import("../pages/event/Event.tsx"));
 const Vendor = lazy(() => import("../pages/vendor/Vendor.tsx"));
 const Cart = lazy(() => import("../pages/cart/Cart.tsx"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
+const DashboardOverview = lazy(() => import("../pages/dashboard/overview/Overview.tsx"));
 const DashboardCreateVenue = lazy(() => import("../pages/dashboard/create-venue/CreateVenue.tsx"));
 const DashboardCreateEvent = lazy(() => import("../pages/dashboard/create-event/CreateEvent.tsx"));
 const ListTickets = lazy(() => import("../pages/dashboard/list-tickets/ListTickets.tsx"));
@@ -41,6 +42,7 @@ export const routes: RouteObject[] = [
         path: "/dashboard",
         element: <Dashboard />,
         children: [
+          { index: true, element: <DashboardOverview /> },
           { path: "create-venue", element: <DashboardCreateVenue /> },
           { path: "create-event", element: <DashboardCreateEvent /> },
           { path: "list-tickets", element: <ListTickets /> },

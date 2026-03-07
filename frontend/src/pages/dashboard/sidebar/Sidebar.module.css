@@ -47,7 +47,7 @@
     color: var(--color-text);
 }
 
-.navItem.active {
+.active {
     background-color: rgba(177, 156, 217, 0.15);
     color: var(--color-accent);
 }
