@@ -31,17 +31,21 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                 return false;
             }
 
+            const newTicket = { ...ticketForSale, row, col: seat } as ITicketForsale;
+
+            setCart(prevCart => [...prevCart, newTicket]);
+
             const basketRes = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticketForSale.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             });
 
             if (!basketRes.ok) {
+                setCart(prevCart => prevCart.filter(item => item.id !== ticketForSale.id));
                 console.error("Seat was already taken by another user.");
                 return false;
             }
 
-            setCart(prevCart => [...prevCart, { ...ticketForSale, row, col: seat } as ITicketForsale]);
             return true;
         } catch (error) {
             console.error("Error adding ticket to cart:", error);
@@ -50,6 +54,8 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const removeFromCart = async (ticket: ITicketForsale) => {
+        setCart(prevCart => prevCart.filter(item => item.id !== ticket.id));
+
         try {
             const res = await fetch(`${apiBaseUrl}/ticketForSale/removeFromBasket/${ticket.id}`, {
                 method: "POST",
@@ -57,12 +63,12 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
             });
 
             if (!res.ok) {
+                setCart(prevCart => [...prevCart, ticket]);
                 console.error("Failed to remove ticket from basket.");
                 return;
             }
-
-            setCart(prevCart => prevCart.filter(item => item.id !== ticket.id));
         } catch (error) {
+            setCart(prevCart => [...prevCart, ticket]);
             console.error("Error removing ticket from cart:", error);
         }
     }
