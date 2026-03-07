@@ -42,7 +42,7 @@ class OriginalTicketsController extends Controller
             $query->where('seatNumber', $filters['seatNumber']);
         }
 
-        if (!empty($filters['price'])) {
+        if (array_key_exists('price', $filters) && $filters['price'] !== null) {
             $query->where('price', $filters['price']);
         }
 
