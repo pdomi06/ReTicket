@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { IVenueMap } from "../../utils/interfaces";
-import Input from "../../components/ui/input/Input";
+import type { IVenueMap } from "../../../utils/interfaces";
+import Input from "../../../components/ui/input/Input";
 import style from './CreateVenue.module.css'
-import Button from "../../components/ui/button/Button";
-import { defaultIVenueMap } from "../../utils/defaults";
+import Button from "../../../components/ui/button/Button";
+import { defaultIVenueMap } from "../../../utils/defaults";
 
 const CreateVenue = () => {
     const [sceneryParams, setSceneryParams] = useState<IVenueMap>(defaultIVenueMap);
@@ -39,7 +39,7 @@ const CreateVenue = () => {
 
     async function storeVenue(venue: IVenueMap): Promise<{ success: boolean; message: string }> {
         const existing = await checkExistingScenery();
-        if(existing) {
+        if (existing) {
             return { success: false, message: 'A scenery with this venue already exists. Please choose a different venue.' };
         }
         try {
@@ -85,7 +85,7 @@ const CreateVenue = () => {
             } catch (error) {
                 alert('An error occurred while creating the scenery. Please try again.');
                 console.error('Error creating scenery:', error);
-            } 
+            }
         } else {
             alert('Please fill in all fields with valid values.');
         }

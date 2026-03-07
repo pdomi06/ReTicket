@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp } from "react-icons/lu";
+import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuPartyPopper } from "react-icons/lu";
 import style from "./Sidebar.module.css";
 
 const NAV_ITEMS = [
@@ -13,6 +13,11 @@ const TICKET_ITEMS = [
 const MANAGE_ITEMS = [
     { label: "My Events", icon: LuCalendar, link: "/dashboard/events" },
     { label: "Sales", icon: LuTrendingUp, link: "/dashboard/sales" },
+];
+
+const ADMIN_ITEMS = [
+    { label: "Create Venue", icon: LuMapPin, link: "/dashboard/create-venue" },
+    { label: "Create Event", icon: LuPartyPopper, link: "/dashboard/create-event" },
 ];
 
 const Sidebar = () => {
@@ -39,6 +44,14 @@ const Sidebar = () => {
 
                 <div className={style.sectionLabel}>MANAGE</div>
                 {MANAGE_ITEMS.map(({ label, icon: Icon, link }) => (
+                    <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
+                        <Icon className={style.icon} />
+                        <span>{label}</span>
+                    </NavLink>
+                ))}
+
+                <div className={style.sectionLabel}>ADMIN</div>
+                {ADMIN_ITEMS.map(({ label, icon: Icon, link }) => (
                     <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
                         <Icon className={style.icon} />
                         <span>{label}</span>

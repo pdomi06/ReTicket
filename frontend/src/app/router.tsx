@@ -4,8 +4,6 @@ import MainLayout from "../components/layout/MainLayout.tsx";
 
 
 const Home = lazy(() => import("../pages/test/test.tsx"));
-const CreateVenue = lazy(() => import("../pages/create-venue/CreateVenue.tsx"));
-const CreateEvent = lazy(() => import("../pages/create-event/CreateEvent.tsx"));
 const Login = lazy(() => import("../pages/login/Login.tsx"));
 const Register = lazy(() => import("../pages/register/Register.tsx"));
 const Profile = lazy(() => import("../pages/profile/Profile.tsx"));
@@ -16,6 +14,8 @@ const Event = lazy(() => import("../pages/event/Event.tsx"));
 const Vendor = lazy(() => import("../pages/vendor/Vendor.tsx"));
 const Cart = lazy(() => import("../pages/cart/Cart.tsx"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
+const DashboardCreateVenue = lazy(() => import("../pages/dashboard/create-venue/CreateVenue.tsx"));
+const DashboardCreateEvent = lazy(() => import("../pages/dashboard/create-event/CreateEvent.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -24,8 +24,6 @@ export const routes: RouteObject[] = [
       { path: "/", element: <Welcome /> },
       { path: "/welcome", element: <Welcome /> },
       { path: "/test", element: <Home /> },
-      { path: "/create-venue", element: <CreateVenue /> },
-      { path: "/create-event", element: <CreateEvent /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <Profile /> },
@@ -33,7 +31,14 @@ export const routes: RouteObject[] = [
       { path: "/event", element: <Event /> },
       { path: "/vendor", element: <Vendor /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/dashboard", element: <Dashboard /> },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+        children: [
+          { path: "create-venue", element: <DashboardCreateVenue /> },
+          { path: "create-event", element: <DashboardCreateEvent /> },
+        ],
+      },
       { path: "*", element: <NotFound /> },
     ],
   },
