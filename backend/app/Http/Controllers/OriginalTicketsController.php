@@ -129,6 +129,9 @@ class OriginalTicketsController extends Controller
             ->where('status', 'active')
             ->whereIn('id', $ticketsForSale->pluck('originalTicketId'))
             ->get();
-        return response()->json($availableOriginalTickets, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $availableOriginalTickets,
+        ], 200);
     }
 }
