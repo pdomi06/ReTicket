@@ -8,19 +8,18 @@ interface SeatSelectorProps {
     venue: IVenueMap
     eventId: string
     loading: boolean
-    tickets: IOriginalTicket[]
+    dbTickets: IOriginalTicket[]
     onReload: () => Promise<void>
 }
 
-const SeatSelector = ({ venue, eventId, loading, tickets, onReload }: SeatSelectorProps) => {
+const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSelectorProps) => {
     const { addToCart } = useContext(CartContext)
-    const [checkedSeats, setCheckedSeats] = useState<string[]>([])
     const [addingToCart, setAddingToCart] = useState(false)
     const [zoom, setZoom] = useState(1)
     const [isReloading, setIsReloading] = useState(false)
 
     const seatExists = (row: number, col: number) => {
-        return tickets.some(t => Number(t.row) === row && Number(t.seatNumber) === col)
+        return dbTickets.some(t => t.row === row && t.seatNumber === col)
     }
 
     const handleZoomIn = () => {
@@ -40,22 +39,24 @@ const SeatSelector = ({ venue, eventId, loading, tickets, onReload }: SeatSelect
         }
     }
 
-    async function handleAddToCart() {
-        if (checkedSeats.length === 0) {
-            alert("Please select at least one seat before adding to cart.")
+    async function handleAddToCart(seat: string) {
+        setAddingToCart(true)
+        const [rowStr, colStr] = seat.split('-')
+        const row = Number(rowStr)
+        const col = Number(colStr)
+        if (!dbTickets.some(t => t.row === row && t.seatNumber === col)) {
+            alert(`Seat ${row}-${col} is no longer available.`)
+            setAddingToCart(false)
             return
         }
-        setAddingToCart(true)
-        for (const seat of checkedSeats) {
-            const [row, col] = seat.split('')
-            await addToCart(eventId, row, col)
-        }
+        await addToCart(eventId, row, col)
+        await handleReload()
         setAddingToCart(false)
         alert("Selected tickets have been added to your cart!")
     }
 
     return (
-        <div className={`${style.backgroundColorSecondary} p-4 mt-3`}>
+        <div className={`${style.backgroundColorSecondary} p-4 mt-3 ${addingToCart ? style.loadingCursor : ''}`}>
             <h2 className="fw-bold mb-3 lh-1">Tickets</h2>
             {loading ? (
                 <p>Loading venue information...</p>
@@ -76,7 +77,7 @@ const SeatSelector = ({ venue, eventId, loading, tickets, onReload }: SeatSelect
                         </div>
                     </div>
                     <div
-                        className={style.seatGridContainer}
+                        className={`${style.seatGridContainer}`}
                         style={{ '--seat-zoom': zoom } as React.CSSProperties}
                     >
                         {Array.from({ length: venue.rows }, (_, i) => (
@@ -96,14 +97,17 @@ const SeatSelector = ({ venue, eventId, loading, tickets, onReload }: SeatSelect
                                                 type="checkbox"
                                                 name={`seat-${row}-${col}`}
                                                 id={`seat-${row}-${col}`}
-                                                disabled={!available}
+                                                disabled={!available || addingToCart}
                                                 onChange={(e) => {
                                                     if (!available) return
-                                                    const seatKey = `${row}${col}`
+                                                    const seatKey = `${row}-${col}`
                                                     if (e.target.checked) {
-                                                        setCheckedSeats(prev => [...prev, seatKey])
-                                                    } else {
-                                                        setCheckedSeats(prev => prev.filter(s => s !== seatKey))
+                                                        if (!dbTickets.some(t => t.row === row && t.seatNumber === col)) {
+                                                            alert(`Seat ${row}-${col} is no longer available.`)
+                                                            e.target.checked = false
+                                                            return
+                                                        }
+                                                        handleAddToCart(seatKey)
                                                     }
                                                 }}
                                             />
@@ -114,7 +118,6 @@ const SeatSelector = ({ venue, eventId, loading, tickets, onReload }: SeatSelect
                             </div>
                         ))}
                     </div>
-                    <Button text="Add to Cart" className="w-100 mt-3" onClick={handleAddToCart} disabled={addingToCart} />
                 </div>
             ) : (
                 <p className="mb-0">Tickets are not available for this event.</p>

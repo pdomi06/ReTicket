@@ -75,8 +75,8 @@ export interface IOriginalTicket {
   id: number;
   eventId: number;
   section: string;
-  row: string;
-  seatNumber: string;
+  row: number;
+  seatNumber: number;
   price: number;
   status: typeof TicketStatus;
   ticketPdfUrl: string;
@@ -230,7 +230,7 @@ export interface IEventContext {
 
 export interface ICartContext {
   tickets: ITicketForsale[];
-  addToCart: (eventId: string, row: string, seat: string) => Promise<void>;
+  addToCart: (eventId: string, row: number, seat: number) => Promise<void>;
   removeFromCart: (ticket: ITicketForsale) => void;
   clearCart: () => void;
 }

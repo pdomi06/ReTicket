@@ -35,11 +35,11 @@ class OriginalTicketsController extends Controller
         }
 
         if (!empty($filters['row'])) {
-            $query->where('row', 'like', '%' . $filters['row'] . '%');
+            $query->where('row', $filters['row']);
         }
 
         if (!empty($filters['seatNumber'])) {
-            $query->where('seatNumber', 'like', '%' . $filters['seatNumber'] . '%');
+            $query->where('seatNumber', $filters['seatNumber']);
         }
 
         if (!empty($filters['price'])) {

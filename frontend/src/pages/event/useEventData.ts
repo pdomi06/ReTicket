@@ -40,7 +40,7 @@ export function useEventData(eventId: string) {
     const { event, getEvent } = useContext(EventContext)
     const [events, setEvents] = useState<IEvent[]>([])
     const [venue, setVenue] = useState<IVenueMap>(defaultIVenueMap)
-    const [tickets, setTickets] = useState<IOriginalTicket[]>([])
+    const [dbTickets, setDbTickets] = useState<IOriginalTicket[]>([])
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEvents, setLoadingEvents] = useState(true)
     const [loadingVenue, setLoadingVenue] = useState(true)
@@ -71,7 +71,7 @@ export function useEventData(eventId: string) {
         if (eventId) {
             void fetchOriginalTickets(eventId).then(tickets => {
                 if (!cancelled) {
-                    setTickets(tickets.filter(t => String(t.status) === "active"))
+                    setDbTickets(tickets.filter(t => String(t.status) === "active"))
                 }
             })
         }
@@ -166,8 +166,8 @@ export function useEventData(eventId: string) {
     const refreshTickets = useCallback(async () => {
         if (!eventId) return
         const tickets = await fetchOriginalTickets(eventId)
-        setTickets(tickets.filter(t => String(t.status) === "active"))
+        setDbTickets(tickets.filter(t => String(t.status) === "active"))
     }, [eventId])
 
-    return { event, events, venue, tickets, loadingEvent, loadingEvents, loadingVenue, refreshTickets }
+    return { event, events, venue, dbTickets, loadingEvent, loadingEvents, loadingVenue, refreshTickets }
 }

@@ -11,6 +11,12 @@ class OriginalTicket extends Model
     use HasFactory;
 
     protected $table = "original_tickets";
+
+    protected $casts = [
+        'row' => 'integer',
+        'seatNumber' => 'integer',
+    ];
+
     protected $fillable = [
         'eventId',
         'section',
@@ -32,10 +38,10 @@ class OriginalTicket extends Model
                 $q->where('section', 'like', '%' . $value . '%')
             )
             ->when($filters['row'] ?? null, fn($q, $value) =>
-                $q->where('row', 'like', '%' . $value . '%')
+                $q->where('row', $value)
             )
             ->when($filters['seatNumber'] ?? null, fn($q, $value) =>
-                $q->where('seatNumber', 'like', '%' . $value . '%')
+                $q->where('seatNumber', $value)
             )
             ->when($filters['price'] ?? null, fn($q, $value) =>
                 $q->where('price', $value)

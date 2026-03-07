@@ -210,6 +210,10 @@
     --seat-zoom: 1;
 }
 
+.loadingCursor {
+    cursor: wait;
+}
+
 .seatRow {
     display: flex;
     gap: calc(0.5rem * var(--seat-zoom));
