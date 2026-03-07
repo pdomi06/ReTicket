@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForsaleRequest;
 use App\Http\Requests\UpdateTicketForsaleRequest;
 use App\Http\Requests\SearchTicketForSale;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TicketForsaleController extends Controller
 {
@@ -80,5 +82,49 @@ class TicketForsaleController extends Controller
     {
         $ticketForSale->delete();
         return response()->json(["message" => "Ticket for sale deleted successfully"], 200);
+    }
+
+    public function basketChange(TicketForSale $ticketForSale)
+    {
+        $ticketForSale->inBasket = !$ticketForSale->inBasket;
+        $ticketForSale->save();
+
+        return response()->json($ticketForSale, 200);
+    }
+
+    public function addToBasket(Request $request, TicketForSale $ticketForSale)
+    {
+        $affected = DB::table('ticket_forsale')
+            ->where('id', $ticketForSale->id)
+            ->where('inBasket', false)
+            ->update(['inBasket' => true]);
+
+        if ($affected === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket is already in another basket.',
+            ], 409);
+        }
+
+        $ticketForSale->refresh();
+        return response()->json(['success' => true, 'data' => $ticketForSale], 200);
+    }
+
+    public function removeFromBasket(Request $request, TicketForSale $ticketForSale)
+    {
+        $affected = DB::table('ticket_forsale')
+            ->where('id', $ticketForSale->id)
+            ->where('inBasket', true)
+            ->update(['inBasket' => false]);
+
+        if ($affected === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket is not in a basket.',
+            ], 409);
+        }
+
+        $ticketForSale->refresh();
+        return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }
 }

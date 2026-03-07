@@ -100,6 +100,8 @@ export interface ITicketForsale {
   fromUserId: number;
   price: number;
   inBasket: boolean;
+  row?: number;
+  col?: number;
 }
 
 export interface IOrder {
@@ -230,7 +232,7 @@ export interface IEventContext {
 
 export interface ICartContext {
   tickets: ITicketForsale[];
-  addToCart: (eventId: string, row: number, seat: number) => Promise<void>;
-  removeFromCart: (ticket: ITicketForsale) => void;
+  addToCart: (eventId: string, row: number, seat: number) => Promise<boolean>;
+  removeFromCart: (ticket: ITicketForsale) => Promise<void>;
   clearCart: () => void;
 }

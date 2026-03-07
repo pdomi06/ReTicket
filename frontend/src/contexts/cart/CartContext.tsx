@@ -7,7 +7,7 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-    const addToCart = async (eventId: string, row: number, seat: number) => {
+    const addToCart = async (eventId: string, row: number, seat: number): Promise<boolean> => {
         try {
             const response = await fetch(`${apiBaseUrl}/originalTickets/search?eventId=${eventId}&row=${row}&seatNumber=${seat}`);
             if (!response.ok) {
@@ -17,34 +17,48 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
             const originalTicketId = jsonData.data?.[0]?.id;
             if (!originalTicketId) {
                 console.error("Ticket not found for the given seat.");
-                return;
+                return false;
             }
-            try {
-                const ticket = await fetch(`${apiBaseUrl}/ticketForSale/search?originalTicketId=${originalTicketId}`);
-                if (!ticket.ok) {
-                    throw new Error(`Failed to fetch ticket for sale: ${ticket.statusText}`);
-                }
-                const ticketData = await ticket.json();
-                const ticketForSale = ticketData.data?.[0];
-                if (!ticketForSale) {
-                    console.error("No ticket for sale available for this seat.");
-                    return;
-                }
-                setCart(prevCart => {
-                    const newCart = [...prevCart, ticketForSale];
-                    console.log("Cart updated:", newCart);
-                    return newCart;
-                });
-            } catch (error) {
-                console.error("Error fetching ticket for sale:", error);
+
+            const ticket = await fetch(`${apiBaseUrl}/ticketForSale/search?originalTicketId=${originalTicketId}`);
+            if (!ticket.ok) {
+                throw new Error(`Failed to fetch ticket for sale: ${ticket.statusText}`);
             }
+            const ticketData = await ticket.json();
+            const ticketForSale = ticketData.data?.[0];
+            if (!ticketForSale) {
+                console.error("No ticket for sale available for this seat.");
+                return false;
+            }
+
+            const basketRes = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticketForSale.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (!basketRes.ok) {
+                console.error("Seat was already taken by another user.");
+                return false;
+            }
+
+            setCart(prevCart => [...prevCart, { ...ticketForSale, row, col: seat } as ITicketForsale]);
+            return true;
         } catch (error) {
             console.error("Error adding ticket to cart:", error);
+            return false;
         }
-    }; // This function fetches the original ticket based on eventId, row, and seat, then uses that ticket's ID to fetch the corresponding ticket for sale and adds it to the cart.
+    };
 
-    const removeFromCart = (ticket: ITicketForsale) => {
+    const removeFromCart = async (ticket: ITicketForsale) => {
         setCart(prevCart => prevCart.filter(item => item.id !== ticket.id));
+        try {
+            await fetch(`${apiBaseUrl}/ticketForSale/removeFromBasket/${ticket.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+        } catch (error) {
+            console.error("Error removing ticket from cart:", error);
+        }
     }
 
     const clearCart = () => {
