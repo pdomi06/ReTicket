@@ -42,7 +42,7 @@ class OriginalTicketsController extends Controller
             $query->where('seatNumber', $filters['seatNumber']);
         }
 
-        if (!empty($filters['price'])) {
+        if (array_key_exists('price', $filters) && $filters['price'] !== null) {
             $query->where('price', $filters['price']);
         }
 
@@ -109,7 +109,7 @@ class OriginalTicketsController extends Controller
                         'seatNumber' => $j,
                         'price' => round($basePrice * $venue['rate'], 2),
                         'status' => 'pre-release',
-                        'ticketPdfUrl' => '',
+                        'ticketPdfUrl' => null,
                         'createdAt' => now(),
                         'updatedAt' => now(),
                     ];
@@ -129,6 +129,9 @@ class OriginalTicketsController extends Controller
             ->where('status', 'active')
             ->whereIn('id', $ticketsForSale->pluck('originalTicketId'))
             ->get();
-        return response()->json($availableOriginalTickets, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $availableOriginalTickets,
+        ], 200);
     }
 }
