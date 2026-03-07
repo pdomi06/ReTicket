@@ -15,6 +15,7 @@ const Browse = lazy(() => import("../pages/browse/Browse.tsx"));
 const Event = lazy(() => import("../pages/event/Event.tsx"));
 const Vendor = lazy(() => import("../pages/vendor/Vendor.tsx"));
 const Cart = lazy(() => import("../pages/cart/Cart.tsx"));
+const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -29,9 +30,10 @@ export const routes: RouteObject[] = [
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <Profile /> },
       { path: "/browse", element: <Browse /> },
-      { path: "/event", element: <Event/>},
-      { path: "/vendor", element : <Vendor/>},
-      { path: "/cart", element : <Cart/>},
+      { path: "/event", element: <Event /> },
+      { path: "/vendor", element: <Vendor /> },
+      { path: "/cart", element: <Cart /> },
+      { path: "/dashboard", element: <Dashboard /> },
       { path: "*", element: <NotFound /> },
     ],
   },
