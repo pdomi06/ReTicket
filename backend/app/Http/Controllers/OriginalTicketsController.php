@@ -109,7 +109,7 @@ class OriginalTicketsController extends Controller
                         'seatNumber' => $j,
                         'price' => round($basePrice * $venue['rate'], 2),
                         'status' => 'pre-release',
-                        'ticketPdfUrl' => null,
+                        'ticketPdfUrl' => "",
                         'createdAt' => now(),
                         'updatedAt' => now(),
                     ];

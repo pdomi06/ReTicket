@@ -1,10 +1,10 @@
 import { useState, useEffect, type FormEvent } from "react";
-import { defaultIEvent } from "../../utils/defaults";
-import type { IEvent, IVenueMap } from "../../utils/interfaces";
-import Button from "../../components/ui/button/Button";
-import Input from "../../components/ui/input/Input";
-import Select from "../../components/ui/select/Select";
-import { EventCategory } from "../../utils/enums";
+import { defaultIEvent } from "../../../utils/defaults";
+import type { IEvent, IVenueMap } from "../../../utils/interfaces";
+import Button from "../../../components/ui/button/Button";
+import Input from "../../../components/ui/input/Input";
+import Select from "../../../components/ui/select/Select";
+import { EventCategory } from "../../../utils/enums";
 import style from "./CreateEvent.module.css";
 
 const CreateEvent = () => {
@@ -135,8 +135,7 @@ const CreateEvent = () => {
                     <hr />
                     {message && (
                         <div
-                            className={`alert alert-${message.type === "success" ? "success" : "danger"
-                                } mb-3`}
+                            className={`alert alert-${message.type === "success" ? "success" : "danger"} mb-3`}
                             role="alert"
                         >
                             {message.text}
