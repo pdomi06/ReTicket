@@ -15,15 +15,12 @@ return new class extends Migration
 
         Schema::create('ticket_history', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('originalTicketId');
-            $table->foreign('originalTicketId')->references('id')->on('original_tickets');
-            $table->bigInteger('ticketListingId');
-            $table->bigInteger('fromUserId');
-            $table->foreign('fromUserId')->references('id')->on('user');
-            $table->bigInteger('toUserId');
-            $table->foreign('toUserId')->references('id')->on('user');
-            $table->decimal('price');
-            $table->decimal('platformFee');
+            $table->foreignId('originalTicketId')->constrained('original_tickets');
+            $table->text('ticketListingId');
+            $table->foreignId('fromUserId')->nullable()->constrained('user');
+            $table->text('toUser');
+            $table->decimal('price', 10, 2);
+            $table->decimal('platformFee', 10, 2);
         });
 
         Schema::enableForeignKeyConstraints();

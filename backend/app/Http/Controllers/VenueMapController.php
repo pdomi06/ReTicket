@@ -6,7 +6,7 @@ use App\Models\VenueMap;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVenueMapRequest;
 use App\Http\Requests\UpdateVenueMapRequest;
-
+use App\Http\Requests\SearchVenueMapRequest;
 class VenueMapController extends Controller
 {
     /**
@@ -17,7 +17,12 @@ class VenueMapController extends Controller
         $venue_maps = VenueMap::all();
         return response()->json($venue_maps, 200);
     }
-
+     public function search(SearchVenueMapRequest $request)
+    {
+        $filters = $request->validated();
+        $query = VenueMap::search($filters);
+        return response()->json(['success' => true, 'data' => $query->get()], 200);
+    }
     /**
      * Store a newly created resource in storage.
      */

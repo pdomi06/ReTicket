@@ -18,9 +18,9 @@ return new class extends Migration
             $table->bigInteger('eventId');
             $table->foreign('eventId')->references('id')->on('events');
             $table->text('section');
-            $table->text('row');
-            $table->text('seatNumber');
-            $table->integer('price');
+            $table->integer('row');
+            $table->integer('seatNumber');
+            $table->decimal('price');
             $table->enum('status', ["pre-release", "active", "cancelled", "expired"]);
             $table->text('ticketPdfUrl');
             $table->date('createdAt');

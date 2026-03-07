@@ -23,9 +23,9 @@ class UpdateOriginalTicketsRequest extends FormRequest
     {
         return [
             'section' => ['sometimes', 'string'],
-            'row' => ['sometimes', 'string'],
-            'seatNumber' => [ 'sometimes', 'string'],
-            'price' => ['sometimes', 'integer', 'min:0'],
+            'row' => ['sometimes', 'integer'],
+            'seatNumber' => ['sometimes', 'integer'],
+            'price' => ['sometimes', 'numeric', 'min:0'],
             'status' => ['sometimes', 'in:pre-release,active,cancelled,expired'],
         ];
     }

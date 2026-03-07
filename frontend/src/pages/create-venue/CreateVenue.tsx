@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { IVenueMap } from "../../utils/interfaces";
 import Input from "../../components/ui/input/Input";
-import style from './Scenery.module.css'
+import style from './CreateVenue.module.css'
 import Button from "../../components/ui/button/Button";
 import { defaultIVenueMap } from "../../utils/defaults";
 
-const Scenery = () => {
+const CreateVenue = () => {
     const [sceneryParams, setSceneryParams] = useState<IVenueMap>(defaultIVenueMap);
     const [loading, setLoading] = useState(false);
 
@@ -111,4 +111,4 @@ const Scenery = () => {
         </div>
     );
 }
-export default Scenery
+export default CreateVenue;
