@@ -1,1 +1,40 @@
-a
+.dashboard {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-right: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #212529;
+}
+
+.content {
+  padding: 2rem;
+  background-color: #ffffff;
+  margin: 1rem;
+}
+
+.content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+
+.content p {
+  color: #6c757d;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
