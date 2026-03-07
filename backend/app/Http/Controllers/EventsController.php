@@ -28,14 +28,10 @@ class EventsController extends Controller
      public function search(SearchEventsRequest $request)
     {
         $filters = $request->validated();
-        
-        // Debug: Log the filters to see what we're getting
-        \Log::info('Search filters:', $filters);
-        \Log::info('All request data:', $request->all());
 
         $query = Event::query();
         
-        // Apply filters manually to ensure they work
+        
         if (!empty($filters['name'])) {
             $query->where('name', 'like', '%' . $filters['name'] . '%');
         }

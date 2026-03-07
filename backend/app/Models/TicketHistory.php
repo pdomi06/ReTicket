@@ -15,7 +15,7 @@ class TicketHistory extends Model
         'originalTicketId',
         'ticketListingId',
         'fromUserId',
-        'toUserId',
+        'toUser',
         'price',
         'platformFee',
     ];

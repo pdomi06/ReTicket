@@ -75,8 +75,8 @@ export interface IOriginalTicket {
   id: number;
   eventId: number;
   section: string;
-  row: string;
-  seatNumber: string;
+  row: number;
+  seatNumber: number;
   price: number;
   status: typeof TicketStatus;
   ticketPdfUrl: string;
@@ -100,6 +100,8 @@ export interface ITicketForsale {
   fromUserId: number;
   price: number;
   inBasket: boolean;
+  row?: number;
+  col?: number;
 }
 
 export interface IOrder {
@@ -193,7 +195,7 @@ export interface TextareaProps {
 
 export interface ButtonProps {
     type?: 'button' | 'submit' | 'reset';
-    text: string;
+    text: string | React.ReactNode;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     disabled?: boolean;
     className?: string;
@@ -226,4 +228,11 @@ export interface CardProps {
 export interface IEventContext {
   event: IEvent | undefined;
   getEvent: (id: string) => Promise<boolean>;
+}
+
+export interface ICartContext {
+  tickets: ITicketForsale[];
+  addToCart: (eventId: string, row: number, seat: number) => Promise<boolean>;
+  removeFromCart: (ticket: ITicketForsale) => Promise<void>;
+  clearCart: () => void;
 }

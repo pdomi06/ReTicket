@@ -24,9 +24,9 @@ class StoreOriginalTicketsRequest extends FormRequest
         return [
         'eventId' => ['required', 'integer', 'exists:events,id'],
         'section' => ['required', 'string'],
-        'row' => ['required', 'string'],
-        'seatNumber' => ['required', 'string'],
-        'price' => ['required', 'integer', 'min:0'],
+        'row' => ['required', 'integer'],
+        'seatNumber' => ['required', 'integer'],
+        'price' => ['required', 'numeric', 'min:0'],
         'status' => ['required', 'in:pre-release,active,cancelled,expired'],
         'ticketPdfUrl' => ['required', 'string', 'url'],
         ];
