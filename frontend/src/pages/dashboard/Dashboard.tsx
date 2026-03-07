@@ -1,9 +1,10 @@
+import Sidebar from "./sidebar/Sidebar";
 
 const Dashboard = () => {
     return (
         <div className={`row`}>
             <div className={`col-12 col-lg-3`}>
-                <h2>Dashboard Menu</h2>
+                <Sidebar />
             </div>
             <div className={`col-12 col-lg-9`}>
                 <h1>Dashboard</h1>
