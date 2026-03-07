@@ -11,11 +11,14 @@ const TICKET_ITEMS = [
 ];
 
 const MANAGE_ITEMS = [
-    { label: "My Events", icon: LuCalendar, link: "/dashboard/events" },
+    { label: "My Events", icon: LuCalendar, link: "/dashboard/my-events" },
     { label: "Sales", icon: LuTrendingUp, link: "/dashboard/sales" },
 ];
 
 const ADMIN_ITEMS = [
+    { label: "Venues", icon: LuMapPin, link: "/dashboard/venues" },
+    { label: "Events", icon: LuCalendar, link: "/dashboard/events" },
+    { label: "Tickets", icon: LuTicket, link: "/dashboard/tickets" },
     { label: "Create Venue", icon: LuMapPin, link: "/dashboard/create-venue" },
     { label: "Create Event", icon: LuPartyPopper, link: "/dashboard/create-event" },
 ];
