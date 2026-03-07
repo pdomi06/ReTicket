@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { LuCalendar, LuMapPin, LuTag } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
+import Input from "../../../components/ui/input/Input";
+import Select from "../../../components/ui/select/Select";
 import styles from "./Events.module.css";
 import Button from "../../../components/ui/button/Button";
 
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [filters, setFilters] = useState({
+    name: "",
+    venue: "",
+    category: "",
+  });
 
   useEffect(() => {
     async function fetchEvents() {
@@ -32,6 +39,25 @@ export default function Events() {
     fetchEvents();
   }, []);
 
+  const filteredEvents = events.filter((event) => {
+    const nameMatch = event.name.toLowerCase().includes(filters.name.toLowerCase());
+    const venueMatch = event.venue.toLowerCase().includes(filters.venue.toLowerCase());
+    const categoryMatch = !filters.category || event.category === filters.category;
+
+    return nameMatch && venueMatch && categoryMatch;
+  });
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ name: "", venue: "", category: "" });
+  };
+
+  const uniqueCategories = [...new Set(events.map((e) => e.category))];
+
   return (
     <div className={`container-fluid mt-4 ${styles.eventsContainer}`}>
       <div className={styles.headerSection}>
@@ -39,6 +65,58 @@ export default function Events() {
         <div>
           <Button text="+ Add Event" link="/dashboard/create-event" />
         </div>
+      </div>
+
+      <div className={styles.filtersSection}>
+        <div className={styles.filterGroup}>
+          <div>
+            <Input
+              type="text"
+              label="Filter by event name"
+              name="name"
+              value={filters.name}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+          <div>
+            <Input
+              type="text"
+              label="Filter by venue"
+              name="venue"
+              value={filters.venue}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+          <div>
+            <Select
+              label="All Categories"
+              name="category"
+              value={filters.category}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            >
+              <option value="">All Categories</option>
+              {uniqueCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </Select>
+          </div>
+          {(filters.name || filters.venue || filters.category) && (
+            <div>
+              <Button text="Clear" onClick={handleClearFilters} variant="outline" />
+            </div>
+          )}
+        </div>
+        <p className={styles.resultCount}>
+          Showing {filteredEvents.length} of {events.length} events
+        </p>
       </div>
 
       <div className={`table-responsive ${styles.tableWrapper}`}>
@@ -63,18 +141,18 @@ export default function Events() {
             </tr>
           </thead>
           <tbody>
-            {events.length === 0 ? (
+            {filteredEvents.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-4">
-                  No events found
+                  {events.length === 0 ? "No events found" : "No events match your filters"}
                 </td>
               </tr>
             ) : (
-              events.map((eventItem) => (
+              filteredEvents.map((eventItem) => (
                 <tr key={eventItem.id}>
                   <td>{eventItem.name}</td>
                   <td>{eventItem.venue}</td>
-                  <td>{new Date(eventItem.eventDate + "T00:00:00").toLocaleDateString()}</td>
+                  <td>{new Date(eventItem.eventDate).toLocaleDateString()}</td>
                   <td className="text-center">
                     {eventItem.category}
                   </td>

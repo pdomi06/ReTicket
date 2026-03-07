@@ -102,6 +102,85 @@
     box-shadow: none;
 }
 
+.filtersSection {
+    margin-bottom: 1.5rem;
+    background-color: rgba(177, 156, 217, 0.08);
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(177, 156, 217, 0.2);
+}
+
+.filterGroup {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filterInput,
+.filterSelect {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: var(--color-main);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(177, 156, 217, 0.3);
+    width: 100%;
+}
+
+.filterGroup .form-select {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: var(--color-main);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(177, 156, 217, 0.3);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filterInput::placeholder {
+    color: rgba(15, 23, 42, 0.6);
+}
+
+.filterInput:focus,
+.filterSelect:focus {
+    outline: none;
+    box-shadow: 0 8px 25px rgba(177, 156, 217, 0.5);
+    transform: translateY(-2px);
+}
+
+.filterInput:hover,
+.filterSelect:hover {
+    box-shadow: 0 8px 25px rgba(177, 156, 217, 0.5);
+    transform: translateY(-2px);
+}
+
+.filterGroup .form-select:focus,
+.filterGroup .form-select:hover {
+    outline: none;
+    box-shadow: 0 8px 25px rgba(177, 156, 217, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+.resultCount {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: 0.75rem 0 0 0;
+}
+
 @media (max-width: 768px) {
     .headerSection {
         flex-direction: column;

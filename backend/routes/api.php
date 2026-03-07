@@ -29,6 +29,7 @@ Route::apiResource("events", EventsController::class);
 Route::apiResource("orderItems", OrderItemsController::class);
 Route::apiResource("orders", OrdersController::class);
 Route::post("originalTickets/bulk", [OriginalTicketsController::class, "bulkStore"]);
+Route::get("originalTickets/dashboard", [OriginalTicketsController::class, "dashboard"]);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
 Route::get("originalTickets/search", [OriginalTicketsController::class, "search"]);
 Route::apiResource("originalTickets", OriginalTicketsController::class);

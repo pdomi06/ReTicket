@@ -20,7 +20,7 @@ export interface IUser {
   isVerified: boolean;
   isActive: boolean;
   isOnline: boolean;
-  kycStatus: typeof KycStatus;
+  kycStatus: typeof KycStatus[keyof typeof KycStatus];
   createdAt: string;
   updatedAt: string;
   lastLogin: string;
@@ -48,7 +48,7 @@ export interface IUserSettings {
   userid: number;
   emailNotification: boolean;
   smsNotification: boolean;
-  profileVisibility: typeof ProfileVisibility;
+  profileVisibility: typeof ProfileVisibility[keyof typeof ProfileVisibility];
   createdAt: string;
   updatedAt: string;
 }
@@ -78,7 +78,7 @@ export interface IOriginalTicket {
   row: number;
   seatNumber: number;
   price: number;
-  status: typeof TicketStatus;
+  status: typeof TicketStatus[keyof typeof TicketStatus];
   ticketPdfUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -111,11 +111,11 @@ export interface IOrder {
   subtotal: number;
   platformFee: number;
   tax: number | null;
-  status: typeof OrderStatus;
+  status: typeof OrderStatus[keyof typeof OrderStatus];
   paymentIntentId: string;
-  paymentStatus: typeof PaymentStatus;
+  paymentStatus: typeof PaymentStatus[keyof typeof PaymentStatus];
   deliveryEmail: string;
-  deliverStatus: typeof DeliveryStatus;
+  deliverStatus: typeof DeliveryStatus[keyof typeof DeliveryStatus];
   deliveredAt: string;
   createdAt: string;
   updatedAt: string;
@@ -141,7 +141,7 @@ export interface IPayout {
   id: number;
   vendorId: number;
   orderItemId: number;
-  status: typeof PayoutStatus;
+  status: typeof PayoutStatus[keyof typeof PayoutStatus];
   bank: number;
   iban: number;
   paidAt: number;
@@ -235,4 +235,16 @@ export interface ICartContext {
   addToCart: (eventId: string, row: number, seat: number) => Promise<boolean>;
   removeFromCart: (ticket: ITicketForsale) => Promise<void>;
   clearCart: () => void;
+}
+
+export interface IDashboardTicket {
+  id: number;
+  eventName: string;
+  eventDate: string;
+  venue: string;
+  section: string;
+  row: number;
+  seatNumber: number;
+  price: number;
+  status: typeof TicketStatus[keyof typeof TicketStatus];
 }

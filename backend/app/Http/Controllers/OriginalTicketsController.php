@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OriginalTicket;
+use App\Models\Event;
 use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOriginalTicketsRequest;
@@ -133,5 +134,24 @@ class OriginalTicketsController extends Controller
             'success' => true,
             'data' => $availableOriginalTickets,
         ], 200);
+    }
+
+    public function dashboard()
+    {
+        $tickets = OriginalTicket::join('events', 'original_tickets.eventId', '=', 'events.id')
+            ->select([
+                'original_tickets.id',
+                'events.name as eventName',
+                'events.eventDate',
+                'events.venue',
+                'original_tickets.section',
+                'original_tickets.row',
+                'original_tickets.seatNumber',
+                'original_tickets.price',
+                'original_tickets.status',
+            ])
+            ->get();
+
+        return response()->json($tickets, 200);
     }
 }

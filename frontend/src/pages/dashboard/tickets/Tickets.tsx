@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
-import { LuCalendar, LuTag, LuTicket } from "react-icons/lu";
-import type { IOriginalTicket } from "../../../utils/interfaces";
+import { LuCalendar, LuMapPin, LuTag, LuTicket } from "react-icons/lu";
+import type { IDashboardTicket } from "../../../utils/interfaces";
+import Input from "../../../components/ui/input/Input";
+import Select from "../../../components/ui/select/Select";
 import styles from "./Tickets.module.css";
+import Button from "../../../components/ui/button/Button";
 
 export default function Tickets() {
-  const [tickets, setTickets] = useState<IOriginalTicket[]>([]);
+  const [tickets, setTickets] = useState<IDashboardTicket[]>([]);
+  const [filters, setFilters] = useState({
+    event: "",
+    venue: "",
+    section: "",
+    status: "",
+  });
 
   useEffect(() => {
     async function fetchTickets() {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/dashboard`);
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -31,6 +40,26 @@ export default function Tickets() {
     fetchTickets();
   }, []);
 
+  const filteredTickets = tickets.filter((ticket) => {
+    const eventMatch = ticket.eventName.toLowerCase().includes(filters.event.toLowerCase());
+    const venueMatch = ticket.venue.toLowerCase().includes(filters.venue.toLowerCase());
+    const sectionMatch = ticket.section.toLowerCase().includes(filters.section.toLowerCase());
+    const statusMatch = !filters.status || ticket.status === filters.status;
+
+    return eventMatch && venueMatch && sectionMatch && statusMatch;
+  });
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ event: "", venue: "", section: "", status: "" });
+  };
+
+  const uniqueStatuses = [...new Set(tickets.map((t) => t.status))];
+
   return (
     <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
       <div className={styles.headerSection}>
@@ -38,19 +67,101 @@ export default function Tickets() {
         <button className={`btn ${styles.addButton}`}>+ Add Ticket</button>
       </div>
 
+      <div className={styles.filtersSection}>
+        <div className={styles.filterGroup}>
+          <div>
+            <Input
+              type="text"
+              label="Filter by event"
+              name="event"
+              value={filters.event}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+          <div>
+            <Input
+              type="text"
+              label="Filter by venue"
+              name="venue"
+              value={filters.venue}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+          <div>
+
+            <Input
+              type="text"
+              label="Filter by section"
+              name="section"
+              value={filters.section}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+          <div>
+            <Select
+              label="All Status"
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            >
+              <option value="">All Status</option>
+              {uniqueStatuses.map((status) => (
+                <option key={status} value={status}>
+                  {String(status)}
+                </option>
+              ))}
+            </Select>
+          </div>
+          {(filters.event || filters.venue || filters.section || filters.status) && (
+            <div>
+              <Button text="Clear" onClick={handleClearFilters} variant="outline" />
+            </div>
+          )}
+        </div>
+        <p className={styles.resultCount}>
+          Showing {filteredTickets.length} of {tickets.length} tickets
+        </p>
+      </div>
+
       <div className={`table-responsive ${styles.tableWrapper}`}>
         <table className={`table ${styles.table}`}>
           <thead>
             <tr>
               <th>
+                <LuTag size={16} className="me-2" />
+                Event
+              </th>
+              <th>
+                <LuCalendar size={16} className="me-2" />
+                Date
+              </th>
+              <th>
+                <LuMapPin size={16} className="me-2" />
+                Venue
+              </th>
+              <th>
                 <LuTicket size={16} className="me-2" />
                 Section
               </th>
-              <th className="text-center">Row</th>
-              <th className="text-center">Seat</th>
-              <th>
-                <LuTag size={16} className="me-2" />
-                Price
+              <th className="text-center">
+                <LuTicket size={16} className="me-2" />
+                Rows
+              </th>
+              <th className="text-center">
+                <LuTicket size={16} className="me-2" />
+                Columns
+              </th>
+              <th className="text-center">
+                <LuTicket size={16} className="me-2" />
+                Seat
               </th>
               <th>
                 <LuCalendar size={16} className="me-2" />
@@ -60,15 +171,18 @@ export default function Tickets() {
             </tr>
           </thead>
           <tbody>
-            {tickets.length === 0 ? (
+            {filteredTickets.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-muted">
-                  No tickets found
+                <td colSpan={9} className="text-center py-4 text-muted">
+                  {tickets.length === 0 ? "No tickets found" : "No tickets match your filters"}
                 </td>
               </tr>
             ) : (
-              tickets.map((ticket) => (
+              filteredTickets.map((ticket) => (
                 <tr key={ticket.id}>
+                  <td>{ticket.eventName}</td>
+                  <td>{ticket.eventDate}</td>
+                  <td>{ticket.venue}</td>
                   <td>{ticket.section}</td>
                   <td className="text-center">
                     {ticket.row}
