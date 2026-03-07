@@ -26,7 +26,7 @@ class SearchVenueMapRequest extends FormRequest
             'section' => ['nullable', 'string', 'max:255'],
                 'rows' => ['nullable', 'integer', 'min:1'],
                 'cols' => ['nullable', 'integer', 'min:1'],
-                'rate' => ['nullable', 'numeric', 'decimal:2', 'min:0.1', 'max:9.99'],
+                'rate' => ['nullable', 'numeric', 'decimal:1', 'min:0.1', 'max:9.9'],
         ];
     }
 }
