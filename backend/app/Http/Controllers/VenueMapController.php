@@ -20,28 +20,7 @@ class VenueMapController extends Controller
      public function search(SearchVenueMapRequest $request)
     {
         $filters = $request->validated();
-        $query = VenueMap::query();
-
-        if (!empty($filters['venue'])) {
-            $query->where('venue', 'like', '%' . $filters['venue'] . '%');
-        }
-
-        if (!empty($filters['section'])) {
-            $query->where('section', 'like', '%' . $filters['section'] . '%');
-        }
-
-        if (!empty($filters['rows'])) {
-            $query->where('rows', $filters['rows']);
-        }
-
-        if (!empty($filters['cols'])) {
-            $query->where('cols', $filters['cols']);
-        }
-
-        if (!empty($filters['rate'])) {
-            $query->where('rate', $filters['rate']);
-        }
-
+        $query = VenueMap::search($filters);
         return response()->json(['success' => true, 'data' => $query->get()], 200);
     }
     /**
