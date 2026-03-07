@@ -68,8 +68,8 @@ export default function Tickets() {
       </div>
 
       <div className={styles.filtersSection}>
-        <div className={styles.filterGroup}>
-          <div>
+        <div className={`${styles.filterGroup} row`}>
+          <div className="col-2">
             <Input
               type="text"
               label="Filter by event"
@@ -80,7 +80,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div>
+          <div className="col-2">
             <Input
               type="text"
               label="Filter by venue"
@@ -91,8 +91,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div>
-
+          <div className="col-2">
             <Input
               type="text"
               label="Filter by section"
@@ -103,7 +102,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div>
+          <div className="col-2">
             <Select
               label="All Status"
               name="status"
@@ -121,7 +120,7 @@ export default function Tickets() {
             </Select>
           </div>
           {(filters.event || filters.venue || filters.section || filters.status) && (
-            <div>
+            <div className="col-2">
               <Button text="Clear" onClick={handleClearFilters} variant="outline" />
             </div>
           )}
