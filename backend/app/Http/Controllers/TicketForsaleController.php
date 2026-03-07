@@ -26,23 +26,23 @@ class TicketForsaleController extends Controller
         $filters = $request->validated();
         $query = TicketForSale::query();
 
-        if (!empty($filters['originalTicketId'])) {
+        if (array_key_exists('originalTicketId', $filters) && $filters['originalTicketId'] !== null) {
             $query->where('originalTicketId', $filters['originalTicketId']);
         }
 
-        if( !empty($filters['fromUserId'])) {
+        if (array_key_exists('fromUserId', $filters) && $filters['fromUserId'] !== null) {
             $query->where('fromUserId', $filters['fromUserId']);
         }
 
-        if (!empty($filters['eventId'])) {
+        if (array_key_exists('eventId', $filters) && $filters['eventId'] !== null) {
             $query->where('eventId', $filters['eventId']);
         }
 
-        if (!empty($filters['price'])) {
+        if (array_key_exists('price', $filters) && $filters['price'] !== null) {
             $query->where('price', $filters['price']);
         }
 
-        if (!empty($filters['inBasket'])) {
+        if (array_key_exists('inBasket', $filters) && $filters['inBasket'] !== null) {
             $query->where('inBasket', $filters['inBasket']);
         }
 
