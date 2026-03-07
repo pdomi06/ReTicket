@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTicketForsaleRequest;
-use App\Http\Requests\UpdateTicketForsaleRequest;
-use App\Http\Requests\SearchTicketForSale;
+use App\Http\Requests\StoreTicketForSaleRequest;
+use App\Http\Requests\UpdateTicketForSaleRequest;
+use App\Http\Requests\SearchTicketForSaleRequest;
 use Illuminate\Support\Facades\DB;
 
-class TicketForsaleController extends Controller
+class TicketForSaleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class TicketForsaleController extends Controller
         return response()->json($tickets_forsale, 200);
     }
 
-    public function search(SearchTicketForSale $request)
+    public function search(SearchTicketForSaleRequest $request)
     {
         $filters = $request->validated();
         $query = TicketForSale::query();
@@ -51,7 +51,7 @@ class TicketForsaleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTicketForsaleRequest $request)
+    public function store(StoreTicketForSaleRequest $request)
     {
         $ticket_forsale = TicketForSale::create(attributes: $request->validated());
         return response()->json($ticket_forsale, 201);
@@ -68,7 +68,7 @@ class TicketForsaleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTicketForsaleRequest $request, TicketForSale $ticketForSale)
+    public function update(UpdateTicketForSaleRequest $request, TicketForSale $ticketForSale)
     {
         $ticketForSale->update($request->validated());
         return response()->json($ticketForSale, 200);
