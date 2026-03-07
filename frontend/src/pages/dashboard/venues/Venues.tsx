@@ -50,7 +50,7 @@ export default function Venues() {
               </tr>
             ) : (
               venues.map((venue) => (
-                <tr key={`${venue.venue}-${venue.section}`}>
+                <tr key={venue.id}>
                   <td>{venue.venue}</td>
                   <td>{venue.section}</td>
                   <td className="text-center">
