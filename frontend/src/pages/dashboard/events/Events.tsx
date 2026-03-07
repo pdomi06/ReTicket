@@ -74,7 +74,7 @@ export default function Events() {
                 <tr key={eventItem.id}>
                   <td>{eventItem.name}</td>
                   <td>{eventItem.venue}</td>
-                  <td>{new Date(eventItem.eventDate).toLocaleDateString()}</td>
+                  <td>{new Date(eventItem.eventDate + "T00:00:00").toLocaleDateString()}</td>
                   <td className="text-center">
                     {eventItem.category}
                   </td>
