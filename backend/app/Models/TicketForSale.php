@@ -39,5 +39,15 @@ class TicketForSale extends Model
             ->when($filters['inBasket'] ?? null, fn($q, $value) =>
                 $q->where('inBasket', $value)
             );
+    public $timestamps = false;
+
+    public function originalTicket()
+    {
+        return $this->belongsTo(OriginalTicket::class, 'originalTicketId');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'fromUserId');
     }
 }
