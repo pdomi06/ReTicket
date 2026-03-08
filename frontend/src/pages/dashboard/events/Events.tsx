@@ -10,6 +10,7 @@ import Button from "../../../components/ui/button/Button";
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loadingStatus, setLoadingStatus] = useState<number | null>(null);
+  const [deletingEventId, setDeletingEventId] = useState<number | null>(null);
   const [filters, setFilters] = useState({
     name: "",
     venue: "",
@@ -68,6 +69,36 @@ export default function Events() {
       alert("Failed to change ticket status");
     } finally {
       setLoadingStatus(null);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: number, eventName: string) => {
+    if (!confirm(`Are you sure you want to delete the event "${eventName}"?`)) {
+      return;
+    }
+
+    setDeletingEventId(eventId);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/events/${eventId}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.message || "Failed to delete event");
+        return;
+      }
+
+      setEvents((prev) => prev.filter((event) => event.id !== eventId));
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Failed to delete event");
+    } finally {
+      setDeletingEventId(null);
     }
   };
 
@@ -208,14 +239,8 @@ export default function Events() {
                     </select>
                   </td>
                   <td className={`text-center ${styles.actionButtons}`}>
-                    <div className="row">
-                      <div className="col-3">
-                        <Button text="Edit" link={`/dashboard/edit-event/${eventItem.id}`} variant="outline" />
-                      </div>
-                      <div className="col-3">
-                        <Button text="Delete" link={`/dashboard/delete-event/${eventItem.id}`} variant="outline" />
-                      </div>
-                    </div>
+                    <Button text="Edit" link={`/dashboard/edit-event/${eventItem.id}`} variant="outline" />
+                    <Button text={deletingEventId === eventItem.id ? "Deleting..." : "Delete"} variant="outline" onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)} disabled={deletingEventId === eventItem.id} />
                   </td>
                 </tr>
               ))

@@ -92,14 +92,26 @@
     color: var(--color-main);
 }
 
-.actionButtons button {
-    margin: 0 0.25rem;
-    font-size: 0.8rem;
+.actionButtons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 }
 
-.actionButtons button:focus,
-.actionButtons button:active {
-    box-shadow: none;
+.actionButtons button {
+    margin: 0;
+    font-size: 0.85rem;
+    padding: 8px 12px !important;
+    white-space: nowrap;
+    width: auto !important;
+}
+
+.actionButtons > div {
+    width: auto;
+}
+
+.actionButtons a {
+    width: auto !important;
 }
 
 .statusSelect {
