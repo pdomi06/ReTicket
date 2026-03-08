@@ -27,4 +27,12 @@ class Payout extends Model
     //const CREATED_AT = "createdAt";
 
     public $timestamps = false;
+
+    public function orderItem(){
+        return $this->belongsTo(OrderItem::class, 'orderItemId');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'vendorId');
+    }
 }
