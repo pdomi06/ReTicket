@@ -67,8 +67,8 @@ const EditVenue = () => {
             const events = (data && typeof data === 'object' && 'data' in data && Array.isArray((data as { data: unknown }).data))
                 ? (data as { data: IEvent[] }).data
                 : Array.isArray(data)
-                ? (data as IEvent[])
-                : [];
+                    ? (data as IEvent[])
+                    : [];
             setAffectedEvents(events);
         } catch (error) {
             console.error('Error fetching affected events:', error);
@@ -136,10 +136,10 @@ const EditVenue = () => {
                     )}
                     {affectedEvents.length > 0 && (
                         <div className="alert alert-warning mb-3" role="alert">
-                            <strong>⚠️ Warning:</strong> This venue is used by {affectedEvents.length} event{affectedEvents.length !== 1 ? 's' : ''}.
+                            ⚠️ Warning: This venue is used by {affectedEvents.length} event{affectedEvents.length !== 1 ? 's' : ''}.
                             After updating, you must re-edit each affected event to regenerate their tickets with the new venue configuration.
                             <br />
-                            <small>Affected events: {affectedEvents.map(e => e.name).join(', ')}</small>
+                            Affected events: {affectedEvents.map(e => e.name).join(', ')}
                         </div>
                     )}
                     <div className="d-grid gap-3">
