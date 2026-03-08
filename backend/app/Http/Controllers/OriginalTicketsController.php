@@ -121,6 +121,59 @@ class OriginalTicketsController extends Controller
         OriginalTicket::insert($originalTickets);
         return response()->json(["message" => "Original tickets created successfully"], 201);
     }
+
+    public function bulkStatusChange(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'eventId' => ['required', 'integer', 'exists:events,id'],
+            'status' => ['required', 'in:pre-release,active,cancelled,expired'],
+        ]);
+
+        $eventId = $request->eventId;
+        $newStatus = $request->status;
+
+        $currentTickets = OriginalTicket::where('eventId', $eventId)->get();
+        if ($currentTickets->isEmpty()) {
+            return response()->json(['message' => 'No tickets found for this event'], 404);
+        }
+
+        $oldStatus = $currentTickets->first()->status;
+
+        OriginalTicket::where('eventId', $eventId)->update(['status' => $newStatus]);
+
+        if ($newStatus === 'active' && $oldStatus !== 'active') {
+            $existingForSaleIds = TicketForSale::where('eventId', $eventId)
+                ->pluck('originalTicketId')
+                ->toArray();
+
+            $ticketsToCreate = [];
+            foreach ($currentTickets as $ticket) {
+                if (!in_array($ticket->id, $existingForSaleIds)) {
+                    $ticketsToCreate[] = [
+                        'originalTicketId' => $ticket->id,
+                        'fromUserId' => null,
+                        'eventId' => $eventId,
+                        'price' => $ticket->price,
+                        'inBasket' => false,
+                    ];
+                }
+            }
+
+            if (!empty($ticketsToCreate)) {
+                TicketForSale::insert($ticketsToCreate);
+            }
+        }
+
+        if ($oldStatus === 'active' && $newStatus !== 'active') {
+            TicketForSale::where('eventId', $eventId)->delete();
+        }
+
+        return response()->json([
+            'message' => "Tickets status changed to {$newStatus}",
+            'count' => $currentTickets->count(),
+        ], 200);
+    }
+
     public function getOnlyAvailableTicketsInForSale($eventId)
     {
         $ticketsForSale = TicketForSale::where('eventId', $eventId)

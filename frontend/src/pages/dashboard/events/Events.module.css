@@ -102,6 +102,29 @@
     box-shadow: none;
 }
 
+.statusSelect {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid rgba(177, 156, 217, 0.3);
+    border-radius: 0.5rem;
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-family: var(--font-main);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.statusSelect:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.15);
+}
+
+.statusSelect:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .filtersSection {
     margin-bottom: 1.5rem;
     background-color: rgba(177, 156, 217, 0.08);

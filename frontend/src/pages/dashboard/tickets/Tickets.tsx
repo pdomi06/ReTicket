@@ -13,6 +13,7 @@ export default function Tickets() {
     venue: "",
     section: "",
     status: "",
+    date: "",
   });
 
   useEffect(() => {
@@ -45,8 +46,9 @@ export default function Tickets() {
     const venueMatch = ticket.venue.toLowerCase().includes(filters.venue.toLowerCase());
     const sectionMatch = ticket.section.toLowerCase().includes(filters.section.toLowerCase());
     const statusMatch = !filters.status || ticket.status === filters.status;
+    const dateMatch = !filters.date || ticket.eventDate.includes(filters.date);
 
-    return eventMatch && venueMatch && sectionMatch && statusMatch;
+    return eventMatch && venueMatch && sectionMatch && statusMatch && dateMatch;
   });
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -55,7 +57,7 @@ export default function Tickets() {
   };
 
   const handleClearFilters = () => {
-    setFilters({ event: "", venue: "", section: "", status: "" });
+    setFilters({ event: "", venue: "", section: "", status: "", date: "" });
   };
 
   const uniqueStatuses = [...new Set(tickets.map((t) => t.status))];
@@ -68,8 +70,8 @@ export default function Tickets() {
       </div>
 
       <div className={styles.filtersSection}>
-        <div className={`${styles.filterGroup} row`}>
-          <div className="col-2">
+        <div className={styles.filterGroup}>
+          <div>
             <Input
               type="text"
               label="Filter by event"
@@ -80,7 +82,18 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div>
+            <Input
+              type="date"
+              label="Filter by date"
+              name="date"
+              value={filters.date}
+              onChange={handleFilterChange}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+          <div>
             <Input
               type="text"
               label="Filter by venue"
@@ -91,7 +104,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div>
             <Input
               type="text"
               label="Filter by section"
@@ -102,7 +115,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div>
             <Select
               label="All Status"
               name="status"
@@ -119,8 +132,8 @@ export default function Tickets() {
               ))}
             </Select>
           </div>
-          {(filters.event || filters.venue || filters.section || filters.status) && (
-            <div className="col-2">
+          {(filters.event || filters.venue || filters.section || filters.status || filters.date) && (
+            <div>
               <Button text="Clear" onClick={handleClearFilters} variant="outline" />
             </div>
           )}
@@ -172,7 +185,7 @@ export default function Tickets() {
           <tbody>
             {filteredTickets.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-4 text-muted">
+                <td colSpan={9} className="text-center py-4">
                   {tickets.length === 0 ? "No tickets found" : "No tickets match your filters"}
                 </td>
               </tr>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuCalendar, LuMapPin, LuTag } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
+import { TicketStatus } from "../../../utils/enums";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import styles from "./Events.module.css";
@@ -8,6 +9,8 @@ import Button from "../../../components/ui/button/Button";
 
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [ticketStatuses, setTicketStatuses] = useState<Record<number, string>>({});
+  const [loadingStatus, setLoadingStatus] = useState<number | null>(null);
   const [filters, setFilters] = useState({
     name: "",
     venue: "",
@@ -39,6 +42,56 @@ export default function Events() {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    async function fetchTicketStatuses() {
+      for (const event of events) {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/originalTickets/search?eventId=${event.id}`
+          );
+          const data = await response.json();
+          const tickets = data?.data || data || [];
+          if (tickets.length > 0) {
+            setTicketStatuses((prev) => ({ ...prev, [event.id]: tickets[0].status }));
+          }
+        } catch (error) {
+          console.error(`Error fetching ticket status for event ${event.id}:`, error);
+        }
+      }
+    }
+
+    if (events.length > 0) {
+      fetchTicketStatuses();
+    }
+  }, [events]);
+
+  const handleStatusChange = async (eventId: number, newStatus: string) => {
+    setLoadingStatus(eventId);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulkStatusChange`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId, status: newStatus }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.message || "Failed to change ticket status");
+        return;
+      }
+
+      setTicketStatuses((prev) => ({ ...prev, [eventId]: newStatus }));
+    } catch (error) {
+      console.error("Error changing ticket status:", error);
+      alert("Failed to change ticket status");
+    } finally {
+      setLoadingStatus(null);
+    }
+  };
+
   const filteredEvents = events.filter((event) => {
     const nameMatch = event.name.toLowerCase().includes(filters.name.toLowerCase());
     const venueMatch = event.venue.toLowerCase().includes(filters.venue.toLowerCase());
@@ -68,8 +121,8 @@ export default function Events() {
       </div>
 
       <div className={styles.filtersSection}>
-        <div className={`${styles.filterGroup} row`}>
-          <div className="col-2">
+        <div className={styles.filterGroup}>
+          <div>
             <Input
               type="text"
               label="Filter by event name"
@@ -80,7 +133,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div>
             <Input
               type="text"
               label="Filter by venue"
@@ -91,7 +144,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div>
             <Select
               label="All Categories"
               name="category"
@@ -109,7 +162,7 @@ export default function Events() {
             </Select>
           </div>
           {(filters.name || filters.venue || filters.category) && (
-            <div className="col-2">
+            <div>
               <Button text="Clear" onClick={handleClearFilters} variant="outline" />
             </div>
           )}
@@ -137,13 +190,14 @@ export default function Events() {
                 <LuTag size={16} className="me-2" />
                 Base Price
               </th>
+              <th className="text-center">Ticket Status</th>
               <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredEvents.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4">
+                <td colSpan={7} className="text-center py-4">
                   {events.length === 0 ? "No events found" : "No events match your filters"}
                 </td>
               </tr>
@@ -157,6 +211,23 @@ export default function Events() {
                     {eventItem.category}
                   </td>
                   <td>{eventItem.basePrice} Ft</td>
+                  <td className="text-center">
+                    <select
+                      className={styles.statusSelect}
+                      value={ticketStatuses[eventItem.id] || ""}
+                      onChange={(e) => handleStatusChange(eventItem.id, e.target.value)}
+                      disabled={loadingStatus === eventItem.id}
+                    >
+                      {!ticketStatuses[eventItem.id] && (
+                        <option value="" disabled>No tickets</option>
+                      )}
+                      {Object.values(TicketStatus).map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
                   <td className={`text-center ${styles.actionButtons}`}>
                     <button className="btn btn-sm btn-outline-primary me-2">Edit</button>
                     <button className="btn btn-sm btn-outline-danger">Delete</button>
