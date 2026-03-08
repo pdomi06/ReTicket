@@ -172,14 +172,13 @@ export default function Tickets() {
                 Columns
               </th>
               <th className="text-center">
-                <LuTicket size={16} className="me-2" />
-                Seat
+                <LuTag size={16} className="me-2" />
+                Price
               </th>
               <th>
                 <LuCalendar size={16} className="me-2" />
                 Status
               </th>
-              <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -205,10 +204,6 @@ export default function Tickets() {
                   <td>${ticket.price}</td>
                   <td>
                     {String(ticket.status)}
-                  </td>
-                  <td className={`text-center ${styles.actionButtons}`}>
-                    <button className="btn btn-sm btn-outline-primary me-2">Edit</button>
-                    <button className="btn btn-sm btn-outline-danger">Delete</button>
                   </td>
                 </tr>
               ))

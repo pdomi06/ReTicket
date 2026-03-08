@@ -121,8 +121,8 @@ export default function Events() {
       </div>
 
       <div className={styles.filtersSection}>
-        <div className={styles.filterGroup}>
-          <div>
+        <div className={`row ${styles.filterGroup}`}>
+          <div className="col-2">
             <Input
               type="text"
               label="Filter by event name"
@@ -133,7 +133,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div>
+          <div className="col-2">
             <Input
               type="text"
               label="Filter by venue"
@@ -144,7 +144,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div>
+          <div className="col-2">
             <Select
               label="All Categories"
               name="category"
@@ -162,7 +162,7 @@ export default function Events() {
             </Select>
           </div>
           {(filters.name || filters.venue || filters.category) && (
-            <div>
+            <div className="col-2">
               <Button text="Clear" onClick={handleClearFilters} variant="outline" />
             </div>
           )}
