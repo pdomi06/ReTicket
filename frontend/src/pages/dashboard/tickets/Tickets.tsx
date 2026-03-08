@@ -66,7 +66,6 @@ export default function Tickets() {
     <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
       <div className={styles.headerSection}>
         <h1>Tickets</h1>
-        <button className={`btn ${styles.addButton}`}>+ Add Ticket</button>
       </div>
 
       <div className={styles.filtersSection}>
@@ -201,7 +200,7 @@ export default function Tickets() {
                   <td className="text-center">
                     {ticket.seatNumber}
                   </td>
-                  <td>${ticket.price}</td>
+                  <td>{ticket.price} Ft</td>
                   <td>
                     {String(ticket.status)}
                   </td>

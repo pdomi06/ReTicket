@@ -122,6 +122,38 @@ class OriginalTicketsController extends Controller
         return response()->json(["message" => "Original tickets created successfully"], 201);
     }
 
+    public function bulkUpdate(BulkStoreOriginalTicketsRequest $request)
+    {
+        $eventId = $request->eventId;
+        $venues = $request->venue;
+        $basePrice = $request->eventBasePrice;
+
+        TicketForSale::where('eventId', $eventId)->delete();
+        OriginalTicket::where('eventId', $eventId)->delete();
+
+        $originalTickets = [];
+        foreach ($venues as $venue) {
+            for ($i = 1; $i <= $venue['row']; $i++) {
+                for ($j = 1; $j <= $venue['col']; $j++) {
+                    $originalTickets[] = [
+                        'eventId' => $eventId,
+                        'section' => $venue['section'],
+                        'row' => $i,
+                        'seatNumber' => $j,
+                        'price' => round($basePrice * $venue['rate'], 2),
+                        'status' => 'pre-release',
+                        'ticketPdfUrl' => "",
+                        'createdAt' => now(),
+                        'updatedAt' => now(),
+                    ];
+                }
+            }
+        }
+
+        OriginalTicket::insert($originalTickets);
+        return response()->json(["message" => "Original tickets updated successfully"], 200);
+    }
+
     public function bulkStatusChange(\Illuminate\Http\Request $request)
     {
         $request->validate([

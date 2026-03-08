@@ -17,12 +17,14 @@ const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
 const DashboardOverview = lazy(() => import("../pages/dashboard/overview/Overview.tsx"));
 const DashboardCreateVenue = lazy(() => import("../pages/dashboard/create-venue/CreateVenue.tsx"));
 const DashboardCreateEvent = lazy(() => import("../pages/dashboard/create-event/CreateEvent.tsx"));
-const ListTickets = lazy(() => import("../pages/dashboard/list-tickets/ListTickets.tsx"));
-const MyEvents = lazy(() => import("../pages/dashboard/my-events/MyEvents.tsx"));
-const Sales = lazy(() => import("../pages/dashboard/sales/Sales.tsx"));
-const Venues = lazy(() => import("../pages/dashboard/venues/Venues.tsx"));
-const Events = lazy(() => import("../pages/dashboard/events/Events.tsx"));
-const Tickets = lazy(() => import("../pages/dashboard/tickets/Tickets.tsx"));
+const DashboardEditVenue = lazy(() => import("../pages/dashboard/edit-venue/EditVenue.tsx"));
+const DashboardEditEvent = lazy(() => import("../pages/dashboard/edit-event/EditEvent.tsx"));
+const DashboardListTickets = lazy(() => import("../pages/dashboard/list-tickets/ListTickets.tsx"));
+const DashboardMyEvents = lazy(() => import("../pages/dashboard/my-events/MyEvents.tsx"));
+const DashboardSales = lazy(() => import("../pages/dashboard/sales/Sales.tsx"));
+const DashboardVenues = lazy(() => import("../pages/dashboard/venues/Venues.tsx"));
+const DashboardEvents = lazy(() => import("../pages/dashboard/events/Events.tsx"));
+const DashboardTickets = lazy(() => import("../pages/dashboard/tickets/Tickets.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -45,12 +47,14 @@ export const routes: RouteObject[] = [
           { index: true, element: <DashboardOverview /> },
           { path: "create-venue", element: <DashboardCreateVenue /> },
           { path: "create-event", element: <DashboardCreateEvent /> },
-          { path: "list-tickets", element: <ListTickets /> },
-          { path: "my-events", element: <MyEvents /> },
-          { path: "sales", element: <Sales /> },
-          { path: "venues", element: <Venues /> },
-          { path: "events", element: <Events /> },
-          { path: "tickets", element: <Tickets /> },
+          { path: "edit-venue/:id", element: <DashboardEditVenue /> },
+          { path: "edit-event/:id", element: <DashboardEditEvent /> },
+          { path: "list-tickets", element: <DashboardListTickets /> },
+          { path: "my-events", element: <DashboardMyEvents /> },
+          { path: "sales", element: <DashboardSales /> },
+          { path: "venues", element: <DashboardVenues /> },
+          { path: "events", element: <DashboardEvents /> },
+          { path: "tickets", element: <DashboardTickets /> },
         ],
       },
       { path: "*", element: <NotFound /> },

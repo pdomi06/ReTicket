@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuPartyPopper } from "react-icons/lu";
+import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin } from "react-icons/lu";
 import style from "./Sidebar.module.css";
 
 const NAV_ITEMS = [
@@ -19,8 +19,6 @@ const ADMIN_ITEMS = [
     { label: "Venues", icon: LuMapPin, link: "/dashboard/venues" },
     { label: "Events", icon: LuCalendar, link: "/dashboard/events" },
     { label: "Tickets", icon: LuTicket, link: "/dashboard/tickets" },
-    { label: "Create Venue", icon: LuMapPin, link: "/dashboard/create-venue" },
-    { label: "Create Event", icon: LuPartyPopper, link: "/dashboard/create-event" },
 ];
 
 const Sidebar = () => {

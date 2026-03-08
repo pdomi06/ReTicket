@@ -106,7 +106,7 @@ export default function Venues() {
                 <LuTrendingUp size={16} className="me-2" />
                 Rate
               </th>
-              <th className="text-center">Actions</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -127,12 +127,14 @@ export default function Venues() {
                   <td className="text-center">{venue.cols}</td>
                   <td>{venue.rate}x</td>
                   <td className={`text-center ${styles.actionButtons}`}>
-                    <button className="btn btn-sm btn-outline-primary me-2">
-                      Edit
-                    </button>
-                    <button className="btn btn-sm btn-outline-danger">
-                      Delete
-                    </button>
+                    <div className="row">
+                      <div className="col-2">
+                        <Button text="Edit" link={`/dashboard/edit-venue/${venue.id}`} variant="outline" />
+                      </div>
+                      <div className="col-2">
+                        <Button text="Delete" link={`/dashboard/delete-venue`} variant="outline" />
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ))

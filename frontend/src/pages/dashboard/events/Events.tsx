@@ -191,7 +191,7 @@ export default function Events() {
                 Base Price
               </th>
               <th className="text-center">Ticket Status</th>
-              <th className="text-center">Actions</th>
+              <th className="text-center"></th>
             </tr>
           </thead>
           <tbody>
@@ -229,8 +229,14 @@ export default function Events() {
                     </select>
                   </td>
                   <td className={`text-center ${styles.actionButtons}`}>
-                    <button className="btn btn-sm btn-outline-primary me-2">Edit</button>
-                    <button className="btn btn-sm btn-outline-danger">Delete</button>
+                    <div className="row">
+                      <div className="col-3">
+                        <Button text="Edit" link={`/dashboard/edit-event/${eventItem.id}`} variant="outline" />
+                      </div>
+                      <div className="col-3">
+                        <Button text="Delete" link={`/dashboard/delete-event/${eventItem.id}`} variant="outline" />
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ))
