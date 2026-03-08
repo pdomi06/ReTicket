@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreVenueMapRequest extends FormRequest
 {
@@ -22,11 +24,19 @@ class StoreVenueMapRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'venue'   => ['required', 'string', 'max:255'],
-        'section' => ['required', 'string', 'max:255'],
-        'rows'     => ['required', 'integer', 'min:1'],
-        'cols'    => ['required', 'integer', 'min:1'],
-        'rate'    => ['required', 'numeric', 'min:1', 'max:5'],
+            'venue'   => ['required', 'string', 'max:255'],
+            'section' => ['required', 'string', 'max:255'],
+            'rows'    => ['required', 'integer', 'min:1'],
+            'cols'    => ['required', 'integer', 'min:1'],
+            'rate'    => ['required', 'numeric', 'min:0.1', 'max:9.9'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'The given data was invalid.',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

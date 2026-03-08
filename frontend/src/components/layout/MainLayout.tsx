@@ -3,6 +3,7 @@ import Navbar from './navbar/navbar.tsx';
 import Footer from './footer/footer.tsx';
 import styles from './MainLayout.module.css';
 import EventContextProvider from '../../contexts/event/EventContext.tsx';
+import CartContextProvider from '../../contexts/cart/CartContext.tsx';
 
 export default function MainLayout() {
   return (
@@ -10,10 +11,12 @@ export default function MainLayout() {
       <Navbar />
       <main className={styles.main}>
         <EventContextProvider>
-        <Outlet />
+          <CartContextProvider>
+            <Outlet />
+          </CartContextProvider>
         </EventContextProvider>
       </main>
       <Footer />
-    </div>
+    </div >
   );
 }

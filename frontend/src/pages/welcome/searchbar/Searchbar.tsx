@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/button/Button';
 import Input from '../../../components/ui/input/Input';
 import style from './Searchbar.module.css';
@@ -7,16 +7,24 @@ import { useState } from 'react';
 const SearchBar = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        event: '',
+        name: '',
         venue: '',
-        date: '',
+        eventDate: '',
         maxPrice: ''
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const query = new URLSearchParams(formData).toString();
-        navigate(`/browse?${query}`);
+        const params: Record<string, string> = {};
+        
+        if (formData.name) params.name = formData.name;
+        if (formData.venue) params.venue = formData.venue;
+        if (formData.eventDate) params.eventDate = formData.eventDate;
+        if (formData.maxPrice) params.maxPrice = formData.maxPrice;
+         navigate({
+            pathname: '/browse',
+            search: `?${createSearchParams(params)}`
+        });
     };
 
     return (
@@ -27,10 +35,10 @@ const SearchBar = () => {
                     <div className={`${style['searchbar-input']} col`}>
                         <Input 
                             label="Event or artist name..." 
-                            name="event" 
+                            name="name" 
                             theme="light" 
                             size="large" 
-                            onChange={(e) => setFormData({...formData, event: e.target.value})} 
+                            onChange={(e) => setFormData({...formData, name: e.target.value})} 
                         />
                     </div>
                     <div className={`${style['searchbar-input']} col`}>
@@ -49,7 +57,7 @@ const SearchBar = () => {
                             name="date" 
                             theme="light" 
                             size="large" 
-                            onChange={(e) => setFormData({...formData, date: e.target.value})} 
+                            onChange={(e) => setFormData({...formData, eventDate: e.target.value})} 
                         />
                     </div>
                     <div className={`${style['searchbar-input']} col`}>

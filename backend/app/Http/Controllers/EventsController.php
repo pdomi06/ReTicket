@@ -14,10 +14,19 @@ class EventsController extends Controller
      * Display a listing of the resource.
      */
     public function index(){
-        $events = Event::orderByDesc('createdAt')->paginate(20);
+        $events = Event::with('originalTickets')
+            ->orderByDesc('createdAt')
+            ->paginate(20);
+
+        $eventsData = $events->getCollection()->map(function($event) {
+            return array_merge(
+                $event->toArray(),
+                ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
+            );
+        });
 
         return response()->json(['success' => true,
-            'data' => $events->items(),
+            'data' => $eventsData,
             'pagination' => [
             'current_page' => $events->currentPage(),
             'total_results' => $events->total(),
@@ -29,10 +38,42 @@ class EventsController extends Controller
     {
         $filters = $request->validated();
 
-        $events = Event::search($filters)->orderByDesc('createdAt')->paginate(20);
+        $query = Event::query();
+        
+        
+        if (!empty($filters['name'])) {
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
+        }
+        
+        if (!empty($filters['country'])) {
+            $query->where('country', 'like', '%' . $filters['country'] . '%');
+        }
+        
+        if (!empty($filters['venue'])) {
+            $query->where('venue', 'like', '%' . $filters['venue'] . '%');
+        }
+        
+        if (!empty($filters['city'])) {
+            $query->where('city', 'like', '%' . $filters['city'] . '%');
+        }
+        
+        if (!empty($filters['category'])) {
+            $query->where('category', $filters['category']);
+        }
+        
+        if (!empty($filters['eventDate'])) {
+            $query->whereDate('eventDate', '=', $filters['eventDate']);
+        }
+        
+        if (!empty($filters['maxPrice'])) {
+            $query->where('basePrice', '<=', $filters['maxPrice']);
+        }
+
+        $events = $query->orderByDesc('createdAt')->paginate(20);
 
         return response()->json(['success' => true,
             'data' => $events->items(),
+            'filters_applied' => $filters,
             'pagination' => [
             'current_page' => $events->currentPage(),
             'total_results' => $events->total(),

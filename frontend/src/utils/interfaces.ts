@@ -20,7 +20,7 @@ export interface IUser {
   isVerified: boolean;
   isActive: boolean;
   isOnline: boolean;
-  kycStatus: typeof KycStatus;
+  kycStatus: typeof KycStatus[keyof typeof KycStatus];
   createdAt: string;
   updatedAt: string;
   lastLogin: string;
@@ -48,7 +48,7 @@ export interface IUserSettings {
   userid: number;
   emailNotification: boolean;
   smsNotification: boolean;
-  profileVisibility: typeof ProfileVisibility;
+  profileVisibility: typeof ProfileVisibility[keyof typeof ProfileVisibility];
   createdAt: string;
   updatedAt: string;
 }
@@ -69,16 +69,17 @@ export interface IEvent {
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
+  firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
 
 export interface IOriginalTicket {
   id: number;
   eventId: number;
   section: string;
-  row: string;
-  seatNumber: string;
+  row: number;
+  seatNumber: number;
   price: number;
-  status: typeof TicketStatus;
+  status: typeof TicketStatus[keyof typeof TicketStatus];
   ticketPdfUrl: string;
   createdAt: string;
   updatedAt: string;
@@ -88,7 +89,7 @@ export interface ITicketHistory {
   id: number;
   originalTicketId: number;
   ticketListingId: number;
-  fromUserId: number;
+  fromUserId: number | null;
   toUserId: number;
   price: number;
   platformFee: number;
@@ -97,9 +98,11 @@ export interface ITicketHistory {
 export interface ITicketForsale {
   id: number;
   originalTicketId: number;
-  fromUserId: number;
+  fromUserId: number | null;
   price: number;
   inBasket: boolean;
+  row?: number;
+  col?: number;
 }
 
 export interface IOrder {
@@ -109,11 +112,11 @@ export interface IOrder {
   subtotal: number;
   platformFee: number;
   tax: number | null;
-  status: typeof OrderStatus;
+  status: typeof OrderStatus[keyof typeof OrderStatus];
   paymentIntentId: string;
-  paymentStatus: typeof PaymentStatus;
+  paymentStatus: typeof PaymentStatus[keyof typeof PaymentStatus];
   deliveryEmail: string;
-  deliverStatus: typeof DeliveryStatus;
+  deliverStatus: typeof DeliveryStatus[keyof typeof DeliveryStatus];
   deliveredAt: string;
   createdAt: string;
   updatedAt: string;
@@ -139,7 +142,7 @@ export interface IPayout {
   id: number;
   vendorId: number;
   orderItemId: number;
-  status: typeof PayoutStatus;
+  status: typeof PayoutStatus[keyof typeof PayoutStatus];
   bank: number;
   iban: number;
   paidAt: number;
@@ -193,7 +196,7 @@ export interface TextareaProps {
 
 export interface ButtonProps {
     type?: 'button' | 'submit' | 'reset';
-    text: string;
+    text: string | React.ReactNode;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     disabled?: boolean;
     className?: string;
@@ -226,4 +229,23 @@ export interface CardProps {
 export interface IEventContext {
   event: IEvent | undefined;
   getEvent: (id: string) => Promise<boolean>;
+}
+
+export interface ICartContext {
+  tickets: ITicketForsale[];
+  addToCart: (eventId: string, row: number, seat: number) => Promise<boolean>;
+  removeFromCart: (ticket: ITicketForsale) => Promise<void>;
+  clearCart: () => void;
+}
+
+export interface IDashboardTicket {
+  id: number;
+  eventName: string;
+  eventDate: string;
+  venue: string;
+  section: string;
+  row: number;
+  seatNumber: number;
+  price: number;
+  status: typeof TicketStatus[keyof typeof TicketStatus];
 }

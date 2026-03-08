@@ -10,12 +10,9 @@ const Sidebar = () => {
     const [searchForm, setForm] = useState({
         name: '',
         venue: '',
-        address: '',
         city: '',
-        state: '',
         country: '',
         eventDate: '',
-        eventEndDate: '',
         category: '',
     });
 
@@ -30,9 +27,14 @@ const Sidebar = () => {
         e.preventDefault();
 
         const params: Record<string, string> = {};
-        Object.entries(searchForm).forEach(([key, value]) => {
-            if (value) params[key] = value;
-        });
+
+        if (searchForm.name) params.name = searchForm.name;
+        if (searchForm.venue) params.venue = searchForm.venue;
+        if (searchForm.city) params.city = searchForm.city;
+        if (searchForm.country) params.country = searchForm.country;
+        if (searchForm.eventDate) params.eventDate = searchForm.eventDate;
+        if (searchForm.category) params.category = searchForm.category;
+
         navigate({
             pathname: '/browse',
             search: `?${createSearchParams(params)}`
@@ -44,13 +46,10 @@ const Sidebar = () => {
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <Input label="Event name" name="name" theme="light" size="large" value={searchForm.name} onChange={handleChange} />
                 <Input label="Venue" name="venue" theme="light" size="large" value={searchForm.venue} onChange={handleChange} />
-                <Input label="Address" name="address" theme="light" size="large" value={searchForm.address} onChange={handleChange} />
                 <Input label="City" name="city" theme="light" size="large" value={searchForm.city} onChange={handleChange} />
-                <Input label="State" name="state" theme="light" size="large" value={searchForm.state} onChange={handleChange} />
                 <Input label="Country" name="country" theme="light" size="large" value={searchForm.country} onChange={handleChange} />
                 <Input type="date" label="Event Date" name="eventDate" theme="light" size="large" value={searchForm.eventDate} onChange={handleChange} />
-                <Input type="date" label="Event End Date" name="eventEndDate" theme="light" size="large" value={searchForm.eventEndDate} onChange={handleChange} />
-                <Select label="Category" name="category" theme="light" size="large" value={searchForm.category} onChange={handleChange}> 
+                <Select label="Category" name="category" theme="light" size="large" value={searchForm.category} onChange={handleChange}>
                     <option value="" disabled>Select Category</option>
                     <option value="">None</option>
                     <option value="cultural">Cultural</option>
