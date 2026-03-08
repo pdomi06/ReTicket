@@ -79,7 +79,7 @@ export function useEventData(eventId: string) {
         return () => {
             cancelled = true
         }
-    }, [eventId])
+    }, [eventId, getEvent])
 
     useEffect(() => {
         if (!event?.name) {
