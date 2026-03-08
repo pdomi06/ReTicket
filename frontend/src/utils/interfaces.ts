@@ -89,7 +89,7 @@ export interface ITicketHistory {
   id: number;
   originalTicketId: number;
   ticketListingId: number;
-  fromUserId: number;
+  fromUserId: number | null;
   toUserId: number;
   price: number;
   platformFee: number;
@@ -98,7 +98,7 @@ export interface ITicketHistory {
 export interface ITicketForsale {
   id: number;
   originalTicketId: number;
-  fromUserId: number;
+  fromUserId: number | null;
   price: number;
   inBasket: boolean;
   row?: number;
