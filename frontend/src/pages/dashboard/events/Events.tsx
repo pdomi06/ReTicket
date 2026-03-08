@@ -9,7 +9,6 @@ import Button from "../../../components/ui/button/Button";
 
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
-  const [ticketStatuses, setTicketStatuses] = useState<Record<number, string>>({});
   const [loadingStatus, setLoadingStatus] = useState<number | null>(null);
   const [filters, setFilters] = useState({
     name: "",
@@ -42,28 +41,6 @@ export default function Events() {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    async function fetchTicketStatuses() {
-      for (const event of events) {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/originalTickets/search?eventId=${event.id}`
-          );
-          const data = await response.json();
-          const tickets = data?.data || data || [];
-          if (tickets.length > 0) {
-            setTicketStatuses((prev) => ({ ...prev, [event.id]: tickets[0].status }));
-          }
-        } catch (error) {
-          console.error(`Error fetching ticket status for event ${event.id}:`, error);
-        }
-      }
-    }
-
-    if (events.length > 0) {
-      fetchTicketStatuses();
-    }
-  }, [events]);
 
   const handleStatusChange = async (eventId: number, newStatus: string) => {
     setLoadingStatus(eventId);
@@ -83,7 +60,9 @@ export default function Events() {
         return;
       }
 
-      setTicketStatuses((prev) => ({ ...prev, [eventId]: newStatus }));
+      setEvents((prev) => prev.map((event) =>
+        event.id === eventId ? { ...event, firstTicketStatus: newStatus as typeof TicketStatus[keyof typeof TicketStatus] } : event
+      ));
     } catch (error) {
       console.error("Error changing ticket status:", error);
       alert("Failed to change ticket status");
@@ -214,11 +193,11 @@ export default function Events() {
                   <td className="text-center">
                     <select
                       className={styles.statusSelect}
-                      value={ticketStatuses[eventItem.id] || ""}
+                      value={eventItem.firstTicketStatus || ""}
                       onChange={(e) => handleStatusChange(eventItem.id, e.target.value)}
                       disabled={loadingStatus === eventItem.id}
                     >
-                      {!ticketStatuses[eventItem.id] && (
+                      {!eventItem.firstTicketStatus && (
                         <option value="" disabled>No tickets</option>
                       )}
                       {Object.values(TicketStatus).map((status) => (

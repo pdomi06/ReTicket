@@ -14,10 +14,19 @@ class EventsController extends Controller
      * Display a listing of the resource.
      */
     public function index(){
-        $events = Event::orderByDesc('createdAt')->paginate(20);
+        $events = Event::with('originalTickets')
+            ->orderByDesc('createdAt')
+            ->paginate(20);
+
+        $eventsData = $events->getCollection()->map(function($event) {
+            return array_merge(
+                $event->toArray(),
+                ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
+            );
+        });
 
         return response()->json(['success' => true,
-            'data' => $events->items(),
+            'data' => $eventsData,
             'pagination' => [
             'current_page' => $events->currentPage(),
             'total_results' => $events->total(),

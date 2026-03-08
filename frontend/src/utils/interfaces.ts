@@ -69,6 +69,7 @@ export interface IEvent {
   imageUrl: string;
   createdAt: string;
   updatedAt: string;
+  firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
 
 export interface IOriginalTicket {
