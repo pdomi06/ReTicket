@@ -2,12 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\OriginalTicket;
+use App\Models\TicketForSale;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ActiveTicket>
  */
-class ActiveTicketsFactory extends Factory
+class ActiveTicketFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +19,8 @@ class ActiveTicketsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
+            'ticketListingId' => TicketForSale::inRandomOrder()->first()->id ?? TicketForSale::factory(),
         ];
     }
 }
