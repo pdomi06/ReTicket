@@ -15,10 +15,8 @@ return new class extends Migration
 
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('vendorId');
-            $table->foreign('vendorId')->references('id')->on('user');
-            $table->bigInteger('orderItemId');
-            $table->foreign('orderItemId')->references('id')->on('order_item');
+            $table->foreignId('vendorId')->constrained('user')->onDelete('cascade');
+            $table->foreignId('orderItemId')->constrained('order_item')->onDelete('cascade');
             $table->enum('status', ["created", "pending", "cancelled", "fulfilled"]);
             $table->text('bank');
             $table->text('iban');

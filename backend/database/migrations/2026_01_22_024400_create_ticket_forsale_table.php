@@ -15,10 +15,10 @@ return new class extends Migration
 
         Schema::create('ticket_forsale', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('originalTicketId')->constrained('original_tickets');
-            $table->foreignId('fromUserId')->nullable()->constrained('user');
-            $table->foreignId('eventId')->constrained('events');
-            $table->decimal('price');
+            $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
+            $table->foreignId('fromUserId')->nullable()->constrained('user')->onDelete('cascade');
+            $table->foreignId('eventId')->constrained('events')->onDelete('cascade');
+            $table->decimal('price', 10, 2);
             $table->boolean('inBasket');
         });
 

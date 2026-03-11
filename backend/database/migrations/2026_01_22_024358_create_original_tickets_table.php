@@ -15,12 +15,11 @@ return new class extends Migration
 
         Schema::create('original_tickets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('eventId');
-            $table->foreign('eventId')->references('id')->on('events');
+            $table->foreignId('eventId')->constrained('events')->onDelete('cascade');
             $table->text('section');
             $table->integer('row');
             $table->integer('seatNumber');
-            $table->decimal('price');
+            $table->decimal('price', 10, 2);
             $table->enum('status', ["pre-release", "active", "cancelled", "expired"]);
             $table->text('ticketPdfUrl');
             $table->date('createdAt');

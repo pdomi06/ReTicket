@@ -15,10 +15,9 @@ return new class extends Migration
 
         Schema::create('order_item', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('orderId');
-            $table->foreign('orderId')->references('id')->on('orders');
-            $table->bigInteger('ticketListingId');
-            $table->decimal('price');
+            $table->foreignId('orderId')->constrained('orders')->onDelete('cascade');
+            $table->text('ticketListingId')->unique();
+            $table->decimal('price', 10, 2);
             $table->date('createdAt');
         });
 

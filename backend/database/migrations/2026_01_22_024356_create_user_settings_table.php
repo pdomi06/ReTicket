@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('user_settings', function (Blueprint $table) {
-            $table->bigInteger('userid')->primary();
-            $table->foreign('userid')->references('id')->on('user');
+            $table->foreignId('userId')->primary()->constrained('users')->onDelete('cascade');
             $table->boolean('emailNotification');
             $table->boolean('smsNotification');
             $table->enum('profileVisibility', ["visible", "restricted", "banned"]);
