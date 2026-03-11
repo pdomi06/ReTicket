@@ -7,19 +7,38 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketForSale extends Model
 {
-    /** @use HasFactory<\Database\Factories\TicketForsaleFactory> */
     use HasFactory;
 
-    protected $table = "ticket_forsale";
+    public $timestamps = false;
 
+    protected $table = 'ticket_forsale';
 
     protected $fillable = [
         'originalTicketId',
         'fromUserId',
+        'eventId',
         'price',
-        'inBasket'
+        'inBasket',
     ];
 
+    public function scopeSearch($query, array $filters)
+    {
+        return $query
+            ->when($filters['originalTicketId'] ?? null, fn($q, $value) =>
+                $q->where('originalTicketId', $value)
+            )
+            ->when($filters['fromUserId'] ?? null, fn($q, $value) =>
+                $q->where('fromUserId', $value)
+            )
+            ->when($filters['eventId'] ?? null, fn($q, $value) =>
+                $q->where('eventId', $value)
+            )
+            ->when($filters['price'] ?? null, fn($q, $value) =>
+                $q->where('price', $value)
+            )
+            ->when($filters['inBasket'] ?? null, fn($q, $value) =>
+                $q->where('inBasket', $value)
+            );
     public $timestamps = false;
 
     public function originalTicket()

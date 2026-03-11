@@ -1,6 +1,7 @@
 .backgroundColorSecondary {
     background-color: var(--color-secondary);
 }
+
 .backgroundColorMain {
     background-color: var(--color-main);
 }
@@ -134,4 +135,192 @@
 
 .accentBorder {
     border-color: var(--color-accent) !important;
+}
+
+.seatSelector {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.seatSelector input {
+    display: none;
+}
+
+.seatSelector label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(45px * var(--seat-zoom));
+    height: calc(45px * var(--seat-zoom));
+    padding: calc(0.5rem * var(--seat-zoom));
+    border: 2px solid var(--color-accent);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: calc(0.85rem * var(--seat-zoom));
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    text-align: center;
+}
+
+.seatSelector label:hover {
+    background-color: rgba(177, 156, 217, 0.1);
+    border-color: var(--color-accent);
+}
+
+.seatSelector:has(input:checked) label {
+    background-color: var(--color-accent);
+    color: #001a20;
+    border-color: var(--color-accent);
+}
+
+.unavailableSeat+label {
+    background-color: rgba(177, 156, 217, 0.3);
+    color: var(--color-text-secondary);
+    border-color: rgba(177, 156, 217, 0.3);
+    cursor: not-allowed;
+}
+
+.seatUnavailable label {
+    background-color: rgba(243, 6, 6, 0.3);
+    color: var(--color-text-secondary);
+    border-color: rgba(177, 156, 217, 0.3);
+    cursor: not-allowed;
+}
+
+.seatUnavailable label:hover {
+    background-color: rgba(255, 38, 0, 0.3);
+    border-color: rgba(177, 156, 217, 0.3);
+}
+
+.seatGridContainer {
+    max-height: 450px;
+    min-height: 450px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid rgba(177, 156, 217, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    --seat-zoom: 1;
+}
+
+.loadingCursor {
+    cursor: wait;
+}
+
+.seatRow {
+    display: flex;
+    gap: calc(0.5rem * var(--seat-zoom));
+    margin-bottom: calc(0.5rem * var(--seat-zoom));
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    min-width: min-content;
+}
+
+.controlBar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(177, 156, 217, 0.08) 0%, rgba(177, 156, 217, 0.04) 100%);
+    border: 1px solid rgba(177, 156, 217, 0.15);
+    border-radius: 8px;
+}
+
+.zoomButton {
+    padding: 0.6rem 0.8rem !important;
+    border: 2px solid var(--color-accent) !important;
+    border-radius: 6px !important;
+    color: var(--color-accent) !important;
+    background-color: transparent !important;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease !important;
+}
+
+.zoomButton:hover:not(:disabled) {
+    border-color: var(--color-accent) !important;
+    opacity: 0.8;
+}
+
+.zoomButton:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+.zoomButtonWrapper {
+    width: auto;
+}
+
+.zoomButtonWrapper button {
+    width: auto !important;
+    padding: 0.6rem 0.8rem !important;
+}
+
+.zoomDisplay {
+    min-width: 70px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--color-accent);
+    font-size: 0.95rem;
+}
+
+.reloadButton {
+    padding: 0.6rem 1rem !important;
+    border: 2px solid var(--color-accent) !important;
+    border-radius: 6px !important;
+    color: var(--color-accent) !important;
+    background-color: transparent !important;
+    font-weight: 600;
+    transition: all 0.2s ease !important;
+}
+
+.reloadButton:hover:not(:disabled) {
+    border-color: var(--color-accent) !important;
+    opacity: 0.8;
+}
+
+.reloadButton:disabled {
+    background-color: var(--color-accent) !important;
+    color: #001a20 !important;
+    border-color: var(--color-accent) !important;
+    cursor: not-allowed !important;
+}
+
+.reloadButtonWrapper {
+    margin-left: auto;
+    width: auto;
+}
+
+.reloadButtonWrapper button {
+    width: auto !important;
+    padding: 0.6rem 0.8rem !important;
+}
+
+.spinning {
+    display: inline-block;
+    animation: rotate360 1s cubic-bezier(0.2, 0, 0.3, 0.5) infinite;
+}
+
+.reloadIcon {
+    display: inline-block;
+    margin-right: 0.4rem;
+    color: var(--color-accent);
+}
+
+@keyframes rotate360 {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }

@@ -41,7 +41,7 @@ const Select: React.FC<SelectProps> = ({
                 value={value}
                 onChange={onChange}
             >
-                {usesFirstOptionAsLabel && <option value="" disabled hidden aria-hidden="true" />}
+                {usesFirstOptionAsLabel && <option value="" disabled hidden />}
                 {selectOptions}
             </select>
             <label htmlFor={name}>{floatingLabel}</label>
