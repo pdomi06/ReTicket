@@ -15,8 +15,7 @@ return new class extends Migration
 
         Schema::create('email_verify', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('userId');
-            $table->foreign('userId')->references('id')->on('user');
+            $table->foreignId('userId')->constrained('users')->onDelete('cascade');
             $table->text('token')->unique();
             $table->date('expiresAt');
             $table->date('verifiedAt');

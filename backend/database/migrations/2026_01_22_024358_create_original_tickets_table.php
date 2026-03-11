@@ -15,8 +15,7 @@ return new class extends Migration
 
         Schema::create('original_tickets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('eventId');
-            $table->foreign('eventId')->references('id')->on('events');
+            $table->foreignId('eventId')->constrained('events')->onDelete('cascade');
             $table->text('section');
             $table->integer('row');
             $table->integer('seatNumber');
