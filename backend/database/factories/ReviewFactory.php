@@ -21,9 +21,7 @@ class ReviewFactory extends Factory
         $orderItem = OrderItem::with('order')->inRandomOrder()->first();
 
         return [
-            'orderItemId' => $orderItem->id ?? OrderItem::factory(),
             'reviewerName' => fake()->name(),
-            'reviewedUserId' => $orderItem?->order?->buyerId ?? User::inRandomOrder()->value('id') ?? User::factory()->create()->id,
             'rating' => fake()->numberBetween(1, 5),
             'title' => fake()->words(3, true),
             'comment' => fake()->sentence(),

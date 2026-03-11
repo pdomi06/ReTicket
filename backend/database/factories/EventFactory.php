@@ -17,6 +17,7 @@ class EventFactory extends Factory
     public function definition(): array
     {
         $category = ["cultural", "music", "sport"];
+        $randomPicture = "https://picsum.photos/" . fake()->numberBetween(1920, 2000) . "/". fake()->numberBetween(1080, 1500);
         return [
             'name' => fake()->words(2, true),
             'description' => fake()->paragraph(),
@@ -28,8 +29,8 @@ class EventFactory extends Factory
             'eventDate' => fake()->date(),
             'eventEndDate' => fake()->date(),
             'category' => fake()->randomElement($category),
-            'basePrice' => fake()->numberBetween(10, 1000),
-            'imageUrl' => fake()->imageUrl(),
+            'basePrice' => fake()->randomFloat(2, 10, 1000),
+            'imageUrl' => $randomPicture,
             'createdAt' => now(),
             'updatedAt' => now(),
         ];

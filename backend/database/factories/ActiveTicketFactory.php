@@ -20,7 +20,7 @@ class ActiveTicketFactory extends Factory
     {
         return [
             'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
-            'ticketListingId' => TicketForSale::inRandomOrder()->first()->id ?? TicketForSale::factory(),
+            'ticketListingId' => Str::random(10),
         ];
     }
 }

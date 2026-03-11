@@ -17,13 +17,13 @@ class OriginalTicketFactory extends Factory
      */
     public function definition(): array
     {
-        $status = ["pre-release", "active", "cancelled", "expired"];
+        $status = ["pre-release", "reserved", "active", "cancelled", "expired"];
         return [
             'eventId' => Event::inRandomOrder()->first()->id ?? Event::factory(),
             'section' => fake()->randomLetter(),
             'row' => fake()->numberBetween(1, 100),
             'seatNumber' => fake()->numberBetween(1, 100),
-            'price' => fake()->numberBetween(10, 1000),
+            'price' => fake()->randomFloat(2, 10, 1000),
             'status' => fake()->randomElement($status),
             'ticketPdfUrl' => fake()->url(),
             'createdAt' => now(),

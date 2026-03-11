@@ -21,8 +21,8 @@ class OrderItemFactory extends Factory
     {
         return [
             'orderId' => Order::inRandomOrder()->first()->id ?? Order::factory(),
-            'ticketListingId' => TicketForSale::inRandomOrder()->first()->id ?? TicketForSale::factory(),
-            'price' => fake()->numberBetween(10, 1000),
+            'ticketListingId' => ActiveTicket::inRandomOrder()->first()->ticketListingId ?? ActiveTicket::factory(),
+            'price' => fake()->randomFloat(2, 10, 1000),
             'createdAt' => now(),
         ];
     }
