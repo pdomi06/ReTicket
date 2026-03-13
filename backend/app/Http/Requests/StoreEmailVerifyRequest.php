@@ -23,7 +23,7 @@ class StoreEmailVerifyRequest extends FormRequest
     {
         return [
             'userId' => ['required','exists:users,id'],
-            'token' => ['required','string','unique:email_verifies,token'],
+            'token' => ['required','string','unique:email_verify,token'],
         ];
     }
 }
