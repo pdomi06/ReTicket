@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('row');
             $table->integer('seatNumber');
             $table->decimal('price', 10, 2);
-            $table->enum('status', ["pre-release", "active", "cancelled", "expired"]);
+            $table->enum('status', ["pre-release", "reserved", "active", "cancelled", "expired"]);
             $table->text('ticketPdfUrl');
             $table->date('createdAt');
             $table->date('updatedAt');

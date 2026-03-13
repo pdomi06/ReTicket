@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\password_reset>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PasswordReset>
  */
 class PasswordResetFactory extends Factory
 {
@@ -17,7 +18,11 @@ class PasswordResetFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'userId' => User::inRandomOrder()->first()->id ?? User::factory(),
+            'token' => fake()->sha256(),
+            'expiresAt' => fake()->dateTimeBetween('+1 hour', '+1 day'),
+            'verifiedAt' => fake()->dateTimeBetween('-1 day', 'now'),
+            'createdAt' => now(),
         ];
     }
 }

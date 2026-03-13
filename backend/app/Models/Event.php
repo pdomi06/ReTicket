@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    /** @use HasFactory<\Database\Factories\EventsFactory> */
+    /** @use HasFactory<\Database\Factories\EventFactory> */
     use HasFactory;
 
     protected $table = 'events';
@@ -28,19 +28,24 @@ class Event extends Model
         'updatedAt',
     ];
 
-    public function originalTickets(){
-        return $this->hasMany(OriginalTicket::class, 'eventId');
-    }
 
-    public function scopeSearch($query, array $filters) {
+
+    public function scopeSearch($query, array $filters)
+    {
         return $query
-            ->when($filters['event'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['event'] ?? null,
+                fn($q, $value) =>
                 $q->where('name', 'like', '%' . $value . '%')
             )
-            ->when($filters['venue'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['venue'] ?? null,
+                fn($q, $value) =>
                 $q->where('venue', 'like', '%' . $value . '%')
             )
-            ->when($filters['city'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['city'] ?? null,
+                fn($q, $value) =>
                 $q->where('city', 'like', '%' . $value . '%')
             )
             ->when($filters['country'] ?? null, fn($q, $value) =>
@@ -49,7 +54,9 @@ class Event extends Model
             ->when($filters['eventDate'] ?? null, fn($q, $value) =>
                 $q->whereDate('eventDate', '=', $value)
             )
-            ->when($filters['category'] ?? null, fn($q, $value) =>
+            ->when(
+                $filters['category'] ?? null,
+                fn($q, $value) =>
                 $q->where('category', $value)
             )
             ->when($filters['maxPrice'] ?? null, fn($q, $value) =>
@@ -59,10 +66,15 @@ class Event extends Model
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
 
-    protected $casts= [
+    protected $casts = [
         'eventDate' => 'datetime',
         'eventEndDate' => 'datetime'
     ];
 
     //public $timestamps = false;
+
+    public function originalTickets()
+    {
+        return $this->hasMany(OriginalTicket::class, 'eventId');
+    }
 }

@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
 
-    protected $table = "user";
+    protected $table = "users";
 
 
     protected $fillable = [
@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function userSetting()
     {
-        return $this->hasOne(UserSettings::class, 'userid');
+        return $this->hasOne(UserSetting::class, 'userId');
     }
 
     public function payouts()

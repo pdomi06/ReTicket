@@ -24,7 +24,7 @@ class StoreTicketHistoryRequest extends FormRequest
         return [
         'originalTicketId' => ['required', 'integer', 'exists:original_tickets,id'],
         'ticketListingId' => ['required', 'string'],
-        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:users,id'],
         'toUser' => ['required', 'string'],
         'price' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],

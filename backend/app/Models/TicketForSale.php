@@ -20,6 +20,7 @@ class TicketForSale extends Model
         'price',
         'inBasket',
     ];
+    
 
     public function scopeSearch($query, array $filters)
     {
@@ -39,7 +40,7 @@ class TicketForSale extends Model
             ->when($filters['inBasket'] ?? null, fn($q, $value) =>
                 $q->where('inBasket', $value)
             );
-    public $timestamps = false;
+    }
 
     public function originalTicket()
     {

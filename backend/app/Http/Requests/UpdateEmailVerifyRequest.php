@@ -22,7 +22,7 @@ class UpdateEmailVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['sometimes','exists:user,id'],
+            'userId' => ['sometimes','exists:users,id'],
             'token' => ['sometimes','string','unique:email_verifies,token'],
         ];
     }

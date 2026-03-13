@@ -23,7 +23,7 @@ class StoreTicketForSaleRequest extends FormRequest
     {
         return [
         'originalTicketId' => ['required', 'integer', 'exists:original_tickets,id'],
-        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:users,id'],
         'eventId' => ['required', 'integer', 'exists:events,id'],
         'price' => ['required', 'numeric', 'min:0'],
         'inBasket' => ['required', 'boolean'],

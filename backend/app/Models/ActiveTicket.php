@@ -7,14 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActiveTicket extends Model
 {
-    /** @use HasFactory<\Database\Factories\ActiveTicketsFactory> */
+    /** @use HasFactory<\Database\Factories\ActiveTicketFactory> */
     use HasFactory;
 
     protected $table = "active_tickets";
     protected $fillable = [
-        'originalTickedId',
+        'originalTicketId',
         'ticketListingId',
     ];
-    
-    //public $timestamps = false;
+
+    public function originalTicket()
+    {
+        return $this->belongsTo(OriginalTicket::class, 'originalTicketId');
+    }
+
+    public function ticketListing()
+    {
+        return $this->belongsTo(TicketForSale::class, 'originalTicketId', 'originalTicketId');
+    }
+
+    public $timestamps = false;
 }
