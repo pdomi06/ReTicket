@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\ActiveTicket;
 use App\Models\OriginalTicket;
-use App\Models\TicketForSale;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,9 +21,10 @@ class TicketHistoryFactory extends Factory
     {
         return [
             'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
-            'ticketListingId' => ActiveTicket::inRandomOrder()->first()->ticketListingId ?? ActiveTicket::factory()->create()->ticketListingId,
+            'ticketListingId' => ActiveTicket::inRandomOrder()->value('ticketListingId')
+                ?? ActiveTicket::factory()->create()->ticketListingId,
             'fromUserId' => User::inRandomOrder()->first()->id ?? User::factory(),
-            'toUser' => faker()->name(),
+            'toUser' => fake()->name(),
             'price' => fake()->randomFloat(2, 10, 500),
             'platformFee' => fake()->randomFloat(2, 1, 50),
         ];
