@@ -23,7 +23,7 @@ class StoreOrderItemsRequest extends FormRequest
     {
         return [
             'orderId' => ['required','integer','exists:orders,id'],
-            'ticketListingId' => ['required','exists:ticket_forsale,id'],
+            'ticketListingId' => ['required','exists:ticket_ticketListingId'],
             'price' => ['required','numeric','min:0'],
         ];
     }
