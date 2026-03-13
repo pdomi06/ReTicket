@@ -58,7 +58,6 @@ class AuthController extends Controller
             ], 403);  
         };
 
-        $user->tokens()->delete();
         $user->update(['lastLogin' => now(), 'isOnline' => true]);
 
         $token = $user->createToken('api-token')->plainTextToken;
