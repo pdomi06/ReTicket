@@ -10,11 +10,11 @@ class UserSetting extends Model
     /** @use HasFactory<\Database\Factories\UserSettingsFactory> */
     use HasFactory;
     protected $table = "user_settings";
-    public $primaryKey = 'userid';
+    public $primaryKey = 'userId';
     public $incrementing = false;
     protected $keyType = 'int';
     protected $fillable = [
-        'userid',
+        'userId',
         'emailNotification',
         'smsNotification',
         'profileVisibility',
@@ -28,6 +28,6 @@ class UserSetting extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'userid');
+        return $this->belongsTo(User::class, 'userId');
     }
 }

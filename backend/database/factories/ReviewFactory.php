@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,8 +17,6 @@ class ReviewFactory extends Factory
      */
     public function definition(): array
     {
-        $orderItem = OrderItem::with('order')->inRandomOrder()->first();
-
         return [
             'reviewerName' => fake()->name(),
             'rating' => fake()->numberBetween(1, 5),

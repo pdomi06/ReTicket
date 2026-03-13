@@ -20,9 +20,9 @@ class TicketForSaleFactory extends Factory
     public function definition(): array
     {
         return [
-            'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
-            'fromUserId' => User::inRandomOrder()->first()->id ?? User::factory(),
-            'eventId' => Event::inRandomOrder()->first()->id ?? Event::factory(),
+            'originalTicketId' => OriginalTicket::inRandomOrder()->value('id') ?? OriginalTicket::factory(),
+            'fromUserId' => User::inRandomOrder()->value('id') ?? User::factory(),
+            'eventId' => Event::inRandomOrder()->value('id') ?? Event::factory(),
             'price' => fake()->randomFloat(2, 10, 100),
             'inBasket' => fake()->boolean(),
         ];

@@ -16,7 +16,7 @@ class UserSettingsSeeder extends Seeder
     {
         User::chunkById(200, function ($users) {
             $userIds = $users->pluck('id');
-            $existing = UserSetting::whereIn('userid', $userIds)->pluck('userid')->all();
+            $existing = UserSetting::whereIn('userId', $userIds)->pluck('userId')->all();
             $existingLookup = array_flip($existing);
 
             foreach ($users as $user) {
