@@ -158,7 +158,7 @@ class OriginalTicketsController extends Controller
     {
         $request->validate([
             'eventId' => ['required', 'integer', 'exists:events,id'],
-            'status' => ['required', 'in:pre-release,active,cancelled,expired'],
+            'status' => ['required', 'in:pre-release,reserved,active,cancelled,expired'],
         ]);
 
         $eventId = $request->eventId;

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActiveTicket extends Model
 {
-    /** @use HasFactory<\Database\Factories\ActiveTicketsFactory> */
+    /** @use HasFactory<\Database\Factories\ActiveTicketFactory> */
     use HasFactory;
 
     protected $table = "active_tickets";

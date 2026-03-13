@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\OriginalTicket;
-use App\Models\TicketForSale;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ActiveTicket>

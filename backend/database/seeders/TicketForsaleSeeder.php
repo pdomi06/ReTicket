@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\TicketForSale;
-use Database\Factories\TicketForsaleFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

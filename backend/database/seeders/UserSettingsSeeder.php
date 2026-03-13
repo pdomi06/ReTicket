@@ -14,12 +14,16 @@ class UserSettingsSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
+        User::chunkById(200, function ($users) {
+            $userIds = $users->pluck('id');
+            $existing = UserSetting::whereIn('userid', $userIds)->pluck('userid')->all();
+            $existingLookup = array_flip($existing);
 
-        foreach($users as $user){
-            if(!UserSetting::where('userid', $user->id)->exists()){
-                UserSetting::factory()->forUser($user)->create();
+            foreach ($users as $user) {
+                if (!isset($existingLookup[$user->id])) {
+                    UserSetting::factory()->forUser($user)->create();
+                }
             }
-        }
+        });
     }
 }

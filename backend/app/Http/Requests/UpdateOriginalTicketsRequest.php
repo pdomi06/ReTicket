@@ -26,7 +26,7 @@ class UpdateOriginalTicketsRequest extends FormRequest
             'row' => ['sometimes', 'integer'],
             'seatNumber' => ['sometimes', 'integer'],
             'price' => ['sometimes', 'numeric', 'min:0'],
-            'status' => ['sometimes', 'in:pre-release,active,cancelled,expired'],
+            'status' => ['sometimes', 'in:pre-release,reserved,active,cancelled,expired'],
         ];
     }
 }

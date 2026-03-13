@@ -27,7 +27,7 @@ class SearchOriginalTicketsRequest extends FormRequest
             'row' => ['nullable', 'integer'],
             'seatNumber' => ['nullable', 'integer'],
             'price' => ['nullable', 'numeric', 'min:0'],
-            'status' => ['nullable', 'in:pre-release,active,cancelled,expired'],
+            'status' => ['nullable', 'in:pre-release,reserved,active,cancelled,expired'],
             'ticketPdfUrl' => ['nullable', 'string', 'url'],
         ];
     }
