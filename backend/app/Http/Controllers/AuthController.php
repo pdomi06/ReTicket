@@ -13,7 +13,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -23,7 +23,7 @@ class AuthController extends Controller
             'passwordHash' => Hash::make($data['password']),
             'isActive' => true,
             'isVerified' => false,
-            'phone' => $data['phone'] ?? null,
+            'phone' => $data['phone'],
         ]);
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -32,9 +32,9 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'User registered successfully',
             'data' => [
-                'user' => $user,
-                'token' => $token,
-                'token_type' => 'Bearer'
+            'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer'
             ]
         ], 201);
     }
