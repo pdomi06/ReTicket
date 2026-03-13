@@ -32,7 +32,7 @@ class UpdateEventsRequest extends FormRequest
             'eventDate' => ['sometimes','date'],
             'eventEndDate' => ['sometimes','date','after_or_equal:eventDate'],
             'category' => ['sometimes','in:cultural,music,sport'],
-            'basePrice' => ['sometimes','integer','min:0'],
+            'basePrice' => ['sometimes','numeric','min:0'],
             'imageUrl' => ['sometimes','url'],
         ];
     }
