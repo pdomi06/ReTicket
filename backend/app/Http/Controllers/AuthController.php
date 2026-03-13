@@ -58,6 +58,7 @@ class AuthController extends Controller
             ], 403);  
         };
 
+        $user->tokens()->delete();
         $user->update(['lastLogin' => now(), 'isOnline' => true]);
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -75,8 +76,16 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->update(['isOnline' => false]);
-        $request->user()->currentAccessToken()->delete();
+        $user = $request->user();
+
+        if($user){
+            $user->update(['isOnline' => false]);
+
+            $token = $user->currentAccessToken();
+            if ($token) {
+                $token->delete();
+            }
+        }
 
         return response()->json([
             'success' => true,

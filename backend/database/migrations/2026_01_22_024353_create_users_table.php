@@ -21,9 +21,9 @@ return new class extends Migration
             $table->boolean('isActive')->default(true);
             $table->boolean('isOnline')->default(false);
             $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending");
-            $table->date('createdAt')->useCurrent();
-            $table->date('updatedAt')->useCurrent()->nullable();
-            $table->date('lastLogin')->nullable();
+            $table->dateTime('createdAt')->useCurrent();
+            $table->dateTime('updatedAt')->useCurrent()->nullable();
+            $table->dateTime('lastLogin')->nullable();
         });
     }
 
