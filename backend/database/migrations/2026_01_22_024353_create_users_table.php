@@ -17,13 +17,13 @@ return new class extends Migration
             $table->text('passwordHash');
             $table->text('name');
             $table->text('phone');
-            $table->boolean('isVerified');
-            $table->boolean('isActive');
-            $table->boolean('isOnline');
-            $table->enum('kycStatus', ["pending", "rejected", "approved"]);
-            $table->date('createdAt');
-            $table->date('updatedAt');
-            $table->date('lastLogin');
+            $table->boolean('isVerified')->default(false);
+            $table->boolean('isActive')->default(true);
+            $table->boolean('isOnline')->default(false);
+            $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending");
+            $table->date('createdAt')->useCurrent();
+            $table->date('updatedAt')->useCurrent()->nullable();
+            $table->date('lastLogin')->nullable();
         });
     }
 
