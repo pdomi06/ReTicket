@@ -22,7 +22,7 @@ class StoreUserSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['required', 'integer', 'exists:user,id'],
+            'userId' => ['required', 'integer', 'exists:users,id'],
             'emailNotifications' => ['required', 'boolean'],
             'smsNotifications' => ['required', 'boolean'],
             'profileVisibility' => ['required', 'in:visible,restricted,banned'],

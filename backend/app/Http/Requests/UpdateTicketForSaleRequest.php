@@ -24,7 +24,7 @@ class UpdateTicketForSaleRequest extends FormRequest
     {
         return [
         'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
-        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:users,id'],
         'eventId' => ['sometimes', 'integer', 'exists:events,id'],
         'price' => ['sometimes', 'numeric', 'min:0'],
         'inBasket' => ['sometimes', 'boolean'],

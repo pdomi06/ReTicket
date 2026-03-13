@@ -15,7 +15,7 @@ return new class extends Migration
 
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vendorId')->constrained('user')->onDelete('cascade');
+            $table->foreignId('vendorId')->constrained('users')->onDelete('cascade');
             $table->foreignId('orderItemId')->constrained('order_item')->onDelete('cascade');
             $table->enum('status', ["created", "pending", "cancelled", "fulfilled"]);
             $table->text('bank');

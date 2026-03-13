@@ -25,7 +25,7 @@ class UpdateReviewsRequest extends FormRequest
         return [
         'orderItemId' => ['sometimes', 'integer', 'exists:order_items,id', Rule::unique('reviews')->ignore($this->route('review'))],
         'reviewerName' => ['sometimes', 'string', 'max:255'],
-        'reviewedUserId'=> ['sometimes', 'integer', 'exists:user,id'],
+        'reviewedUserId'=> ['sometimes', 'integer', 'exists:users,id'],
         'rating' => ['sometimes', 'integer', 'min:1', 'max:5'],
         'title' => ['sometimes', 'string', 'max:255'],
         'comment' => ['sometimes', 'string'],

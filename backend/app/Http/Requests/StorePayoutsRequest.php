@@ -22,7 +22,7 @@ class StorePayoutsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'vendorId' => ['required', 'integer', 'exists:user,id'],
+        'vendorId' => ['required', 'integer', 'exists:users,id'],
         'orderItemId' => ['required', 'integer', 'exists:order_item,id'],
         'status' => ['required', 'in:created,pending,cancelled,fulfilled'],
         'bank' => ['required', 'string'],
