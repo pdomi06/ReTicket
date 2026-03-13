@@ -23,6 +23,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
 Route::apiResource('events', EventsController::class)->only(['index']);
+Route::get('events/{event}', [EventsController::class, 'show']);
 Route::get('events/search', [EventsController::class, 'search']);
 
 Route::apiResource('venue', VenueMapController::class)->only(['index']);
@@ -38,6 +39,7 @@ Route::apiResource('orders', OrdersController::class)->only(['index']);
 
 Route::apiResource('originalTickets', OriginalTicketsController::class)->only(['index']);
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
+Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
 
 Route::apiResource('passwordReset', PasswordResetController::class)->only(['index']);
 
@@ -59,7 +61,7 @@ Route::apiResource('userSettings', UserSettingsController::class)->only(['index'
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
+    Route::get('me', [AuthController::class, 'me']);
     
     Route::apiResource('user', UserController::class);
 
@@ -71,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdate"]);
     Route::post("originalTickets/bulkStatusChange", [OriginalTicketsController::class, "bulkStatusChange"]);
     Route::get("originalTickets/dashboard", [OriginalTicketsController::class, "dashboard"]);
-    Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
+    
     Route::apiResource("originalTickets", OriginalTicketsController::class)->except(['index']);
 
     Route::apiResource("events", EventsController::class)->except(['index']);
