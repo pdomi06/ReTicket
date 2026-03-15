@@ -48,17 +48,26 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (! $user || ! Hash::check($data['password'], $user->getAuthPassword())) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials',
+                'data' => null,
+            ], 401);
         }
 
         if(!$user->isActive){
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive. Please contact support.'
+                'message' => 'Your account is inactive. Please contact support.',
+                'data' => null,
             ], 403);  
         };
 
         $user->update(['lastLogin' => now(), 'isOnline' => true]);
+
+        if (method_exists($user,'tokens')){
+            $user->tokens()->delete();
+        }
 
         $token = $user->createToken('api-token')->plainTextToken;
 
