@@ -41,12 +41,9 @@ Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdat
 Route::apiResource('ticketForSale', TicketForSaleController::class)->only(['index']);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
 
-
 Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
-
-
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -63,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource("events", EventsController::class)->except(['index', 'show', 'store']);
 
-    Route::apiResource("venue", VenueMapController::class)->except(['index', 'show', 'store']);
+    Route::apiResource("venue", VenueMapController::class)->except(['index', 'store']);
 
     Route::apiResource("activeTickets", ActiveTicketsController::class)->except(['index']);
 
