@@ -85,5 +85,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource("userSettings", UserSettingsController::class);
 });
-
-
