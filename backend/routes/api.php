@@ -37,10 +37,6 @@ Route::apiResource('originalTickets', OriginalTicketsController::class)->only(['
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
 
-
-
-Route::apiResource('reviews', ReviewsController::class)->only(['index']);
-
 Route::apiResource('ticketForSale', TicketForSaleController::class)->only(['index']);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
 
