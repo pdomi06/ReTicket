@@ -24,31 +24,34 @@ Route::post('register', [AuthController::class, 'register']);
 Route::get('events', [EventsController::class, 'index']);
 Route::get('events/{event}', [EventsController::class, 'show']);
 Route::get('events/search', [EventsController::class, 'search']);
-Route::post('events', [EventsController::class, 'store']);
 
 Route::get('venues', [VenueMapController::class, 'index']);
 Route::get('venues/search', [VenueMapController::class, 'search']);
-Route::post('venues', [VenueMapController::class, 'store']);
 
 Route::get('activeTickets', [ActiveTicketsController::class, 'index']);
 
 Route::get('originalTickets', [OriginalTicketsController::class, 'index']);
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
-Route::post("originalTickets/bulk", [OriginalTicketsController::class, "bulkStore"]);
-Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdate"]);
 
 Route::get('ticketForSale', [TicketForSaleController::class, 'index']);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
-
-Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
-Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
-Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::post('events', [EventsController::class, 'store']);
+
+    Route::post('venues', [VenueMapController::class, 'store']);
+
+    Route::post("originalTickets/bulk", [OriginalTicketsController::class, "bulkStore"]);
+    Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdate"]);
+
+    Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
+    Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
+    Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
     
     Route::apiResource('user', UserController::class);
     
