@@ -1,10 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ITicketForsale } from "../../utils/interfaces";
 import { CartContext } from "./CartContextDef";
 
 const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [cart, setCart] = useState<ITicketForsale[]>([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    // Load cart from localStorage on mount
+    useEffect(() => {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            try {
+                setCart(JSON.parse(savedCart));
+            } catch (error) {
+                console.error("Error parsing saved cart:", error);
+                localStorage.removeItem('cart');
+            }
+        }
+    }, []);
+
+    // Save cart to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
 
 
     const addToCart = async (eventId: string, row: number, seat: number): Promise<boolean> => {
