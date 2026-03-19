@@ -21,24 +21,24 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
-Route::apiResource('events', EventsController::class)->only(['index']);
-Route::get('events/search', [EventsController::class, 'search']);
+Route::get('events', [EventsController::class, 'index']);
 Route::get('events/{event}', [EventsController::class, 'show']);
+Route::get('events/search', [EventsController::class, 'search']);
 Route::post('events', [EventsController::class, 'store']);
 
-Route::apiResource('venue', VenueMapController::class)->only(['index']);
+Route::get('venues', [VenueMapController::class, 'index']);
 Route::get('venues/search', [VenueMapController::class, 'search']);
-Route::post('venue', [VenueMapController::class, 'store']);
+Route::post('venues', [VenueMapController::class, 'store']);
 
-Route::apiResource('activeTickets', ActiveTicketsController::class)->only(['index']);
+Route::get('activeTickets', [ActiveTicketsController::class, 'index']);
 
-Route::apiResource('originalTickets', OriginalTicketsController::class)->only(['index']);
+Route::get('originalTickets', [OriginalTicketsController::class, 'index']);
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
 Route::post("originalTickets/bulk", [OriginalTicketsController::class, "bulkStore"]);
 Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdate"]);
 
-Route::apiResource('ticketForSale', TicketForSaleController::class)->only(['index']);
+Route::get('ticketForSale', [TicketForSaleController::class, 'index']);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
 
 Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
@@ -51,7 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     
     Route::apiResource('user', UserController::class);
-
     
     Route::post("originalTickets/bulkStatusChange", [OriginalTicketsController::class, "bulkStatusChange"]);
     Route::get("originalTickets/dashboard", [OriginalTicketsController::class, "dashboard"]);
