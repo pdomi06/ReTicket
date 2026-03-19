@@ -22,8 +22,9 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
 Route::get('events', [EventsController::class, 'index']);
-Route::get('events/{event}', [EventsController::class, 'show']);
 Route::get('events/search', [EventsController::class, 'search']);
+Route::get('events/{event}', [EventsController::class, 'show']);
+
 
 Route::get('venues', [VenueMapController::class, 'index']);
 Route::get('venues/search', [VenueMapController::class, 'search']);
@@ -42,10 +43,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
 
-    Route::post('events', [EventsController::class, 'store']);
-
-    Route::post('venues', [VenueMapController::class, 'store']);
-
     Route::post("originalTickets/bulk", [OriginalTicketsController::class, "bulkStore"]);
     Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdate"]);
 
@@ -60,9 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::apiResource("originalTickets", OriginalTicketsController::class)->except(['index']);
 
-    Route::apiResource("events", EventsController::class)->except(['index', 'show', 'store']);
+    Route::apiResource("events", EventsController::class)->except(['index', 'show']);
 
-    Route::apiResource("venue", VenueMapController::class)->except(['index', 'store']);
+    Route::apiResource("venues", VenueMapController::class)->except(['index']);
 
     Route::apiResource("activeTickets", ActiveTicketsController::class)->except(['index']);
 

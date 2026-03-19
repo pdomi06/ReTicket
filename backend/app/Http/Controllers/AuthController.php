@@ -20,7 +20,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'passwordHash' => Hash::make($data['password']),
+            'passwordHash' => $data['password'],
             'isActive' => true,
             'isVerified' => false,
             'phone' => $data['phone'],
