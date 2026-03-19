@@ -8,15 +8,15 @@ import CartContextProvider from '../../contexts/cart/CartContext.tsx';
 export default function MainLayout() {
   return (
     <div className={styles.layout}>
-      <Navbar />
-      <main className={styles.main}>
-        <EventContextProvider>
-          <CartContextProvider>
+      <EventContextProvider>
+        <CartContextProvider>
+          <Navbar />
+          <main className={styles.main}>
             <Outlet />
-          </CartContextProvider>
-        </EventContextProvider>
-      </main>
-      <Footer />
+          </main>
+          <Footer />
+        </CartContextProvider>
+      </EventContextProvider>
     </div >
   );
 }
