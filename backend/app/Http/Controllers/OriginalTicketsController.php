@@ -10,12 +10,22 @@ use App\Http\Requests\StoreOriginalTicketsRequest;
 use App\Http\Requests\UpdateOriginalTicketsRequest;
 use App\Http\Requests\BulkStoreOriginalTicketsRequest;
 use App\Http\Requests\SearchOriginalTicketsRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class OriginalTicketsController extends Controller
+class OriginalTicketsController extends Controller implements HasMiddleware
 {
     /**
      * Display a listing of the resource.
      */
+
+    public static function middleware(): array
+    {
+        return [
+            'auth:sanctum' => ['except' => ['index']]
+        ];
+    }
+
+
     public function index()
     {
         $original_tickets = OriginalTicket::all();

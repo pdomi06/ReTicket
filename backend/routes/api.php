@@ -54,8 +54,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post("originalTickets/bulkStatusChange", [OriginalTicketsController::class, "bulkStatusChange"]);
     Route::get("originalTickets/dashboard", [OriginalTicketsController::class, "dashboard"]);
-    
-    Route::apiResource("originalTickets", OriginalTicketsController::class)->except(['index']);
 
     Route::apiResource("venues", VenueMapController::class)->except(['index']);
 
