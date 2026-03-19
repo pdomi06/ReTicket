@@ -1,0 +1,80 @@
+.title {
+    font-family: var(--font-secondary);
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+}
+
+
+.mutedText {
+    color: var(--color-text-secondary);
+}
+
+.cartCard {
+    background: linear-gradient(160deg, rgba(10, 46, 56, 0.9), rgba(0, 26, 32, 0.95));
+    border: 1px solid rgba(177, 156, 217, 0.28);
+    border-radius: 16px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.32);
+}
+
+.emptyCard {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.ctaWrap {
+    width: min(280px, 100%);
+    margin: 0 auto;
+}
+
+.ticketItem {
+    transition: background-color 0.2s ease;
+    border-color: rgba(177, 156, 217, 0.24) !important;
+}
+
+
+.ticketItem:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.ticketInfo {
+    min-width: 200px;
+}
+
+.ticketActionGroup {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.price {
+    font-size: 1.05rem;
+}
+
+.removeWrap {
+    width: 120px;
+}
+
+.clearWrap {
+    width: min(190px, 100%);
+}
+
+.summarySticky {
+    position: sticky;
+    top: 1rem;
+}
+
+@media (max-width: 992px) {
+    .summarySticky {
+        position: static;
+    }
+}
+
+@media (max-width: 576px) {
+    .ticketActionGroup {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .removeWrap,
+    .clearWrap {
+        width: 100%;
+    }
+}
