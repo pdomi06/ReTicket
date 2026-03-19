@@ -25,7 +25,7 @@ Route::get('events', [EventsController::class, 'index']);
 Route::get('events/search', [EventsController::class, 'search']);
 Route::get('events/{event}', [EventsController::class, 'show']);
 
-
+    
 Route::get('venues', [VenueMapController::class, 'index']);
 Route::get('venues/search', [VenueMapController::class, 'search']);
 
@@ -56,8 +56,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get("originalTickets/dashboard", [OriginalTicketsController::class, "dashboard"]);
     
     Route::apiResource("originalTickets", OriginalTicketsController::class)->except(['index']);
-
-    Route::apiResource("events", EventsController::class)->except(['index', 'show']);
 
     Route::apiResource("venues", VenueMapController::class)->except(['index']);
 
