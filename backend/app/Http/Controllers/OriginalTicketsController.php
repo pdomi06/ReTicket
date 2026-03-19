@@ -11,19 +11,19 @@ use App\Http\Requests\UpdateOriginalTicketsRequest;
 use App\Http\Requests\BulkStoreOriginalTicketsRequest;
 use App\Http\Requests\SearchOriginalTicketsRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 class OriginalTicketsController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-
     public static function middleware(): array
     {
         return [
-            'auth:sanctum' => ['except' => ['index']]
+            new Middleware('auth:sanctum', except: ['index', 'search', 'getOnlyAvailableTicketsInForSale']),
         ];
     }
+    /**
+     * Display a listing of the resource.
+     */
 
 
     public function index()

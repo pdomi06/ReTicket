@@ -8,16 +8,14 @@ use App\Http\Requests\StoreEventsRequest;
 use App\Http\Requests\UpdateEventsRequest;
 use App\Http\Requests\SearchEventsRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
 class EventsController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-
     public static function middleware(): array
     {
         return [
-            'auth:sanctum' => ['except' => ['index', 'show', 'search']]
+            new Middleware('auth:sanctum', except: ['index', 'show', 'search']),
         ];
     }
     public function index(){

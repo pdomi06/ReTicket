@@ -6,9 +6,17 @@ use App\Models\Review;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReviewsRequest;
 use App\Http\Requests\UpdateReviewsRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ReviewsController extends Controller
+class ReviewsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

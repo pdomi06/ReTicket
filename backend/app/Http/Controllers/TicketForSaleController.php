@@ -8,9 +8,17 @@ use App\Http\Requests\StoreTicketForSaleRequest;
 use App\Http\Requests\UpdateTicketForSaleRequest;
 use App\Http\Requests\SearchTicketForSaleRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TicketForSaleController extends Controller
+class TicketForSaleController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'search']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

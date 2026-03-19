@@ -6,9 +6,17 @@ use App\Models\ActiveTicket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
 use App\Http\Requests\UpdateActiveTicketsRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ActiveTicketsController extends Controller
+class ActiveTicketsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

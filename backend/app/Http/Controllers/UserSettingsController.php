@@ -6,9 +6,17 @@ use App\Models\UserSetting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserSettingsRequest;
 use App\Http\Requests\UpdateUserSettingsRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UserSettingsController extends Controller
+class UserSettingsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
