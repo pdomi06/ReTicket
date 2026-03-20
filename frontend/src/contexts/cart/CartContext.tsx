@@ -6,19 +6,55 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [cart, setCart] = useState<ITicketForsale[]>([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    // Load cart from localStorage on mount
+    // Load cart from localStorage on mount and revalidate with backend
     useEffect(() => {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
+        const restoreCartFromStorage = async () => {
+            const savedCart = localStorage.getItem('cart');
+            if (!savedCart) {
+                return;
+            }
+
             try {
-                setCart(JSON.parse(savedCart));
+                const parsedCart = JSON.parse(savedCart) as ITicketForsale[];
+                if (!Array.isArray(parsedCart)) {
+                    throw new Error("Saved cart is not an array");
+                }
+
+                const validTickets: ITicketForsale[] = [];
+
+                for (const ticket of parsedCart) {
+                    try {
+                        const res = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticket.id}`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                        });
+
+                        if (res.ok) {
+                            validTickets.push(ticket);
+                        } else {
+                            console.warn(`Failed to re-add ticket ${ticket.id} to basket on restore.`);
+                        }
+                    } catch (err) {
+                        console.error(`Error re-adding ticket ${ticket.id} to basket on restore:`, err);
+                    }
+                }
+
+                if (validTickets.length > 0) {
+                    setCart(validTickets);
+                    localStorage.setItem('cart', JSON.stringify(validTickets));
+                } else {
+                    setCart([]);
+                    localStorage.removeItem('cart');
+                }
             } catch (error) {
                 console.error("Error parsing saved cart:", error);
                 localStorage.removeItem('cart');
+                setCart([]);
             }
-        }
-    }, []);
+        };
 
+        void restoreCartFromStorage();
+    }, [apiBaseUrl]);
     // Save cart to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
