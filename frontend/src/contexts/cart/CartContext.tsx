@@ -57,7 +57,12 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     }, [apiBaseUrl]);
     // Save cart to localStorage whenever it changes
     useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
+        if (cart.length === 0) {
+            localStorage.removeItem('cart');
+        }
+        if (cart.length > 0) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
     }, [cart]);
 
 
