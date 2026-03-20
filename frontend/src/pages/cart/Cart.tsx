@@ -59,7 +59,7 @@ const Cart = () => {
                                             </p>
                                         </div>
                                         <div className={`d-flex align-items-center gap-2 ms-sm-3 ${styles.ticketActionGroup}`}>
-                                            <p className={`mb-0 fw-bold ${styles.price}`}>{Number(ticket.price)} Ft</p>
+                                            <p className={`mb-0 fw-bold ${styles.price}`}>{Number(ticket.price || 0)} Ft</p>
                                             <div>
                                                 <Button
                                                     text="Remove"
