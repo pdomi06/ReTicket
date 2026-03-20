@@ -1,10 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ITicketForsale } from "../../utils/interfaces";
 import { CartContext } from "./CartContextDef";
 
 const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [cart, setCart] = useState<ITicketForsale[]>([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    // Load cart from localStorage on mount and revalidate with backend
+    useEffect(() => {
+        const restoreCartFromStorage = async () => {
+            const savedCart = localStorage.getItem('cart');
+            if (!savedCart) {
+                return;
+            }
+
+            try {
+                const parsedCart = JSON.parse(savedCart) as ITicketForsale[];
+                if (!Array.isArray(parsedCart)) {
+                    throw new Error("Saved cart is not an array");
+                }
+
+                const restoredTickets = await Promise.all(
+                    parsedCart.map(async (ticket) => {
+                        try {
+                            const res = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticket.id}`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                            });
+
+                            if (res.ok) {
+                                return ticket;
+                            }
+
+                            console.warn(`Failed to re-add ticket ${ticket.id} to basket on restore.`);
+                            return null;
+                        } catch (err) {
+                            console.error(`Error re-adding ticket ${ticket.id} to basket on restore:`, err);
+                            return null;
+                        }
+                    })
+                );
+
+                const validTickets = restoredTickets.filter((ticket): ticket is ITicketForsale => ticket !== null);
+
+                if (validTickets.length > 0) {
+                    setCart(validTickets);
+                    localStorage.setItem('cart', JSON.stringify(validTickets));
+                } else {
+                    setCart([]);
+                    localStorage.removeItem('cart');
+                }
+            } catch (error) {
+                console.error("Error parsing saved cart:", error);
+                localStorage.removeItem('cart');
+                setCart([]);
+            }
+        };
+
+        void restoreCartFromStorage();
+    }, [apiBaseUrl]);
+    // Save cart to localStorage whenever it changes
+    useEffect(() => {
+        if (cart.length === 0) {
+            localStorage.removeItem('cart');
+        }
+        if (cart.length > 0) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+    }, [cart]);
 
 
     const addToCart = async (eventId: string, row: number, seat: number): Promise<boolean> => {
