@@ -6,9 +6,17 @@ use App\Models\Payout;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePayoutsRequest;
 use App\Http\Requests\UpdatePayoutsRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PayoutsController extends Controller
+class PayoutsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

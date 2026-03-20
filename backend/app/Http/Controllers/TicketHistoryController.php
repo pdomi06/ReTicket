@@ -6,9 +6,17 @@ use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketHistoryRequest;
 use App\Http\Requests\UpdateTicketHistoryRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TicketHistoryController extends Controller
+class TicketHistoryController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

@@ -6,9 +6,17 @@ use App\Models\EmailVerify;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEmailVerifyRequest;
 use App\Http\Requests\UpdateEmailVerifyRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class EmailVerifyController extends Controller
+class EmailVerifyController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
