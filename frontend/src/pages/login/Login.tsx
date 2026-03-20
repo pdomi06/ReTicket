@@ -1,13 +1,13 @@
 import { Link } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
-import LoginButton from "../../components/ui/loginButton/loginButton";
+import Button from "../../components/ui/button/Button";
 
 const logo = '/img/logo/logo_transparrent_white.svg';
 
 const Login = () => {
   return (
-<main className={style["login-page"]}>
+    <main className={style["login-page"]}>
       <div className={style["login-container"]}>
         <h2><img src={logo} alt="ReTicket Logo" /> ReTicket</h2>
         <h4>Don't have an account? <Link to="/register">Register</Link></h4>
@@ -18,7 +18,7 @@ const Login = () => {
 
           <Input type="password" name="password" label="Password" />
 
-          <LoginButton />
+          <Button type="submit" text="Login" variant="primary" />
         </form>
       </div>
     </main>

@@ -10,8 +10,8 @@ const Cart = () => {
         () => tickets.reduce((sum, ticket) => sum + Number(ticket.price || 0), 0),
         [tickets]
     );
-    const serviceFee = useMemo(() => subtotal * 0.1, [subtotal]);
-    const total = useMemo(() => subtotal + serviceFee, [subtotal, serviceFee]);
+    const serviceFee = useMemo(() => subtotal * 0.1, [subtotal]).toFixed(0);
+    const total = useMemo(() => subtotal + Number(serviceFee), [subtotal, serviceFee]).toFixed(0);
 
     const handleClearCart = async () => {
         await Promise.all(tickets.map((ticket) => removeFromCart(ticket)));
