@@ -6,9 +6,17 @@ use App\Models\OrderItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderItemsRequest;
 use App\Http\Requests\UpdateOrderItemsRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class OrderItemsController extends Controller
+class OrderItemsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

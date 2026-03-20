@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->text('email');
+            $table->text('email')->unique();
             $table->text('passwordHash');
             $table->text('name');
             $table->text('phone');
-            $table->boolean('isVerified');
-            $table->boolean('isActive');
-            $table->boolean('isOnline');
-            $table->enum('kycStatus', ["pending", "rejected", "approved"]);
-            $table->date('createdAt');
-            $table->date('updatedAt');
-            $table->date('lastLogin');
+            $table->boolean('isVerified')->default(false);
+            $table->boolean('isActive')->default(true);
+            $table->boolean('isOnline')->default(false);
+            $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending");
+            $table->dateTime('createdAt')->useCurrent();
+            $table->dateTime('updatedAt')->useCurrent()->nullable();
+            $table->dateTime('lastLogin')->nullable();
         });
     }
 

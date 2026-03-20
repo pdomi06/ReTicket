@@ -7,8 +7,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVenueMapRequest;
 use App\Http\Requests\UpdateVenueMapRequest;
 use App\Http\Requests\SearchVenueMapRequest;
-class VenueMapController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class VenueMapController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'search']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

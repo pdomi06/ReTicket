@@ -6,9 +6,17 @@ use App\Models\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePasswordResetRequest;
 use App\Http\Requests\UpdatePasswordResetRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PasswordResetController extends Controller
+class PasswordResetController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
