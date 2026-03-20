@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -11,7 +12,10 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+        $model = $this->route('user');
+        
+        return $user->can('update', $model);
     }
 
     /**
@@ -21,16 +25,58 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'email' => ['sometimes','email','unique:users,email,' . $this->user?->id],
-            'password' => ['sometimes','string','min:8','confirmed'],
-            'name' => ['sometimes','string'],
-            'phone' => ['sometimes','string'],
-            'isVerified' => ['sometimes', 'boolean'],
-            'isActive'   => ['sometimes', 'boolean'],
-            'isOnline'   => ['sometimes', 'boolean'],
-            'kycStatus'  => ['sometimes', 'in:pending,rejected,approved'],
-            'lastLogin' => ['sometimes', 'date'],
+                $user = $this->user();
+        $model = $this->route('user');
+        $isAdmin = $user->role === 'admin';
+        $isOwnProfile = $user->id === $model->id;
+        
+        $rules = [
+            'name' => ['sometimes', 'string', 'max:255'],
+            'phone' => ['sometimes', 'string', 'max:20'],
+            'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ];
+        
+        if ($isOwnProfile || $isAdmin) {
+            $rules['email'] = [
+                'sometimes', 
+                'email', 
+                'max:255',
+                Rule::unique('users', 'email')->ignore($model->id)
+            ];
+        }
+        
+        if ($isAdmin) {
+            $rules['role'] = ['sometimes', Rule::in(['vendor', 'organizer', 'admin'])];
+            $rules['kycStatus'] = ['sometimes', Rule::in(['pending', 'rejected', 'approved'])];
+            $rules['isVerified'] = ['sometimes', 'boolean'];
+            $rules['isActive'] = ['sometimes', 'boolean'];
+            $rules['isOnline'] = ['sometimes', 'boolean'];
+            $rules['lastLogin'] = ['sometimes', 'date'];
+        }
+        
+        return $rules;
+    }
+    
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $user = $this->user();
+        $model = $this->route('user');
+        $isAdmin = $user->role === 'admin';
+        
+        if (!$isAdmin) {
+            $sensitiveFields = ['role', 'kycStatus', 'isVerified', 'isActive', 'isOnline', 'lastLogin'];
+            foreach ($sensitiveFields as $field) {
+                if ($this->has($field)) {
+                    $this->offsetUnset($field);
+                }
+            }
+        }
+        
+        if (!$isAdmin && $user->id !== $model->id && $this->has('email')) {
+            $this->offsetUnset('email');
+        }
     }
 }

@@ -55,7 +55,6 @@ class UserController extends Controller implements HasMiddleware
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update($request->all());   
         $data = $request->validated();
         if (isset($data['password'])) {
             $data['passwordHash'] = Hash::make($data['password']);
