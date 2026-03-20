@@ -48,14 +48,6 @@
     font-size: 1.05rem;
 }
 
-.removeWrap {
-    width: 120px;
-}
-
-.clearWrap {
-    width: min(190px, 100%);
-}
-
 .summarySticky {
     position: sticky;
     top: 1rem;
@@ -70,11 +62,6 @@
 @media (max-width: 576px) {
     .ticketActionGroup {
         justify-content: space-between;
-        width: 100%;
-    }
-
-    .removeWrap,
-    .clearWrap {
         width: 100%;
     }
 }

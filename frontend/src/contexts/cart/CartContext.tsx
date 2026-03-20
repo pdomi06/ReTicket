@@ -20,24 +20,28 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                     throw new Error("Saved cart is not an array");
                 }
 
-                const validTickets: ITicketForsale[] = [];
+                const restoredTickets = await Promise.all(
+                    parsedCart.map(async (ticket) => {
+                        try {
+                            const res = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticket.id}`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                            });
 
-                for (const ticket of parsedCart) {
-                    try {
-                        const res = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticket.id}`, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                        });
+                            if (res.ok) {
+                                return ticket;
+                            }
 
-                        if (res.ok) {
-                            validTickets.push(ticket);
-                        } else {
                             console.warn(`Failed to re-add ticket ${ticket.id} to basket on restore.`);
+                            return null;
+                        } catch (err) {
+                            console.error(`Error re-adding ticket ${ticket.id} to basket on restore:`, err);
+                            return null;
                         }
-                    } catch (err) {
-                        console.error(`Error re-adding ticket ${ticket.id} to basket on restore:`, err);
-                    }
-                }
+                    })
+                );
+
+                const validTickets = restoredTickets.filter((ticket): ticket is ITicketForsale => ticket !== null);
 
                 if (validTickets.length > 0) {
                     setCart(validTickets);
