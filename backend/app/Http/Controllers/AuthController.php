@@ -69,7 +69,7 @@ class AuthController extends Controller implements HasMiddleware
                 'message' => 'Your account is inactive. Please contact support.',
                 'data' => null,
             ], 403);  
-        };
+        }
 
         $user->update(['lastLogin' => now(), 'isOnline' => true]);
 
