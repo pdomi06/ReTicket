@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-                $user = $this->user();
+        $user = $this->user();
         $model = $this->route('user');
         $isAdmin = $user->role === 'admin';
         $isOwnProfile = $user->id === $model->id;

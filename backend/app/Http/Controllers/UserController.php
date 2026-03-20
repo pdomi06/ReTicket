@@ -23,6 +23,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', User::class);
         $users = User::all();
         return response()->json($users, 200);
     }
@@ -47,6 +48,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function show(User $user)
     {
+        $this->authorize('view', $user);
         return response()->json($user, 200);
     }
 
@@ -70,6 +72,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
         $user->delete();
         return response()->json(["message" => "User deleted successfully"], 200);
     }
