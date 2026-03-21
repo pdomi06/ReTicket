@@ -22,6 +22,8 @@ const ADMIN_ITEMS = [
 ];
 
 const Sidebar = () => {
+    const user = localStorage.getItem("user");
+    const userData = user ? JSON.parse(user) : null;
     return (
         <div className={style.sidebar}>
             <div className={style.brand}>
@@ -58,6 +60,9 @@ const Sidebar = () => {
                         <span>{label}</span>
                     </NavLink>
                 ))}
+                <div className={style.profileSettings}><NavLink to="/dashboard/user-settings">
+                    {userData ? userData.name : "User Settings"}
+                </NavLink></div>
             </nav>
         </div>
     );

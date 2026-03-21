@@ -28,6 +28,7 @@
     flex-direction: column;
     gap: 2px;
     padding: 0 0.75rem;
+    flex: 1;
 }
 
 .navItem {
@@ -64,4 +65,25 @@
     letter-spacing: 0.08em;
     color: var(--color-text-secondary);
     opacity: 0.6;
+}
+
+.profileSettings {
+    margin-top: auto;
+    padding: 0.8rem 0.55rem;
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.085em;
+    background-color: var(--color-accent);
+    border-radius: 6px;
+}
+
+.profileSettings>a {
+    text-decoration: none;
+    color: var(--color-text);
+    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

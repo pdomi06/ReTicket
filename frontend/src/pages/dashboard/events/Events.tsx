@@ -20,7 +20,12 @@ export default function Events() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -46,11 +51,15 @@ export default function Events() {
   const handleStatusChange = async (eventId: number, newStatus: string) => {
     setLoadingStatus(eventId);
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulkStatusChange`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
           body: JSON.stringify({ eventId, status: newStatus }),
         }
       );
@@ -79,11 +88,15 @@ export default function Events() {
 
     setDeletingEventId(eventId);
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/events/${eventId}`,
         {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
         }
       );
 

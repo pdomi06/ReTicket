@@ -20,8 +20,12 @@ const EditEvent = () => {
         const abortController = new AbortController();
         async function fetchEvent() {
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
                     signal: abortController.signal,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch event:', response.status, response.statusText);
@@ -54,8 +58,12 @@ const EditEvent = () => {
 
         async function fetchVenues() {
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
@@ -89,12 +97,14 @@ const EditEvent = () => {
         setMessage(null);
 
         try {
+            const token = localStorage.getItem('token');
             const eventResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events/${eventParams.id}`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify(eventParams),
                 }
@@ -132,6 +142,7 @@ const EditEvent = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify({
                         eventId: createdEventId,

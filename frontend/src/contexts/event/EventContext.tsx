@@ -7,7 +7,12 @@ const EventContextProvider = ({children}: {children: ReactNode}) =>{
 
     const getEvent = useCallback(async (id: string): Promise<boolean> => {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-        const response = await fetch(`${apiBaseUrl}/events/${id}`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${apiBaseUrl}/events/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         const contentType = response.headers.get('content-type') || '';
 
         if (!response.ok) {

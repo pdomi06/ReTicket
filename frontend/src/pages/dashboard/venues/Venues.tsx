@@ -15,8 +15,14 @@ export default function Venues() {
   useEffect(() => {
     async function fetchVenues() {
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/venue`
+          `${import.meta.env.VITE_API_BASE_URL}/venue`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
         );
         const data = await response.json();
         setVenues(data);

@@ -18,8 +18,12 @@ const CreateEvent = () => {
 
         async function fetchVenues() {
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
@@ -53,12 +57,14 @@ const CreateEvent = () => {
         setMessage(null);
 
         try {
+            const token = localStorage.getItem('token');
             const eventResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify(eventParams),
                 }
@@ -90,12 +96,14 @@ const CreateEvent = () => {
                 throw new Error("Failed to create tickets: no matching venue found for the event");
             }
 
+            const token = localStorage.getItem('token');
             const ticketsResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify({
                         eventId: createdEventId,
