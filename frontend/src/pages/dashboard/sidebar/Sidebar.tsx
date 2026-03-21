@@ -1,24 +1,30 @@
 import { NavLink } from "react-router-dom";
-import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuEllipsis } from "react-icons/lu";
+import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuEllipsis, LuUsers, LuShoppingCart, LuStar, LuMonitor, LuHistory } from "react-icons/lu";
 import style from "./Sidebar.module.css";
 
 const NAV_ITEMS = [
     { label: "Overview", icon: LuLayoutDashboard, link: "/dashboard" },
 ];
 
-const TICKET_ITEMS = [
-    { label: "List Tickets for Sale", icon: LuTicket, link: "/dashboard/list-tickets" },
+const VENDOR_ITEMS = [
+    { label: "My Tickets", icon: LuTicket, link: "/dashboard/list-tickets" },
+    { label: "Sales History", icon: LuHistory, link: "/dashboard/sales-history" },
 ];
 
-const MANAGE_ITEMS = [
+const ORGANIZER_ITEMS = [
     { label: "My Events", icon: LuCalendar, link: "/dashboard/my-events" },
-    { label: "Sales", icon: LuTrendingUp, link: "/dashboard/sales" },
+    { label: "Statistics", icon: LuTrendingUp, link: "/dashboard/statistics" },
 ];
 
 const ADMIN_ITEMS = [
     { label: "Venues", icon: LuMapPin, link: "/dashboard/venues" },
     { label: "Events", icon: LuCalendar, link: "/dashboard/events" },
     { label: "Tickets", icon: LuTicket, link: "/dashboard/tickets" },
+    { label: "Users", icon: LuUsers, link: "/dashboard/users" },
+    { label: "Orders", icon: LuShoppingCart, link: "/dashboard/orders" },
+    { label: "Reviews", icon: LuStar, link: "/dashboard/reviews" },
+    { label: "Website Management", icon: LuMonitor, link: "/dashboard/website" },
+    { label: "Ticket History", icon: LuHistory, link: "/dashboard/history" },
 ];
 
 const Sidebar = () => {
@@ -46,16 +52,16 @@ const Sidebar = () => {
                     </NavLink>
                 ))}
 
-                <div className={style.sectionLabel}>TICKETS</div>
-                {TICKET_ITEMS.map(({ label, icon: Icon, link }) => (
+                <div className={style.sectionLabel}>VENDOR</div>
+                {VENDOR_ITEMS.map(({ label, icon: Icon, link }) => (
                     <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
                         <Icon className={style.icon} />
                         <span>{label}</span>
                     </NavLink>
                 ))}
 
-                <div className={style.sectionLabel}>MANAGE</div>
-                {MANAGE_ITEMS.map(({ label, icon: Icon, link }) => (
+                <div className={style.sectionLabel}>ORGANIZER</div>
+                {ORGANIZER_ITEMS.map(({ label, icon: Icon, link }) => (
                     <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
                         <Icon className={style.icon} />
                         <span>{label}</span>
