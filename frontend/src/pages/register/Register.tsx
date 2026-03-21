@@ -76,10 +76,11 @@ const Register = () => {
     }
     return (
         <main className={style["register-page"]}>
-            <h2><img src={logo} alt="ReTicket Logo" /> ReTicket</h2>
-            <h4>Already have an account? <Link to="/login">Log in</Link></h4>
 
             <div className={style["register-container"]}>
+                <h2><img src={logo} alt="ReTicket Logo" /> ReTicket</h2>
+                <h4>Already have an account? <Link to="/login">Log in</Link></h4>
+
                 {errors.length > 0 && (
                     <div className={style["errors"]}>
                         {errors.map((error, index) => (
