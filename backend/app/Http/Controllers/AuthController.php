@@ -31,6 +31,8 @@ class AuthController extends Controller implements HasMiddleware
             'passwordHash' => $data['password'],
             'isActive' => true,
             'isVerified' => false,
+            'isOnline' => false,
+            'kycStatus' => 'pending',
             'phone' => $data['phone'],
         ]);
 
