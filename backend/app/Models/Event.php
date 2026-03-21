@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Event extends Model
 {
@@ -52,7 +53,10 @@ class Event extends Model
                 $q->where('country', 'like', '%' . $value . '%')
             )
             ->when($filters['eventDate'] ?? null, fn($q, $value) =>
-                $q->whereDate('eventDate', '=', $value)
+                $q->whereBetween('eventDate', [
+                    Carbon::parse($value)->startOfDay()->timestamp,
+                    Carbon::parse($value)->endOfDay()->timestamp,
+                ])
             )
             ->when(
                 $filters['category'] ?? null,
@@ -67,8 +71,8 @@ class Event extends Model
     const UPDATED_AT = 'updatedAt';
 
     protected $casts = [
-        'eventDate' => 'datetime',
-        'eventEndDate' => 'datetime'
+        'eventDate' => 'integer',
+        'eventEndDate' => 'integer'
     ];
 
     //public $timestamps = false;

@@ -1,12 +1,16 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh;
     width: 220px;
     background-color: var(--color-secondary);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1.5rem 0;
     flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
 .brand {

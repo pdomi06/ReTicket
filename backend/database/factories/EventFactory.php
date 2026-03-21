@@ -18,6 +18,9 @@ class EventFactory extends Factory
     {
         $category = ["cultural", "music", "sport"];
         $randomPicture = "https://picsum.photos/" . fake()->numberBetween(1920, 2000) . "/". fake()->numberBetween(1080, 1500);
+        $eventDate = fake()->dateTimeBetween('+1 day', '+6 months');
+        $eventEndDate = (clone $eventDate)->modify('+' . fake()->numberBetween(1, 8) . ' hours');
+
         return [
             'name' => fake()->words(2, true),
             'description' => fake()->paragraph(),
@@ -26,8 +29,8 @@ class EventFactory extends Factory
             'city' => fake()->city(),
             'state' => fake()->state(),
             'country' => fake()->country(),
-            'eventDate' => fake()->date(),
-            'eventEndDate' => fake()->date(),
+            'eventDate' => $eventDate->getTimestamp(),
+            'eventEndDate' => $eventEndDate->getTimestamp(),
             'category' => fake()->randomElement($category),
             'basePrice' => fake()->randomFloat(2, 10, 1000),
             'imageUrl' => $randomPicture,

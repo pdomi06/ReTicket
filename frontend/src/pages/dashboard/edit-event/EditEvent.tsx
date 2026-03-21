@@ -5,6 +5,7 @@ import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import { EventCategory } from "../../../utils/enums";
+import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import style from "./EditEvent.module.css";
 import { useParams } from "react-router-dom";
 
@@ -42,7 +43,12 @@ const EditEvent = () => {
                     console.error('Expected an event object but got:', eventData);
                     return;
                 }
-                setEventParams(eventData as IEvent);
+                const normalizedEventData = eventData as IEvent;
+                setEventParams({
+                    ...normalizedEventData,
+                    eventDate: toDateTimeLocalValue(normalizedEventData.eventDate),
+                    eventEndDate: toDateTimeLocalValue(normalizedEventData.eventEndDate),
+                });
             } catch (error) {
                 if (error instanceof Error && error.name !== 'AbortError') {
                     console.error('Error fetching event:', error);
@@ -97,7 +103,20 @@ const EditEvent = () => {
         setMessage(null);
 
         try {
+            const eventDateUnix = toUnixSeconds(eventParams.eventDate);
+            const eventEndDateUnix = toUnixSeconds(eventParams.eventEndDate);
+
+            if (eventDateUnix === null || eventEndDateUnix === null) {
+                throw new Error("Please provide valid event start and end date/time values.");
+            }
+
             const token = localStorage.getItem('token');
+            const payload = {
+                ...eventParams,
+                eventDate: eventDateUnix,
+                eventEndDate: eventEndDateUnix,
+            };
+
             const eventResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events/${eventParams.id}`,
                 {
@@ -106,7 +125,7 @@ const EditEvent = () => {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify(eventParams),
+                    body: JSON.stringify(payload),
                 }
             );
 
@@ -203,8 +222,8 @@ const EditEvent = () => {
                         <Input type="text" name="city" label="City" onChange={(e) => setEventParams({ ...eventParams, city: e.target.value })} value={eventParams.city || ''} />
                         <Input type="text" name="state" label="State" onChange={(e) => setEventParams({ ...eventParams, state: e.target.value })} value={eventParams.state || ''} />
                         <Input type="text" name="country" label="Country" onChange={(e) => setEventParams({ ...eventParams, country: e.target.value })} value={eventParams.country || ''} />
-                        <Input type="date" name="eventDate" label="Event Date" onChange={(e) => setEventParams({ ...eventParams, eventDate: e.target.value })} value={eventParams.eventDate || ''} />
-                        <Input type="date" name="eventEndDate" label="Event End Date" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={eventParams.eventEndDate || ''} />
+                        <Input type="datetime-local" name="eventDate" label="Event Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventDate: e.target.value })} value={typeof eventParams.eventDate === "string" ? eventParams.eventDate : ''} />
+                        <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={typeof eventParams.eventEndDate === "string" ? eventParams.eventEndDate : ''} />
                         <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>

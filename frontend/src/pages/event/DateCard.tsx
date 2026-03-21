@@ -1,5 +1,6 @@
 import { type IEvent } from "../../utils/interfaces"
 import Button from "../../components/ui/button/Button"
+import { toDateFromUnix } from "../../utils/dateTime"
 import style from "./Event.module.css"
 
 interface DateCardProps {
@@ -7,7 +8,7 @@ interface DateCardProps {
 }
 
 const DateCard = ({ event: e }: DateCardProps) => {
-    const eventDate = new Date(e.eventDate)
+    const eventDate = toDateFromUnix(e.eventDate) ?? new Date()
     const dayName = eventDate.toLocaleDateString('en-US', { weekday: 'long' })
     const formattedDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 

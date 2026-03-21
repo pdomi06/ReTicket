@@ -6,6 +6,7 @@ import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import styles from "./Events.module.css";
 import Button from "../../../components/ui/button/Button";
+import { formatUnixDateTime } from "../../../utils/dateTime";
 
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
@@ -229,7 +230,7 @@ export default function Events() {
                 <tr key={eventItem.id}>
                   <td>{eventItem.name}</td>
                   <td>{eventItem.venue}</td>
-                  <td>{new Date(eventItem.eventDate).toLocaleDateString()}</td>
+                  <td>{formatUnixDateTime(eventItem.eventDate)}</td>
                   <td className="text-center">
                     {eventItem.category}
                   </td>

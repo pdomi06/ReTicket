@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateEventsRequest;
 use App\Http\Requests\SearchEventsRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Carbon;
 
 class EventsController extends Controller implements HasMiddleware
 {
@@ -67,7 +68,9 @@ class EventsController extends Controller implements HasMiddleware
         }
         
         if (!empty($filters['eventDate'])) {
-            $query->whereDate('eventDate', '=', $filters['eventDate']);
+            $startOfDayTimestamp = Carbon::parse($filters['eventDate'])->startOfDay()->timestamp;
+            $endOfDayTimestamp = Carbon::parse($filters['eventDate'])->endOfDay()->timestamp;
+            $query->whereBetween('eventDate', [$startOfDayTimestamp, $endOfDayTimestamp]);
         }
         
         if (!empty($filters['maxPrice'])) {

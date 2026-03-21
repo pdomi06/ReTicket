@@ -5,6 +5,7 @@ import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import styles from "./Tickets.module.css";
 import Button from "../../../components/ui/button/Button";
+import { formatUnixDateTime, toDateInputValue } from "../../../utils/dateTime";
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<IDashboardTicket[]>([]);
@@ -51,7 +52,8 @@ export default function Tickets() {
     const venueMatch = ticket.venue.toLowerCase().includes(filters.venue.toLowerCase());
     const sectionMatch = ticket.section.toLowerCase().includes(filters.section.toLowerCase());
     const statusMatch = !filters.status || ticket.status === filters.status;
-    const dateMatch = !filters.date || ticket.eventDate.includes(filters.date);
+    const ticketDate = toDateInputValue(ticket.eventDate);
+    const dateMatch = !filters.date || ticketDate === filters.date;
 
     return eventMatch && venueMatch && sectionMatch && statusMatch && dateMatch;
   });
@@ -196,7 +198,7 @@ export default function Tickets() {
               filteredTickets.map((ticket) => (
                 <tr key={ticket.id}>
                   <td>{ticket.eventName}</td>
-                  <td>{ticket.eventDate}</td>
+                  <td>{formatUnixDateTime(ticket.eventDate)}</td>
                   <td>{ticket.venue}</td>
                   <td>{ticket.section}</td>
                   <td className="text-center">
