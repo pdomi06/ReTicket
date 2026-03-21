@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin } from "react-icons/lu";
+import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuEllipsis } from "react-icons/lu";
 import style from "./Sidebar.module.css";
 
 const NAV_ITEMS = [
@@ -24,6 +24,15 @@ const ADMIN_ITEMS = [
 const Sidebar = () => {
     const user = localStorage.getItem("user");
     const userData = user ? JSON.parse(user) : null;
+    
+    const getInitials = (name: string) => {
+        return name
+            .split(' ')
+            .map(part => part[0])
+            .join('')
+            .toUpperCase();
+    };
+    
     return (
         <div className={style.sidebar}>
             <div className={style.brand}>
@@ -60,10 +69,20 @@ const Sidebar = () => {
                         <span>{label}</span>
                     </NavLink>
                 ))}
-                <div className={style.profileSettings}><NavLink to="/dashboard/user-settings">
-                    {userData ? userData.name : "User Settings"}
-                </NavLink></div>
             </nav>
+            
+            {userData && (
+                <NavLink to="/dashboard/user-settings" className={style.profileCard}>
+                    <div className={style.avatarContainer}>
+                        <div className={style.avatar}>{getInitials(userData.name)}</div>
+                    </div>
+                    <div className={style.profileInfo}>
+                        <div className={style.profileName}>{userData.name}</div>
+                        <div className={style.profileRole}>Settings</div>
+                    </div>
+                    <LuEllipsis className={style.profileMenu} />
+                </NavLink>
+            )}
         </div>
     );
 }
