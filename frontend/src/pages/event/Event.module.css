@@ -177,13 +177,6 @@
     border-color: var(--color-accent);
 }
 
-.unavailableSeat+label {
-    background-color: rgba(177, 156, 217, 0.3);
-    color: var(--color-text-secondary);
-    border-color: rgba(177, 156, 217, 0.3);
-    cursor: not-allowed;
-}
-
 .seatUnavailable label {
     background-color: rgba(243, 6, 6, 0.3);
     color: var(--color-text-secondary);
@@ -210,10 +203,6 @@
     --seat-zoom: 1;
 }
 
-.loadingCursor {
-    cursor: wait;
-}
-
 .seatRow {
     display: flex;
     gap: calc(0.5rem * var(--seat-zoom));
@@ -234,27 +223,6 @@
     border-radius: 8px;
 }
 
-.zoomButton {
-    padding: 0.6rem 0.8rem !important;
-    border: 2px solid var(--color-accent) !important;
-    border-radius: 6px !important;
-    color: var(--color-accent) !important;
-    background-color: transparent !important;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.2s ease !important;
-}
-
-.zoomButton:hover:not(:disabled) {
-    border-color: var(--color-accent) !important;
-    opacity: 0.8;
-}
-
-.zoomButton:disabled {
-    opacity: 0.4 !important;
-    cursor: not-allowed !important;
-}
-
 .zoomButtonWrapper {
     width: auto;
 }
@@ -270,28 +238,6 @@
     font-weight: 600;
     color: var(--color-accent);
     font-size: 0.95rem;
-}
-
-.reloadButton {
-    padding: 0.6rem 1rem !important;
-    border: 2px solid var(--color-accent) !important;
-    border-radius: 6px !important;
-    color: var(--color-accent) !important;
-    background-color: transparent !important;
-    font-weight: 600;
-    transition: all 0.2s ease !important;
-}
-
-.reloadButton:hover:not(:disabled) {
-    border-color: var(--color-accent) !important;
-    opacity: 0.8;
-}
-
-.reloadButton:disabled {
-    background-color: var(--color-accent) !important;
-    color: #001a20 !important;
-    border-color: var(--color-accent) !important;
-    cursor: not-allowed !important;
 }
 
 .reloadButtonWrapper {
