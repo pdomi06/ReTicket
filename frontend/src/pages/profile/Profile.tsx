@@ -1,9 +1,10 @@
-import { redirect } from "react-router";
+import { useNavigate } from "react-router";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") ?? "null");
   if (!user) {
-    redirect("/login");
+    navigate("/login");
   }
   return (
     <div>

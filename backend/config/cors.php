@@ -8,8 +8,8 @@ return [
         env('FRONTEND_URL_ALT', 'http://127.0.0.1:5173'),
     ]),
     'allowed_origins_patterns' => [
-        '#^https?://localhost(:[0-9]+)?$#',
-        '#^https?://127\.0\.0\.1(:[0-9]+)?$#',
+        env('FRONTEND_URL', 'http://localhost:5173'),
+        env('FRONTEND_URL_ALT', 'http://127.0.0.1:5173'),
     ],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
