@@ -30,10 +30,37 @@ class UpdateEventsRequest extends FormRequest
             'state' => ['sometimes','string'],
             'country' => ['sometimes','string'],
             'eventDate' => ['sometimes','integer','min:0'],
-            'eventEndDate' => ['sometimes','integer','gte:eventDate'],
+            'eventEndDate' => ['sometimes','integer','min:0'],
             'category' => ['sometimes','in:cultural,music,sport'],
             'basePrice' => ['sometimes','numeric','min:0'],
             'imageUrl' => ['sometimes','url'],
         ];
+    }
+
+    /**
+     * Perform additional validation after the primary rules.
+     * Ensures eventEndDate is not before eventDate, considering both
+     * the current request data and the model's existing values.
+     */
+    public function after()
+    {
+        return function ($validator) {
+            $event = $this->route('event');
+            
+            // Determine the effective eventDate: use request value if provided, otherwise use model's value
+            $eventDate = $this->filled('eventDate')
+                ? $this->input('eventDate')
+                : $event->eventDate;
+            
+            // Only validate if we have an eventEndDate in the request or it exists in the model
+            if ($this->filled('eventEndDate') && $eventDate !== null) {
+                if ($this->input('eventEndDate') < $eventDate) {
+                    $validator->errors()->add(
+                        'eventEndDate',
+                        'The event end date must be after the event start date.'
+                    );
+                }
+            }
+        };
     }
 }
