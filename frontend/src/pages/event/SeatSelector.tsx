@@ -24,7 +24,7 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     const availableSeats = useMemo(() => {
         const set = new Set<string>()
         for (const t of dbTickets) {
-            set.add(seatKey(t.eventId, t.row, t.seatNumber))
+            set.add(seatKey(String(t.eventId), t.row, t.seatNumber))
         }
         return set
     }, [dbTickets])
@@ -33,11 +33,11 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
         const map = new Map<string, ITicketForsale>()
         for (const t of cartTickets) {
             if (t.row != null && t.col != null) {
-                map.set(seatKey(t.eventId, t.row, t.col), t)
+                map.set(seatKey(eventId, t.row, t.col), t)
             }
         }
         return map
-    }, [cartTickets])
+    }, [cartTickets, eventId])
 
     const handleZoomIn = () => {
         setZoom(prev => Math.min(3, prev + 0.2))

@@ -29,12 +29,30 @@ class StoreEventsRequest extends FormRequest
             'city' => ['required','string'],
             'state' => ['required','string'],
             'country' => ['required','string'],
-            'eventDate' => ['required','integer','min:0'],
-            'eventEndDate' => ['required','integer','gte:eventDate'],
+            'eventDate' => ['required','integer','min:0','max:4102444800'],
+            'eventEndDate' => ['required','integer','min:0','max:4102444800'],
             'category' => ['required','in:cultural,music,sport'],
             'basePrice' => ['required','numeric','min:0'],
             'imageUrl' => ['required','url'],
 
         ];
+    }
+
+    /**
+     * Perform additional validation after the primary rules.
+     * Ensures eventEndDate is not before eventDate.
+     */
+    public function after()
+    {
+        return function ($validator) {
+            if ($this->filled('eventDate') && $this->filled('eventEndDate')) {
+                if ($this->input('eventEndDate') < $this->input('eventDate')) {
+                    $validator->errors()->add(
+                        'eventEndDate',
+                        'The event end date must be after the event start date.'
+                    );
+                }
+            }
+        };
     }
 }
