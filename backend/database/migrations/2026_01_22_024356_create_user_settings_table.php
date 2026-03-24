@@ -15,9 +15,9 @@ return new class extends Migration
 
         Schema::create('user_settings', function (Blueprint $table) {
             $table->foreignId('userId')->primary()->constrained('users')->onDelete('cascade');
-            $table->boolean('emailNotification');
-            $table->boolean('smsNotification');
-            $table->enum('profileVisibility', ["visible", "restricted", "banned"]);
+            $table->boolean('emailNotification')->default(false);
+            $table->boolean('smsNotification')->default(false);
+            $table->enum('profileVisibility', ["visible", "restricted", "banned"])->default("restricted");
             $table->date('createdAt');
             $table->date('updatedAt');
         });

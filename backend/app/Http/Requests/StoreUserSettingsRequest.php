@@ -25,9 +25,9 @@ class StoreUserSettingsRequest extends FormRequest
     {
         return [
             'userId' => ['required', 'integer', 'exists:users,id'],
-            'emailNotification' => ['required', 'boolean', Rule::unique('user_settings', 'userId')],
-            'smsNotification' => ['required', 'boolean'],
-            'profileVisibility' => ['required', 'in:visible,restricted,banned'],
+            'emailNotification' => ['sometimes', 'boolean', Rule::unique('user_settings', 'userId')],
+            'smsNotification' => ['sometimes', 'boolean'],
+            'profileVisibility' => ['sometimes', 'in:visible,restricted,banned'],
         ];
     }
 }
