@@ -27,6 +27,7 @@ class SearchEventsRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],
             'eventDate' => ['nullable', 'date_format:Y-m-d'],
+            'timezone' => ['nullable', 'regex:/^[+-]\d{2}:\d{2}$/'],
             'maxPrice' => ['nullable', 'numeric', 'min:0'],
             'category' => ['nullable', 'in:cultural,music,sport'],
             'page' => ['nullable', 'integer', 'min:1'],

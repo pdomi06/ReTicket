@@ -33,39 +33,42 @@ class Event extends Model
 
     public function scopeSearch($query, array $filters)
     {
-        return $query
-            ->when(
-                $filters['event'] ?? null,
-                fn($q, $value) =>
-                $q->where('name', 'like', '%' . $value . '%')
-            )
-            ->when(
-                $filters['venue'] ?? null,
-                fn($q, $value) =>
-                $q->where('venue', 'like', '%' . $value . '%')
-            )
-            ->when(
-                $filters['city'] ?? null,
-                fn($q, $value) =>
-                $q->where('city', 'like', '%' . $value . '%')
-            )
-            ->when($filters['country'] ?? null, fn($q, $value) =>
-                $q->where('country', 'like', '%' . $value . '%')
-            )
-            ->when($filters['eventDate'] ?? null, fn($q, $value) =>
-                $q->whereBetween('eventDate', [
-                    Carbon::parse($value)->startOfDay()->timestamp,
-                    Carbon::parse($value)->endOfDay()->timestamp,
-                ])
-            )
-            ->when(
-                $filters['category'] ?? null,
-                fn($q, $value) =>
-                $q->where('category', $value)
-            )
-            ->when($filters['maxPrice'] ?? null, fn($q, $value) =>
-                $q->where('basePrice', '<=', $value)
-            );
+        $query->when(
+            $filters['event'] ?? null,
+            fn($q, $value) =>
+            $q->where('name', 'like', '%' . $value . '%')
+        )
+        ->when(
+            $filters['venue'] ?? null,
+            fn($q, $value) =>
+            $q->where('venue', 'like', '%' . $value . '%')
+        )
+        ->when(
+            $filters['city'] ?? null,
+            fn($q, $value) =>
+            $q->where('city', 'like', '%' . $value . '%')
+        )
+        ->when($filters['country'] ?? null, fn($q, $value) =>
+            $q->where('country', 'like', '%' . $value . '%')
+        )
+        ->when($filters['category'] ?? null, fn($q, $value) =>
+            $q->where('category', $value)
+        )
+        ->when($filters['maxPrice'] ?? null, fn($q, $value) =>
+            $q->where('basePrice', '<=', $value)
+        );
+
+        // Handle eventDate with timezone support
+        if (!empty($filters['eventDate'])) {
+            $userTimezone = $filters['timezone'] ?? '+00:00';
+            $date = Carbon::createFromFormat('Y-m-d', $filters['eventDate'], $userTimezone);
+            $query->whereBetween('eventDate', [
+                $date->copy()->startOfDay()->timestamp,
+                $date->copy()->endOfDay()->timestamp,
+            ]);
+        }
+
+        return $query;
     }
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';

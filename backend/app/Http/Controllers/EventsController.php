@@ -68,8 +68,12 @@ class EventsController extends Controller implements HasMiddleware
         }
         
         if (!empty($filters['eventDate'])) {
-            $startOfDayTimestamp = Carbon::parse($filters['eventDate'])->startOfDay()->timestamp;
-            $endOfDayTimestamp = Carbon::parse($filters['eventDate'])->endOfDay()->timestamp;
+            // Parse date in user's timezone, then convert to UTC for database query
+            $userTimezone = $filters['timezone'] ?? '+00:00';
+            $date = Carbon::createFromFormat('Y-m-d', $filters['eventDate'], $userTimezone);
+            
+            $startOfDayTimestamp = $date->copy()->startOfDay()->timestamp;
+            $endOfDayTimestamp = $date->copy()->endOfDay()->timestamp;
             $query->whereBetween('eventDate', [$startOfDayTimestamp, $endOfDayTimestamp]);
         }
         
