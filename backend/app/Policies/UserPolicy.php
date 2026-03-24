@@ -12,9 +12,12 @@ class UserPolicy
     public function before(User $user, string $ability): ?bool
     {
         if ($user->role === 'admin') {
-            return true;
+        if ($ability === 'delete' && $user->id === request()->route('user')->id) {
+            return null;
         }
-        return null;
+        return true;
+    }
+    return null;
     }
 
     /**
@@ -60,8 +63,15 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
+        if($user->id === $model->id && $user->role === 'admin') {
+            return false; 
+        }
+        
         if($user->id === $model->id) {
-            return true;
+            return true; 
+        }
+        if($user->role === 'admin') {
+            return true; 
         }
         return false;
     }

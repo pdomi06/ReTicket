@@ -24,6 +24,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', VenueMap::class);
         $venue_maps = VenueMap::all();
         return response()->json($venue_maps, 200);
     }
@@ -38,6 +39,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function store(StoreVenueMapRequest $request)
     {
+        $this->authorize('create', VenueMap::class);
         $venue_map = VenueMap::create($request->validated());
         return response()->json($venue_map, 201);
     }
@@ -47,6 +49,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function show(VenueMap $venue)
     {
+        $this->authorize('view', $venue);
         return response()->json($venue, 200);
     }
 
@@ -55,6 +58,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function update(UpdateVenueMapRequest $request, VenueMap $venue)
     {
+        $this->authorize('update', $venue);
         $venue->update($request->validated());
         return response()->json($venue, 200);
     }
@@ -64,6 +68,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function destroy(VenueMap $venue)
     {
+        $this->authorize('delete', $venue);
         $venue->delete();
         return response()->json(["message" => "Venue map deleted successfully"], 200);
     }

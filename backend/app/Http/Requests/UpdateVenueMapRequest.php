@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\VenueMap;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateVenueMapRequest extends FormRequest
@@ -11,7 +12,9 @@ class UpdateVenueMapRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $model = $this->route('venue');
+
+        return $this->user()->can('update', $model);
     }
 
     /**

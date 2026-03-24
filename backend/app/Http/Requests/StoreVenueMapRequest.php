@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\VenueMap;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -13,7 +14,7 @@ class StoreVenueMapRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', VenueMap::class);
     }
 
     /**

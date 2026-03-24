@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\VenueMap;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SearchVenueMapRequest extends FormRequest
@@ -11,7 +12,10 @@ class SearchVenueMapRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if (!$this->user()) {
+            return true;
+        }
+        return $this->user()->can('viewAny', VenueMap::class);
     }
 
     /**
@@ -24,9 +28,9 @@ class SearchVenueMapRequest extends FormRequest
         return [
             'venue' => ['nullable', 'string', 'max:255'],
             'section' => ['nullable', 'string', 'max:255'],
-                'rows' => ['nullable', 'integer', 'min:1'],
-                'cols' => ['nullable', 'integer', 'min:1'],
-                'rate' => ['nullable', 'numeric', 'decimal:1', 'min:0.1', 'max:9.9'],
+            'rows' => ['nullable', 'integer', 'min:1'],
+            'cols' => ['nullable', 'integer', 'min:1'],
+            'rate' => ['nullable', 'numeric', 'decimal:1', 'min:0.1', 'max:9.9'],
         ];
     }
 }

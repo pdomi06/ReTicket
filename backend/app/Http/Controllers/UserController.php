@@ -33,14 +33,14 @@ class UserController extends Controller implements HasMiddleware
      */
     public function store(StoreUserRequest $request)
     {
-    $data = $request->validated();
+        $this->authorize('create', User::class);
+        $data = $request->validated();
+        $data['passwordHash'] = Hash::make($data['password']);
+        unset($data['password']);
 
-    $data['passwordHash'] = Hash::make($data['password']);
-    unset($data['password']);
+        $user = User::create($data);
 
-    $user = User::create($data);
-
-    return response()->json($user, 201);
+        return response()->json($user, 201);
     }
 
     /**
@@ -57,6 +57,7 @@ class UserController extends Controller implements HasMiddleware
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('update', $user);
         $data = $request->validated();
         if (isset($data['password'])) {
             $data['passwordHash'] = Hash::make($data['password']);
