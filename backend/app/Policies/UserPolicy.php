@@ -11,19 +11,17 @@ class UserPolicy
      */
     public function before(User $user, string $ability): ?bool
     {
-        if ($user->role === 'admin') {
-        if ($ability === 'delete' && $user->id === request()->route('user')->id) {
-            return null;
+        if ($user->role === 'admin' && $ability !== 'delete') {
+            return true;
         }
-        return true;
-    }
-    return null;
+
+        return null;
     }
 
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return $user->role === 'admin';
     }
@@ -31,7 +29,7 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(?User $user, User $model): bool
     {
         if($user->id === $model->id) {
             return true;
@@ -63,17 +61,11 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        if($user->id === $model->id && $user->role === 'admin') {
-            return false; 
+        if ($user->role === 'admin') {
+            return $user->id !== $model->id;
         }
-        
-        if($user->id === $model->id) {
-            return true; 
-        }
-        if($user->role === 'admin') {
-            return true; 
-        }
-        return false;
+
+        return $user->id === $model->id;
     }
 
     /**

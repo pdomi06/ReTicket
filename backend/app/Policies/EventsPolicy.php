@@ -4,16 +4,23 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Event;
-use Illuminate\Auth\Access\Response;
 
 class EventsPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
+
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +28,7 @@ class EventsPolicy
      */
     public function view(User $user, Event $events): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +36,7 @@ class EventsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'organizer'], true);
     }
 
     /**
@@ -37,7 +44,7 @@ class EventsPolicy
      */
     public function update(User $user, Event $events): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'organizer'], true);
     }
 
     /**
@@ -45,7 +52,7 @@ class EventsPolicy
      */
     public function delete(User $user, Event $events): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'organizer'], true);
     }
 
     /**

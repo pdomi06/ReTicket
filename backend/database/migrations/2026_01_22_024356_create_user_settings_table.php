@@ -18,8 +18,8 @@ return new class extends Migration
             $table->boolean('emailNotification')->default(false);
             $table->boolean('smsNotification')->default(false);
             $table->enum('profileVisibility', ["visible", "restricted", "banned"])->default("restricted");
-            $table->date('createdAt');
-            $table->date('updatedAt');
+            $table->datetime('createdAt');
+            $table->datetime('updatedAt');
         });
 
         Schema::enableForeignKeyConstraints();
