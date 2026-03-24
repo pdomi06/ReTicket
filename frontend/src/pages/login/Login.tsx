@@ -55,7 +55,7 @@ const Login = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);
-      setErrors(prevErrors => [...prevErrors, error instanceof Error ? error.message : "Login failed. Please check your credentials and try again."]);
+      setErrors([error instanceof Error ? error.message : "Login failed. Please check your credentials and try again."]);
     }
   }
   return (

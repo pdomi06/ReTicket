@@ -61,7 +61,6 @@ const Register = () => {
             }
 
             if (!response.ok) {
-                setErrors(data?.message ? [data.message] : ["Registration failed. Please try again."]);
                 throw new Error(data?.message ?? "Registration failed");
             }
 
@@ -70,7 +69,7 @@ const Register = () => {
             navigate("/dashboard");
         } catch (error) {
             console.error("Error during registration:", error);
-            setErrors(prevErrors => [...prevErrors, error instanceof Error ? error.message : "Registration failed. Please try again."]);
+            setErrors([error instanceof Error ? error.message : "Registration failed. Please try again."]);
             alert(error instanceof Error ? error.message : "Registration failed. Please try again.");
         }
     }

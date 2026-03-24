@@ -3,7 +3,15 @@ import { useNavigate } from "react-router";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") ?? "null");
+  let user = null;
+
+  try {
+    user = JSON.parse(localStorage.getItem("user") ?? "null");
+  } catch (e) {
+    console.error("Failed to parse user from localStorage:", e);
+    user = null;
+  }
+
   useEffect(() => {
     if (!user) {
       navigate("/login");

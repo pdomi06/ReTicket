@@ -29,8 +29,15 @@ const ADMIN_ITEMS = [
 
 const Sidebar = () => {
     const user = localStorage.getItem("user");
-    const userData = user ? JSON.parse(user) : null;
-    
+    let userData = null;
+
+    try {
+        userData = user ? JSON.parse(user) : null;
+    } catch (e) {
+        console.error("Failed to parse user from localStorage:", e);
+        userData = null;
+    }
+
     const getInitials = (name: string) => {
         return name
             .split(' ')
@@ -38,7 +45,7 @@ const Sidebar = () => {
             .join('')
             .toUpperCase();
     };
-    
+
     return (
         <div className={style.sidebar}>
             <div className={style.brand}>
@@ -76,7 +83,7 @@ const Sidebar = () => {
                     </NavLink>
                 ))}
             </nav>
-            
+
             {userData && (
                 <NavLink to="/dashboard/user-settings" className={style.profileCard}>
                     <div className={style.avatarContainer}>
