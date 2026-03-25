@@ -44,7 +44,13 @@ class EventsPolicy
      */
     public function update(User $user, Event $events): bool
     {
-        return in_array($user->role, ['admin', 'organizer'], true);
+        if($user->role === 'organizer' && $events->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -52,7 +58,13 @@ class EventsPolicy
      */
     public function delete(User $user, Event $events): bool
     {
-        return in_array($user->role, ['admin', 'organizer'], true);
+        if($user->role === 'organizer' && $events->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
+        return false;
     }
 
     /**

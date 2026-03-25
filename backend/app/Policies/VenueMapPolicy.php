@@ -48,7 +48,13 @@ class VenueMapPolicy
      */
     public function update(User $user, VenueMap $venueMap): bool
     {
-        return in_array($user->role, ['admin', 'organizer'], true);
+        if($user->role === 'organizer' && $venueMap->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -56,7 +62,13 @@ class VenueMapPolicy
      */
     public function delete(User $user, VenueMap $venueMap): bool
     {
-        return in_array($user->role, ['admin', 'organizer'], true);
+        if($user->role === 'organizer' && $venueMap->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
+        return false;
     }
 
     /**
