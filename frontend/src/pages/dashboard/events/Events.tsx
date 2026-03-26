@@ -22,10 +22,12 @@ export default function Events() {
     async function fetchEvents() {
       try {
         const token = localStorage.getItem('token');
+        const headers: HeadersInit = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers
         });
         const data = await response.json();
 
@@ -53,14 +55,15 @@ export default function Events() {
     setLoadingStatus(eventId);
     try {
       const token = localStorage.getItem('token');
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulkStatusChange`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
+          headers,
           body: JSON.stringify({ eventId, status: newStatus }),
         }
       );

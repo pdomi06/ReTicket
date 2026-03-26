@@ -22,11 +22,13 @@ const EditEvent = () => {
         async function fetchEvent() {
             try {
                 const token = localStorage.getItem('token');
+                const headers: HeadersInit = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
                     signal: abortController.signal,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch event:', response.status, response.statusText);
@@ -65,11 +67,13 @@ const EditEvent = () => {
         async function fetchVenues() {
             try {
                 const token = localStorage.getItem('token');
+                const headers: HeadersInit = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
