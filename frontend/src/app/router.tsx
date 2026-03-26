@@ -21,10 +21,17 @@ const DashboardEditVenue = lazy(() => import("../pages/dashboard/edit-venue/Edit
 const DashboardEditEvent = lazy(() => import("../pages/dashboard/edit-event/EditEvent.tsx"));
 const DashboardListTickets = lazy(() => import("../pages/dashboard/list-tickets/ListTickets.tsx"));
 const DashboardMyEvents = lazy(() => import("../pages/dashboard/my-events/MyEvents.tsx"));
-const DashboardSales = lazy(() => import("../pages/dashboard/sales/Sales.tsx"));
+const DashboardSalesHistory = lazy(() => import("../pages/dashboard/sales-history/SalesHistory.tsx"));
+const DashboardStatistics = lazy(() => import("../pages/dashboard/statistics/Statistics.tsx"));
 const DashboardVenues = lazy(() => import("../pages/dashboard/venues/Venues.tsx"));
 const DashboardEvents = lazy(() => import("../pages/dashboard/events/Events.tsx"));
 const DashboardTickets = lazy(() => import("../pages/dashboard/tickets/Tickets.tsx"));
+const DashboardUsers = lazy(() => import("../pages/dashboard/users/Users.tsx"));
+const DashboardOrders = lazy(() => import("../pages/dashboard/orders/Orders.tsx"));
+const DashboardReviews = lazy(() => import("../pages/dashboard/reviews/Reviews.tsx"));
+const DashboardWebsite = lazy(() => import("../pages/dashboard/website/WebsiteManagement.tsx"));
+const DashboardHistory = lazy(() => import("../pages/dashboard/history/TicketHistory.tsx"));
+const DashboardUserSettings = lazy(() => import("../pages/dashboard/user-settings/UserSettings.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -51,10 +58,17 @@ export const routes: RouteObject[] = [
           { path: "edit-event/:id", element: <DashboardEditEvent /> },
           { path: "list-tickets", element: <DashboardListTickets /> },
           { path: "my-events", element: <DashboardMyEvents /> },
-          { path: "sales", element: <DashboardSales /> },
+          { path: "sales-history", element: <DashboardSalesHistory /> },
+          { path: "statistics", element: <DashboardStatistics /> },
           { path: "venues", element: <DashboardVenues /> },
           { path: "events", element: <DashboardEvents /> },
           { path: "tickets", element: <DashboardTickets /> },
+          { path: "users", element: <DashboardUsers /> },
+          { path: "orders", element: <DashboardOrders /> },
+          { path: "reviews", element: <DashboardReviews /> },
+          { path: "website", element: <DashboardWebsite /> },
+          { path: "history", element: <DashboardHistory /> },
+          { path: "user-settings", element: <DashboardUserSettings /> },
         ],
       },
       { path: "*", element: <NotFound /> },

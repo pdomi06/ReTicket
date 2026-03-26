@@ -11,7 +11,14 @@ const CreateVenue = () => {
 
     async function checkExistingScenery(): Promise<boolean> {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`);
+            const token = localStorage.getItem('token');
+            const headers: HeadersInit = {};
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+                headers
+            });
 
             if (!response.ok) {
                 console.error('Error checking existing scenery: Non-OK response', response.status, response.statusText);
@@ -43,11 +50,14 @@ const CreateVenue = () => {
             return { success: false, message: 'A scenery with this venue already exists. Please choose a different venue.' };
         }
         try {
+            const token = localStorage.getItem('token');
+            const headers: HeadersInit = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify(venue)
             });
             if (!response.ok) {

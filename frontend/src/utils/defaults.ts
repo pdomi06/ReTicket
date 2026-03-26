@@ -1,6 +1,6 @@
-import type { ICartContext, IEvent, IEventContext, IVenueMap } from "./interfaces"
+import type { ICartContext, IEventContext, IEventForm, IVenueMap } from "./interfaces"
 
-export const defaultIEvent: IEvent = {
+export const defaultIEvent: IEventForm = {
   id: 0,
   name: '',
   description: '',
@@ -9,8 +9,8 @@ export const defaultIEvent: IEvent = {
   city: '',
   state: '',
   country: '',
-  eventDate: '',
-  eventEndDate: '',
+  eventDate: 0,
+  eventEndDate: 0,
   category: 'music' as const,
   basePrice: 0,
   imageUrl: '',
@@ -19,7 +19,23 @@ export const defaultIEvent: IEvent = {
 }
 
 export const defaultIEventContext: IEventContext = {
-  event: defaultIEvent,
+  event: {
+    id: 0,
+    name: '',
+    description: '',
+    venue: '',
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    eventDate: 0,
+    eventEndDate: 0,
+    category: 'music' as const,
+    basePrice: 0,
+    imageUrl: '',
+    createdAt: '',
+    updatedAt: ''
+  },
   getEvent: async () => false
 }
 

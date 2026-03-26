@@ -1,14 +1,15 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../../utils/defaults";
-import type { IEvent, IVenueMap } from "../../../utils/interfaces";
+import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import { EventCategory } from "../../../utils/enums";
+import { toUnixSeconds } from "../../../utils/dateTime";
 import style from "./CreateEvent.module.css";
 
 const CreateEvent = () => {
-    const [eventParams, setEventParams] = useState<IEvent>(defaultIEvent);
+    const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
     const [loading, setLoading] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -18,8 +19,14 @@ const CreateEvent = () => {
 
         async function fetchVenues() {
             try {
+                const token = localStorage.getItem('token');
+                const headers: HeadersInit = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
+                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
@@ -53,14 +60,30 @@ const CreateEvent = () => {
         setMessage(null);
 
         try {
+            const eventDateUnix = toUnixSeconds(eventParams.eventDate);
+            const eventEndDateUnix = toUnixSeconds(eventParams.eventEndDate);
+
+            if (eventDateUnix === null || eventEndDateUnix === null) {
+                throw new Error("Please provide valid event start and end date/time values.");
+            }
+
+            const token = localStorage.getItem('token');
+            const headers: HeadersInit = { "Content-Type": "application/json" };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const payload = {
+                ...eventParams,
+                eventDate: eventDateUnix,
+                eventEndDate: eventEndDateUnix,
+            };
+
             const eventResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events`,
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(eventParams),
+                    headers,
+                    body: JSON.stringify(payload),
                 }
             );
 
@@ -90,13 +113,15 @@ const CreateEvent = () => {
                 throw new Error("Failed to create tickets: no matching venue found for the event");
             }
 
+            const ticketsHeaders: HeadersInit = { "Content-Type": "application/json" };
+            if (token) {
+                ticketsHeaders['Authorization'] = `Bearer ${token}`;
+            }
             const ticketsResponse = await fetch(
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: ticketsHeaders,
                     body: JSON.stringify({
                         eventId: createdEventId,
                         eventBasePrice: eventParams.basePrice,
@@ -156,8 +181,8 @@ const CreateEvent = () => {
                         <Input type="text" name="city" label="City" onChange={(e) => setEventParams({ ...eventParams, city: e.target.value })} value={eventParams.city || ''} />
                         <Input type="text" name="state" label="State" onChange={(e) => setEventParams({ ...eventParams, state: e.target.value })} value={eventParams.state || ''} />
                         <Input type="text" name="country" label="Country" onChange={(e) => setEventParams({ ...eventParams, country: e.target.value })} value={eventParams.country || ''} />
-                        <Input type="date" name="eventDate" label="Event Date" onChange={(e) => setEventParams({ ...eventParams, eventDate: e.target.value })} value={eventParams.eventDate || ''} />
-                        <Input type="date" name="eventEndDate" label="Event End Date" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={eventParams.eventEndDate || ''} />
+                        <Input type="datetime-local" name="eventDate" label="Event Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventDate: e.target.value })} value={typeof eventParams.eventDate === "string" ? eventParams.eventDate : ''} />
+                        <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={typeof eventParams.eventEndDate === "string" ? eventParams.eventEndDate : ''} />
                         <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>

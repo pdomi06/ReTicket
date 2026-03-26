@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
 import Button from "../../components/ui/button/Button";
+import { useState, type FormEvent } from "react";
 
 const logo = '/img/logo/logo_transparrent_white.svg';
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
@@ -10,9 +11,14 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/
 
 
 const Login = () => {
+  const [errors, setErrors] = useState<string[]>([]);
+
+
   const navigate = useNavigate();
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setErrors([]);  // Clear errors on new submit attempt
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
@@ -38,7 +44,7 @@ const Login = () => {
       try {
         data = rawBody ? JSON.parse(rawBody) : null;
       } catch {
-        throw new Error("Login endpoint returned non-JSON response. Check VITE_API_BASE_URL and backend server status.");
+        throw new Error("Login endpoint returned non-JSON response.");
       }
 
       if (!response.ok) {
@@ -50,7 +56,7 @@ const Login = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);
-      alert(error instanceof Error ? error.message : "Login failed. Please check your credentials and try again.");
+      setErrors([error instanceof Error ? error.message : "Login failed. Please check your credentials and try again."]);
     }
   }
   return (
@@ -59,6 +65,15 @@ const Login = () => {
         <h2><img src={logo} alt="ReTicket Logo" /> ReTicket</h2>
         <h4>Don't have an account? <Link to="/register">Register</Link></h4>
 
+        {errors.length > 0 && (
+          <div className={style["errors"]}>
+            {errors.map((error, index) => (
+              <p key={index} className={style["error"]}>
+                {error}
+              </p>
+            ))}
+          </div>
+        )}
         <form method="POST" className={style["login-form"]} onSubmit={handleSubmit}>
 
           <Input type="email" name="email" label="Email" />

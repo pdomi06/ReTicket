@@ -12,7 +12,7 @@ interface SeatSelectorProps {
     onReload: () => Promise<void>
 }
 
-const seatKey = (row: number, col: number) => `${row}-${col}`
+const seatKey = (eventId: string, row: number, col: number) => `${eventId}-${row}-${col}`
 
 const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSelectorProps) => {
     const { addToCart, removeFromCart, tickets: cartTickets } = useContext(CartContext)
@@ -24,7 +24,7 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     const availableSeats = useMemo(() => {
         const set = new Set<string>()
         for (const t of dbTickets) {
-            set.add(seatKey(t.row, t.seatNumber))
+            set.add(seatKey(String(t.eventId), t.row, t.seatNumber))
         }
         return set
     }, [dbTickets])
@@ -33,11 +33,11 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
         const map = new Map<string, ITicketForsale>()
         for (const t of cartTickets) {
             if (t.row != null && t.col != null) {
-                map.set(seatKey(t.row, t.col), t)
+                map.set(seatKey(eventId, t.row, t.col), t)
             }
         }
         return map
-    }, [cartTickets])
+    }, [cartTickets, eventId])
 
     const handleZoomIn = () => {
         setZoom(prev => Math.min(3, prev + 0.2))
@@ -57,7 +57,7 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     }
 
     const handleSeatToggle = async (row: number, col: number, checked: boolean) => {
-        const key = seatKey(row, col)
+        const key = seatKey(eventId, row, col)
         setBusySeat(key)
         setStatusMessage(null)
 
@@ -116,7 +116,7 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
                                 {Array.from({ length: venue.cols }, (_, j) => {
                                     const row = i + 1
                                     const col = j + 1
-                                    const key = seatKey(row, col)
+                                    const key = seatKey(eventId, row, col)
                                     const inCart = cartSeatMap.has(key)
                                     const available = availableSeats.has(key) || inCart
                                     const isBusy = busySeat === key

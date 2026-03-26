@@ -62,8 +62,8 @@ export interface IEvent {
   city: string;
   state: string;
   country: string;
-  eventDate: string;
-  eventEndDate: string;
+  eventDate: number;
+  eventEndDate: number;
   category: typeof EventCategory[keyof typeof EventCategory];
   basePrice: number;
   imageUrl: string;
@@ -71,6 +71,11 @@ export interface IEvent {
   updatedAt: string;
   firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
+
+export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate'> & {
+  eventDate: number | string;
+  eventEndDate: number | string;
+};
 
 export interface IOriginalTicket {
   id: number;
@@ -241,7 +246,7 @@ export interface ICartContext {
 export interface IDashboardTicket {
   id: number;
   eventName: string;
-  eventDate: string;
+  eventDate: number | string;
   venue: string;
   section: string;
   row: number;

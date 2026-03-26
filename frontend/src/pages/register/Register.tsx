@@ -1,3 +1,4 @@
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Register.module.css'
@@ -9,10 +10,13 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/
 
 
 const Register = () => {
+    const [errors, setErrors] = useState<string[]>([]);
+
     const navigate = useNavigate();
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setErrors([]);
         const formData = new FormData(e.currentTarget);
 
         const name = formData.get("name");
@@ -28,7 +32,7 @@ const Register = () => {
             typeof password !== "string" ||
             typeof passwordConfirmation !== "string"
         ) {
-            alert("Please fill in all required fields.");
+            setErrors(["Please fill in all required fields."]);
             return;
         }
 
@@ -54,7 +58,7 @@ const Register = () => {
             try {
                 data = rawBody ? JSON.parse(rawBody) : null;
             } catch {
-                throw new Error("Register endpoint returned non-JSON response. Check VITE_API_BASE_URL and backend server status.");
+                throw new Error("Register endpoint returned non-JSON response.");
             }
 
             if (!response.ok) {
@@ -66,15 +70,25 @@ const Register = () => {
             navigate("/dashboard");
         } catch (error) {
             console.error("Error during registration:", error);
-            alert(error instanceof Error ? error.message : "Registration failed. Please try again.");
+            setErrors([error instanceof Error ? error.message : "Registration failed. Please try again."]);
         }
     }
     return (
         <main className={style["register-page"]}>
+
             <div className={style["register-container"]}>
                 <h2><img src={logo} alt="ReTicket Logo" /> ReTicket</h2>
                 <h4>Already have an account? <Link to="/login">Log in</Link></h4>
 
+                {errors.length > 0 && (
+                    <div className={style["errors"]}>
+                        {errors.map((error, index) => (
+                            <p key={index} className={style["error"]}>
+                                {error}
+                            </p>
+                        ))}
+                    </div>
+                )}
                 <form method="POST" className={style["register-form"]} onSubmit={handleSubmit}>
                     <Input type="text" name="name" label="Username" />
 

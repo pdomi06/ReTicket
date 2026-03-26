@@ -1,12 +1,16 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh;
     width: 220px;
     background-color: var(--color-secondary);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1.5rem 0;
     flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
 .brand {
@@ -28,6 +32,7 @@
     flex-direction: column;
     gap: 2px;
     padding: 0 0.75rem;
+    flex: 1;
 }
 
 .navItem {
@@ -64,4 +69,95 @@
     letter-spacing: 0.08em;
     color: var(--color-text-secondary);
     opacity: 0.6;
+}
+
+.profileSettings {
+    margin-top: auto;
+    padding: 0.8rem 0.55rem;
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.085em;
+    background-color: var(--color-accent);
+    border-radius: 6px;
+}
+
+.profileSettings>a {
+    text-decoration: none;
+    color: var(--color-text);
+    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profileCard {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin: 0 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    row-gap: 0;
+}
+
+.profileCard:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(177, 156, 217, 0.2);
+}
+
+.avatarContainer {
+    flex-shrink: 0;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--color-accent), rgba(177, 156, 217, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.profileInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.profileName {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profileRole {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profileMenu {
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
 }

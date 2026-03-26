@@ -1,4 +1,5 @@
 import { type IEvent } from "../../utils/interfaces"
+import { formatUnixDateTime } from "../../utils/dateTime"
 import style from "./Event.module.css"
 
 interface EventInfoProps {
@@ -47,19 +48,13 @@ const EventInfo = ({ event }: EventInfoProps) => {
                     <div className="col">
                         <p className="text-white-50 small mb-1">Event start:</p>
                         <p className="mb-0">
-                            {new Date(event.eventDate || "").toLocaleDateString('en-US', {
-                                month: 'short', day: 'numeric', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit',
-                            })}
+                            {formatUnixDateTime(event.eventDate)}
                         </p>
                     </div>
                     <div className="col">
                         <p className="text-white-50 small mb-1">Event end:</p>
                         <p className="mb-0">
-                            {new Date(event.eventEndDate || "").toLocaleDateString('en-US', {
-                                month: 'short', day: 'numeric', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit',
-                            })}
+                            {formatUnixDateTime(event.eventEndDate)}
                         </p>
                     </div>
                 </div>
