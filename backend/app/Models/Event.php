@@ -34,7 +34,7 @@ class Event extends Model
     public function scopeSearch($query, array $filters)
     {
         $query->when(
-            $filters['event'] ?? null,
+            $filters['name'] ?? null,
             fn($q, $value) =>
             $q->where('name', 'like', '%' . $value . '%')
         )

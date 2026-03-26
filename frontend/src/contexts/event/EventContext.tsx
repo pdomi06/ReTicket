@@ -2,16 +2,20 @@ import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { EventContext } from "./EventContextDef";
 import type { IEvent } from "../../utils/interfaces";
 
-const EventContextProvider = ({children}: {children: ReactNode}) =>{
+const EventContextProvider = ({ children }: { children: ReactNode }) => {
     const [event, setEvent] = useState<IEvent>()
 
     const getEvent = useCallback(async (id: string): Promise<boolean> => {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
         const token = localStorage.getItem('token');
+
+        const headers: HeadersInit = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(`${apiBaseUrl}/events/${id}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers
         });
         const contentType = response.headers.get('content-type') || '';
 

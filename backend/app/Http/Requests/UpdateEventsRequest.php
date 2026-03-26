@@ -42,27 +42,29 @@ class UpdateEventsRequest extends FormRequest
      * Ensures eventEndDate is not before eventDate, considering both
      * the current request data and the model's existing values.
      */
-    public function after()
+    public function after(): array
     {
-        return function ($validator) {
-            $event = $this->route('event');
-            
-            $eventDate = $this->filled('eventDate')
-                ? $this->input('eventDate')
-                : $event->eventDate;
-            
-            $eventEndDate = $this->filled('eventEndDate')
-                ? $this->input('eventEndDate')
-                : $event->eventEndDate;
-            
-            if ($eventDate !== null && $eventEndDate !== null) {
-                if ($eventEndDate < $eventDate) {
-                    $validator->errors()->add(
-                        'eventEndDate',
-                        'The event end date must be after the event start date.'
-                    );
+        return [
+            function ($validator) {
+                $event = $this->route('event');
+
+                $eventDate = $this->filled('eventDate')
+                    ? $this->input('eventDate')
+                    : $event->eventDate;
+
+                $eventEndDate = $this->filled('eventEndDate')
+                    ? $this->input('eventEndDate')
+                    : $event->eventEndDate;
+
+                if ($eventDate !== null && $eventEndDate !== null) {
+                    if ($eventEndDate < $eventDate) {
+                        $validator->errors()->add(
+                            'eventEndDate',
+                            'The event end date must be after the event start date.'
+                        );
+                    }
                 }
             }
-        };
+        ];
     }
 }

@@ -40,18 +40,20 @@ class SearchEventsRequest extends FormRequest
      */
     public function after()
     {
-        return function ($validator) {
-            if ($this->filled('timezone')) {
-                $timezone = $this->input('timezone');
-                try {
-                    new \DateTimeZone($timezone);
-                } catch (\Exception) {
-                    $validator->errors()->add(
-                        'timezone',
-                        'The timezone must be a valid UTC offset (e.g., +00:00, +05:30, -08:00).'
-                    );
+        return [
+            function ($validator) {
+                if ($this->filled('timezone')) {
+                    $timezone = $this->input('timezone');
+                    try {
+                        new \DateTimeZone($timezone);
+                    } catch (\Exception) {
+                        $validator->errors()->add(
+                            'timezone',
+                            'The timezone must be a valid UTC offset (e.g., +00:00, +05:30, -08:00).'
+                        );
+                    }
                 }
             }
-        };
+        ];
     }
 }

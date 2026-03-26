@@ -19,8 +19,13 @@ export default function Tickets() {
 
   useEffect(() => {
     async function fetchTickets() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        return;
+      }
+
       try {
-        const token = localStorage.getItem('token');
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/dashboard`, {
           headers: {
             'Authorization': `Bearer ${token}`

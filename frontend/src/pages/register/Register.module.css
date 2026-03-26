@@ -110,3 +110,8 @@ button {
   border: 1px solid rgba(255, 0, 0, 0.8);
   padding: 10px;
 }
+
+.error {
+  margin: 0;
+  color: #c41e3a;
+}

@@ -24,12 +24,13 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                     parsedCart.map(async (ticket) => {
                         try {
                             const token = localStorage.getItem('token');
+                            const headers: HeadersInit = { "Content-Type": "application/json" };
+                            if (token) {
+                                headers["Authorization"] = `Bearer ${token}`;
+                            }
                             const res = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticket.id}`, {
                                 method: "POST",
-                                headers: { 
-                                    "Content-Type": "application/json",
-                                    "Authorization": `Bearer ${token}`
-                                },
+                                headers,
                             });
 
                             if (res.ok) {
@@ -77,10 +78,12 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const addToCart = async (eventId: string, row: number, seat: number): Promise<boolean> => {
         try {
             const token = localStorage.getItem('token');
+            const headers: HeadersInit = {};
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             const response = await fetch(`${apiBaseUrl}/originalTickets/search?eventId=${eventId}&row=${row}&seatNumber=${seat}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers
             });
             if (!response.ok) {
                 throw new Error(`Failed to fetch ticket: ${response.statusText}`);
@@ -92,10 +95,12 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                 return false;
             }
 
+            const ticketHeaders: HeadersInit = {};
+            if (token) {
+                ticketHeaders['Authorization'] = `Bearer ${token}`;
+            }
             const ticket = await fetch(`${apiBaseUrl}/ticketForSale/search?originalTicketId=${originalTicketId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: ticketHeaders
             });
             if (!ticket.ok) {
                 throw new Error(`Failed to fetch ticket for sale: ${ticket.statusText}`);
@@ -111,12 +116,13 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
 
             setCart(prevCart => [...prevCart, newTicket]);
 
+            const basketHeaders: HeadersInit = { "Content-Type": "application/json" };
+            if (token) {
+                basketHeaders["Authorization"] = `Bearer ${token}`;
+            }
             const basketRes = await fetch(`${apiBaseUrl}/ticketForSale/addToBasket/${ticketForSale.id}`, {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
+                headers: basketHeaders,
             });
 
             if (!basketRes.ok) {
@@ -137,12 +143,13 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
 
         try {
             const token = localStorage.getItem('token');
+            const removeHeaders: HeadersInit = { "Content-Type": "application/json" };
+            if (token) {
+                removeHeaders["Authorization"] = `Bearer ${token}`;
+            }
             const res = await fetch(`${apiBaseUrl}/ticketForSale/removeFromBasket/${ticket.id}`, {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
+                headers: removeHeaders,
             });
 
             if (!res.ok) {

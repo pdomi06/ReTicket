@@ -42,17 +42,19 @@ class StoreEventsRequest extends FormRequest
      * Perform additional validation after the primary rules.
      * Ensures eventEndDate is not before eventDate.
      */
-    public function after()
+    public function after(): array
     {
-        return function ($validator) {
-            if ($this->filled('eventDate') && $this->filled('eventEndDate')) {
-                if ($this->input('eventEndDate') < $this->input('eventDate')) {
-                    $validator->errors()->add(
-                        'eventEndDate',
-                        'The event end date must be after the event start date.'
-                    );
+        return [
+            function ($validator) {
+                if ($this->filled('eventDate') && $this->filled('eventEndDate')) {
+                    if ($this->input('eventEndDate') < $this->input('eventDate')) {
+                        $validator->errors()->add(
+                            'eventEndDate',
+                            'The event end date must be after the event start date.'
+                        );
+                    }
                 }
             }
-        };
+        ];
     }
 }
