@@ -115,6 +115,10 @@ const EditEvent = () => {
             }
 
             const token = localStorage.getItem('token');
+            const headers: HeadersInit = { "Content-Type": "application/json" };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             const payload = {
                 ...eventParams,
                 eventDate: eventDateUnix,
@@ -125,10 +129,7 @@ const EditEvent = () => {
                 `${import.meta.env.VITE_API_BASE_URL}/events/${eventParams.id}`,
                 {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
+                    headers,
                     body: JSON.stringify(payload),
                 }
             );

@@ -12,10 +12,12 @@ const CreateVenue = () => {
     async function checkExistingScenery(): Promise<boolean> {
         try {
             const token = localStorage.getItem('token');
+            const headers: HeadersInit = {};
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers
             });
 
             if (!response.ok) {
@@ -49,12 +51,13 @@ const CreateVenue = () => {
         }
         try {
             const token = localStorage.getItem('token');
+            const headers: HeadersInit = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers,
                 body: JSON.stringify(venue)
             });
             if (!response.ok) {

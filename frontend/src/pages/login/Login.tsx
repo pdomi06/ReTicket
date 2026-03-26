@@ -18,6 +18,7 @@ const Login = () => {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setErrors([]);  // Clear errors on new submit attempt
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");

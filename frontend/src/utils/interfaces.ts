@@ -62,8 +62,8 @@ export interface IEvent {
   city: string;
   state: string;
   country: string;
-  eventDate: number | string;
-  eventEndDate: number | string;
+  eventDate: number;
+  eventEndDate: number;
   category: typeof EventCategory[keyof typeof EventCategory];
   basePrice: number;
   imageUrl: string;
