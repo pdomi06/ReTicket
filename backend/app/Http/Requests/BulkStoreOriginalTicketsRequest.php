@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\OriginalTicket;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -13,7 +14,7 @@ class BulkStoreOriginalTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', OriginalTicket::class);
     }
 
     /**

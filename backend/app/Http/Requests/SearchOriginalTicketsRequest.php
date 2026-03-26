@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\OriginalTicket;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SearchOriginalTicketsRequest extends FormRequest
@@ -11,7 +12,7 @@ class SearchOriginalTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return !$this->user() || $this->user()->can('viewAny', OriginalTicket::class);
     }
 
     /**

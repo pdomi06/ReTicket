@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\OriginalTicket;
-use Illuminate\Auth\Access\Response;
 
 class OriginalTicketsPolicy
 {
@@ -20,7 +19,7 @@ class OriginalTicketsPolicy
     }
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,7 +27,7 @@ class OriginalTicketsPolicy
      */
     public function view(User $user, OriginalTicket $originalTickets): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -36,14 +35,24 @@ class OriginalTicketsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'organizer'], true);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, OriginalTicket $originalTickets): bool
+    public function update(User $user, OriginalTicket|string $originalTickets): bool
     {
+        if (is_string($originalTickets)) {
+            return in_array($user->role, ['admin', 'organizer'], true);
+        }
+
+        if($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
         return false;
     }
 
@@ -52,6 +61,12 @@ class OriginalTicketsPolicy
      */
     public function delete(User $user, OriginalTicket $originalTickets): bool
     {
+        if($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
         return false;
     }
 

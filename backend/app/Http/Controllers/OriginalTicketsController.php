@@ -73,6 +73,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function store(StoreOriginalTicketsRequest $request)
     {
+        $this->authorize('create', OriginalTicket::class);
         $original_ticket = OriginalTicket::create($request->validated());
         return response()->json($original_ticket, 201);
     }
@@ -90,6 +91,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function update(UpdateOriginalTicketsRequest $request, OriginalTicket $originalTicket)
     {
+        $this->authorize('update', $originalTicket);
         $originalTicket->update($request->validated());
         return response()->json($originalTicket, 200);
     }
@@ -99,12 +101,14 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function destroy(OriginalTicket $originalTicket)
     {
+        $this->authorize('delete', $originalTicket);
         $originalTicket->delete();
         return response()->json(["message" => "Original ticket deleted successfully"], 200);
     }
 
     public function bulkStore(BulkStoreOriginalTicketsRequest $request)
     {
+        $this->authorize('create', OriginalTicket::class);
         $eventId = $request->eventId;
         $venues = $request->venue;
         $basePrice = $request->eventBasePrice;
@@ -134,6 +138,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function bulkUpdate(BulkStoreOriginalTicketsRequest $request)
     {
+        $this->authorize('update', OriginalTicket::class);
         $eventId = $request->eventId;
         $venues = $request->venue;
         $basePrice = $request->eventBasePrice;
@@ -166,6 +171,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function bulkStatusChange(\Illuminate\Http\Request $request)
     {
+        $this->authorize('update', OriginalTicket::class);
         $request->validate([
             'eventId' => ['required', 'integer', 'exists:events,id'],
             'status' => ['required', 'in:pre-release,reserved,active,cancelled,expired'],
@@ -233,6 +239,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function dashboard()
     {
+        $this->authorize('viewAny', OriginalTicket::class);
         $tickets = OriginalTicket::join('events', 'original_tickets.eventId', '=', 'events.id')
             ->select([
                 'original_tickets.id',
