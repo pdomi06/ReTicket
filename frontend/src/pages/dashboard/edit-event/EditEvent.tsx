@@ -164,10 +164,7 @@ const EditEvent = () => {
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
+                    headers,
                     body: JSON.stringify({
                         eventId: createdEventId,
                         eventBasePrice: eventParams.basePrice,
