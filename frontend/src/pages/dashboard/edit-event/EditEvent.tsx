@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../../utils/defaults";
-import type { IEvent, IVenueMap } from "../../../utils/interfaces";
+import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
@@ -10,7 +10,7 @@ import style from "./EditEvent.module.css";
 import { useParams } from "react-router-dom";
 
 const EditEvent = () => {
-    const [eventParams, setEventParams] = useState<IEvent>(defaultIEvent);
+    const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
     const { id } = useParams<{ id: string }>();
     const [loading, setLoading] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);

@@ -72,6 +72,11 @@ export interface IEvent {
   firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
 
+export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate'> & {
+  eventDate: number | string;
+  eventEndDate: number | string;
+};
+
 export interface IOriginalTicket {
   id: number;
   eventId: number;

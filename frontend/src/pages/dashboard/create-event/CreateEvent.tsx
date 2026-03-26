@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../../utils/defaults";
-import type { IEvent, IVenueMap } from "../../../utils/interfaces";
+import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
@@ -9,7 +9,7 @@ import { toUnixSeconds } from "../../../utils/dateTime";
 import style from "./CreateEvent.module.css";
 
 const CreateEvent = () => {
-    const [eventParams, setEventParams] = useState<IEvent>(defaultIEvent);
+    const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
     const [loading, setLoading] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
