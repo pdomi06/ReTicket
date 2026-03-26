@@ -47,14 +47,16 @@ class UpdateEventsRequest extends FormRequest
         return function ($validator) {
             $event = $this->route('event');
             
-            // Determine the effective eventDate: use request value if provided, otherwise use model's value
             $eventDate = $this->filled('eventDate')
                 ? $this->input('eventDate')
                 : $event->eventDate;
             
-            // Only validate if we have an eventEndDate in the request or it exists in the model
-            if ($this->filled('eventEndDate') && $eventDate !== null) {
-                if ($this->input('eventEndDate') < $eventDate) {
+            $eventEndDate = $this->filled('eventEndDate')
+                ? $this->input('eventEndDate')
+                : $event->eventEndDate;
+            
+            if ($eventDate !== null && $eventEndDate !== null) {
+                if ($eventEndDate < $eventDate) {
                     $validator->errors()->add(
                         'eventEndDate',
                         'The event end date must be after the event start date.'

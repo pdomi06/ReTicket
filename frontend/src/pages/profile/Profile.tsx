@@ -20,7 +20,7 @@ const Profile = () => {
   return (
     <div>
       <h1>Profile Page</h1>
-      <p>Welcome, {user.name}!</p>
+      {user && <p>Welcome, {user.name}!</p>}
     </div>
   );
 }
