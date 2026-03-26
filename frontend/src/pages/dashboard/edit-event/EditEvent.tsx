@@ -50,7 +50,7 @@ const EditEvent = () => {
                     ...normalizedEventData,
                     eventDate: toDateTimeLocalValue(normalizedEventData.eventDate),
                     eventEndDate: toDateTimeLocalValue(normalizedEventData.eventEndDate),
-                });
+                } as IEventForm);
             } catch (error) {
                 if (error instanceof Error && error.name !== 'AbortError') {
                     console.error('Error fetching event:', error);
