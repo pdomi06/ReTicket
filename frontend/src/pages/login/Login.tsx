@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
 import Button from "../../components/ui/button/Button";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 
 const logo = '/img/logo/logo_transparrent_white.svg';
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
@@ -16,7 +16,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");

@@ -16,6 +16,7 @@ const Register = () => {
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setErrors([]);
         const formData = new FormData(e.currentTarget);
 
         const name = formData.get("name");
@@ -31,7 +32,7 @@ const Register = () => {
             typeof password !== "string" ||
             typeof passwordConfirmation !== "string"
         ) {
-            alert("Please fill in all required fields.");
+            setErrors(["Please fill in all required fields."]);
             return;
         }
 
@@ -70,7 +71,6 @@ const Register = () => {
         } catch (error) {
             console.error("Error during registration:", error);
             setErrors([error instanceof Error ? error.message : "Registration failed. Please try again."]);
-            alert(error instanceof Error ? error.message : "Registration failed. Please try again.");
         }
     }
     return (
