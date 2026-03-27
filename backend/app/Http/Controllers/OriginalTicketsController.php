@@ -73,7 +73,8 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function store(StoreOriginalTicketsRequest $request)
     {
-        $this->authorize('create', [OriginalTicket::class, Event::find($request->eventId)]);
+        $event = Event::findOrFail($request->eventId);
+        $this->authorize('createForEvent', [OriginalTicket::class, $event]);
         $original_ticket = OriginalTicket::create($request->validated());
         return response()->json($original_ticket, 201);
     }
@@ -83,6 +84,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function show(OriginalTicket $originalTicket)
     {
+        $this->authorize('view', $originalTicket);
         return response()->json($originalTicket, 200);
     }
 
@@ -108,7 +110,8 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function bulkStore(BulkStoreOriginalTicketsRequest $request)
     {
-        $this->authorize('create', [OriginalTicket::class, Event::find($request->eventId)]);
+        $event = Event::findOrFail($request->eventId);
+        $this->authorize('createForEvent', [OriginalTicket::class, $event]);
         $eventId = $request->eventId;
         $venues = $request->venue;
         $basePrice = $request->eventBasePrice;
@@ -139,7 +142,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
     public function bulkUpdate(BulkStoreOriginalTicketsRequest $request)
     {
         $event = Event::findOrFail($request->eventId);
-        $this->authorize('updateByEvent', [OriginalTicket::class, $event]);
+        $this->authorize('updateAny', [OriginalTicket::class, $event]);
         $eventId = $request->eventId;
         $venues = $request->venue;
         $basePrice = $request->eventBasePrice;
@@ -178,7 +181,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
         ]);
 
         $event = Event::findOrFail($request->eventId);
-        $this->authorize('updateByEvent', [OriginalTicket::class, $event]);
+        $this->authorize('updateAny', [OriginalTicket::class, $event]);
 
         $eventId = $request->eventId;
         $newStatus = $request->status;

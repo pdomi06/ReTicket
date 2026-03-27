@@ -34,15 +34,20 @@ class OriginalTicketsPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Event $event): bool
+    public function create(User $user): bool
     {
-        if($user->role === 'organizer' && $event->organizer_id === $user->id) {
+        return $user->role === 'organizer' || $user->role === 'admin';
+    }
+
+    /**
+     * Determine whether the user can create tickets for a specific event.
+     */
+    public function createForEvent(User $user, Event $event): bool
+    {
+        if ($user->role === 'admin') {
             return true;
         }
-        if($user->role === 'admin') {
-            return true;
-        }
-        return false;
+        return $user->role === 'organizer' && $event->organizer_id === $user->id;
     }
 
     /**
@@ -50,10 +55,10 @@ class OriginalTicketsPolicy
      */
     public function update(User $user, OriginalTicket $originalTickets): bool
     {
-        if($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
+        if ($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
             return true;
         }
-        if($user->role === 'admin') {
+        if ($user->role === 'admin') {
             return true;
         }
         return false;
@@ -73,15 +78,27 @@ class OriginalTicketsPolicy
         return false;
     }
 
+    public function updateAny(User $user, Event $event): bool
+{
+    if ($user->role === 'admin') {
+        return true;
+    }
+    return $user->role === 'organizer' && $event->organizer_id === $user->id;
+}
+
+public function manageTicketStatus(User $user, Event $event): bool{
+    return $this->updateAny($user, $event);
+}
+
     /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, OriginalTicket $originalTickets): bool
     {
-        if($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
+        if ($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
             return true;
         }
-        if($user->role === 'admin') {
+        if ($user->role === 'admin') {
             return true;
         }
         return false;
