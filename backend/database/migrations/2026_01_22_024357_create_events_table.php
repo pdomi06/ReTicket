@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->text('name');
+            $table->unsignedBigInteger('organizer_id');
+            $table->foreign('organizer_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('description');
             $table->text('venue')->comment('this can be used for auto generate tickets');
             $table->text('address');

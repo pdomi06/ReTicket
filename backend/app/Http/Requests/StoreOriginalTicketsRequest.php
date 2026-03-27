@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\OriginalTicket;
+use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOriginalTicketsRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreOriginalTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', OriginalTicket::class);
+        return $this->user()->can('create', [OriginalTicket::class, Event::find($this->eventId)]);
     }
 
     /**

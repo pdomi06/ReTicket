@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\OriginalTicket;
+use App\Models\Event;
 
 class OriginalTicketsPolicy
 {
@@ -33,24 +34,40 @@ class OriginalTicketsPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Event $event): bool
     {
-        return in_array($user->role, ['admin', 'organizer'], true);
+        if($user->role === 'organizer' && $event->organizer_id === $user->id) {
+            return true;
+        }
+        if($user->role === 'admin') {
+            return true;
+        }
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, OriginalTicket|string $originalTickets): bool
+    public function update(User $user, OriginalTicket $originalTickets): bool
     {
-        if (is_string($originalTickets)) {
-            return in_array($user->role, ['admin', 'organizer'], true);
-        }
-
         if($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
             return true;
         }
         if($user->role === 'admin') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update tickets by event scope.
+     */
+    public function updateByEvent(User $user, Event $event): bool
+    {
+        if ($user->role === 'organizer' && $event->organizer_id === $user->id) {
+            return true;
+        }
+        if ($user->role === 'admin') {
             return true;
         }
         return false;

@@ -85,9 +85,9 @@ class AuthController extends Controller implements HasMiddleware
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'user' => $user,
-                'token' => $token,
-                'token_type' => 'Bearer'
+            'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer'
             ]
         ], 200);
     }
