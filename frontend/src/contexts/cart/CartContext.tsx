@@ -6,7 +6,6 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [cart, setCart] = useState<ITicketForsale[]>([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    // Load cart from localStorage on mount and revalidate with backend
     useEffect(() => {
         const restoreCartFromStorage = async () => {
             const savedCart = localStorage.getItem('cart');
@@ -112,7 +111,7 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                 return false;
             }
 
-            const newTicket = { ...ticketForSale, row, col: seat } as ITicketForsale;
+            const newTicket = { ...ticketForSale, eventId: Number(eventId), row, col: seat } as ITicketForsale;
 
             setCart(prevCart => [...prevCart, newTicket]);
 
