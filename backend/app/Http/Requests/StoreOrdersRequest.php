@@ -11,7 +11,7 @@ class StoreOrdersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->email === $this->input('buyerEmail');
     }
 
     /**
@@ -23,14 +23,14 @@ class StoreOrdersRequest extends FormRequest
     {
         return [
         'orderNumber' => ['sometimes', 'integer', 'unique:orders,orderNumber'],
-        'buyerEmail' => ['required', 'email'],
+        'buyerEmail' => ['required', 'email', 'exists:users,email'],
         'subtotal' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],
         'tax' => ['nullable', 'numeric', 'min:0'],
         'status' => ['required', 'in:pending,processing,completed,failed,refunded'],
         'paymentIntentId' => ['required', 'string'],
         'paymentStatus' => ['required', 'in:pending,authorized,captured,failed,refunded'],
-        'deliveryEmail' => ['required', 'email'],
+        'deliveryEmail' => ['required', 'email', 'exists:users,email'],
         'deliverStatus' => ['required', 'in:pending,sent,delivered'],
         'deliveredAt' => ['nullable', 'date'],
         'completedAt' => ['nullable', 'date'],

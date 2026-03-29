@@ -22,6 +22,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', Order::class);
         $orders = Order::all();
         return response()->json($orders, 200);
     }
@@ -31,6 +32,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
+        $this->authorize('create', Order::class);
         $order = Order::create($request->validated());
         return response()->json($order, 201);
     }
@@ -40,6 +42,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function show(Order $order)
     {
+        $this->authorize('view', $order);
         return response()->json($order, 200);
     }
 
@@ -48,6 +51,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function update(UpdateOrdersRequest $request, Order $order)
     {
+        $this->authorize('update', $order);
         $order->update($request->validated());
         return response()->json($order, 200);
     }
@@ -57,6 +61,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function destroy(Order $order)
     {
+        $this->authorize('delete', $order);
         $order->delete();
         return response()->json(["message" => "Order deleted successfully"], 200);
     }
