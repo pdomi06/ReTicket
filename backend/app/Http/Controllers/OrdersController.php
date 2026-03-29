@@ -22,9 +22,13 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $this->authorize('viewAny', Order::class);
-        $orders = Order::all();
-        return response()->json($orders, 200);
+        $user = auth()->user();
+        $orders = Order::query();
+
+        if($user->role !== 'admin') {
+            $orders->where('buyerEmail', $user->email);
+        }
+        return response()->json($orders->get(), 200);
     }
 
     /**
@@ -36,10 +40,18 @@ class OrdersController extends Controller implements HasMiddleware
         $data['status'] = 'pending';
         $data['paymentStatus'] = 'pending';
         $data['deliverStatus'] = 'pending';
-        $data['orderNumber'] = $data['orderNumber'] ?? Order::max('orderNumber') + 1;
+        $data['orderNumber'] = $data['orderNumber'] ?? $this->generateOrderNumber();
 
         $order = Order::create($data);
         return response()->json($order, 201);
+    }
+    private function generateOrderNumber()
+    {
+        do {
+            $orderNumber = random_int(1000000, 9999999);
+        } while (Order::where('orderNumber', $orderNumber)->exists());
+
+        return $orderNumber;
     }
 
     /**

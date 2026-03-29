@@ -15,11 +15,11 @@ return new class extends Migration
 
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('orderNumber')->unique();
+            $table->bigIncrements('orderNumber')->unique();
             $table->text('buyerEmail');
-            $table->decimal('subtotal');
-            $table->decimal('platformFee');
-            $table->decimal('tax')->nullable();
+            $table->decimal('subtotal', 10, 2);
+            $table->decimal('platformFee', 10, 2);
+            $table->decimal('tax', 10, 2)->nullable();
             $table->enum('status', ["pending", "processing", "completed", "failed", "refunded"]);
             $table->text('paymentIntentId');
             $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed", "refunded"]);
