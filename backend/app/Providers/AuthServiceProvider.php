@@ -40,7 +40,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         ActiveTicket::class => ActiveTicketsPolicy::class,
-        EmailVerification::class => EmailVerificationPolicy::class,
         Event::class => EventsPolicy::class,
         Order::class => OrdersPolicy::class,
         OrderItem::class => OrderItemsPolicy::class,
