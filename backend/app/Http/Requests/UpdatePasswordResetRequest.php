@@ -22,10 +22,8 @@ class UpdatePasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['required', 'integer', 'exists:users,id'],
             'token' => ['required', 'string'],
-            'expiresAt' => ['required', 'date'],
-            'verifiedAt' => ['required', 'date'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 }
