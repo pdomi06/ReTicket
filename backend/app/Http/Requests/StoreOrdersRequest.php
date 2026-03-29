@@ -27,14 +27,8 @@ class StoreOrdersRequest extends FormRequest
         'subtotal' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],
         'tax' => ['nullable', 'numeric', 'min:0'],
-        'status' => ['required', 'in:pending,processing,completed,failed,refunded'],
         'paymentIntentId' => ['required', 'string'],
-        'paymentStatus' => ['required', 'in:pending,authorized,captured,failed,refunded'],
         'deliveryEmail' => ['required', 'email', 'exists:users,email'],
-        'deliverStatus' => ['required', 'in:pending,sent,delivered'],
-        'deliveredAt' => ['nullable', 'date'],
-        'completedAt' => ['nullable', 'date'],
-        'cancelledAt' => ['nullable', 'date'],
         ];
     }
 }
