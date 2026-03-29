@@ -139,6 +139,27 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function sold(TicketForSale $ticketForSale, SoldTicketForSaleRequest $request)
     {
         $email = $request->validated()['email'];
-        $ticketListingId = Str::ulid()->toString();
+        $ticketListingId = "";
+        while (true) {
+            $ticketListingId = Str::ulid()->toString();
+            if (!TicketForSale::where('ticketListingId', $ticketListingId)->exists()) {
+                break;
+            }
+        }
+        
+        DB::table('ticket_history')->insert([
+            'originalTicketId' => $ticketForSale->originalTicketId,
+            'ticketListingId' => $ticketListingId,
+            'fromUserId' => $ticketForSale->fromUserId,
+            'toUser' => $email,
+            'price' => $ticketForSale->price,
+            'platformFee' => $ticketForSale->price * 0.1,
+        ]);
+        DB::table('active_tickets')->insert([
+            'originalTicketId' => $ticketForSale->originalTicketId,
+            'ticketListingId' => $ticketListingId,
+        ]);
+        $ticketForSale->delete();
+        return response()->json(['success' => true, 'message' => 'Ticket marked as sold and history recorded.'], 200);
     }
 }
