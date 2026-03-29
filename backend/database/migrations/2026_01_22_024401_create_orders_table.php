@@ -25,11 +25,11 @@ return new class extends Migration
             $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed", "refunded"]);
             $table->text('deliveryEmail');
             $table->enum('deliverStatus', ["pending", "sent", "delivered"]);
-            $table->date('deliveredAt');
-            $table->date('createdAt');
-            $table->date('updatedAt');
-            $table->date('completedAt');
-            $table->date('cancelledAt');
+            $table->date('deliveredAt')->nullable();
+            $table->timestamp('createdAt')->useCurrent();
+            $table->timestamp('updatedAt')->useCurrent()->nullable()->onUpdate('CURRENT_TIMESTAMP');
+            $table->date('completedAt')->nullable();
+            $table->date('cancelledAt')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();
