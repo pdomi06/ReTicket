@@ -106,7 +106,7 @@ export interface ITicketForsale {
   fromUserId: number | null;
   price: number;
   inBasket: boolean;
-  eventId?: number;
+  eventId: number;
   row?: number;
   col?: number;
 }

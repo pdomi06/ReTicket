@@ -11,6 +11,7 @@ use App\Http\Requests\SoldTicketForSaleRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Str;
 
 class TicketForSaleController extends Controller implements HasMiddleware
 {
@@ -142,11 +143,11 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $ticketListingId = "";
         while (true) {
             $ticketListingId = Str::ulid()->toString();
-            if (!TicketForSale::where('ticketListingId', $ticketListingId)->exists()) {
+            if (!DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists()) {
                 break;
             }
         }
-        
+        DB::transaction(function () use ($ticketForSale, $ticketListingId, $email) {
         DB::table('ticket_history')->insert([
             'originalTicketId' => $ticketForSale->originalTicketId,
             'ticketListingId' => $ticketListingId,
@@ -160,6 +161,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
             'ticketListingId' => $ticketListingId,
         ]);
         $ticketForSale->delete();
+        });
         return response()->json(['success' => true, 'message' => 'Ticket marked as sold and history recorded.'], 200);
     }
 }
