@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActiveTicketsController;
-use App\Http\Controllers\EmailVerifyController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\OrdersController;
@@ -39,7 +39,8 @@ Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleControlle
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
 Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
-Route::apiResource("emailVerify", EmailVerifyController::class);
+Route::post('email/verify/send', [EmailVerificationController::class, 'sendLink']);
+Route::post('email/verify', [EmailVerificationController::class, 'verify']);
 Route::apiResource("orderItems", OrderItemsController::class);
 Route::apiResource("orders", OrdersController::class);
 Route::post('password/forgot', [PasswordResetController::class, 'store']);

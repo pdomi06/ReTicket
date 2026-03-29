@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\ActiveTicket;
-use App\Models\EmailVerify;
+use App\Models\EmailVerification;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -17,7 +17,6 @@ use App\Models\User;
 use App\Models\UserSetting;
 use App\Models\VenueMap;
 use App\Policies\ActiveTicketsPolicy;
-use App\Policies\EmailVerifyPolicy;
 use App\Policies\EventsPolicy;
 use App\Policies\OrderItemsPolicy;
 use App\Policies\OrdersPolicy;
@@ -41,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         ActiveTicket::class => ActiveTicketsPolicy::class,
-        EmailVerify::class => EmailVerifyPolicy::class,
+        EmailVerification::class => EmailVerificationPolicy::class,
         Event::class => EventsPolicy::class,
         Order::class => OrdersPolicy::class,
         OrderItem::class => OrderItemsPolicy::class,
