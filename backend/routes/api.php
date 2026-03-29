@@ -18,7 +18,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('login', [AuthController::class, 'login'])->rateLimit(3, 1);
+Route::post('login', [AuthController::class, 'login'])->middleware('throttle:3,1');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout']);
 Route::get('events/search', [EventsController::class, 'search']);
