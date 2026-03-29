@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForSaleRequest;
 use App\Http\Requests\UpdateTicketForSaleRequest;
 use App\Http\Requests\SearchTicketForSaleRequest;
+use App\Http\Requests\SoldTicketForSaleRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -133,5 +134,11 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
         $ticketForSale->refresh();
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
+    }
+
+    public function sold(TicketForSale $ticketForSale, SoldTicketForSaleRequest $request)
+    {
+        $email = $request->validated()['email'];
+        $ticketListingId = Str::ulid()->toString();
     }
 }
