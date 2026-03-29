@@ -32,8 +32,13 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
-        $this->authorize('create', Order::class);
-        $order = Order::create($request->validated());
+        $data = $request->validated();
+        $data['status'] = 'pending';
+        $data['paymentStatus'] = 'pending';
+        $data['deliverStatus'] = 'pending';
+        $data['orderNumber'] = $data['orderNumber'] ?? Order::max('orderNumber') + 1;
+
+        $order = Order::create($data);
         return response()->json($order, 201);
     }
 
