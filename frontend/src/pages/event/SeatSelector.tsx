@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { CartContext } from "../../contexts/cart/CartContextDef"
 import { type IVenueMap, type IOriginalTicket, type ITicketForsale } from "../../utils/interfaces"
 import Button from "../../components/ui/button/Button"
@@ -6,13 +6,13 @@ import style from "./Event.module.css"
 
 interface SeatSelectorProps {
     venue: IVenueMap
-    eventId: string
+    eventId: number
     loading: boolean
     dbTickets: IOriginalTicket[]
     onReload: () => Promise<void>
 }
 
-const seatKey = (eventId: string, row: number, col: number) => `${eventId}-${row}-${col}`
+const seatKey = (eventId: number, row: number, col: number) => `${eventId}-${row}-${col}`
 
 const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSelectorProps) => {
     const { addToCart, removeFromCart, tickets: cartTickets } = useContext(CartContext)
@@ -21,23 +21,43 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     const [isReloading, setIsReloading] = useState(false)
     const [statusMessage, setStatusMessage] = useState<string | null>(null)
 
+    useEffect(() => {
+        let isActive = true
+        setStatusMessage(null)
+        setIsReloading(true)
+
+        void onReload().finally(() => {
+            if (isActive) {
+                setIsReloading(false)
+            }
+        })
+
+        return () => {
+            isActive = false
+        }
+    }, [eventId, onReload])
+
     const availableSeats = useMemo(() => {
         const set = new Set<string>()
+
         for (const t of dbTickets) {
-            set.add(seatKey(String(t.eventId), t.row, t.seatNumber))
+            if (t.eventId !== eventId) {
+                continue
+            }
+            set.add(seatKey(t.eventId, t.row, t.seatNumber))
         }
         return set
-    }, [dbTickets])
+    }, [dbTickets, eventId])
 
     const cartSeatMap = useMemo(() => {
         const map = new Map<string, ITicketForsale>()
         for (const t of cartTickets) {
             if (t.row != null && t.col != null) {
-                map.set(seatKey(eventId, t.row, t.col), t)
+                map.set(seatKey(t.eventId, t.row, t.col), t)
             }
         }
         return map
-    }, [cartTickets, eventId])
+    }, [cartTickets])
 
     const handleZoomIn = () => {
         setZoom(prev => Math.min(3, prev + 0.2))

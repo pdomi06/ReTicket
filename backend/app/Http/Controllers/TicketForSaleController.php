@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForSaleRequest;
 use App\Http\Requests\UpdateTicketForSaleRequest;
 use App\Http\Requests\SearchTicketForSaleRequest;
+use App\Http\Requests\SoldTicketForSaleRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Str;
 
 class TicketForSaleController extends Controller implements HasMiddleware
 {
@@ -133,5 +135,34 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
         $ticketForSale->refresh();
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
+    }
+
+    public function sold(TicketForSale $ticketForSale, SoldTicketForSaleRequest $request)
+    {
+        $email = $request->validated()['email'];
+        $ticketListingId = "";
+        while (true) {
+            $ticketListingId = Str::ulid()->toString();
+            if (!DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists()) {
+                break;
+            }
+        }
+        DB::transaction(function () use ($ticketForSale, $ticketListingId, $email) {
+        $platformFee = round($ticketForSale->price * 0.1, 2);
+        DB::table('ticket_history')->insert([
+            'originalTicketId' => $ticketForSale->originalTicketId,
+            'ticketListingId' => $ticketListingId,
+            'fromUserId' => $ticketForSale->fromUserId,
+            'toUser' => $email,
+            'price' => $ticketForSale->price,
+            'platformFee' => $platformFee,
+        ]);
+        DB::table('active_tickets')->insert([
+            'originalTicketId' => $ticketForSale->originalTicketId,
+            'ticketListingId' => $ticketListingId,
+        ]);
+        $ticketForSale->delete();
+        });
+        return response()->json(['success' => true, 'message' => 'Ticket marked as sold and history recorded.'], 200);
     }
 }
