@@ -64,6 +64,10 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function store(StoreTicketForSaleRequest $request)
     {
         $this->authorize('create', TicketForSale::class);
+        $data['fromUserId'] = $this->user()->id;
+        $data['inBasket'] = false;
+
+
         $ticket_forsale = TicketForSale::create(attributes: $request->validated());
         return response()->json($ticket_forsale, 201);
     }
@@ -99,7 +103,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function basketChange(TicketForSale $ticketForSale)
     {
-        $this->authorize('update', $ticketForSale);
+        $this->authorize('modifyBasket', $ticketForSale);
         $ticketForSale->inBasket = !$ticketForSale->inBasket;
         $ticketForSale->save();
 
@@ -108,6 +112,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function addToBasket(TicketForSale $ticketForSale)
     {
+        $this->authorize('modifyBasket', $ticketForSale);
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', false)
@@ -126,6 +131,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function removeFromBasket(TicketForSale $ticketForSale)
     {
+        $this->authorize('modifyBasket', $ticketForSale);
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', true)
