@@ -22,6 +22,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', ActiveTicket::class);
         $active_tickets = ActiveTicket::all();
         return response()->json($active_tickets, 200);
     }
@@ -31,6 +32,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
      */
     public function store(StoreActiveTicketsRequest $request)
     {
+        $this->authorize('create', ActiveTicket::class);
         $active_ticket = ActiveTicket::create($request->validated());
         return response()->json($active_ticket, 201);
     }
@@ -40,6 +42,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
      */
     public function show(ActiveTicket $activeTicket)
     {
+        $this->authorize('view', $activeTicket);
         return response()->json($activeTicket, 200);
     }
 
@@ -48,6 +51,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
      */
     public function update(UpdateActiveTicketsRequest $request, ActiveTicket $activeTicket)
     {
+        $this->authorize('update', $activeTicket);
         $activeTicket->update($request->validated());
         return response()->json($activeTicket, 200);
     }
@@ -57,6 +61,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
      */
     public function destroy(ActiveTicket $activeTicket)
     {
+        $this->authorize('delete', $activeTicket);
         $activeTicket->delete();
         return response()->json(["message" => "Active ticket deleted successfully"], 200);
     }

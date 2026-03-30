@@ -23,7 +23,7 @@ class ActiveTicket extends Model
 
     public function ticketListing()
     {
-        return $this->belongsTo(TicketForSale::class, 'ticketListingId', 'originalTicketId');
+        return $this->belongsTo(TicketForSale::class, 'ticketListingId');
     }
 
     public $timestamps = false;
