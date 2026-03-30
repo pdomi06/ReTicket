@@ -12,7 +12,8 @@ class UpdateTicketForSaleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $ticket = $this->route('ticketForSale');
+        return $this->user()->can('update', $ticket);
     }
 
     /**
@@ -23,11 +24,7 @@ class UpdateTicketForSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
-        'fromUserId' => ['sometimes', 'integer', 'exists:users,id'],
-        'eventId' => ['sometimes', 'integer', 'exists:events,id'],
         'price' => ['sometimes', 'numeric', 'min:0'],
-        'inBasket' => ['sometimes', 'boolean'],
         ];
     }
 }

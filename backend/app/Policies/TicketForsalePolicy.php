@@ -8,12 +8,19 @@ use Illuminate\Auth\Access\Response;
 
 class TicketForsalePolicy
 {
+    public function before(User $user): ?bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +28,7 @@ class TicketForsalePolicy
      */
     public function view(User $user, TicketForsale $ticketForsale): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,6 +36,9 @@ class TicketForsalePolicy
      */
     public function create(User $user): bool
     {
+        if ($user->role === 'admin' || $user->role === 'vendor') {
+            return true;
+        }
         return false;
     }
 
@@ -37,7 +47,7 @@ class TicketForsalePolicy
      */
     public function update(User $user, TicketForsale $ticketForsale): bool
     {
-        return false;
+        return $user->id === $ticketForsale->fromUserId;
     }
 
     /**
@@ -45,7 +55,7 @@ class TicketForsalePolicy
      */
     public function delete(User $user, TicketForsale $ticketForsale): bool
     {
-        return false;
+        return $user->id === $ticketForsale->fromUserId;
     }
 
     /**
@@ -62,5 +72,10 @@ class TicketForsalePolicy
     public function forceDelete(User $user, TicketForsale $ticketForsale): bool
     {
         return false;
+    }
+
+    public function modifyBasket(User $user, TicketForsale $ticketForsale): bool
+    {
+        return true;
     }
 }

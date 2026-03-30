@@ -24,12 +24,14 @@ class TicketForSaleController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', TicketForSale::class);
         $tickets_forsale = TicketForSale::all();
         return response()->json($tickets_forsale, 200);
     }
 
     public function search(SearchTicketForSaleRequest $request)
     {
+        $this->authorize('viewAny', TicketForSale::class);
         $filters = $request->validated();
         $query = TicketForSale::query();
 
@@ -61,6 +63,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
      */
     public function store(StoreTicketForSaleRequest $request)
     {
+        $this->authorize('create', TicketForSale::class);
         $ticket_forsale = TicketForSale::create(attributes: $request->validated());
         return response()->json($ticket_forsale, 201);
     }
@@ -70,6 +73,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
      */
     public function show(TicketForSale $ticketForSale)
     {
+        $this->authorize('view', $ticketForSale);
         return response()->json($ticketForSale, 200);
     }
 
@@ -78,6 +82,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
      */
     public function update(UpdateTicketForSaleRequest $request, TicketForSale $ticketForSale)
     {
+        $this->authorize('update', $ticketForSale);
         $ticketForSale->update($request->validated());
         return response()->json($ticketForSale, 200);
     }
@@ -87,12 +92,14 @@ class TicketForSaleController extends Controller implements HasMiddleware
      */
     public function destroy(TicketForSale $ticketForSale)
     {
+        $this->authorize('delete', $ticketForSale);
         $ticketForSale->delete();
         return response()->json(["message" => "Ticket for sale deleted successfully"], 200);
     }
 
     public function basketChange(TicketForSale $ticketForSale)
     {
+        $this->authorize('update', $ticketForSale);
         $ticketForSale->inBasket = !$ticketForSale->inBasket;
         $ticketForSale->save();
 
