@@ -11,7 +11,7 @@ class UpdatePayoutsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->role === 'admin';
     }
 
     /**
@@ -22,11 +22,7 @@ class UpdatePayoutsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'vendorId' => ['sometimes', 'integer', 'exists:users,id'],
-        'orderItemId' => ['sometimes', 'integer', 'exists:order_item,id'],
-        'status' => ['sometimes', 'in:created,pending,cancelled,fulfilled'],
-        'bank' => ['sometimes', 'string'],
-        'iban' => ['sometimes', 'string'],
+        'status' => ['sometimes', 'in:created,pending,cancelled,fulfilled'], 
         'paidAt' => ['sometimes', 'nullable', 'date'],
         ];
     }

@@ -4,16 +4,23 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Payout;
-use Illuminate\Auth\Access\Response;
+
 
 class PayoutsPolicy
 {
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -21,7 +28,7 @@ class PayoutsPolicy
      */
     public function view(User $user, Payout $payouts): bool
     {
-        return false;
+        return $user->id === $payouts->userId;
     }
 
     /**
