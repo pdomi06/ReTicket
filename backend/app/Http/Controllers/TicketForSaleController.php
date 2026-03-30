@@ -148,13 +148,14 @@ class TicketForSaleController extends Controller implements HasMiddleware
             }
         }
         DB::transaction(function () use ($ticketForSale, $ticketListingId, $email) {
+        $platformFee = round($ticketForSale->price * 0.1, 2);
         DB::table('ticket_history')->insert([
             'originalTicketId' => $ticketForSale->originalTicketId,
             'ticketListingId' => $ticketListingId,
             'fromUserId' => $ticketForSale->fromUserId,
             'toUser' => $email,
             'price' => $ticketForSale->price,
-            'platformFee' => $ticketForSale->price * 0.1,
+            'platformFee' => $platformFee,
         ]);
         DB::table('active_tickets')->insert([
             'originalTicketId' => $ticketForSale->originalTicketId,
