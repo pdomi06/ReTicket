@@ -8,9 +8,9 @@ use Illuminate\Auth\Access\Response;
 
 class OrderItemsPolicy
 {
-    public function before(User $user, string $ability): ?bool
+    public function before(?User $user, string $ability): ?bool
     {
-        if ($user->role === 'admin') {
+        if ($user && $user->role === 'admin') {
             return true;
         }
         return null;
@@ -52,7 +52,7 @@ class OrderItemsPolicy
      */
     public function delete(User $user, OrderItem $orderItems): bool
     {
-        return $user->role === 'admin';
+        return false;
     }
 
     /**
