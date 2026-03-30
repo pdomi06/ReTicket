@@ -6,7 +6,7 @@ import style from "./Event.module.css"
 
 interface SeatSelectorProps {
     venue: IVenueMap
-    eventId: string
+    eventId: number
     loading: boolean
     dbTickets: IOriginalTicket[]
     onReload: () => Promise<void>
@@ -20,8 +20,6 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     const [zoom, setZoom] = useState(1)
     const [isReloading, setIsReloading] = useState(false)
     const [statusMessage, setStatusMessage] = useState<string | null>(null)
-
-    const parsedEventId = Number(eventId)
 
     useEffect(() => {
         let isActive = true
@@ -41,24 +39,21 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
 
     const availableSeats = useMemo(() => {
         const set = new Set<string>()
-        if (!Number.isFinite(parsedEventId)) {
-            return set
-        }
 
         for (const t of dbTickets) {
-            if (Number(t.eventId) !== parsedEventId) {
+            if (t.eventId !== eventId) {
                 continue
             }
             set.add(seatKey(t.eventId, t.row, t.seatNumber))
         }
         return set
-    }, [dbTickets, parsedEventId])
+    }, [dbTickets, eventId])
 
     const cartSeatMap = useMemo(() => {
         const map = new Map<string, ITicketForsale>()
         for (const t of cartTickets) {
             if (t.row != null && t.col != null) {
-                map.set(seatKey(Number(t.eventId), t.row, t.col), t)
+                map.set(seatKey(t.eventId, t.row, t.col), t)
             }
         }
         return map
@@ -82,7 +77,7 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     }
 
     const handleSeatToggle = async (row: number, col: number, checked: boolean) => {
-        const key = seatKey(Number(eventId), row, col)
+        const key = seatKey(eventId, row, col)
         setBusySeat(key)
         setStatusMessage(null)
 
@@ -141,7 +136,7 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
                                 {Array.from({ length: venue.cols }, (_, j) => {
                                     const row = i + 1
                                     const col = j + 1
-                                    const key = seatKey(Number(eventId), row, col)
+                                    const key = seatKey(eventId, row, col)
                                     const inCart = cartSeatMap.has(key)
                                     const available = availableSeats.has(key) || inCart
                                     const isBusy = busySeat === key
