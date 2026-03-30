@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrderItemsRequest extends FormRequest
@@ -11,7 +12,8 @@ class StoreOrderItemsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $order = Order::find($this->input('orderId'));
+        return $order && $order->buyerEmail === $this->user()->email;
     }
 
     /**
