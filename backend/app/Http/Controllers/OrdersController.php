@@ -40,12 +40,14 @@ class OrdersController extends Controller implements HasMiddleware
         $data['status'] = 'pending';
         $data['paymentStatus'] = 'pending';
         $data['deliverStatus'] = 'pending';
-        $data['orderNumber'] = $data['orderNumber'] ?? $this->generateOrderNumber();
+        $order = new Order($data);
+        $order->orderNumber = $this->generateOrderNumber();
+        $order->save();
 
-        $order = Order::create($data);
         return response()->json($order, 201);
     }
-    private function generateOrderNumber()
+
+    private function generateOrderNumber(): int
     {
         do {
             $orderNumber = random_int(1000000, 9999999);

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,16 +20,20 @@ class OrderFactory extends Factory
         $status = ["pending", "processing", "completed", "failed", "refunded"];
         $paymentStatus = ["pending", "authorized", "captured", "failed", "refunded"];
         $deliverStatus = ["pending", "sent", "delivered"];
+        $orderNumber = fake()->unique()->numberBetween(1000000, 9999999);
+        
+
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
         return [
-            'orderNumber' => fake()->unique()->numberBetween(1000000, 9999999),
-            'buyerEmail' => fake()->unique()->safeEmail(),
+            'orderNumber' => $orderNumber,
+            'buyerEmail' => $user->email,
             'subtotal' => fake()->randomFloat(2, 10, 500),
             'platformFee' => fake()->randomFloat(2, 1, 50),
             'tax' => fake()->optional()->randomFloat(2, 0.5, 20),
             'status' => fake()->randomElement($status),
             'paymentIntentId' => 'pi_' . fake()->unique()->regexify('[A-Za-z0-9]{24}'),
             'paymentStatus' => fake()->randomElement($paymentStatus),
-            'deliveryEmail' => fake()->unique()->safeEmail(),
+            'deliveryEmail' => $user->email,
             'deliverStatus' => fake()->randomElement($deliverStatus),
             'deliveredAt' => fake()->dateTimeBetween('-1 month', 'now'),
             'createdAt' => fake()->dateTimeBetween('-2 months', 'now'),

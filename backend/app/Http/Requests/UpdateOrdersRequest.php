@@ -24,7 +24,6 @@ class UpdateOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'orderNumber' => ['sometimes', 'integer', Rule::unique('orders')->ignore($this->route('order'))],
             'buyerEmail' => ['sometimes', 'email', 'exists:users,email'],
             'subtotal' => ['sometimes', 'numeric', 'min:0'],
             'platformFee' => ['sometimes', 'numeric', 'min:0'],

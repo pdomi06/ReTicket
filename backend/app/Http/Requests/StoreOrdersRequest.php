@@ -26,7 +26,6 @@ class StoreOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'orderNumber' => ['sometimes', 'integer', 'unique:orders,orderNumber'],
         'buyerEmail' => ['required', 'email', 'exists:users,email'],
         'subtotal' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],
