@@ -33,7 +33,9 @@ class UserSettingsController extends Controller implements HasMiddleware
     public function store(StoreUserSettingsRequest $request)
     {
         $this->authorize('create', UserSetting::class);
-        $user_setting = UserSetting::create($request->validated());
+        $data = $request->validated();
+        $data['userId'] = auth()->id();
+        $user_setting = UserSetting::create($data);
         return response()->json($user_setting, 201);
     }
 

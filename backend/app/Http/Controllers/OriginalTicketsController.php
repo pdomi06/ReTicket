@@ -28,6 +28,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function index()
     {
+        $this->authorize('viewAny', OriginalTicket::class);
         $original_tickets = OriginalTicket::all();
         return response()->json($original_tickets, 200);
     }
@@ -205,7 +206,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
                 if (!in_array($ticket->id, $existingForSaleIds)) {
                     $ticketsToCreate[] = [
                         'originalTicketId' => $ticket->id,
-                        'fromUserId' => null,
+                        'fromUserId' => $event->organizer_id,
                         'eventId' => $eventId,
                         'price' => $ticket->price,
                         'inBasket' => false,

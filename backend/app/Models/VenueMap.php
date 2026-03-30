@@ -16,7 +16,8 @@ class VenueMap extends Model
         'section',
         'rows',
         'cols',
-        'rate'
+        'rate',
+        'organizer_id'
     ];
 
       public function scopeSearch($query, array $filters) {

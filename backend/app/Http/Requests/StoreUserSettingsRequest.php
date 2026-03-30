@@ -13,7 +13,7 @@ class StoreUserSettingsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', UserSetting::class);
+        return $this->user() !== null;
     }
 
     /**
@@ -24,7 +24,6 @@ class StoreUserSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['required', 'integer', 'exists:users,id', Rule::unique('user_settings', 'userId')],
             'emailNotification' => ['sometimes', 'boolean'],
             'smsNotification' => ['sometimes', 'boolean'],
             'profileVisibility' => ['sometimes', 'in:visible,restricted,banned'],

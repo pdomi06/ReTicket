@@ -2,12 +2,18 @@
 
 namespace App\Policies;
 
+use App\Models\EmailVerification;
 use App\Models\User;
-use App\Models\EmailVerify;
-use Illuminate\Auth\Access\Response;
 
-class EmailVerifyPolicy
+class EmailVerificationPolicy
 {
+    public function before(?User $user, string $ability): ?bool
+    {
+        if ($user && $user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */
@@ -19,7 +25,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, EmailVerify $emailVerify): bool
+    public function view(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -35,7 +41,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, EmailVerify $emailVerify): bool
+    public function update(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -43,7 +49,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, EmailVerify $emailVerify): bool
+    public function delete(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -51,7 +57,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, EmailVerify $emailVerify): bool
+    public function restore(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -59,7 +65,7 @@ class EmailVerifyPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, EmailVerify $emailVerify): bool
+    public function forceDelete(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }

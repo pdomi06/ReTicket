@@ -73,7 +73,9 @@ class PasswordResetController extends Controller
     public function store(StorePasswordResetRequest $request)
     {
         $user = User::where('email', $request->input('email'))->first();
-
+        if (!$user) {
+            return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 404);
+        }
         PasswordReset::where('userId', $user->id)->delete();
         $token = Str::random(60);
         $expiresAt = now()->addHours(1);

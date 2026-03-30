@@ -10,9 +10,9 @@ class VenueMapPolicy
     /**
      * Admin can perform every action on venue maps.
      */
-    public function before(User $user, string $ability): ?bool
+    public function before(?User $user, string $ability): ?bool
     {
-        if ($user->role === 'admin') {
+        if ($user && $user->role === 'admin') {
             return true;
         }
 
@@ -22,7 +22,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }
@@ -30,7 +30,7 @@ class VenueMapPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, VenueMap $venueMap): bool
+    public function view(?User $user, VenueMap $venueMap): bool
     {
         return true;
     }
