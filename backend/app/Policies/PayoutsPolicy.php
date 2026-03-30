@@ -28,7 +28,7 @@ class PayoutsPolicy
      */
     public function view(User $user, Payout $payouts): bool
     {
-        return $user->id === $payouts->userId;
+        return $user->id === $payouts->vendorId;
     }
 
     /**
@@ -44,7 +44,7 @@ class PayoutsPolicy
      */
     public function update(User $user, Payout $payouts): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
