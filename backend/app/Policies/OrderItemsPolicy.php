@@ -8,12 +8,19 @@ use Illuminate\Auth\Access\Response;
 
 class OrderItemsPolicy
 {
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -21,7 +28,7 @@ class OrderItemsPolicy
      */
     public function view(User $user, OrderItem $orderItems): bool
     {
-        return false;
+        return $user->email === $orderItems->order->buyerEmail;
     }
 
     /**
@@ -29,7 +36,7 @@ class OrderItemsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +52,7 @@ class OrderItemsPolicy
      */
     public function delete(User $user, OrderItem $orderItems): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
