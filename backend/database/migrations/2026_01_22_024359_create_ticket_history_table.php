@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
             $table->text('ticketListingId');
             $table->foreignId('fromUserId')->nullable()->constrained('users')->onDelete('cascade');
-            $table->text('toUser');
+            $table->foreignId('toUserId')->constrained('users')->onDelete('cascade');
             $table->decimal('price', 10, 2);
             $table->decimal('platformFee', 10, 2);
         });

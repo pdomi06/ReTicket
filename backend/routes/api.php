@@ -47,5 +47,7 @@ Route::post('password/forgot', [PasswordResetController::class, 'store']);
 Route::post('password/reset', [PasswordResetController::class, 'update']);
 Route::apiResource("payouts", PayoutsController::class);
 Route::apiResource("reviews", ReviewsController::class);
-Route::apiResource("ticketHistory", TicketHistoryController::class);
+Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
+Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
+Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware('auth:sanctum');
 Route::apiResource("userSettings", UserSettingsController::class);

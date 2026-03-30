@@ -22,6 +22,7 @@ class TicketHistoryController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', TicketHistory::class);
         $ticket_histories = TicketHistory::all();
         return response()->json($ticket_histories, 200);
     }
@@ -31,8 +32,16 @@ class TicketHistoryController extends Controller implements HasMiddleware
      */
     public function store(StoreTicketHistoryRequest $request)
     {
-        $ticket_history = TicketHistory::create($request->validated());
-        return response()->json($ticket_history, 201);
+        $this->authorize('create', TicketHistory::class);
+        TicketHistory::create([
+            'originalTicketId' => $request->input('originalTicketId'),
+            'ticketListingId' => $request->input('ticketListingId'),
+            'fromUserId' => $request->input('fromUserId'),
+            'toUserId' => $request->input('toUserId'),
+            'price' => $request->input('price'),
+            'platformFee' => $request->input('platformFee'),
+        ]);
+        return response()->json(["message" => "Ticket history created successfully"], 201);
     }
 
     /**
@@ -40,6 +49,7 @@ class TicketHistoryController extends Controller implements HasMiddleware
      */
     public function show(TicketHistory $ticketHistory)
     {
+        $this->authorize('view', $ticketHistory);
         return response()->json($ticketHistory, 200);
     }
 
@@ -48,6 +58,7 @@ class TicketHistoryController extends Controller implements HasMiddleware
      */
     public function update(UpdateTicketHistoryRequest $request, TicketHistory $ticketHistory)
     {
+        $this->authorize('update', $ticketHistory);
         $ticketHistory->update($request->validated());
         return response()->json($ticketHistory, 200);
     }
@@ -57,7 +68,16 @@ class TicketHistoryController extends Controller implements HasMiddleware
      */
     public function destroy(TicketHistory $ticketHistory)
     {
+        $this->authorize('delete', $ticketHistory);
         $ticketHistory->delete();
         return response()->json(["message" => "Ticket history deleted successfully"], 200);
+    }
+
+    public function myHistory(){
+        $user = auth()->user();
+        $ticket_histories = TicketHistory::where('fromUserId', $user->id)
+            ->orWhere('toUserId', $user->id)
+            ->get();
+        return response()->json($ticket_histories, 200);
     }
 }

@@ -8,12 +8,19 @@ use Illuminate\Auth\Access\Response;
 
 class TicketHistoryPolicy
 {
+    public function before(?User $user, string $ability): ?bool
+    {
+        if ($user && $user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -21,7 +28,7 @@ class TicketHistoryPolicy
      */
     public function view(User $user, TicketHistory $ticketHistory): bool
     {
-        return false;
+        return $user->id === $ticketHistory->fromUserId || $user->id === $ticketHistory->toUserId;
     }
 
     /**
