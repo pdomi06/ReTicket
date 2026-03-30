@@ -64,6 +64,8 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function store(StoreTicketForSaleRequest $request)
     {
         $this->authorize('create', TicketForSale::class);
+
+        $data = $request->validated();
         $data['fromUserId'] = $request->user()->id;
         $data['inBasket'] = false;
 

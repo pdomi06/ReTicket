@@ -3,10 +3,9 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\TicketForsale;
-use Illuminate\Auth\Access\Response;
+use App\Models\TicketForSale;
 
-class TicketForsalePolicy
+class TicketForSalePolicy
 {
     public function before(User $user): ?bool
     {
@@ -18,7 +17,7 @@ class TicketForsalePolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }
@@ -26,7 +25,7 @@ class TicketForsalePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, TicketForsale $ticketForsale): bool
+    public function view(?User $user, TicketForSale $ticketForSale): bool
     {
         return true;
     }
@@ -45,7 +44,7 @@ class TicketForsalePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, TicketForsale $ticketForsale): bool
+    public function update(User $user, TicketForSale $ticketForsale): bool
     {
         return $user->id === $ticketForsale->fromUserId;
     }
@@ -53,7 +52,7 @@ class TicketForsalePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, TicketForsale $ticketForsale): bool
+    public function delete(User $user, TicketForSale $ticketForsale): bool
     {
         return $user->id === $ticketForsale->fromUserId;
     }
@@ -61,7 +60,7 @@ class TicketForsalePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, TicketForsale $ticketForsale): bool
+    public function restore(User $user, TicketForSale $ticketForsale): bool
     {
         return false;
     }
@@ -69,13 +68,13 @@ class TicketForsalePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, TicketForsale $ticketForsale): bool
+    public function forceDelete(User $user, TicketForSale $ticketForsale): bool
     {
         return false;
     }
 
-    public function modifyBasket(User $user, TicketForsale $ticketForsale): bool
+    public function modifyBasket(User $user, TicketForSale $ticketForsale): bool
     {
-        return true;
+        return $user->id === $ticketForsale->fromUserId;
     }
 }

@@ -24,7 +24,7 @@ use App\Policies\OriginalTicketsPolicy;
 use App\Policies\PasswordResetPolicy;
 use App\Policies\PayoutsPolicy;
 use App\Policies\ReviewsPolicy;
-use App\Policies\TicketForsalePolicy;
+use App\Policies\TicketForSalePolicy;
 use App\Policies\TicketHistoryPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\UserSettingsPolicy;
@@ -47,7 +47,7 @@ class AuthServiceProvider extends ServiceProvider
         PasswordReset::class => PasswordResetPolicy::class,
         Payout::class => PayoutsPolicy::class,
         Review::class => ReviewsPolicy::class,
-        TicketForSale::class => TicketForsalePolicy::class,
+        TicketForSale::class => TicketForSalePolicy::class,
         TicketHistory::class => TicketHistoryPolicy::class,
         User::class => UserPolicy::class,
         UserSetting::class => UserSettingsPolicy::class,
