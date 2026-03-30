@@ -26,7 +26,6 @@ class StoreReviewsRequest extends FormRequest
         'rating' => ['required', 'integer', 'min:1', 'max:5'],
         'title' => ['required', 'string', 'max:255'],
         'comment' => ['required', 'string'],
-        'isVisible' => ['sometimes', 'boolean'],
         ];
     }
 }

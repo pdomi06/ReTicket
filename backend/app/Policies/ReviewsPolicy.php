@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Review;
-use Illuminate\Auth\Access\Response;
 
 class ReviewsPolicy
 {
@@ -30,6 +29,9 @@ class ReviewsPolicy
     {
         if($review->isVisible) {
             return true;
+        }
+        if(!$user) {
+            return false;
         }
         return $user->role === 'admin';
     }

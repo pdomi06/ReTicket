@@ -33,7 +33,7 @@ class ReviewsController extends Controller implements HasMiddleware
     {
         $this->authorize('create', Review::class);
         $data = $request->validated();
-        $data['isVisible'] = $data['isVisible'] ?? false;
+        $data['isVisible'] = false;
         $review = Review::create($data);
         return response()->json($review, 201);
     }
@@ -43,6 +43,7 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function show(Review $review)
     {
+        $this->authorize('view', $review);
         return response()->json($review, 200);
     }
 
