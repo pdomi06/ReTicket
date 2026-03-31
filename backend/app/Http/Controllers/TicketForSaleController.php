@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForSaleRequest;
 use App\Http\Requests\UpdateTicketForSaleRequest;
 use App\Http\Requests\SearchTicketForSaleRequest;
-use App\Http\Requests\SoldTicketForSaleRequest;
+use App\Http\Requests\CheckOutTicketForSaleRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -18,12 +18,10 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'checkOut']),
         ];
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $tickets_forsale = TicketForSale::all();
@@ -58,35 +56,23 @@ class TicketForSaleController extends Controller implements HasMiddleware
         return response()->json(['success' => true, 'data' => $query->get()], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreTicketForSaleRequest $request)
     {
-        $ticket_forsale = TicketForSale::create(attributes: $request->validated());
+        $ticket_forsale = TicketForSale::create($request->validated());
         return response()->json($ticket_forsale, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(TicketForSale $ticketForSale)
     {
         return response()->json($ticketForSale, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateTicketForSaleRequest $request, TicketForSale $ticketForSale)
     {
         $ticketForSale->update($request->validated());
         return response()->json($ticketForSale, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(TicketForSale $ticketForSale)
     {
         $ticketForSale->delete();
@@ -137,32 +123,42 @@ class TicketForSaleController extends Controller implements HasMiddleware
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }
 
-    public function sold(TicketForSale $ticketForSale, SoldTicketForSaleRequest $request)
+    public function checkOut(CheckOutTicketForSaleRequest $request)
     {
         $email = $request->validated()['email'];
-        $ticketListingId = "";
-        while (true) {
-            $ticketListingId = Str::ulid()->toString();
-            if (!DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists()) {
-                break;
-            }
+        $ticketIds = $request->validated()['tickets'];
+
+        foreach ($ticketIds as $ticketId) {
+            $ticketForSale = TicketForSale::find($ticketId);
+            $ticketListingId = $this->generateUniqueTicketListingId();
+
+            DB::transaction(function () use ($ticketForSale, $ticketListingId, $email) {
+                $platformFee = round($ticketForSale->price * 0.1, 2);
+                DB::table('ticket_history')->insert([
+                    'originalTicketId' => $ticketForSale->originalTicketId,
+                    'ticketListingId' => $ticketListingId,
+                    'fromUserId' => $ticketForSale->fromUserId,
+                    'toUser' => $email,
+                    'price' => $ticketForSale->price,
+                    'platformFee' => $platformFee,
+                ]);
+                DB::table('active_tickets')->insert([
+                    'originalTicketId' => $ticketForSale->originalTicketId,
+                    'ticketListingId' => $ticketListingId,
+                ]);
+                $ticketForSale->delete();
+            });
         }
-        DB::transaction(function () use ($ticketForSale, $ticketListingId, $email) {
-        $platformFee = round($ticketForSale->price * 0.1, 2);
-        DB::table('ticket_history')->insert([
-            'originalTicketId' => $ticketForSale->originalTicketId,
-            'ticketListingId' => $ticketListingId,
-            'fromUserId' => $ticketForSale->fromUserId,
-            'toUser' => $email,
-            'price' => $ticketForSale->price,
-            'platformFee' => $platformFee,
-        ]);
-        DB::table('active_tickets')->insert([
-            'originalTicketId' => $ticketForSale->originalTicketId,
-            'ticketListingId' => $ticketListingId,
-        ]);
-        $ticketForSale->delete();
-        });
-        return response()->json(['success' => true, 'message' => 'Ticket marked as sold and history recorded.'], 200);
+
+        return response()->json(['success' => true, 'message' => 'Ticket(s) marked as sold and history recorded.'], 200);
+    }
+
+    private function generateUniqueTicketListingId(): string
+    {
+        do {
+            $ticketListingId = Str::ulid()->toString();
+        } while (DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists());
+
+        return $ticketListingId;
     }
 }

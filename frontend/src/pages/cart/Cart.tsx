@@ -1,10 +1,15 @@
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { CartContext } from "../../contexts/cart/CartContextDef";
 import Button from "../../components/ui/button/Button";
+import Input from "../../components/ui/input/Input";
 import styles from "./Cart.module.css";
 
 const Cart = () => {
-    const { tickets, removeFromCart } = useContext(CartContext);
+    const { tickets, removeFromCart, clearCart } = useContext(CartContext);
+    const [checkoutEmail, setCheckoutEmail] = useState("");
+    const [checkoutError, setCheckoutError] = useState<string | null>(null);
+    const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+    const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     const subtotal = useMemo(
         () => tickets.reduce((sum, ticket) => sum + Number(ticket.price || 0), 0),
@@ -15,6 +20,7 @@ const Cart = () => {
 
     const handleClearCart = async () => {
         await Promise.all(tickets.map((ticket) => removeFromCart(ticket)));
+        clearCart();
     };
 
     if (tickets.length === 0) {
@@ -32,6 +38,86 @@ const Cart = () => {
             </section>
         );
     }
+
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    async function handleCheckOut() {
+        setCheckoutError(null);
+        setCheckoutSuccess(false);
+
+        // Validate email
+        if (!checkoutEmail.trim()) {
+            setCheckoutError("Please enter an email address");
+            return;
+        }
+
+        if (!validateEmail(checkoutEmail)) {
+            setCheckoutError("Please enter a valid email address");
+            return;
+        }
+
+        // Validate tickets
+        if (tickets.length === 0) {
+            setCheckoutError("Your cart is empty. Please add tickets before checking out.");
+            return;
+        }
+
+        setIsCheckingOut(true);
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ticketForSale/checkOut`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                body: JSON.stringify({
+                    email: checkoutEmail.trim(),
+                    tickets: tickets.map((ticket) => ticket.id),
+                }),
+            });
+
+            if (!response.ok) {
+                let errorMessage = `Checkout failed (${response.status})`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+
+                    // Handle validation errors
+                    if (errorData.errors) {
+                        const validationErrors = Object.values(errorData.errors).flat();
+                        errorMessage = validationErrors.join(", ");
+                    }
+                } catch {
+                    // If JSON parse fails, use HTTP status text
+                    errorMessage = response.statusText || errorMessage;
+                }
+                throw new Error(errorMessage);
+            }
+
+            const result = await response.json();
+            console.log("Checkout result:", result);
+
+            // Clear cart on success
+            clearCart();
+            setCheckoutEmail("");
+            setCheckoutSuccess(true);
+
+            // Optional: reset success message after 3 seconds
+            setTimeout(() => {
+                setCheckoutSuccess(false);
+            }, 3000);
+        } catch (error) {
+            console.error("Checkout error:", error);
+            const errorMsg = error instanceof Error ? error.message : "Checkout failed. Please try again.";
+            setCheckoutError(errorMsg);
+        } finally {
+            setIsCheckingOut(false);
+        }
+    };
 
     return (
         <section className="container my-4 my-md-5">
@@ -88,9 +174,35 @@ const Cart = () => {
                 </article>
 
                 <aside className="col-12 col-lg-4">
-                    <div className={`card p-3 p-md-4 ${styles.cartCard} ${styles.summarySticky}`}>
-                        <h2 className="h4 mb-3 text-light">Order Summary</h2>
-                        <div className="d-flex justify-content-between mb-2 pt-3 border-top">
+                    <div className={`card p-3 p-md-4 ${styles.cartCard}`}>
+                        <h2 className="h4 mb-3 text-light">Checkout</h2>
+
+                        {checkoutSuccess && (
+                            <div className="alert alert-success mb-3" role="alert">
+                                ✓ Checkout successful! Your tickets have been processed.
+                            </div>
+                        )}
+
+                        {checkoutError && (
+                            <div className="alert alert-danger mb-3" role="alert">
+                                ✗ {checkoutError}
+                            </div>
+                        )}
+
+                        <div className="mb-3">
+                            <Input
+                                type="email"
+                                label="Email Address"
+                                name="checkoutEmail"
+                                value={checkoutEmail}
+                                onChange={(e) => setCheckoutEmail(e.target.value)}
+                                theme="dark"
+                            />
+                            <small className="text-muted">We'll send your ticket details to this email</small>
+                        </div>
+
+                        <h3 className="h6 mb-3 text-light">Order Summary</h3>
+                        <div className="d-flex justify-content-between mb-2 pt-2 border-top">
                             <span>Subtotal</span>
                             <span>{subtotal} Ft</span>
                         </div>
@@ -98,13 +210,18 @@ const Cart = () => {
                             <span>Service fee</span>
                             <span>{serviceFee} Ft</span>
                         </div>
-                        <div className="d-flex justify-content-between fw-bold border-top pt-3 mt-3 mb-3">
+                        <div className="d-flex justify-content-between fw-bold border-top pt-2 mt-2 mb-3">
                             <span>Total</span>
                             <span>{total} Ft</span>
                         </div>
 
                         <div className="d-grid gap-2">
-                            <Button text="Checkout" variant="primary" />
+                            <Button
+                                text={isCheckingOut ? "Processing..." : "Checkout"}
+                                variant="primary"
+                                onClick={handleCheckOut}
+                                disabled={isCheckingOut}
+                            />
                             <Button text="Continue Shopping" variant="outline" link="/browse" />
                         </div>
                     </div>

@@ -38,7 +38,7 @@ Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
 Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
-Route::post('ticketForSale/{ticketForSale}/sold', [TicketForSaleController::class, 'sold']);
+Route::post('ticketForSale/checkOut', [TicketForSaleController::class, 'checkOut']);
 Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
 Route::apiResource("emailVerify", EmailVerifyController::class);
