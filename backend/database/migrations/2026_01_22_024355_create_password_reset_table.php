@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('userId')->constrained('users')->onDelete('cascade');
             $table->text('token')->unique();
-            $table->timestamp('expiresAt');
-            $table->timestamp('verifiedAt')->nullable();
-            $table->timestamp('createdAt');
+            $table->dateTime('expiresAt');
+            $table->dateTime('verifiedAt')->nullable();
+            $table->dateTime('createdAt');
         });
 
         Schema::enableForeignKeyConstraints();

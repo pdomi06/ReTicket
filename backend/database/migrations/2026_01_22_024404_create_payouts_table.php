@@ -20,8 +20,8 @@ return new class extends Migration
             $table->enum('status', ["created", "pending", "cancelled", "fulfilled"]);
             $table->text('bank');
             $table->text('iban');
-            $table->date('paidAt');
-            $table->date('createdAt');
+            $table->dateTime('paidAt');
+            $table->dateTime('createdAt');
         });
 
         Schema::enableForeignKeyConstraints();

@@ -27,4 +27,14 @@ class TicketHistory extends Model
     ];
 
     public $timestamps = false;
+
+    public function fromUser()
+    {
+        return $this->belongsTo(User::class, 'fromUserId');
+    }
+
+    public function toUser()
+    {
+        return $this->belongsTo(User::class, 'toUserId');
+    }
 }

@@ -25,4 +25,8 @@ class EmailVerification extends Model
     const CREATED_AT = 'createdAt';
     public $timestamps = false;
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId');
+    }
 }

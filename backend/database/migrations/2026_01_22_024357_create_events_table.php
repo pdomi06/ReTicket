@@ -29,8 +29,8 @@ return new class extends Migration
             $table->enum('category', ["cultural", "music", "sport"]);
             $table->decimal('basePrice', 10, 2);
             $table->text('imageUrl');
-            $table->date('createdAt');
-            $table->date('updatedAt');
+            $table->dateTime('createdAt');
+            $table->dateTime('updatedAt');
         });
 
         Schema::enableForeignKeyConstraints();
