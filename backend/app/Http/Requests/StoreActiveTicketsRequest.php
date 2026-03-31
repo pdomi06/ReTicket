@@ -13,7 +13,14 @@ class StoreActiveTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', ActiveTicket::class);
+        $user = $this->user();
+    if (!$user) return false;
+
+    $originalTicketId = $this->input('originalTicketId');
+    $originalTicket = OriginalTicket::with('event')->find($originalTicketId);
+    if (!$originalTicket) return false;
+
+    return $user->can('createForEvent', [ActiveTicket::class, $originalTicket]);
     }
 
     /**

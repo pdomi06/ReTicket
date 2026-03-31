@@ -29,7 +29,7 @@ class UpdateVenueMapRequest extends FormRequest
         'section' => ['sometimes', 'string', 'max:255'],
         'rows' => ['sometimes', 'integer', 'min:1', 'max:50'],
         'cols' => ['sometimes', 'integer', 'min:1', 'max:50'],
-        'rate' => ['sometimes', 'numeric', 'min:1', 'max:5'],
+        'rate' => ['sometimes', 'numeric', 'min:0.1', 'max:9.9'],
         ];
     }
 }

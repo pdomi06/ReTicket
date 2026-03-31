@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OriginalTicket;
+use App\Models\TicketHistory;
 use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForSaleRequest;
@@ -66,6 +68,49 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $this->authorize('create', TicketForSale::class);
 
         $data = $request->validated();
+        $originalTicket = OriginalTicket::with('event')->findOrFail($data['originalTicketId']);
+
+        if ((int) $originalTicket->eventId !== (int) $data['eventId']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The selected original ticket does not belong to the selected event.',
+            ], 422);
+        }
+
+        if ($originalTicket->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only active original tickets can be listed for sale.',
+            ], 422);
+        }
+
+        if (TicketForSale::where('originalTicketId', $originalTicket->id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This ticket is already listed for sale.',
+            ], 409);
+        }
+
+        $user = $request->user();
+        if ($user->role !== 'admin') {
+            $isEventOrganizer = $originalTicket->event !== null
+                && (int) $originalTicket->event->organizer_id === (int) $user->id;
+
+            $latestTransfer = TicketHistory::where('originalTicketId', $originalTicket->id)
+                ->orderByDesc('id')
+                ->first();
+
+            $isCurrentOwner = $latestTransfer !== null
+                && (int) $latestTransfer->toUserId === (int) $user->id;
+
+            if (!$isEventOrganizer && !$isCurrentOwner) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not allowed to list this ticket for sale.',
+                ], 403);
+            }
+        }
+
         $data['fromUserId'] = $request->user()->id;
         $data['inBasket'] = false;
 

@@ -75,6 +75,6 @@ class TicketForSalePolicy
 
     public function modifyBasket(User $user, TicketForSale $ticketForsale): bool
     {
-        return $user->id === $ticketForsale->fromUserId;
+        return $user->id !== $ticketForsale->fromUserId;
     }
 }

@@ -74,7 +74,7 @@ class PasswordResetController extends Controller
     {
         $user = User::where('email', $request->input('email'))->first();
         if (!$user) {
-            return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 404);
+            return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 200);
         }
         PasswordReset::where('userId', $user->id)->delete();
         $token = Str::random(60);
@@ -88,7 +88,7 @@ class PasswordResetController extends Controller
             'createdAt' => now(),
         ]);
 
-        return response()->json(['message' => 'Password reset link sent'], 200);
+        return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 200);
     }
 
     /**

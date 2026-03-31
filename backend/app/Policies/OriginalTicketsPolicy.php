@@ -11,14 +11,14 @@ class OriginalTicketsPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function before(User $user, string $ability): ?bool
+    public function before(?User $user, string $ability): ?bool
     {
-        if ($user->role === 'admin') {
+        if ($user && $user->role === 'admin') {
             return true;
         }
         return null;
     }
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }

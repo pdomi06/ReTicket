@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\OriginalTicket;
 use App\Models\User;
 use App\Models\ActiveTicket;
 
@@ -44,25 +45,26 @@ class ActiveTicketsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ActiveTicket $activeTickets): bool
+    public function update(User $user, ActiveTicket $activeTicket): bool
     {
-        $originalTicket = $activeTickets->originalTicket;
-        if ($originalTicket->event->organizer_id === $user->id) {
-            return true;
-        }
+        if ($user->role !== 'organizer') {
         return false;
+    }
+
+    $originalTicket = $activeTicket->originalTicket;
+    if (!$originalTicket || !$originalTicket->event) {
+        return false;
+    }
+
+    return $originalTicket->event->organizer_id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ActiveTicket $activeTickets): bool
+    public function delete(User $user, ActiveTicket $activeTicket): bool
     {
-        $originalTicket = $activeTickets->originalTicket;
-        if ($originalTicket->event->organizer_id === $user->id) {
-            return true;
-        }
-        return false;
+        return $this->update($user, $activeTicket);
     }
 
     /**
@@ -79,5 +81,16 @@ class ActiveTicketsPolicy
     public function forceDelete(User $user, ActiveTicket $activeTickets): bool
     {
         return false;
+    }
+
+    public function createForEvent(User $user, OriginalTicket $originalTicket): bool
+    {
+        if ($user->role === 'admin')
+            return true;
+        if ($user->role !== 'organizer')
+            return false;
+
+        $event = $originalTicket->event;
+        return $event && $event->organizer_id === $user->id;
     }
 }
