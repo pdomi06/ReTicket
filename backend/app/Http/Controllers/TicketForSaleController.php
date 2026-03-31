@@ -70,7 +70,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $data['inBasket'] = false;
 
 
-        $ticket_forsale = TicketForSale::create(attributes: $request->validated());
+        $ticket_forsale = TicketForSale::create($data);
         return response()->json($ticket_forsale, 201);
     }
 

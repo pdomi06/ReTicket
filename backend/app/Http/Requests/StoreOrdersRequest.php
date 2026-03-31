@@ -32,6 +32,9 @@ class StoreOrdersRequest extends FormRequest
         'tax' => ['nullable', 'numeric', 'min:0'],
         'paymentIntentId' => ['required', 'string'],
         'deliveryEmail' => ['required', 'email', 'exists:users,email'],
+        'status' => ['prohibited'],
+        'paymentStatus' => ['prohibited'],
+        'deliverStatus' => ['prohibited'],
         ];
     }
 }

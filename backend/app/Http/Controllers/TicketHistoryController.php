@@ -33,14 +33,7 @@ class TicketHistoryController extends Controller implements HasMiddleware
     public function store(StoreTicketHistoryRequest $request)
     {
         $this->authorize('create', TicketHistory::class);
-        TicketHistory::create([
-            'originalTicketId' => $request->input('originalTicketId'),
-            'ticketListingId' => $request->input('ticketListingId'),
-            'fromUserId' => $request->input('fromUserId'),
-            'toUserId' => $request->input('toUserId'),
-            'price' => $request->input('price'),
-            'platformFee' => $request->input('platformFee'),
-        ]);
+        TicketHistory::create($request->validated());
         return response()->json(["message" => "Ticket history created successfully"], 201);
     }
 

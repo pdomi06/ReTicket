@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('ticket_history', function (Blueprint $table) {
             $table->id();
             $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
-            $table->text('ticketListingId');
+            $table->string('ticketListingId');
             $table->foreignId('fromUserId')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('toUserId')->constrained('users')->onDelete('cascade');
             $table->decimal('price', 10, 2);

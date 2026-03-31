@@ -27,7 +27,7 @@ class StorePayoutsRequest extends FormRequest
         'status' => ['required', 'in:created,pending,cancelled,fulfilled'],
         'bank' => ['required', 'string'],
         'iban' => ['required', 'string'],
-        'paidAt' => ['required', 'date'],
+        'paidAt' => ['nullable', 'date'],
         ];
     }
 }

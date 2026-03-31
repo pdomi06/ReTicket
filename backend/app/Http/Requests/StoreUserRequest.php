@@ -24,7 +24,7 @@ class StoreUserRequest extends FormRequest
         return [
             'email' => ['required','email','unique:users,email'],
             'role' => ['sometimes', 'in:admin,vendor,organizer'],
-            'password' => ['required','string','min:8','confirmed'],
+            'passwordHash' => ['required','string','min:8','confirmed'],
             'name' => ['required','string'],
             'phone' => ['required','string'],
             'isVerified' => ['sometimes', 'boolean'],
