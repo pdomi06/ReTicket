@@ -9,6 +9,9 @@ const Event = () => {
     const [searchParams] = useSearchParams()
     const eventId = searchParams.get("event") || ""
     const { event, events, venue, dbTickets, loadingEvent, loadingEvents, loadingVenue, refreshTickets } = useEventData(eventId)
+    if (!eventId) {
+        return <p>Event not specified.</p>
+    }
     if (eventId) {
         return (
             <div className="container my-5">
