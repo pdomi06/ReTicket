@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('status', ["created", "pending", "cancelled", "fulfilled"]);
             $table->text('bank');
             $table->text('iban');
-            $table->dateTime('paidAt');
+            $table->dateTime('paidAt')->nullable();
             $table->dateTime('createdAt');
         });
 

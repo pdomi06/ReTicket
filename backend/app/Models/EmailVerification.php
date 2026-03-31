@@ -16,7 +16,6 @@ class EmailVerification extends Model
         'token',
         'expiresAt',
         'verifiedAt',
-        'createdAt',
     ];
     protected $casts= [
         'expiresAt' => 'datetime',

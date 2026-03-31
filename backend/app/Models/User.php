@@ -36,9 +36,6 @@ class User extends Authenticatable
         'isActive',
         'isOnline',
         'kycStatus',
-        'createdAt',
-        'updatedAt',
-        'lastLogin'
     ];
 
     /**

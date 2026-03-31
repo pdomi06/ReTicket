@@ -12,15 +12,12 @@ class OrderItem extends Model
 
     protected $table = "order_item";
 
-
-
     protected $fillable = [
         'orderId',
         'ticketListingId',
         'price',
-        'createdAt'
     ];
-    //const CREATED_AT = 'createdAt';
+    const CREATED_AT = 'createdAt';
 
     public $timestamps = false;
 

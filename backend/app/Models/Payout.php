@@ -18,7 +18,6 @@ class Payout extends Model
         'bank',
         'iban',
         'paidAt',
-        'createdAt'
     ];
 
     protected $casts = [
