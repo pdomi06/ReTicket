@@ -9,9 +9,9 @@ class UserPolicy
     /**
      * Admin can perform every action on users.
      */
-    public function before(User $user, string $ability): ?bool
+    public function before(?User $user, string $ability): ?bool
     {
-        if ($user->role === 'admin' && $ability !== 'delete') {
+        if ($user && $user->role === 'admin' && $ability !== 'delete') {
             return true;
         }
 
@@ -23,7 +23,7 @@ class UserPolicy
      */
     public function viewAny(?User $user): bool
     {
-        return $user->role === 'admin';
+        return $user?->role === 'admin';
     }
 
     /**
@@ -31,7 +31,7 @@ class UserPolicy
      */
     public function view(?User $user, User $model): bool
     {
-        if($user->id === $model->id) {
+        if($user && $user->id === $model->id) {
             return true;
         }
         return false;

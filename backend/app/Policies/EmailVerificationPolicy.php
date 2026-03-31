@@ -23,6 +23,22 @@ class EmailVerificationPolicy
     }
 
     /**
+     * Determine whether a verification link can be requested.
+     */
+    public function requestLink(?User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether a verification token can be submitted.
+     */
+    public function verifyToken(?User $user): bool
+    {
+        return true;
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, EmailVerification $emailVerification): bool

@@ -55,7 +55,8 @@ class OriginalTicketsPolicy
      */
     public function update(User $user, OriginalTicket $originalTickets): bool
     {
-        if ($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
+        $event = $originalTickets->event;
+        if ($user->role === 'organizer' && $event && $event->organizer_id === $user->id) {
             return true;
         }
         if ($user->role === 'admin') {
@@ -95,7 +96,8 @@ public function manageTicketStatus(User $user, Event $event): bool{
      */
     public function delete(User $user, OriginalTicket $originalTickets): bool
     {
-        if ($user->role === 'organizer' && $originalTickets->event->organizer_id === $user->id) {
+        $event = $originalTickets->event;
+        if ($user->role === 'organizer' && $event && $event->organizer_id === $user->id) {
             return true;
         }
         if ($user->role === 'admin') {

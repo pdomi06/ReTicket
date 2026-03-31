@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\EmailVerification;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class SendVerificationLinkRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class SendVerificationLinkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('requestLink', EmailVerification::class);
     }
 
     /**

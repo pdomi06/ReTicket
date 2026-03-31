@@ -7,7 +7,7 @@ use App\Models\TicketForSale;
 
 class TicketForSalePolicy
 {
-    public function before(?User $user): ?bool
+    public function before(?User $user, string $ability): ?bool
     {
         if ($user && $user->role === 'admin') {
             return true;
