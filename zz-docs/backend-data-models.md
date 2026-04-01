@@ -15,7 +15,7 @@ Core models in `backend/app/Models/`:
 - `TicketHistory`
 - `Review`
 - `VenueMap`
-- `EmailVerification`
+- `EmailVerify`
 - `PasswordReset`
 - `UserSetting`
 
@@ -24,7 +24,6 @@ Core models in `backend/app/Models/`:
 | Model          | Relationship             | Key                   | Notes                        |
 | -------------- | ------------------------ | --------------------- | ---------------------------- |
 | Event          | hasMany OriginalTicket   | `eventId`             | Event owns seat inventory    |
-| Event          | belongsTo User           | `organizer_id`        | Organizer ownership          |
 | OriginalTicket | belongsTo Event          | `eventId`             | Canonical ticket source      |
 | OriginalTicket | hasMany TicketForSale    | `originalTicketId`    | Resale listings              |
 | OriginalTicket | hasMany ActiveTicket     | `originalTicketId`    | Active state mapping         |
@@ -41,7 +40,6 @@ Core models in `backend/app/Models/`:
 
 Important fields:
 
-- `organizer_id`
 - `eventDate`, `eventEndDate`
 - `basePrice`
 - `createdAt`, `updatedAt`
@@ -108,9 +106,31 @@ Timestamp behavior:
 
 - `public $timestamps = false`
 
+## Schema Notes from Current Migrations
+
+- `users` stores audit fields as `createdAt` and `updatedAt`; `balance` is not defined.
+- `events` no longer defines a `createdBy` foreign key.
+- `orders` stores `deliveredAt`, `createdAt`, `updatedAt`, `completedAt`, and `cancelledAt` as date fields.
+- `order_item` stores only `createdAt` for timestamps.
+- `payouts` includes `orderItemId` foreign key and stores `createdAt` only.
+
+## Timestamp Matrix
+
+| Model          | Timestamp Handling                                 |
+| -------------- | -------------------------------------------------- |
+| User           | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
+| Event          | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
+| OriginalTicket | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
+| Order          | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
+| Review         | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
+| UserSetting    | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
+| EmailVerify    | `public $timestamps = false`                       |
+| PasswordReset  | `public $timestamps = false`                       |
+| OrderItem      | `public $timestamps = false`                       |
+| Payout         | `public $timestamps = false`                       |
+
 ## Ownership Keys Used in Authorization
 
-- Organizer ownership: `events.organizer_id == user.id`
 - Seller ownership: `ticket_forsale.fromUserId == user.id`
 - Buyer access: `orders.buyerEmail == user.email`
 - Payout visibility: `payouts.vendorId == user.id`

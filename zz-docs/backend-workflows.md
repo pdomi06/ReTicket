@@ -9,7 +9,7 @@
 
 Authorization anchors:
 
-- Organizer can manage only own events (`organizer_id` ownership).
+- Organizer-level access is enforced through policy checks and route middleware.
 - Admin can bypass in most policy `before()` checks.
 
 ## 2. Ticket Resale Flow

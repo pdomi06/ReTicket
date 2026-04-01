@@ -42,12 +42,19 @@ Resilience behavior:
 
 Current pattern is direct `fetch` calls inside contexts/pages.
 
+## Contract Shape Notes
+
+- Frontend interfaces now consistently use camelCase audit fields (`createdAt`, `updatedAt`) instead of snake_case variants.
+- `IEventForm` now retains the same core event fields as `IEvent` and only remaps `eventDate` and `eventEndDate` to allow datetime-local input values.
+- The dashboard edit-event page normalizes API event payloads using object spread and then converts the two date fields for form controls.
+- Several interfaces now represent some fields as required values where they were previously nullable in TypeScript types (for example order date fields).
+
 Recommended conventions for consistency:
 
 1. Always use `encodeURIComponent` for route/query params from user input.
 2. Always check `response.ok` before JSON parse.
 3. Normalize success/error object shape in a shared helper when possible.
-4. Keep endpoint paths aligned with backend route names (`/venues` vs `/venue`).
+4. Keep endpoint paths aligned with backend route names (`/venues` and `/venue` are both currently registered).
 
 ## Integration Risk Hotspots
 

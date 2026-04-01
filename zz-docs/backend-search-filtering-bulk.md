@@ -15,13 +15,15 @@ Key searchable API paths:
 
 `Event::search($filters)` supports:
 
-- `event` (name like)
+- `name` (name like)
 - `venue` (venue like)
 - `city` (city like)
 - `country` (country like)
 - `eventDate` (exact date)
 - `category` (exact category)
 - `maxPrice` (basePrice upper bound)
+
+Controller-level event list endpoints (`GET /events` and `GET /events/search`) return newest-first ordering by `createdAt`.
 
 ### Original ticket filtering
 

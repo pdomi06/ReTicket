@@ -36,7 +36,7 @@ Policies in `backend/app/Policies/` define role behavior.
 Common pattern:
 
 - `before()` grants full access to `admin` for many resources.
-- `organizer` restricted by ownership keys like `organizer_id`.
+- `organizer` access is expected to be constrained by policy ownership rules.
 - `vendor` restricted by seller identity keys like `fromUserId`.
 - Several guest-facing read endpoints exist for discoverability.
 
