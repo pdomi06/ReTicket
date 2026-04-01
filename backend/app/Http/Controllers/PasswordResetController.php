@@ -7,8 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePasswordResetRequest;
 use App\Http\Requests\UpdatePasswordResetRequest;
 use App\Models\User;
-use Hash;
-use Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
 {
