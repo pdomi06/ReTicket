@@ -45,78 +45,7 @@ const Cart = () => {
     };
 
     async function handleCheckOut() {
-        setCheckoutError(null);
-        setCheckoutSuccess(false);
 
-        // Validate email
-        if (!checkoutEmail.trim()) {
-            setCheckoutError("Please enter an email address");
-            return;
-        }
-
-        if (!validateEmail(checkoutEmail)) {
-            setCheckoutError("Please enter a valid email address");
-            return;
-        }
-
-        // Validate tickets
-        if (tickets.length === 0) {
-            setCheckoutError("Your cart is empty. Please add tickets before checking out.");
-            return;
-        }
-
-        setIsCheckingOut(true);
-
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ticketForSale/checkOut`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                },
-                body: JSON.stringify({
-                    email: checkoutEmail.trim(),
-                    tickets: tickets.map((ticket) => ticket.id),
-                }),
-            });
-
-            if (!response.ok) {
-                let errorMessage = `Checkout failed (${response.status})`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-
-                    // Handle validation errors
-                    if (errorData.errors) {
-                        const validationErrors = Object.values(errorData.errors).flat();
-                        errorMessage = validationErrors.join(", ");
-                    }
-                } catch {
-                    // If JSON parse fails, use HTTP status text
-                    errorMessage = response.statusText || errorMessage;
-                }
-                throw new Error(errorMessage);
-            }
-
-            const result = await response.json();
-            console.log("Checkout result:", result);
-
-            // Clear cart on success
-            clearCart();
-            setCheckoutEmail("");
-            setCheckoutSuccess(true);
-
-            // Optional: reset success message after 3 seconds
-            setTimeout(() => {
-                setCheckoutSuccess(false);
-            }, 3000);
-        } catch (error) {
-            console.error("Checkout error:", error);
-            const errorMsg = error instanceof Error ? error.message : "Checkout failed. Please try again.";
-            setCheckoutError(errorMsg);
-        } finally {
-            setIsCheckingOut(false);
-        }
     };
 
     return (
