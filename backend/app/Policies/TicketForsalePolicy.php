@@ -35,7 +35,7 @@ class TicketForSalePolicy
      */
     public function create(User $user): bool
     {
-        if ($user->role === 'admin' || $user->role === 'vendor') {
+        if ($user->role === 'admin' || $user->role === 'vendor' || $user->role === 'organizer') {
             return true;
         }
         return false;
