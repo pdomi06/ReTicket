@@ -17,12 +17,12 @@ return new class extends Migration
             $table->text('passwordHash');
             $table->text('name');
             $table->text('phone');
-            $table->integer('balance')->default(0);
             $table->boolean('isVerified')->default(false);
             $table->boolean('isActive')->default(true);
             $table->boolean('isOnline')->default(false);
             $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending");
-            $table->timestamps();
+            $table->dateTime('createdAt')->useCurrent();
+            $table->dateTime('updatedAt')->useCurrent()->nullable();
             $table->dateTime('lastLogin')->nullable();
         });
     }

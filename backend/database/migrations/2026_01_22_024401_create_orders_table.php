@@ -17,18 +17,19 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('orderNumber')->unique();
             $table->text('buyerEmail');
-            $table->decimal('subtotal', 10, 2);
-            $table->decimal('platformFee', 10, 2);
-            $table->decimal('tax', 10, 2)->nullable();
+            $table->decimal('subtotal');
+            $table->decimal('platformFee');
+            $table->decimal('tax')->nullable();
             $table->enum('status', ["pending", "processing", "completed", "failed", "refunded"]);
             $table->text('paymentIntentId');
             $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed", "refunded"]);
             $table->text('deliveryEmail');
             $table->enum('deliverStatus', ["pending", "sent", "delivered"]);
-            $table->date('deliveredAt')->nullable();
-            $table->timestamps();
-            $table->dateTime('completedAt')->nullable();
-            $table->dateTime('cancelledAt')->nullable();
+            $table->date('deliveredAt');
+            $table->date('createdAt');
+            $table->date('updatedAt');
+            $table->date('completedAt');
+            $table->date('cancelledAt');
         });
 
         Schema::enableForeignKeyConstraints();

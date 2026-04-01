@@ -121,8 +121,8 @@ class OriginalTicketsController extends Controller implements HasMiddleware
                         'price' => round($basePrice * $venue['rate'], 2),
                         'status' => 'pre-release',
                         'ticketPdfUrl' => "",
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'createdAt' => now(),
+                        'updatedAt' => now(),
                     ];
                 }
             }
@@ -153,8 +153,8 @@ class OriginalTicketsController extends Controller implements HasMiddleware
                         'price' => round($basePrice * $venue['rate'], 2),
                         'status' => 'pre-release',
                         'ticketPdfUrl' => "",
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'createdAt' => now(),
+                        'updatedAt' => now(),
                     ];
                 }
             }

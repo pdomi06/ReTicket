@@ -25,8 +25,8 @@ class OriginalTicket extends Model
         'price',
         'status',
         'ticketPdfUrl',
-        'created_at',
-        'updated_at'
+        'createdAt',
+        'updatedAt'
     ];
 
         public function scopeSearch($query, array $filters) {
@@ -53,6 +53,11 @@ class OriginalTicket extends Model
                 $q->where('ticketPdfUrl', $value)
             );
     }
+
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
+
+    //public $timestamps = false;
 
     public function event(){
         return $this->belongsTo(Event::class, 'eventId');

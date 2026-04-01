@@ -22,7 +22,7 @@ class OrderItemFactory extends Factory
             'orderId' => Order::inRandomOrder()->value('id') ?? Order::factory()->create()->id,
             'ticketListingId' => ActiveTicket::factory()->create()->ticketListingId,
             'price' => fake()->randomFloat(2, 10, 1000),
-            'created_at' => now(),
+            'createdAt' => now(),
         ];
     }
 }

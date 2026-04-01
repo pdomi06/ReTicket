@@ -22,7 +22,7 @@ class PasswordResetFactory extends Factory
             'token' => fake()->sha256(),
             'expiresAt' => fake()->dateTimeBetween('+1 hour', '+1 day'),
             'verifiedAt' => fake()->dateTimeBetween('-1 day', 'now'),
-            'created_at' => now(),
+            'createdAt' => now(),
         ];
     }
 }

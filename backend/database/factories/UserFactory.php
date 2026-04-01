@@ -34,8 +34,8 @@ class UserFactory extends Factory
             'isActive' => fake()->boolean(95),
             'isOnline' => fake()->boolean(50),
             'kycStatus' => fake()->randomElement($kycStatus),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'createdAt' => now(),
+            'updatedAt' => now(),
             'lastLogin' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }

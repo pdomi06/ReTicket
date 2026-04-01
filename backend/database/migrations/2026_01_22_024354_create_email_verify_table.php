@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('token')->unique();
             $table->date('expiresAt');
             $table->date('verifiedAt');
-            $table->timestamps();
+            $table->date('createdAt');
         });
 
         Schema::enableForeignKeyConstraints();

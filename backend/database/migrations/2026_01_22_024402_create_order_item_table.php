@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('orderId')->constrained('orders')->onDelete('cascade');
             $table->text('ticketListingId')->unique();
             $table->decimal('price', 10, 2);
-            $table->timestamps();
+            $table->date('createdAt');
         });
 
         Schema::enableForeignKeyConstraints();

@@ -21,7 +21,7 @@ class EventsController extends Controller implements HasMiddleware
     }
     public function index(){
         $events = Event::with('originalTickets')
-            ->orderByDesc('created_at')
+            ->orderByDesc('createdAt')
             ->paginate(20);
 
         $eventsData = $events->getCollection()->map(function($event) {
@@ -81,7 +81,7 @@ class EventsController extends Controller implements HasMiddleware
             $query->where('basePrice', '<=', $filters['maxPrice']);
         }
 
-        $events = $query->orderByDesc('created_at')->paginate(20);
+        $events = $query->orderByDesc('createdAt')->paginate(20);
 
         return response()->json(['success' => true,
             'data' => $events->items(),

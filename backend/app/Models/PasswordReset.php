@@ -16,9 +16,12 @@ class PasswordReset extends Model
         'token',
         'expiresAt',
         'verifiedAt',
-        'created_at'
+        'createdAt'
     ];
     protected $casts = [
         'expiresAt' => 'datetime',
     ];
+    //const CREATED_AT = 'createdAt';
+
+    public $timestamps = false;
 }

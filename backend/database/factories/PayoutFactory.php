@@ -26,7 +26,7 @@ class PayoutFactory extends Factory
             'bank' => fake()->company(),
             'iban' => fake()->iban(),
             'paidAt' => fake()->dateTimeBetween('-1 week', 'now'),
-            'created_at' => now(),
+            'createdAt' => now(),
         ];
     }
 }

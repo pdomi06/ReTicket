@@ -31,8 +31,8 @@ class OrderFactory extends Factory
             'deliveryEmail' => fake()->unique()->safeEmail(),
             'deliverStatus' => fake()->randomElement($deliverStatus),
             'deliveredAt' => fake()->dateTimeBetween('-1 month', 'now'),
-            'created_at' => fake()->dateTimeBetween('-2 months', 'now'),
-            'updated_at' => fake()->dateTimeBetween('-1 month', 'now'),
+            'createdAt' => fake()->dateTimeBetween('-2 months', 'now'),
+            'updatedAt' => fake()->dateTimeBetween('-1 month', 'now'),
             'completedAt' => fake()->dateTimeBetween('-1 month', 'now'),
             'cancelledAt' => fake()->dateTimeBetween('-1 month', 'now'),
         ];

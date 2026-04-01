@@ -18,8 +18,11 @@ class OrderItem extends Model
         'orderId',
         'ticketListingId',
         'price',
-        'created_at'
+        'createdAt'
     ];
+    //const CREATED_AT = 'createdAt';
+
+    public $timestamps = false;
 
 
     public function ticketForSale()

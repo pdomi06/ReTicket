@@ -21,9 +21,9 @@ export interface IUser {
   isActive: boolean;
   isOnline: boolean;
   kycStatus: typeof KycStatus[keyof typeof KycStatus];
-  created_at: string;
-  updated_at: string;
-  lastLogin: string | null;
+  createdAt: string;
+  updatedAt: string;
+  lastLogin: string;
 }
 
 export interface IEmailVerify {
@@ -32,8 +32,7 @@ export interface IEmailVerify {
   token: string;
   expiresAt: string;
   verifiedAt: string;
-  created_at: string;
-  updated_at: string | null;
+  createdAt: string;
 }
 
 export interface IPasswordReset {
@@ -42,17 +41,16 @@ export interface IPasswordReset {
   token: string;
   expiresAt: string;
   verifiedAt: string;
-  created_at: string;
-  updated_at: string | null;
+  createdAt: string;
 }
 
 export interface IUserSettings {
-  userId: number;
+  userid: number;
   emailNotification: boolean;
   smsNotification: boolean;
   profileVisibility: typeof ProfileVisibility[keyof typeof ProfileVisibility];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IEvent {
@@ -69,12 +67,12 @@ export interface IEvent {
   category: typeof EventCategory[keyof typeof EventCategory];
   basePrice: number;
   imageUrl: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
 
-export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate' | 'created_at' | 'updated_at' | 'firstTicketStatus'> & {
+export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate'> & {
   eventDate: number | string;
   eventEndDate: number | string;
 };
@@ -88,16 +86,16 @@ export interface IOriginalTicket {
   price: number;
   status: typeof TicketStatus[keyof typeof TicketStatus];
   ticketPdfUrl: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ITicketHistory {
   id: number;
   originalTicketId: number;
-  ticketListingId: string;
+  ticketListingId: number;
   fromUserId: number | null;
-  toUser: string;
+  toUserId: number;
   price: number;
   platformFee: number;
 }
@@ -125,20 +123,19 @@ export interface IOrder {
   paymentStatus: typeof PaymentStatus[keyof typeof PaymentStatus];
   deliveryEmail: string;
   deliverStatus: typeof DeliveryStatus[keyof typeof DeliveryStatus];
-  deliveredAt: string | null;
-  created_at: string;
-  updated_at: string;
-  completedAt: string | null;
-  cancelledAt: string | null;
+  deliveredAt: string;
+  createdAt: string;
+  updatedAt: string;
+  completedAt: string;
+  cancelledAt: string;
 }
 
 export interface IOrderItem {
   id: number;
   orderId: number;
-  ticketListingId: string;
+  ticketListingId: number;
   price: number;
-  created_at: string;
-  updated_at: string | null;
+  createdAt: string;
 }
 
 export interface IActiveTicket {
@@ -152,11 +149,10 @@ export interface IPayout {
   vendorId: number;
   orderItemId: number;
   status: typeof PayoutStatus[keyof typeof PayoutStatus];
-  bank: string;
-  iban: string;
-  paidAt: string;
-  created_at: string;
-  updated_at: string | null;
+  bank: number;
+  iban: number;
+  paidAt: number;
+  createdAt: number;
 }
 
 export interface IReview {
@@ -168,8 +164,8 @@ export interface IReview {
   title: string;
   comment: string;
   isVisible: boolean;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IVenueMap {

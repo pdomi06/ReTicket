@@ -20,7 +20,8 @@ return new class extends Migration
             $table->text('title');
             $table->text('comment');
             $table->boolean('isVisible')->comment('to check before its visible (can be automated with simple word filter or ai)');
-            $table->timestamps();
+            $table->date('createdAt');
+            $table->date('updatedAt');
         });
 
         Schema::enableForeignKeyConstraints();
