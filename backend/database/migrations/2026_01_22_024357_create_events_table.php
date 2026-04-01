@@ -22,14 +22,13 @@ return new class extends Migration
             $table->text('city');
             $table->text('state');
             $table->text('country');
-            $table->date('eventDate');
-            $table->date('eventEndDate');
+            $table->unsignedBigInteger('eventDate');
+            $table->unsignedBigInteger('eventEndDate');
             $table->enum('category', ["cultural", "music", "sport"]);
             $table->decimal('basePrice', 10, 2);
             $table->text('imageUrl');
             $table->foreignId('createdBy')->constrained('users');
-            $table->dateTime('createdAt');
-            $table->dateTime('updatedAt');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

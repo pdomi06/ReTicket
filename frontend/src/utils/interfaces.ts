@@ -21,9 +21,9 @@ export interface IUser {
   isActive: boolean;
   isOnline: boolean;
   kycStatus: typeof KycStatus[keyof typeof KycStatus];
-  createdAt: string;
-  updatedAt: string;
-  lastLogin: string;
+  created_at: string;
+  updated_at: string;
+  lastLogin: string | null;
 }
 
 export interface IEmailVerify {
@@ -32,7 +32,8 @@ export interface IEmailVerify {
   token: string;
   expiresAt: string;
   verifiedAt: string;
-  createdAt: string;
+  created_at: string;
+  updated_at: string | null;
 }
 
 export interface IPasswordReset {
@@ -41,16 +42,17 @@ export interface IPasswordReset {
   token: string;
   expiresAt: string;
   verifiedAt: string;
-  createdAt: string;
+  created_at: string;
+  updated_at: string | null;
 }
 
 export interface IUserSettings {
-  userid: number;
+  userId: number;
   emailNotification: boolean;
   smsNotification: boolean;
   profileVisibility: typeof ProfileVisibility[keyof typeof ProfileVisibility];
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface IEvent {
@@ -62,15 +64,20 @@ export interface IEvent {
   city: string;
   state: string;
   country: string;
-  eventDate: string;
-  eventEndDate: string;
+  eventDate: number;
+  eventEndDate: number;
   category: typeof EventCategory[keyof typeof EventCategory];
   basePrice: number;
   imageUrl: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
+
+export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate' | 'created_at' | 'updated_at' | 'firstTicketStatus'> & {
+  eventDate: number | string;
+  eventEndDate: number | string;
+};
 
 export interface IOriginalTicket {
   id: number;
@@ -81,16 +88,16 @@ export interface IOriginalTicket {
   price: number;
   status: typeof TicketStatus[keyof typeof TicketStatus];
   ticketPdfUrl: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ITicketHistory {
   id: number;
   originalTicketId: number;
-  ticketListingId: number;
+  ticketListingId: string;
   fromUserId: number | null;
-  toUserId: number;
+  toUser: string;
   price: number;
   platformFee: number;
 }
@@ -101,6 +108,7 @@ export interface ITicketForsale {
   fromUserId: number | null;
   price: number;
   inBasket: boolean;
+  eventId: number;
   row?: number;
   col?: number;
 }
@@ -117,19 +125,20 @@ export interface IOrder {
   paymentStatus: typeof PaymentStatus[keyof typeof PaymentStatus];
   deliveryEmail: string;
   deliverStatus: typeof DeliveryStatus[keyof typeof DeliveryStatus];
-  deliveredAt: string;
-  createdAt: string;
-  updatedAt: string;
-  completedAt: string;
-  cancelledAt: string;
+  deliveredAt: string | null;
+  created_at: string;
+  updated_at: string;
+  completedAt: string | null;
+  cancelledAt: string | null;
 }
 
 export interface IOrderItem {
   id: number;
   orderId: number;
-  ticketListingId: number;
+  ticketListingId: string;
   price: number;
-  createdAt: string;
+  created_at: string;
+  updated_at: string | null;
 }
 
 export interface IActiveTicket {
@@ -143,10 +152,11 @@ export interface IPayout {
   vendorId: number;
   orderItemId: number;
   status: typeof PayoutStatus[keyof typeof PayoutStatus];
-  bank: number;
-  iban: number;
-  paidAt: number;
-  createdAt: number;
+  bank: string;
+  iban: string;
+  paidAt: string;
+  created_at: string;
+  updated_at: string | null;
 }
 
 export interface IReview {
@@ -158,8 +168,8 @@ export interface IReview {
   title: string;
   comment: string;
   isVisible: boolean;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface IVenueMap {
@@ -233,7 +243,7 @@ export interface IEventContext {
 
 export interface ICartContext {
   tickets: ITicketForsale[];
-  addToCart: (eventId: string, row: number, seat: number) => Promise<boolean>;
+  addToCart: (eventId: number, row: number, seat: number) => Promise<boolean>;
   removeFromCart: (ticket: ITicketForsale) => Promise<void>;
   clearCart: () => void;
 }
@@ -241,7 +251,7 @@ export interface ICartContext {
 export interface IDashboardTicket {
   id: number;
   eventName: string;
-  eventDate: string;
+  eventDate: number | string;
   venue: string;
   section: string;
   row: number;

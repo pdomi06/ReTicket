@@ -16,12 +16,11 @@ return new class extends Migration
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vendorId')->constrained('users')->onDelete('cascade');
-            $table->foreignId('orderItemId')->constrained('order_item')->onDelete('cascade');
             $table->enum('status', ["created", "pending", "cancelled", "fulfilled"]);
             $table->text('bank');
             $table->text('iban');
-            $table->dateTime('paidAt')->nullable();
-            $table->dateTime('createdAt');
+            $table->date('paidAt');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

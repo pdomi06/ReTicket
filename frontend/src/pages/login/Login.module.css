@@ -7,12 +7,14 @@ body {
   width: 100vw;
   color: white;
 }
+
 .login-page {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
+
 .login-container {
   background-color: #0a2e38;
   padding: 40px;
@@ -24,16 +26,21 @@ body {
   align-items: center;
   max-width: 350px;
 }
+
 .login-container img {
   width: 50px;
 }
+
 .login-container h4 a {
-  color: #ffd700;
+  color: var(--color-accent);
   text-decoration: none;
 }
-.login-container a:hover, .login-form a:hover {
+
+.login-container a:hover,
+.login-form a:hover {
   text-decoration: underline;
 }
+
 .login-container h4 {
   font-family: "Playfair Display", serif;
   padding: 0;
@@ -48,17 +55,20 @@ body {
   justify-content: center;
   margin-top: 0;
 }
+
 .login-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-top: 20px;
 }
+
 .login-form label {
   font-weight: bold;
   text-align: left;
 }
-.login-form input{
+
+.login-form input {
   padding: 10px;
   border: none;
   border-radius: 10px;
@@ -68,8 +78,9 @@ body {
   background-color: #001a20a1;
   color: white;
 }
+
 .login-form button {
-  background-color: #b19cd9;
+  background-color: var(--color-accent);
   color: #001a20d0;
   border: none;
   padding: 10px;
@@ -78,15 +89,17 @@ body {
   cursor: pointer;
   font-weight: bold;
 }
+
 .login-form input:focus {
-  outline: 3px solid #b19cd9;
+  outline: 3px solid var(--color-accent);
 }
 
 .login-form button:hover {
-  background-color: #b19cd9de;
+  background-color: var(--color-accent-hover);
 }
+
 .login-form a {
-  color: #ffd700;
+  color: var(--color-accent);
   text-decoration: none;
 }
 
@@ -94,31 +107,41 @@ body {
   font-size: 14px;
   text-align: left;
 }
-.checkbox-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-.checkbox-label {
-    font-weight: normal;
-    cursor: pointer;
-    text-align: left;
-    font-size: 14px;
-    line-height: 1.4;
-}
 
 .login-form input[type="checkbox"] {
-    width: auto;
-    margin-top: 2px;
-    flex-shrink: 0;
-    accent-color: #b19cd9;
+  width: auto;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--color-accent);
 }
+
 .login-form input[type="checkbox"]:focus {
-    outline: none;
+  outline: none;
 }
-input, button {
-    transition: all 0.3s;
+
+input,
+button {
+  transition: all 0.3s;
+}
+
+.errors {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-align: left;
+  background-color: rgba(180, 20, 20, 0.35);
+  border: 1px solid rgba(255, 90, 90, 0.9);
+}
+
+.error {
+  margin: 0;
+  color: #ffd7d7;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.error+.error {
+  margin-top: 8px;
 }

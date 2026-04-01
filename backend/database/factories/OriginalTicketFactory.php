@@ -26,8 +26,8 @@ class OriginalTicketFactory extends Factory
             'price' => fake()->randomFloat(2, 10, 1000),
             'status' => fake()->randomElement($status),
             'ticketPdfUrl' => fake()->url(),
-            'createdAt' => now(),
-            'updatedAt' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

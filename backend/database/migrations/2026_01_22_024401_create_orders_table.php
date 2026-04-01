@@ -26,10 +26,9 @@ return new class extends Migration
             $table->text('deliveryEmail');
             $table->enum('deliverStatus', ["pending", "sent", "delivered"]);
             $table->date('deliveredAt')->nullable();
-            $table->timestamp('createdAt')->useCurrent();
-            $table->timestamp('updatedAt')->useCurrent()->nullable()->onUpdate('CURRENT_TIMESTAMP');
-            $table->date('completedAt')->nullable();
-            $table->date('cancelledAt')->nullable();
+            $table->timestamps();
+            $table->dateTime('completedAt')->nullable();
+            $table->dateTime('cancelledAt')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();

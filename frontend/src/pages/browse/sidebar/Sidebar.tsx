@@ -32,7 +32,16 @@ const Sidebar = () => {
         if (searchForm.venue) params.venue = searchForm.venue;
         if (searchForm.city) params.city = searchForm.city;
         if (searchForm.country) params.country = searchForm.country;
-        if (searchForm.eventDate) params.eventDate = searchForm.eventDate;
+        if (searchForm.eventDate) {
+            params.eventDate = searchForm.eventDate;
+            // Include user's timezone offset to ensure date filtering is consistent
+            // with their local timezone (e.g., "-05:00" for EST, "+01:00" for CET)
+            const offsetMinutes = new Date().getTimezoneOffset();
+            const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+            const offsetMins = Math.abs(offsetMinutes) % 60;
+            const sign = offsetMinutes <= 0 ? '+' : '-';
+            params.timezone = `${sign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+        }
         if (searchForm.category) params.category = searchForm.category;
 
         navigate({

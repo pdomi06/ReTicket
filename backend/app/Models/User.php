@@ -35,8 +35,10 @@ class User extends Authenticatable
         'isVerified',
         'isActive',
         'isOnline',
-        'lastLogin',
         'kycStatus',
+        'created_at',
+        'updated_at',
+        'lastLogin'
     ];
 
     /**
@@ -57,15 +59,12 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'createdAt' => 'datetime',
-            'updatedAt' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
             'lastLogin' => 'datetime',
             'passwordHash' => 'hashed',
         ];
     }
-
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
 
     public function getAuthPassword()
     {

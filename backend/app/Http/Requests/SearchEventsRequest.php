@@ -27,9 +27,33 @@ class SearchEventsRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],
             'eventDate' => ['nullable', 'date_format:Y-m-d'],
+            'timezone' => ['nullable', 'string'],
             'maxPrice' => ['nullable', 'numeric', 'min:0'],
             'category' => ['nullable', 'in:cultural,music,sport'],
             'page' => ['nullable', 'integer', 'min:1'],
+        ];
+    }
+
+    /**
+     * Perform additional validation after the primary rules.
+     * Validates that the timezone is a valid UTC offset format that DateTimeZone accepts.
+     */
+    public function after()
+    {
+        return [
+            function ($validator) {
+                if ($this->filled('timezone')) {
+                    $timezone = $this->input('timezone');
+                    try {
+                        new \DateTimeZone($timezone);
+                    } catch (\Exception) {
+                        $validator->errors()->add(
+                            'timezone',
+                            'The timezone must be a valid UTC offset (e.g., +00:00, +05:30, -08:00).'
+                        );
+                    }
+                }
+            }
         ];
     }
 }

@@ -22,8 +22,8 @@ class ReviewFactory extends Factory
             'title' => fake()->words(3, true),
             'comment' => fake()->sentence(),
             'isVisible' => fake()->boolean(),
-            'createdAt' => now(),
-            'updatedAt' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

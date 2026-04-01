@@ -7,12 +7,14 @@ body {
   width: 100vw;
   color: white;
 }
+
 .register-page {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
+
 .register-container {
   background-color: #0a2e38;
   padding: 40px;
@@ -24,16 +26,21 @@ body {
   align-items: center;
   max-width: 350px;
 }
+
 .register-container img {
   width: 50px;
 }
+
 .register-container h4 a {
-  color: #ffd700;
+  color: var(--color-accent);
   text-decoration: none;
 }
-.register-container a:hover, .register-form a:hover {
+
+.register-container a:hover,
+.register-form a:hover {
   text-decoration: underline;
 }
+
 .register-container h4 {
   font-family: "Playfair Display", serif;
   padding: 0;
@@ -48,6 +55,7 @@ body {
   justify-content: center;
   margin-top: 0;
 }
+
 .register-form {
   display: flex;
   flex-direction: column;
@@ -56,7 +64,7 @@ body {
 }
 
 .register-form a {
-  color: #ffd700;
+  color: var(--color-accent);
   text-decoration: none;
 }
 
@@ -64,31 +72,46 @@ body {
   font-size: 14px;
   text-align: left;
 }
+
 .checkbox-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 10px;
-    width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 .checkbox-label {
-    font-weight: normal;
-    cursor: pointer;
-    text-align: left;
-    font-size: 14px;
-    line-height: 1.4;
+  font-weight: normal;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .register-form input[type="checkbox"] {
-    width: auto;
-    margin-top: 2px;
-    flex-shrink: 0;
-    accent-color: #b19cd9;
+  width: auto;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--color-accent);
 }
+
 .register-form input[type="checkbox"]:focus {
-    outline: none;
+  outline: none;
 }
-input, button {
-    transition: all 0.3s;
+
+input,
+button {
+  transition: all 0.3s;
+}
+
+.errors {
+  background-color: rgba(255, 0, 0, 0.432);
+  border: 1px solid rgba(255, 0, 0, 0.8);
+  padding: 10px;
+}
+
+.error {
+  margin: 0;
+  color: #c41e3a;
 }

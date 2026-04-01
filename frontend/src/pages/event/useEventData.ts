@@ -36,6 +36,17 @@ async function fetchOriginalTickets(eventId: string): Promise<IOriginalTicket[]>
     return request
 }
 
+function filterActiveTicketsForEvent(tickets: IOriginalTicket[], eventId: string): IOriginalTicket[] {
+    const targetEventId = Number(eventId)
+    if (!Number.isFinite(targetEventId)) {
+        return []
+    }
+
+    return tickets.filter(
+        (ticket) => String(ticket.status) === "active" && Number(ticket.eventId) === targetEventId
+    )
+}
+
 export function useEventData(eventId: string) {
     const { event, getEvent } = useContext(EventContext)
     const [events, setEvents] = useState<IEvent[]>([])
@@ -69,9 +80,10 @@ export function useEventData(eventId: string) {
             setLoadingEvents(false)
         }
         if (eventId) {
+            setDbTickets([])
             void fetchOriginalTickets(eventId).then(tickets => {
                 if (!cancelled) {
-                    setDbTickets(tickets.filter(t => String(t.status) === "active"))
+                    setDbTickets(filterActiveTicketsForEvent(tickets, eventId))
                 }
             })
         }
@@ -119,7 +131,7 @@ export function useEventData(eventId: string) {
         return () => {
             cancelled = true
         }
-    }, [event?.name])
+    }, [event])
 
     useEffect(() => {
         if (!event?.venue) {
@@ -160,13 +172,13 @@ export function useEventData(eventId: string) {
         return () => {
             cancelled = true
         }
-    }, [event?.venue])
+    }, [event])
 
 
     const refreshTickets = useCallback(async () => {
         if (!eventId) return
         const tickets = await fetchOriginalTickets(eventId)
-        setDbTickets(tickets.filter(t => String(t.status) === "active"))
+        setDbTickets(filterActiveTicketsForEvent(tickets, eventId))
     }, [eventId])
 
     return { event, events, venue, dbTickets, loadingEvent, loadingEvents, loadingVenue, refreshTickets }

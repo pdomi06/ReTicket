@@ -16,10 +16,8 @@ class OrderItem extends Model
         'orderId',
         'ticketListingId',
         'price',
+        'created_at'
     ];
-    const CREATED_AT = 'createdAt';
-
-    public $timestamps = false;
 
 
     public function activeTicket()

@@ -23,6 +23,9 @@ class UpdateTicketForSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
+        'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
+        'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
+        'eventId' => ['sometimes', 'integer', 'exists:events,id'],
         'price' => ['sometimes', 'numeric', 'min:0'],
         ];
     }

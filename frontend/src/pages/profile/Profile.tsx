@@ -1,23 +1,26 @@
 import { useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router";
 
 const Profile = () => {
-  const { user, isAuthenticated, loginWithRedirect } = useAuth0();
-  console.log(user);
-  useEffect(() => {
-    if (!isAuthenticated) {
-      loginWithRedirect();
-    }
-  }, [isAuthenticated, loginWithRedirect]);
+  const navigate = useNavigate();
+  let user = null;
 
-  if (!isAuthenticated) {
-    return <div>Redirecting to login...</div>;
+  try {
+    user = JSON.parse(localStorage.getItem("user") ?? "null");
+  } catch (e) {
+    console.error("Failed to parse user from localStorage:", e);
+    user = null;
   }
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [navigate, user]);
   return (
     <div>
-        {user?.name}
-        {user?.email}
-        <img src={user?.picture} alt={user?.name} />
+      <h1>Profile Page</h1>
+      {user && <p>Welcome, {user.name}!</p>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import Navbar from './navbar/navbar.tsx';
 import Footer from './footer/footer.tsx';
 import styles from './MainLayout.module.css';
@@ -6,17 +6,20 @@ import EventContextProvider from '../../contexts/event/EventContext.tsx';
 import CartContextProvider from '../../contexts/cart/CartContext.tsx';
 
 export default function MainLayout() {
+  const { pathname } = useLocation();
+  const hideFooter = pathname.startsWith('/dashboard');
+
   return (
     <div className={styles.layout}>
-      <Navbar />
-      <main className={styles.main}>
-        <EventContextProvider>
-          <CartContextProvider>
+      <EventContextProvider>
+        <CartContextProvider>
+          <Navbar />
+          <main className={styles.main}>
             <Outlet />
-          </CartContextProvider>
-        </EventContextProvider>
-      </main>
-      <Footer />
+          </main>
+          {!hideFooter && <Footer />}
+        </CartContextProvider>
+      </EventContextProvider>
     </div >
   );
 }

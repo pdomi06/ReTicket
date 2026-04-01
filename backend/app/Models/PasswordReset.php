@@ -16,15 +16,11 @@ class PasswordReset extends Model
         'token',
         'expiresAt',
         'verifiedAt',
-        'createdAt',
+        'created_at'
     ];
     protected $casts = [
         'expiresAt' => 'datetime',
     ];
-    const CREATED_AT = 'createdAt';
-
-    public $timestamps = false;
-
     public function user()
     {
         return $this->belongsTo(User::class, 'userId');
