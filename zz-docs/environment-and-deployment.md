@@ -12,12 +12,9 @@ The frontend should call backend API endpoints through `VITE_API_BASE_URL`.
 Observed runtime variables in code:
 
 - `VITE_API_BASE_URL`
-- `VITE_AUTH0_DOMAIN`
-- `VITE_AUTH0_CLIENT_ID`
 
 Used by:
 
-- `frontend/src/main.tsx` (Auth0 provider)
 - `frontend/src/contexts/cart/CartContext.tsx`
 - `frontend/src/contexts/event/EventContext.tsx`
 - Multiple dashboard and event page data hooks

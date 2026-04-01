@@ -1,23 +1,24 @@
 # Backend API Reference
 
-Base path examples assume `/api` prefix from Laravel API routes.
+Base path examples assume `/api` prefix from Laravel API routes in `backend/routes/api.php`.
 
 ## Authentication
 
-| Method | Path        | Description       | Auth                  |
-| ------ | ----------- | ----------------- | --------------------- |
-| POST   | `/login`    | User login        | Public                |
-| POST   | `/register` | User registration | Public                |
-| POST   | `/logout`   | Logout            | Usually authenticated |
+| Method | Path        | Description       |
+| ------ | ----------- | ----------------- |
+| POST   | `/login`    | User login        |
+| POST   | `/register` | User registration |
+| POST   | `/logout`   | Logout            |
 
 ## Events and Venues
 
-| Method              | Path               | Description                     |
-| ------------------- | ------------------ | ------------------------------- |
-| GET                 | `/events/search`   | Search events                   |
-| GET/POST/PUT/DELETE | `/events` resource | Standard CRUD via `apiResource` |
-| GET                 | `/venues/search`   | Search venues                   |
-| GET/POST/PUT/DELETE | `/venues` resource | Standard CRUD via `apiResource` |
+| Method              | Path               | Description                    |
+| ------------------- | ------------------ | ------------------------------ |
+| GET                 | `/events/search`   | Search events                  |
+| GET/POST/PUT/DELETE | `/events` resource | Event CRUD                     |
+| GET                 | `/venues/search`   | Search venue maps              |
+| GET/POST/PUT/DELETE | `/venues` resource | Venue map CRUD                 |
+| GET/POST/PUT/DELETE | `/venue` resource  | Alternate venue map CRUD route |
 
 ## Ticket Resources
 
@@ -33,11 +34,11 @@ Base path examples assume `/api` prefix from Laravel API routes.
 | ------------------- | ------------------------------------ | ---------------------------------- |
 | GET                 | `/originalTickets/search`            | Filter original tickets            |
 | GET                 | `/originalTickets/forSale/{eventId}` | Available for-sale seats for event |
-| GET                 | `/originalTickets/dashboard`         | Dashboard-centric ticket listing   |
+| GET                 | `/originalTickets/dashboard`         | Dashboard ticket listing           |
 | POST                | `/originalTickets/bulk`              | Bulk create original tickets       |
 | PUT                 | `/originalTickets/bulk`              | Bulk update original tickets       |
 | POST                | `/originalTickets/bulkStatusChange`  | Bulk status updates                |
-| GET/POST/PUT/DELETE | `/originalTickets` resource          | Standard CRUD                      |
+| GET/POST/PUT/DELETE | `/originalTickets` resource          | Original ticket CRUD               |
 
 ### Ticket For Sale
 
@@ -47,34 +48,30 @@ Base path examples assume `/api` prefix from Laravel API routes.
 | POST                | `/ticketForSale/basketChange/{ticketForSale}`     | Basket toggle/change       |
 | POST                | `/ticketForSale/addToBasket/{ticketForSale}`      | Add listing to basket      |
 | POST                | `/ticketForSale/removeFromBasket/{ticketForSale}` | Remove listing from basket |
-| GET/POST/PUT/DELETE | `/ticketForSale` resource                         | Standard CRUD              |
+| POST                | `/ticketForSale/checkOut`                         | Checkout selected listings |
+| GET/POST/PUT/DELETE | `/ticketForSale` resource                         | Ticket listing CRUD        |
 
 ## Commerce
 
 ### Orders and Items
 
-| Method              | Path                   | Description          |
-| ------------------- | ---------------------- | -------------------- |
-| GET/POST/PUT/DELETE | `/orders` resource     | Order lifecycle      |
-| GET/POST/PUT/DELETE | `/orderItems` resource | Order item lifecycle |
+| Method              | Path                   | Description               |
+| ------------------- | ---------------------- | ------------------------- |
+| GET/POST/PUT/DELETE | `/orders` resource     | Order lifecycle CRUD      |
+| GET/POST/PUT/DELETE | `/orderItems` resource | Order item lifecycle CRUD |
 
 ### Payouts
 
-| Method | Path                | Description          | Notes                     |
-| ------ | ------------------- | -------------------- | ------------------------- |
-| GET    | `/payouts`          | List payouts         | Policy controlled         |
-| GET    | `/payouts/{payout}` | Get one payout       | Policy controlled         |
-| PUT    | `/payouts/{payout}` | Update payout        | Usually admin-level       |
-| GET    | `/my/payouts`       | Current user payouts | `auth:sanctum` middleware |
+| Method              | Path                | Description |
+| ------------------- | ------------------- | ----------- |
+| GET/POST/PUT/DELETE | `/payouts` resource | Payout CRUD |
 
 ## Account Recovery and Verification
 
-| Method | Path                 | Description            |
-| ------ | -------------------- | ---------------------- |
-| POST   | `/email/verify/send` | Send verification link |
-| POST   | `/email/verify`      | Verify email token     |
-| POST   | `/password/forgot`   | Request reset link     |
-| POST   | `/password/reset`    | Apply password reset   |
+| Method              | Path                      | Description                    |
+| ------------------- | ------------------------- | ------------------------------ |
+| GET/POST/PUT/DELETE | `/emailVerify` resource   | Email verification record CRUD |
+| GET/POST/PUT/DELETE | `/passwordReset` resource | Password reset record CRUD     |
 
 ## User and Profile
 
@@ -85,16 +82,14 @@ Base path examples assume `/api` prefix from Laravel API routes.
 
 ## History and Reviews
 
-| Method              | Path                             | Description          | Notes                     |
-| ------------------- | -------------------------------- | -------------------- | ------------------------- |
-| POST                | `/ticketHistory`                 | Store history event  |                           |
-| GET                 | `/ticketHistory`                 | List history         |                           |
-| GET                 | `/ticketHistory/{ticketHistory}` | Show history record  |                           |
-| GET                 | `/ticketHistory/my/history`      | Current user history | `auth:sanctum` middleware |
-| GET/POST/PUT/DELETE | `/reviews` resource              | Reviews CRUD         | Visibility rules apply    |
+| Method              | Path                      | Description         |
+| ------------------- | ------------------------- | ------------------- |
+| GET/POST/PUT/DELETE | `/ticketHistory` resource | Ticket history CRUD |
+| GET/POST/PUT/DELETE | `/reviews` resource       | Review CRUD         |
 
 ## Notes for Integrators
 
-- Some access checks are email-based (`buyerEmail`) and not user-ID based.
-- Authorization is policy-driven; role matrix is in [Permissions and Role Matrix](./permissions.md).
-- Keep frontend route usage aligned with backend naming (`/venues` exists in API routes).
+- Most non-read operations are protected by controller middleware using `auth:sanctum`.
+- Selected read/search endpoints are public (for example event, venue, and listing discovery endpoints).
+- Some ownership checks are email-based (`orders.buyerEmail`), not strictly user-id based.
+- Keep frontend route usage aligned with backend naming (`/venues` and `/venue` are both registered).

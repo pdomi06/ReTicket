@@ -15,9 +15,10 @@ The project is split into:
 
 1. Frontend calls backend REST endpoints using `fetch` and `VITE_API_BASE_URL`.
 2. Backend validates input with Form Request classes.
-3. Laravel policies enforce role and ownership authorization.
-4. Eloquent models represent domain entities and relations.
-5. Responses return resource data for frontend rendering and action feedback.
+3. Controller middleware enforces authentication boundaries.
+4. Laravel policies provide resource authorization where implemented.
+5. Eloquent models represent domain entities and relations.
+6. Responses return resource data for frontend rendering and action feedback.
 
 ## Domain Terms
 
@@ -35,6 +36,8 @@ See [Permissions and Role Matrix](./permissions.md) for full details.
 - Organizer: manages own events and related tickets.
 - Vendor: manages own sale listings and views own payouts.
 - Guest: public read-only usage with limited actions.
+
+Role references exist in project documentation and policy design, but enforcement is currently mixed because some policy classes are still stubs.
 
 ## Repository Landmarks
 

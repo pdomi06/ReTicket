@@ -9,8 +9,8 @@
 
 Authorization anchors:
 
-- Organizer-level access is enforced through policy checks and route middleware.
-- Admin can bypass in most policy `before()` checks.
+- Authentication boundaries are enforced through controller middleware.
+- Role/ownership policy behavior is partial until policy methods are fully implemented.
 
 ## 2. Ticket Resale Flow
 
@@ -31,8 +31,8 @@ Authorization anchors:
 
 1. Buyer creates order through `/orders`.
 2. Related order items are created and linked with `/orderItems`.
-3. Seller payout entries are read through `/my/payouts`.
-4. Admin-level payout updates run through `/payouts/{payout}`.
+3. Payout entries are managed through `/payouts` resource endpoints.
+4. Ticket listing checkout flow uses `/ticketForSale/checkOut`.
 
 Ownership anchors:
 
@@ -43,20 +43,15 @@ Ownership anchors:
 
 Ticket transfer or sale history is written and read via `/ticketHistory` endpoints.
 
-- `/ticketHistory/my/history` uses Sanctum middleware.
+- `/ticketHistory` resource endpoints use Sanctum middleware.
 - Use history records to build user-level ticket movement audit views.
 
 ## 5. Verification and Password Recovery
 
-Email verification:
+Account recovery resources currently follow RESTful CRUD endpoints:
 
-1. Request link via `/email/verify/send`.
-2. Validate token via `/email/verify`.
-
-Password reset:
-
-1. Request reset via `/password/forgot`.
-2. Apply reset via `/password/reset`.
+1. `emailVerify` resource for verification records.
+2. `passwordReset` resource for password reset records.
 
 ## 6. Workflow Risk Notes
 

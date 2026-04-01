@@ -3,8 +3,6 @@
 ## Environment Variables Used by Frontend
 
 - `VITE_API_BASE_URL`
-- `VITE_AUTH0_DOMAIN`
-- `VITE_AUTH0_CLIENT_ID`
 
 ## Context: EventContext
 
@@ -44,7 +42,7 @@ Current pattern is direct `fetch` calls inside contexts/pages.
 
 ## Contract Shape Notes
 
-- Frontend interfaces now consistently use camelCase audit fields (`createdAt`, `updatedAt`) instead of snake_case variants.
+- Backend payloads include mixed domain camelCase fields (for example `eventId`) and Laravel timestamp fields (`created_at`, `updated_at`).
 - `IEventForm` now retains the same core event fields as `IEvent` and only remaps `eventDate` and `eventEndDate` to allow datetime-local input values.
 - The dashboard edit-event page normalizes API event payloads using object spread and then converts the two date fields for form controls.
 - Several interfaces now represent some fields as required values where they were previously nullable in TypeScript types (for example order date fields).

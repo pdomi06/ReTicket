@@ -31,8 +31,9 @@ Core models in `backend/app/Models/`:
 | TicketForSale  | belongsTo User           | `fromUserId`          | Seller identity              |
 | Order          | hasMany OrderItem        | `orderId`             | Order line items             |
 | Order          | belongsTo User           | `buyerEmail -> email` | Email-based buyer relation   |
-| Payout         | belongsTo OrderItem      | `orderItemId`         | Settlement source            |
 | Payout         | belongsTo User           | `vendorId`            | Seller payout owner          |
+
+Note: `Payout` model currently defines an `orderItem()` relation in code, but current migration schema does not include an `orderItemId` column.
 
 ## Field and Timestamp Conventions
 
@@ -42,12 +43,8 @@ Important fields:
 
 - `eventDate`, `eventEndDate`
 - `basePrice`
-- `createdAt`, `updatedAt`
-
-Custom timestamps:
-
-- `CREATED_AT = createdAt`
-- `UPDATED_AT = updatedAt`
+- `createdBy`
+- `created_at`, `updated_at`
 
 ### OriginalTicket
 
@@ -57,11 +54,7 @@ Important fields:
 - `section`, `row`, `seatNumber`
 - `status`
 - `ticketPdfUrl`
-
-Custom timestamps:
-
-- `CREATED_AT = createdAt`
-- `UPDATED_AT = updatedAt`
+- `created_at`, `updated_at`
 
 ### TicketForSale
 
@@ -73,10 +66,6 @@ Important fields:
 - `price`
 - `inBasket`
 
-Timestamp behavior:
-
-- `public $timestamps = false`
-
 ### Order
 
 Important fields:
@@ -86,11 +75,7 @@ Important fields:
 - `status`, `paymentStatus`, `deliverStatus`
 - `paymentIntentId`
 - `deliveredAt`, `completedAt`, `cancelledAt`
-
-Custom timestamps:
-
-- `CREATED_AT = createdAt`
-- `UPDATED_AT = updatedAt`
+- `created_at`, `updated_at`
 
 ### Payout
 
@@ -101,33 +86,34 @@ Important fields:
 - `status`
 - `bank`, `iban`
 - `paidAt`
-
-Timestamp behavior:
-
-- `public $timestamps = false`
+- `created_at`, `updated_at`
 
 ## Schema Notes from Current Migrations
 
-- `users` stores audit fields as `createdAt` and `updatedAt`; `balance` is not defined.
-- `events` no longer defines a `createdBy` foreign key.
-- `orders` stores `deliveredAt`, `createdAt`, `updatedAt`, `completedAt`, and `cancelledAt` as date fields.
-- `order_item` stores only `createdAt` for timestamps.
-- `payouts` includes `orderItemId` foreign key and stores `createdAt` only.
+- `users` includes `balance` (default `0`) and Laravel timestamps (`created_at`, `updated_at`).
+- `events` defines `createdBy` as a foreign key to `users`.
+- `orders` stores `deliveredAt`, `completedAt`, and `cancelledAt` plus Laravel timestamps.
+- `order_item` stores Laravel timestamps.
+- `payouts` stores Laravel timestamps and domain fields such as `vendorId`, `status`, and `paidAt`.
 
 ## Timestamp Matrix
 
-| Model          | Timestamp Handling                                 |
-| -------------- | -------------------------------------------------- |
-| User           | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
-| Event          | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
-| OriginalTicket | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
-| Order          | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
-| Review         | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
-| UserSetting    | `CREATED_AT = createdAt`, `UPDATED_AT = updatedAt` |
-| EmailVerify    | `public $timestamps = false`                       |
-| PasswordReset  | `public $timestamps = false`                       |
-| OrderItem      | `public $timestamps = false`                       |
-| Payout         | `public $timestamps = false`                       |
+| Model          | Timestamp Handling                         |
+| -------------- | ------------------------------------------ |
+| User           | Uses default `created_at` and `updated_at` |
+| Event          | Uses default `created_at` and `updated_at` |
+| OriginalTicket | Uses default `created_at` and `updated_at` |
+| Order          | Uses default `created_at` and `updated_at` |
+| Review         | Uses default `created_at` and `updated_at` |
+| UserSetting    | Uses default `created_at` and `updated_at` |
+| EmailVerify    | Uses default `created_at` and `updated_at` |
+| PasswordReset  | Uses default `created_at` and `updated_at` |
+| OrderItem      | Uses default `created_at` and `updated_at` |
+| Payout         | Uses default `created_at` and `updated_at` |
+
+## Implementation Notes
+
+- Migration schemas include several fields that are not present in all model `$fillable` arrays. This is expected in the current codebase and should be considered when creating or updating records through mass assignment.
 
 ## Ownership Keys Used in Authorization
 

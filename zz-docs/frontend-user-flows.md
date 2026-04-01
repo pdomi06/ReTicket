@@ -27,12 +27,12 @@ Failure handling:
 ## 3. Auth Flow
 
 1. User opens `/login` or `/register`.
-2. Auth0 provider handles identity session.
-3. Application redirects to root origin after successful auth.
+2. Frontend submits credentials to backend auth endpoints.
+3. Session/token behavior is managed by backend auth flow.
 
 Operational requirement:
 
-- `VITE_AUTH0_DOMAIN` and `VITE_AUTH0_CLIENT_ID` must be configured.
+- `VITE_API_BASE_URL` must be configured.
 
 ## 4. Organizer Dashboard Flow
 

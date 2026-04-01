@@ -23,12 +23,13 @@ Checks:
 2. Confirm backend server is running.
 3. Validate CORS/backend origin compatibility.
 
-### Auth0 provider fails
+### Login or register calls fail
 
 Checks:
 
-1. Verify `VITE_AUTH0_DOMAIN` and `VITE_AUTH0_CLIENT_ID` are present.
-2. Confirm callback/redirect settings in Auth0 match app origin.
+1. Verify frontend requests target `VITE_API_BASE_URL`.
+2. Confirm backend is running and `/api/login` and `/api/register` are reachable.
+3. Validate payload shape against backend Form Request rules.
 
 ## API Contract Mismatch
 

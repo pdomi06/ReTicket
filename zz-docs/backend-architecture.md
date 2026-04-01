@@ -13,9 +13,10 @@
 
 1. Route in `backend/routes/api.php` maps request to controller action.
 2. Form Request validates payload/query when used.
-3. Policy authorization checks role and ownership.
-4. Controller executes model query or domain action.
-5. JSON response returns API data for frontend consumption.
+3. Controller middleware enforces `auth:sanctum` where configured.
+4. Policy checks apply where policy methods are implemented.
+5. Controller executes model query or domain action.
+6. JSON response returns API data for frontend consumption.
 
 ## API Layer Structure
 
@@ -25,28 +26,27 @@ Key route groups in `api.php`:
 - Events and Venues: searchable resources
 - Tickets: original tickets, active tickets, tickets for sale, basket actions
 - Orders and Order Items
-- Account recovery: email verification, password reset
+- Account recovery: `emailVerify` and `passwordReset` resources
 - Finance and history: payouts, ticket history
 - User and user settings resources
 
 ## Authorization Model
 
-Policies in `backend/app/Policies/` define role behavior.
+Policies in `backend/app/Policies/` are intended to define role behavior.
 
 Common pattern:
 
-- `before()` grants full access to `admin` for many resources.
-- `organizer` access is expected to be constrained by policy ownership rules.
-- `vendor` restricted by seller identity keys like `fromUserId`.
-- Several guest-facing read endpoints exist for discoverability.
+- Authentication boundaries are actively enforced through controller middleware.
+- Some policy classes are currently stubs and return `false` for all actions.
+- Public read endpoints exist for discoverability on selected resources.
 
 See [Permissions and Role Matrix](./permissions.md) for the consolidated role view.
 
 ## Data Contract Characteristics
 
-- Naming style often uses camelCase DB fields (`eventId`, `fromUserId`, `buyerEmail`, `createdAt`).
+- Naming style often uses camelCase domain fields (`eventId`, `fromUserId`, `buyerEmail`) alongside Laravel timestamp fields (`created_at`, `updated_at`).
 - Some relationships use email as foreign linkage (`Order` buyer relation via `buyerEmail`).
-- Not all models use Laravel default timestamps; some define `createdAt`/`updatedAt` or disable timestamps.
+- Timestamp columns in current migrations use Laravel defaults (`created_at`, `updated_at`) alongside domain date fields.
 
 ## Key Extension Points
 

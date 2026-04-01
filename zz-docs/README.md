@@ -38,9 +38,9 @@ This folder contains the project documentation chunks for backend, frontend, and
 
 - Roles are `admin`, `organizer`, `vendor`, and `guest`.
 - Endpoint examples are shown relative to the backend API base URL.
-- Model fields use project naming as-is (`eventId`, `fromUserId`, `buyerEmail`, `createdAt`).
-- Ownership checks are documented based on policy rules and relation keys.
-- Frontend environment variables use `VITE_` prefix.
+- Model fields use project naming as-is (`eventId`, `fromUserId`, `buyerEmail`) and Laravel timestamps (`created_at`, `updated_at`).
+- Ownership checks are documented from currently implemented middleware/policy behavior.
+- Frontend runtime API configuration uses `VITE_API_BASE_URL`.
 
 ## Update Discipline
 

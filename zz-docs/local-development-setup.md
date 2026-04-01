@@ -66,8 +66,6 @@ Create `frontend/.env` (or `.env.local`) with at least:
 
 ```bash
 VITE_API_BASE_URL=http://127.0.0.1:8000/api
-VITE_AUTH0_DOMAIN=your-auth0-domain
-VITE_AUTH0_CLIENT_ID=your-auth0-client-id
 ```
 
 ## First Boot Validation Checklist
@@ -88,5 +86,4 @@ composer test
 ## Common Setup Pitfalls
 
 - Missing `VITE_API_BASE_URL` causes frontend fetch failures.
-- Missing Auth0 values prevents auth provider initialization.
 - Backend route naming mismatch can produce 404 errors (see troubleshooting doc).

@@ -5,7 +5,6 @@
 - React 19 + TypeScript
 - Vite build tooling
 - React Router (lazy-loaded route modules)
-- Auth0 provider wrapper in app entry
 - Tailwind + Bootstrap + custom/CSS-module styles
 
 ## App Entry
@@ -13,9 +12,8 @@
 `frontend/src/main.tsx`:
 
 1. Creates root render.
-2. Wraps app in `Auth0Provider`.
-3. Mounts `BrowserRouter`.
-4. Loads global styles.
+2. Mounts `BrowserRouter`.
+3. Loads global styles.
 
 ## Route Topology
 
