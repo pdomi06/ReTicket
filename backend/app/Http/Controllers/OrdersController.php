@@ -26,9 +26,6 @@ class OrdersController extends Controller implements HasMiddleware
         $user = auth()->user();
         $orders = Order::query();
 
-        if($user->role !== 'admin') {
-            $orders->where('buyerEmail', $user->email);
-        }
         return response()->json($orders->get(), 200);
     }
 
@@ -43,6 +40,10 @@ class OrdersController extends Controller implements HasMiddleware
         $data['status'] = 'pending';
         $data['paymentStatus'] = 'pending';
         $data['deliverStatus'] = 'pending';
+        if(auth()->user()) {
+            $data['buyerEmail'] = auth()->user()->email;
+            $data['deliveryEmail'] = auth()->user()->email;
+        }
         $order = new Order($data);
         $order->orderNumber = $this->generateOrderNumber();
         $order->save();
