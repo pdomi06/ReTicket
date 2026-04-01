@@ -92,26 +92,8 @@ class TicketForSaleController extends Controller implements HasMiddleware
         }
 
         $user = $request->user();
-        if ($user->role !== 'admin') {
-            $isEventOrganizer = $originalTicket->event !== null
-                && (int) $originalTicket->event->createdBy === (int) $user->id;
+        $data['fromUserId'] = $user->id;
 
-            $latestTransfer = TicketHistory::where('originalTicketId', $originalTicket->id)
-                ->orderByDesc('id')
-                ->first();
-
-            $isCurrentOwner = $latestTransfer !== null
-                && (int) $latestTransfer->toUserId === (int) $user->id;
-
-            if (!$isEventOrganizer && !$isCurrentOwner) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You are not allowed to list this ticket for sale.',
-                ], 403);
-            }
-        }
-
-        $data['fromUserId'] = $request->user()->id;
         $data['inBasket'] = false;
 
 

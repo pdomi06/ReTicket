@@ -12,52 +12,6 @@ use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
 {
-
-    public function sendResetLink(StorePasswordResetRequest $request)
-    {
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 200);
-        }
-        PasswordReset::where('userId', $user->id)->delete();
-
-        $token = Str::random(60);
-        PasswordReset::create([
-            'userId' => $user->id,
-            'token' => $token,
-            'expiresAt' => now()->addHour(),
-            'verifiedAt' => null,
-            'createdAt' => now(),
-        ]);
-
-        return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 200);
-    }
-    public function reset(StorePasswordResetRequest $request)
-    {
-        $reset = PasswordReset::where('token', $request->token)->first();
-
-        if (!$reset) {
-            return response()->json(['message' => 'Invalid token.'], 400);
-        }
-
-        if (now()->gt($reset->expiresAt) || $reset->verifiedAt !== null) {
-            return response()->json(['message' => 'Token expired or already used.'], 400);
-        }
-
-        $user = User::find($reset->userId);
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
-        }
-
-        $user->passwordHash = Hash::make($request->password);
-        $user->save();
-
-        $reset->verifiedAt = now();
-        $reset->save();
-
-        return response()->json(['message' => 'Password reset successful.'], 200);
-    }
     /**
      * Display a listing of the resource.
      */

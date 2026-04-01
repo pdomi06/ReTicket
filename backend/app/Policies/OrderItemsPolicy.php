@@ -20,7 +20,7 @@ class OrderItemsPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin';
+        return false;
     }
 
     /**
