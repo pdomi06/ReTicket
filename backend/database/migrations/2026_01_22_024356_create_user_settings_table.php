@@ -18,8 +18,7 @@ return new class extends Migration
             $table->boolean('emailNotification');
             $table->boolean('smsNotification');
             $table->enum('profileVisibility', ["visible", "restricted", "banned"]);
-            $table->date('createdAt');
-            $table->date('updatedAt');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

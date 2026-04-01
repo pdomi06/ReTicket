@@ -25,8 +25,8 @@ class Event extends Model
         'category',
         'basePrice',
         'imageUrl',
-        'createdAt',
-        'updatedAt',
+        'created_at',
+        'updated_at',
     ];
 
 
@@ -70,15 +70,10 @@ class Event extends Model
 
         return $query;
     }
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-
     protected $casts = [
         'eventDate' => 'integer',
         'eventEndDate' => 'integer'
     ];
-
-    //public $timestamps = false;
 
     public function originalTickets()
     {

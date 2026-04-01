@@ -17,13 +17,11 @@ class EmailVerify extends Model
         'token',
         'expiresAt',
         'verifiedAt',
-        'createdAt',
+        'created_at',
     ];
     protected $casts= [
         'expiresAt' => 'datetime',
         'verifiedAt' => 'datetime',
     ];
 
-    //const CREATED_AT = 'createdAt';
-    public $timestamps = false;
 }

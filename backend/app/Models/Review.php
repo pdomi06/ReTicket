@@ -19,13 +19,9 @@ class Review extends Model
         'title',
         'comment',
         'isVisible',
-        'createdAt',
-        'updatedAt'
+        'created_at',
+        'updated_at'
     ];
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-
-    //public $timestamps = false;
 
     public function orderItem(){
         return $this->belongsTo(OrderItem::class, 'orderItemId');

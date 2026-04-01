@@ -18,13 +18,9 @@ class UserSetting extends Model
         'emailNotification',
         'smsNotification',
         'profileVisibility',
-        'createdAt',
-        'updatedAt'
+        'created_at',
+        'updated_at'
     ];
-
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = 'updatedAt';
-    //public $timestamps = false;
 
     public function user()
     {
