@@ -47,10 +47,20 @@ const EditEvent = () => {
                 }
                 const normalizedEventData = eventData as IEvent;
                 setEventParams({
-                    ...normalizedEventData,
+                    id: normalizedEventData.id,
+                    name: normalizedEventData.name,
+                    description: normalizedEventData.description,
+                    venue: normalizedEventData.venue,
+                    address: normalizedEventData.address,
+                    city: normalizedEventData.city,
+                    state: normalizedEventData.state,
+                    country: normalizedEventData.country,
                     eventDate: toDateTimeLocalValue(normalizedEventData.eventDate),
                     eventEndDate: toDateTimeLocalValue(normalizedEventData.eventEndDate),
-                } as IEventForm);
+                    category: normalizedEventData.category,
+                    basePrice: normalizedEventData.basePrice,
+                    imageUrl: normalizedEventData.imageUrl,
+                });
             } catch (error) {
                 if (error instanceof Error && error.name !== 'AbortError') {
                     console.error('Error fetching event:', error);
