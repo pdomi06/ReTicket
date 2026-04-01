@@ -22,6 +22,7 @@ class UserSettingsController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', UserSetting::class);
         $all_user_settings = UserSetting::all();
         return response()->json($all_user_settings, 200);
     }
@@ -31,8 +32,14 @@ class UserSettingsController extends Controller implements HasMiddleware
      */
     public function store(StoreUserSettingsRequest $request)
     {
-        $user_setting = UserSetting::create($request->validated());
-        return response()->json($user_setting, 201);
+        $this->authorize('create', UserSetting::class);
+        $data = $request->validated();
+        $user_setting = UserSetting::updateOrCreate(
+            ['userId' => auth()->id()],
+            $data
+        );
+
+        return response()->json($user_setting, $user_setting->wasRecentlyCreated ? 201 : 200);
     }
 
     /**
@@ -40,6 +47,7 @@ class UserSettingsController extends Controller implements HasMiddleware
      */
     public function show(UserSetting $userSetting)
     {
+        $this->authorize('view', $userSetting);
         return response()->json($userSetting, 200);
     }
 
@@ -48,6 +56,7 @@ class UserSettingsController extends Controller implements HasMiddleware
      */
     public function update(UpdateUserSettingsRequest $request, UserSetting $userSetting)
     {
+        $this->authorize('update', $userSetting);
         $userSetting->update($request->validated());
         return response()->json($userSetting, 200);
     }
@@ -57,6 +66,7 @@ class UserSettingsController extends Controller implements HasMiddleware
      */
     public function destroy(UserSetting $userSetting)
     {
+        $this->authorize('delete', $userSetting);
         $userSetting->delete();
         return response()->json(["message" => "User settings deleted successfully"], 200);
     }

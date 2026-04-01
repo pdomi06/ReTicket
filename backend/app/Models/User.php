@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Order;
+use App\Models\TicketForSale;
+use App\Models\UserSetting;
+use App\Models\Payout;
 
 class User extends Authenticatable
 {
@@ -24,6 +28,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'email',
+        'role',
         'passwordHash',
         'name',
         'phone',
@@ -84,10 +89,5 @@ class User extends Authenticatable
     public function payouts()
     {
         return $this->hasMany(Payout::class, 'vendorId');
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class, 'reviewedUserId');
     }
 }

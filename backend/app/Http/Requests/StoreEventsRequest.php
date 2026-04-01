@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEventsRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreEventsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', Event::class);
     }
 
     /**

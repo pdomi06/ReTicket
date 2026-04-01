@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('order_item', function (Blueprint $table) {
             $table->id();
             $table->foreignId('orderId')->constrained('orders')->onDelete('cascade');
-            $table->text('ticketListingId')->unique();
+            $table->string('ticketListingId')->unique();
             $table->decimal('price', 10, 2);
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,6 +24,9 @@ class EventFactory extends Factory
 
         return [
             'name' => fake()->words(2, true),
+            'createdBy' => User::factory()->state([
+                'role' => 'organizer',
+            ]),
             'description' => fake()->paragraph(),
             'venue' => fake()->company(),
             'address' => fake()->streetAddress(),

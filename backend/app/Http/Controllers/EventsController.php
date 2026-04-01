@@ -19,54 +19,58 @@ class EventsController extends Controller implements HasMiddleware
             new Middleware('auth:sanctum', except: ['index', 'show', 'search']),
         ];
     }
-    public function index(){
+    public function index()
+    {
         $events = Event::with('originalTickets')
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        $eventsData = $events->getCollection()->map(function($event) {
+        $eventsData = $events->getCollection()->map(function ($event) {
             return array_merge(
                 $event->toArray(),
                 ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
             );
         });
 
-        return response()->json(['success' => true,
+        return response()->json([
+            'success' => true,
             'data' => $eventsData,
             'pagination' => [
-            'current_page' => $events->currentPage(),
-            'total_results' => $events->total(),
-            'total_pages' => $events->lastPage(),
-            'per_page' => $events->perPage(),]], 200);
+                'current_page' => $events->currentPage(),
+                'total_results' => $events->total(),
+                'total_pages' => $events->lastPage(),
+                'per_page' => $events->perPage(),
+            ]
+        ], 200);
     }
 
-     public function search(SearchEventsRequest $request)
+    public function search(SearchEventsRequest $request)
     {
         $filters = $request->validated();
 
         $query = Event::query();
-        
-        
+
+
         if (!empty($filters['name'])) {
             $query->where('name', 'like', '%' . $filters['name'] . '%');
         }
-        
+
         if (!empty($filters['country'])) {
             $query->where('country', 'like', '%' . $filters['country'] . '%');
         }
-        
+
         if (!empty($filters['venue'])) {
             $query->where('venue', 'like', '%' . $filters['venue'] . '%');
         }
-        
+
         if (!empty($filters['city'])) {
             $query->where('city', 'like', '%' . $filters['city'] . '%');
         }
-        
+
         if (!empty($filters['category'])) {
             $query->where('category', $filters['category']);
         }
-        
+
         if (!empty($filters['eventDate'])) {
             // Parse date in user's timezone, then convert to UTC for database query
             $userTimezone = $filters['timezone'] ?? '+00:00';
@@ -76,21 +80,24 @@ class EventsController extends Controller implements HasMiddleware
             $endOfDayTimestamp = $date->copy()->endOfDay()->timestamp;
             $query->whereBetween('eventDate', [$startOfDayTimestamp, $endOfDayTimestamp]);
         }
-        
+
         if (!empty($filters['maxPrice'])) {
             $query->where('basePrice', '<=', $filters['maxPrice']);
         }
 
         $events = $query->orderByDesc('created_at')->paginate(20);
 
-        return response()->json(['success' => true,
+        return response()->json([
+            'success' => true,
             'data' => $events->items(),
             'filters_applied' => $filters,
             'pagination' => [
             'current_page' => $events->currentPage(),
             'total_results' => $events->total(),
             'total_pages' => $events->lastPage(),
-            'per_page' => $events->perPage(),]], 200);
+            'per_page' => $events->perPage(),
+            ]
+        ], 200);
     }
 
     /**
@@ -98,15 +105,16 @@ class EventsController extends Controller implements HasMiddleware
      */
     public function store(StoreEventsRequest $request)
     {
-        $event = Event::create($request->validated());
-
+        $data = $request->validated();
+        $data['createdBy'] = auth()->id();
+        $event = Event::create($data);
         return response()->json(['success' => true, 'data' => $event], 201);
     }
 
     /**
      * Display the specified resource.
      */
-     public function show(Event $event)
+    public function show(Event $event)
     {
         return response()->json(['success' => true, 'data' => $event], 200);
     }
@@ -116,6 +124,7 @@ class EventsController extends Controller implements HasMiddleware
      */
     public function update(UpdateEventsRequest $request, Event $event)
     {
+        $this->authorize('update', $event);
         $event->update($request->validated());
 
         return response()->json(['success' => true, 'data' => $event], 200);
@@ -126,6 +135,7 @@ class EventsController extends Controller implements HasMiddleware
      */
     public function destroy(Event $event)
     {
+        $this->authorize('delete', $event);
         $event->delete();
 
         return response()->json(['success' => true, 'message' => 'Event deleted successfully'], 200);

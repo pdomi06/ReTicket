@@ -2,11 +2,10 @@
 
 namespace App\Policies;
 
+use App\Models\EmailVerification;
 use App\Models\User;
-use App\Models\OrderItem;
-use Illuminate\Auth\Access\Response;
 
-class OrderItemsPolicy
+class EmailVerificationPolicy
 {
     public function before(?User $user, string $ability): ?bool
     {
@@ -24,9 +23,25 @@ class OrderItemsPolicy
     }
 
     /**
+     * Determine whether a verification link can be requested.
+     */
+    public function requestLink(?User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether a verification token can be submitted.
+     */
+    public function verifyToken(?User $user): bool
+    {
+        return true;
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, OrderItem $orderItems): bool
+    public function view(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -42,7 +57,7 @@ class OrderItemsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, OrderItem $orderItems): bool
+    public function update(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -50,7 +65,7 @@ class OrderItemsPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, OrderItem $orderItems): bool
+    public function delete(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -58,7 +73,7 @@ class OrderItemsPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, OrderItem $orderItems): bool
+    public function restore(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }
@@ -66,7 +81,7 @@ class OrderItemsPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, OrderItem $orderItems): bool
+    public function forceDelete(User $user, EmailVerification $emailVerification): bool
     {
         return false;
     }

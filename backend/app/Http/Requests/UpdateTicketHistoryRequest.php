@@ -11,7 +11,7 @@ class UpdateTicketHistoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -25,7 +25,7 @@ class UpdateTicketHistoryRequest extends FormRequest
         'originalTicketId' => ['sometimes', 'integer', 'exists:original_tickets,id'],
         'ticketListingId' => ['sometimes', 'string'],
         'fromUserId' => ['sometimes', 'integer', 'exists:users,id'],
-        'toUser' => ['sometimes', 'string'],
+        'toUserId' => ['sometimes', 'integer', 'exists:users,id'],
         'price' => ['sometimes', 'numeric', 'min:0'],
         'platformFee' => ['sometimes', 'numeric', 'min:0'],
         ];

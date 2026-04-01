@@ -18,7 +18,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search', 'getOnlyAvailableTicketsInForSale']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'getOnlyAvailableTicketsInForSale', 'show']),
         ];
     }
     /**
@@ -28,6 +28,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function index()
     {
+        $this->authorize('viewAny', OriginalTicket::class);
         $original_tickets = OriginalTicket::all();
         return response()->json($original_tickets, 200);
     }
@@ -73,6 +74,8 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function store(StoreOriginalTicketsRequest $request)
     {
+        $event = Event::findOrFail($request->eventId);
+        $this->authorize('createForEvent', [OriginalTicket::class, $event]);
         $original_ticket = OriginalTicket::create($request->validated());
         return response()->json($original_ticket, 201);
     }
@@ -82,6 +85,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function show(OriginalTicket $originalTicket)
     {
+        $this->authorize('view', $originalTicket);
         return response()->json($originalTicket, 200);
     }
 
@@ -90,6 +94,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function update(UpdateOriginalTicketsRequest $request, OriginalTicket $originalTicket)
     {
+        $this->authorize('update', $originalTicket);
         $originalTicket->update($request->validated());
         return response()->json($originalTicket, 200);
     }
@@ -99,12 +104,15 @@ class OriginalTicketsController extends Controller implements HasMiddleware
      */
     public function destroy(OriginalTicket $originalTicket)
     {
+        $this->authorize('delete', $originalTicket);
         $originalTicket->delete();
         return response()->json(["message" => "Original ticket deleted successfully"], 200);
     }
 
     public function bulkStore(BulkStoreOriginalTicketsRequest $request)
     {
+        $event = Event::findOrFail($request->eventId);
+        $this->authorize('createForEvent', [OriginalTicket::class, $event]);
         $eventId = $request->eventId;
         $venues = $request->venue;
         $basePrice = $request->eventBasePrice;
@@ -134,6 +142,8 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function bulkUpdate(BulkStoreOriginalTicketsRequest $request)
     {
+        $event = Event::findOrFail($request->eventId);
+        $this->authorize('updateAny', [OriginalTicket::class, $event]);
         $eventId = $request->eventId;
         $venues = $request->venue;
         $basePrice = $request->eventBasePrice;
@@ -171,6 +181,9 @@ class OriginalTicketsController extends Controller implements HasMiddleware
             'status' => ['required', 'in:pre-release,reserved,active,cancelled,expired'],
         ]);
 
+        $event = Event::findOrFail($request->eventId);
+        $this->authorize('updateAny', [OriginalTicket::class, $event]);
+
         $eventId = $request->eventId;
         $newStatus = $request->status;
 
@@ -193,7 +206,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
                 if (!in_array($ticket->id, $existingForSaleIds)) {
                     $ticketsToCreate[] = [
                         'originalTicketId' => $ticket->id,
-                        'fromUserId' => null,
+                        'fromUserId' => $event->createdBy,
                         'eventId' => $eventId,
                         'price' => $ticket->price,
                         'inBasket' => false,
@@ -233,6 +246,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
 
     public function dashboard()
     {
+        $this->authorize('viewAny', OriginalTicket::class);
         $tickets = OriginalTicket::join('events', 'original_tickets.eventId', '=', 'events.id')
             ->select([
                 'original_tickets.id',

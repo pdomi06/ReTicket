@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActiveTicketsController;
-use App\Http\Controllers\EmailVerifyController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\OrdersController;
@@ -25,7 +25,6 @@ Route::get('events/search', [EventsController::class, 'search']);
 Route::apiResource('events', EventsController::class);
 Route::get('venues/search', [VenueMapController::class, 'search']);
 Route::apiResource('venues', VenueMapController::class);
-Route::apiResource('venue', VenueMapController::class);
 Route::apiResource('activeTickets', ActiveTicketsController::class);
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
@@ -41,11 +40,19 @@ Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleCont
 Route::post('ticketForSale/checkOut', [TicketForSaleController::class, 'checkOut']);
 Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
-Route::apiResource("emailVerify", EmailVerifyController::class);
+Route::post('email/verify/send', [EmailVerificationController::class, 'sendLink']);
+Route::post('email/verify', [EmailVerificationController::class, 'verify']);
 Route::apiResource("orderItems", OrderItemsController::class);
 Route::apiResource("orders", OrdersController::class);
-Route::apiResource("passwordReset", PasswordResetController::class);
-Route::apiResource("payouts", PayoutsController::class);
+Route::post('password/forgot', [PasswordResetController::class, 'store']);
+Route::post('password/reset', [PasswordResetController::class, 'update']);
+Route::get('payouts', [PayoutsController::class, 'index']);
+Route::get('payouts/{payout}', [PayoutsController::class, 'show']);
+Route::put('payouts/{payout}', [PayoutsController::class, 'update']);
+Route::get('my/payouts', [PayoutsController::class, 'myPayouts'])->middleware('auth:sanctum');
 Route::apiResource("reviews", ReviewsController::class);
-Route::apiResource("ticketHistory", TicketHistoryController::class);
+Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
+Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
+Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
+Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware('auth:sanctum');
 Route::apiResource("userSettings", UserSettingsController::class);

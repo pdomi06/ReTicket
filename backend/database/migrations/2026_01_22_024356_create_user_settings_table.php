@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('userId')->primary()->constrained('users')->onDelete('cascade');
             $table->boolean('emailNotification');
             $table->boolean('smsNotification');
-            $table->enum('profileVisibility', ["visible", "restricted", "banned"]);
+            $table->enum('profileVisibility', ["visible", "restricted", "banned"])->default("restricted");
             $table->timestamps();
         });
 

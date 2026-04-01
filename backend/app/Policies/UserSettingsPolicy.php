@@ -11,6 +11,14 @@ class UserSettingsPolicy
     /**
      * Determine whether the user can view any models.
      */
+
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     public function viewAny(User $user): bool
     {
         return false;
@@ -21,7 +29,7 @@ class UserSettingsPolicy
      */
     public function view(User $user, UserSetting $userSettings): bool
     {
-        return false;
+        return $user->id === $userSettings->userId;
     }
 
     /**
@@ -29,7 +37,7 @@ class UserSettingsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +45,7 @@ class UserSettingsPolicy
      */
     public function update(User $user, UserSetting $userSettings): bool
     {
-        return false;
+        return $user->id === $userSettings->userId;
     }
 
     /**

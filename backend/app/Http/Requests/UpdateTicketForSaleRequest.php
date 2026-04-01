@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateTicketForSaleRequest extends FormRequest
 {
@@ -12,7 +11,8 @@ class UpdateTicketForSaleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $ticket = $this->route('ticketForSale');
+        return $this->user()->can('update', $ticket);
     }
 
     /**
@@ -27,7 +27,6 @@ class UpdateTicketForSaleRequest extends FormRequest
         'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
         'eventId' => ['sometimes', 'integer', 'exists:events,id'],
         'price' => ['sometimes', 'numeric', 'min:0'],
-        'inBasket' => ['sometimes', 'boolean'],
         ];
     }
 }

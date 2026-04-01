@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrderItemsRequest extends FormRequest
@@ -11,7 +13,14 @@ class StoreOrderItemsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $order = Order::find($this->input('orderId'));
+        if(!$order){
+            return false;
+        }
+        if($order->buyerEmail !== $this->user()->email){
+            return false;
+        }
+        return $this->user()->can('create', OrderItem::class);
     }
 
     /**

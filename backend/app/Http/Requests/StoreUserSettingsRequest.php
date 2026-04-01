@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\UserSetting;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserSettingsRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StoreUserSettingsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
@@ -22,10 +24,9 @@ class StoreUserSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['required', 'integer', 'exists:users,id'],
-            'emailNotifications' => ['required', 'boolean'],
-            'smsNotifications' => ['required', 'boolean'],
-            'profileVisibility' => ['required', 'in:visible,restricted,banned'],
+            'emailNotification' => ['sometimes', 'boolean'],
+            'smsNotification' => ['sometimes', 'boolean'],
+            'profileVisibility' => ['sometimes', 'in:visible,restricted,banned'],
         ];
     }
 }

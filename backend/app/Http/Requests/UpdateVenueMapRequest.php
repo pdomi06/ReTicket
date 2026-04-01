@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\VenueMap;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateVenueMapRequest extends FormRequest
@@ -11,7 +12,9 @@ class UpdateVenueMapRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $model = $this->route('venue');
+
+        return $this->user()->can('update', $model);
     }
 
     /**
@@ -26,7 +29,7 @@ class UpdateVenueMapRequest extends FormRequest
         'section' => ['sometimes', 'string', 'max:255'],
         'rows' => ['sometimes', 'integer', 'min:1', 'max:50'],
         'cols' => ['sometimes', 'integer', 'min:1', 'max:50'],
-        'rate' => ['sometimes', 'numeric', 'min:1', 'max:5'],
+        'rate' => ['sometimes', 'numeric', 'min:0.1', 'max:9.9'],
         ];
     }
 }

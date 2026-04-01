@@ -4,16 +4,40 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\PasswordReset;
-use Illuminate\Auth\Access\Response;
 
 class PasswordResetPolicy
 {
+    public function before(?User $user, string $ability): ?bool
+    {
+        if ($user && $user->role === 'admin') {
+            return true;
+        }
+
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
         return false;
+    }
+
+    /**
+     * Determine whether a reset link can be requested.
+     */
+    public function requestLink(?User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether a reset token can be submitted.
+     */
+    public function verifyToken(?User $user): bool
+    {
+        return true;
     }
 
     /**

@@ -11,7 +11,8 @@ class UpdateUserSettingsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $userSetting = $this->route('userSetting');
+        return $this->user()->can('update', $userSetting);
     }
 
     /**
@@ -22,8 +23,8 @@ class UpdateUserSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'emailNotifications' => ['sometimes', 'boolean'],
-        'smsNotifications' => ['sometimes', 'boolean'],
+        'emailNotification' => ['sometimes', 'boolean'],
+        'smsNotification' => ['sometimes', 'boolean'],
         'profileVisibility' => ['sometimes', 'in:visible,restricted,banned'],
         ];
     }
