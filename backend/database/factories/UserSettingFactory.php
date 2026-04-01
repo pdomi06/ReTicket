@@ -23,8 +23,8 @@ class UserSettingFactory extends Factory
             'emailNotification' => fake()->boolean(50),
             'smsNotification' => fake()->boolean(50),
             'profileVisibility' => fake()->randomElement($visibility),
-            'createdAt' => now(),
-            'updatedAt' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
     public function forUser(User $user){

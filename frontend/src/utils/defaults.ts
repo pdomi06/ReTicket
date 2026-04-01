@@ -13,9 +13,7 @@ export const defaultIEvent: IEventForm = {
   eventEndDate: 0,
   category: 'music' as const,
   basePrice: 0,
-  imageUrl: '',
-  createdAt: '',
-  updatedAt: ''
+  imageUrl: ''
 }
 
 export const defaultIEventContext: IEventContext = {
@@ -33,8 +31,8 @@ export const defaultIEventContext: IEventContext = {
     category: 'music' as const,
     basePrice: 0,
     imageUrl: '',
-    createdAt: '',
-    updatedAt: ''
+    created_at: '',
+    updated_at: ''
   },
   getEvent: async () => false
 }

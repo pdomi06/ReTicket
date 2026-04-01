@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('bank');
             $table->text('iban');
             $table->date('paidAt');
-            $table->date('createdAt');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
