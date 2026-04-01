@@ -47,7 +47,7 @@ class OriginalTicketsPolicy
         if ($user->role === 'admin') {
             return true;
         }
-        return $user->role === 'organizer' && $event->organizer_id === $user->id;
+        return $user->role === 'organizer' && $event->createdBy === $user->id;
     }
 
     /**
@@ -56,7 +56,7 @@ class OriginalTicketsPolicy
     public function update(User $user, OriginalTicket $originalTickets): bool
     {
         $event = $originalTickets->event;
-        if ($user->role === 'organizer' && $event && $event->organizer_id === $user->id) {
+        if ($user->role === 'organizer' && $event && $event->createdBy === $user->id) {
             return true;
         }
         if ($user->role === 'admin') {
@@ -70,7 +70,7 @@ class OriginalTicketsPolicy
      */
     public function updateByEvent(User $user, Event $event): bool
     {
-        if ($user->role === 'organizer' && $event->organizer_id === $user->id) {
+        if ($user->role === 'organizer' && $event->createdBy === $user->id) {
             return true;
         }
         if ($user->role === 'admin') {
@@ -84,7 +84,7 @@ class OriginalTicketsPolicy
     if ($user->role === 'admin') {
         return true;
     }
-    return $user->role === 'organizer' && $event->organizer_id === $user->id;
+        return $user->role === 'organizer' && $event->createdBy === $user->id;
 }
 
 public function manageTicketStatus(User $user, Event $event): bool{
@@ -97,7 +97,7 @@ public function manageTicketStatus(User $user, Event $event): bool{
     public function delete(User $user, OriginalTicket $originalTickets): bool
     {
         $event = $originalTickets->event;
-        if ($user->role === 'organizer' && $event && $event->organizer_id === $user->id) {
+        if ($user->role === 'organizer' && $event && $event->createdBy === $user->id) {
             return true;
         }
         if ($user->role === 'admin') {

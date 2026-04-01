@@ -99,7 +99,7 @@ class EventsController extends Controller implements HasMiddleware
     public function store(StoreEventsRequest $request)
     {
         $data = $request->validated();
-        $data['organizer_id'] = auth()->id();
+        $data['createdBy'] = auth()->id();
         $event = Event::create($data);
         return response()->json(['success' => true, 'data' => $event], 201);
     }

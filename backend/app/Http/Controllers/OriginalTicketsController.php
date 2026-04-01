@@ -206,7 +206,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
                 if (!in_array($ticket->id, $existingForSaleIds)) {
                     $ticketsToCreate[] = [
                         'originalTicketId' => $ticket->id,
-                        'fromUserId' => $event->organizer_id,
+                        'fromUserId' => $event->createdBy,
                         'eventId' => $eventId,
                         'price' => $ticket->price,
                         'inBasket' => false,

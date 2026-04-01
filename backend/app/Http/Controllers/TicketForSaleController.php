@@ -94,7 +94,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $user = $request->user();
         if ($user->role !== 'admin') {
             $isEventOrganizer = $originalTicket->event !== null
-                && (int) $originalTicket->event->organizer_id === (int) $user->id;
+                && (int) $originalTicket->event->createdBy === (int) $user->id;
 
             $latestTransfer = TicketHistory::where('originalTicketId', $originalTicket->id)
                 ->orderByDesc('id')

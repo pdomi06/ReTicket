@@ -56,7 +56,7 @@ class ActiveTicketsPolicy
         return false;
     }
 
-    return $originalTicket->event->organizer_id === $user->id;
+    return $originalTicket->event->createdBy === $user->id;
     }
 
     /**
@@ -91,6 +91,6 @@ class ActiveTicketsPolicy
             return false;
 
         $event = $originalTicket->event;
-        return $event && $event->organizer_id === $user->id;
+        return $event && $event->createdBy === $user->id;
     }
 }

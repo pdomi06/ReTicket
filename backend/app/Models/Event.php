@@ -13,7 +13,7 @@ class Event extends Model
     protected $table = 'events';
     protected $fillable = [
         'name',
-        'organizer_id',
+        'createdBy',
         'description',
         'venue',
         'address',
@@ -80,6 +80,6 @@ class Event extends Model
     }
     public function organizer()
     {
-        return $this->belongsTo(User::class, 'organizer_id');
+        return $this->belongsTo(User::class, 'createdBy');
     }
 }

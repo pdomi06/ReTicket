@@ -16,8 +16,6 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->unsignedBigInteger('organizer_id');
-            $table->foreign('organizer_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('description');
             $table->text('venue')->comment('this can be used for auto generate tickets');
             $table->text('address');
@@ -29,7 +27,7 @@ return new class extends Migration
             $table->enum('category', ["cultural", "music", "sport"]);
             $table->decimal('basePrice', 10, 2);
             $table->text('imageUrl');
-            $table->datetime('createdBy')->default(now());
+            $table->foreignId('createdBy')->constrained('users');
             $table->dateTime('createdAt');
             $table->dateTime('updatedAt');
         });
