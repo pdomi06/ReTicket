@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrdersRequest;
 use App\Http\Requests\UpdateOrdersRequest;
+use App\Http\Requests\CheckOutOrdersRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -17,16 +18,16 @@ class OrdersController extends Controller implements HasMiddleware
             new Middleware('auth:sanctum'),
         ];
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $this->authorize('viewAny', Order::class);
-        $user = auth()->user();
-        $orders = Order::query();
+        $orders = Order::all();
 
-        return response()->json($orders->get(), 200);
+        return response()->json($orders, 200);
     }
 
     /**
@@ -40,10 +41,12 @@ class OrdersController extends Controller implements HasMiddleware
         $data['status'] = 'pending';
         $data['paymentStatus'] = 'pending';
         $data['deliverStatus'] = 'pending';
-        if(auth()->user()) {
+
+        if (auth()->user()) {
             $data['buyerEmail'] = auth()->user()->email;
             $data['deliveryEmail'] = auth()->user()->email;
         }
+
         $order = new Order($data);
         $order->orderNumber = $this->generateOrderNumber();
         $order->save();
@@ -87,5 +90,30 @@ class OrdersController extends Controller implements HasMiddleware
         $this->authorize('delete', $order);
         $order->delete();
         return response()->json(["message" => "Order deleted successfully"], 200);
+    }
+
+    public function checkOut(CheckOutOrdersRequest $request)
+    {
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        
+        $checkoutSession = \Stripe\Checkout\Session::create([
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => env('CASHIER_CURRENCY', 'huf'),
+                    'unit_amount' => $request->subtotal + $request->platformFee,
+                    'product_data' => [
+                        'name' => 'Custom Payment',
+                    ],
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => env('FRONTEND_URL') . '?success=true',
+            'automatic_tax' => [
+                'enabled' => true,
+            ],
+        ]);
+
+        return response()->json($checkoutSession, 200);
     }
 }
