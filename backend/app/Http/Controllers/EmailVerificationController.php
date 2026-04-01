@@ -6,8 +6,7 @@ use App\Http\Requests\SendVerificationLinkRequest;
 use App\Http\Requests\VerifyEmailRequest;
 use App\Models\EmailVerification;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Str;
+use Illuminate\Support\Str;
 
 class EmailVerificationController extends Controller
 {
