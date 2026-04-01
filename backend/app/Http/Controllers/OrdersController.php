@@ -22,6 +22,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', Order::class);
         $user = auth()->user();
         $orders = Order::query();
 
@@ -36,10 +37,8 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
+        $this->authorize('create', Order::class);
         $data = $request->validated();
-        if ($request->user()->email !== $data['buyerEmail']) {
-            abort(403, 'You can only create orders for your own account.');
-        }
 
         $data['status'] = 'pending';
         $data['paymentStatus'] = 'pending';

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\OriginalTicket;
-use App\Models\TicketHistory;
 use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForSaleRequest;

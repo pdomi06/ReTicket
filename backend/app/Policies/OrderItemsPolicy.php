@@ -28,8 +28,7 @@ class OrderItemsPolicy
      */
     public function view(User $user, OrderItem $orderItems): bool
     {
-        $order = $orderItems->order;
-        return $order && $user->email === $order->buyerEmail;
+        return false;
     }
 
     /**
@@ -37,7 +36,7 @@ class OrderItemsPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -45,8 +44,7 @@ class OrderItemsPolicy
      */
     public function update(User $user, OrderItem $orderItems): bool
     {
-        $order = $orderItems->order;
-        return $order && $user->email === $order->buyerEmail;
+        return false;
     }
 
     /**
