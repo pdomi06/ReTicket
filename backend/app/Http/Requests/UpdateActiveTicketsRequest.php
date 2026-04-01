@@ -11,7 +11,8 @@ class UpdateActiveTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $activeTicket = $this->route('activeTicket');
+        return $this->user()->can('update', $activeTicket);
     }
 
     /**
@@ -23,7 +24,7 @@ class UpdateActiveTicketsRequest extends FormRequest
     {
         return [
             'originalTicketId' => ['sometimes','exists:original_tickets,id'],
-            'ticketListingId' => ['sometimes', 'string'],
+                    'ticketListingId' => ['sometimes', 'string', 'unique:active_tickets,ticketListingId,' . $this->route('activeTicket')->id],
         ];
     }
 }

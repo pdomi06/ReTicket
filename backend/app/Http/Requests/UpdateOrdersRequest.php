@@ -12,7 +12,8 @@ class UpdateOrdersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $order = $this->route('order');
+        return $this->user()->can('update', $order);
     }
 
     /**
@@ -23,15 +24,14 @@ class UpdateOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'orderNumber' => ['sometimes', 'integer', Rule::unique('orders')->ignore($this->route('order'))],
-            'buyerEmail' => ['sometimes', 'email'],
+            'buyerEmail' => ['sometimes', 'email', 'exists:users,email'],
             'subtotal' => ['sometimes', 'numeric', 'min:0'],
             'platformFee' => ['sometimes', 'numeric', 'min:0'],
             'tax' => ['nullable', 'numeric', 'min:0'],
             'status' => ['sometimes', 'in:pending,processing,completed,failed,refunded'],
             'paymentIntentId' => ['sometimes', 'string'],
             'paymentStatus' => ['sometimes', 'in:pending,authorized,captured,failed,refunded'],
-            'deliveryEmail' => ['sometimes', 'email'],
+            'deliveryEmail' => ['sometimes', 'email', 'exists:users,email'],
             'deliverStatus' => ['sometimes', 'in:pending,sent,delivered'],
             'deliveredAt' => ['nullable', 'date'],
             'completedAt' => ['nullable', 'date'],

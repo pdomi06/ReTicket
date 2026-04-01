@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PasswordReset;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StorePasswordResetRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StorePasswordResetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('requestLink', PasswordReset::class);
     }
 
     /**
@@ -22,10 +24,7 @@ class StorePasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'userId' => ['required', 'exists:users,id'],
-        'token' => ['required', 'string'],
-        'expiresAt' => ['required', 'date'],
-        'verifiedAt'=> ['nullable', 'date'],
+            'email' => ['required', 'email'],
         ];
     }
 }

@@ -3,23 +3,37 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
     /**
+     * Admin can perform every action on users.
+     */
+    public function before(?User $user, string $ability): ?bool
+    {
+        if ($user && $user->role === 'admin' && $ability !== 'delete') {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return false;
+        return $user?->role === 'admin';
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, user $model): bool
+    public function view(?User $user, User $model): bool
     {
+        if($user && $user->id === $model->id) {
+            return true;
+        }
         return false;
     }
 
@@ -28,29 +42,36 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, user $model): bool
+    public function update(User $user, User $model): bool
     {
+        if($user->id === $model->id) {
+            return true;
+        }
         return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, user $model): bool
+    public function delete(User $user, User $model): bool
     {
-        return false;
+        if ($user->role === 'admin') {
+            return $user->id !== $model->id;
+        }
+
+        return $user->id === $model->id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, user $model): bool
+    public function restore(User $user, User $model): bool
     {
         return false;
     }
@@ -58,7 +79,7 @@ class UserPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, user $model): bool
+    public function forceDelete(User $user, User $model): bool
     {
         return false;
     }

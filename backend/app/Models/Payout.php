@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payout extends Model
 {
-    /** @use HasFactory<\Database\Factories\PayoutsFactory> */
+    /** @use HasFactory<\Database\Factories\PayoutFactory> */
     use HasFactory;
 
     protected $table = "payouts";
@@ -22,6 +22,7 @@ class Payout extends Model
     ];
 
     protected $casts = [
+        'createdAt' => "datetime",
         'paidAt' => "datetime",
     ];
     public function orderItem(){

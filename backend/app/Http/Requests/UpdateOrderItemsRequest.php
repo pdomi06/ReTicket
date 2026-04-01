@@ -11,7 +11,8 @@ class UpdateOrderItemsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $orderItem = $this->route('orderItem');
+        return $this->user()->can('update', $orderItem);
     }
 
     /**
@@ -22,8 +23,6 @@ class UpdateOrderItemsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'orderId' => ['sometimes','integer','exists:orders,id'],
-            'ticketListingId' => ['sometimes', 'integer', 'exists:ticket_forsale,id'],
             'price' => ['sometimes','numeric','min:0'],
         ];
     }

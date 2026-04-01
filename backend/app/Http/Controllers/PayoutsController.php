@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Payout;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePayoutsRequest;
 use App\Http\Requests\UpdatePayoutsRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -22,17 +21,9 @@ class PayoutsController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', Payout::class);
         $payouts = Payout::all();
         return response()->json($payouts, 200);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorePayoutsRequest $request)
-    {
-        $payout = Payout::create($request->validated());
-        return response()->json($payout, 201);
     }
 
     /**
@@ -40,6 +31,7 @@ class PayoutsController extends Controller implements HasMiddleware
      */
     public function show(Payout $payout)
     {
+        $this->authorize('view', $payout);
         return response()->json($payout, 200);
     }
 
@@ -48,16 +40,14 @@ class PayoutsController extends Controller implements HasMiddleware
      */
     public function update(UpdatePayoutsRequest $request, Payout $payout)
     {
+        $this->authorize('update', $payout);
         $payout->update($request->validated());
         return response()->json($payout, 200);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payout $payout)
-    {
-        $payout->delete();
-        return response()->json(["message" => "Payout deleted successfully"], 200);
+    
+    public function myPayouts(){
+        $user = auth()->user();
+        $payouts = Payout::where('vendorId', $user->id)->get();
+        return response()->json($payouts, 200);
     }
 }

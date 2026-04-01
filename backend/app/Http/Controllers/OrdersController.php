@@ -22,8 +22,11 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $orders = Order::all();
-        return response()->json($orders, 200);
+        $this->authorize('viewAny', Order::class);
+        $user = auth()->user();
+        $orders = Order::query();
+
+        return response()->json($orders->get(), 200);
     }
 
     /**
@@ -31,8 +34,30 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
-        $order = Order::create($request->validated());
+        $this->authorize('create', Order::class);
+        $data = $request->validated();
+
+        $data['status'] = 'pending';
+        $data['paymentStatus'] = 'pending';
+        $data['deliverStatus'] = 'pending';
+        if(auth()->user()) {
+            $data['buyerEmail'] = auth()->user()->email;
+            $data['deliveryEmail'] = auth()->user()->email;
+        }
+        $order = new Order($data);
+        $order->orderNumber = $this->generateOrderNumber();
+        $order->save();
+
         return response()->json($order, 201);
+    }
+
+    private function generateOrderNumber(): int
+    {
+        do {
+            $orderNumber = random_int(1000000, 9999999);
+        } while (Order::where('orderNumber', $orderNumber)->exists());
+
+        return $orderNumber;
     }
 
     /**
@@ -40,6 +65,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function show(Order $order)
     {
+        $this->authorize('view', $order);
         return response()->json($order, 200);
     }
 
@@ -48,6 +74,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function update(UpdateOrdersRequest $request, Order $order)
     {
+        $this->authorize('update', $order);
         $order->update($request->validated());
         return response()->json($order, 200);
     }
@@ -57,6 +84,7 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function destroy(Order $order)
     {
+        $this->authorize('delete', $order);
         $order->delete();
         return response()->json(["message" => "Order deleted successfully"], 200);
     }

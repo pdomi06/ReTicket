@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\OriginalTicket;
+use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOriginalTicketsRequest extends FormRequest
@@ -11,7 +13,17 @@ class StoreOriginalTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $eventId = $this->input('eventId');
+        if (!is_numeric($eventId)) {
+            return false;
+        }
+
+        $event = Event::find((int) $eventId);
+        if (!$event) {
+            return false;
+        }
+
+        return $this->user()->can('createForEvent', [OriginalTicket::class, $event]);
     }
 
     /**
@@ -28,7 +40,7 @@ class StoreOriginalTicketsRequest extends FormRequest
         'seatNumber' => ['required', 'integer'],
         'price' => ['required', 'numeric', 'min:0'],
         'status' => ['required', 'in:pre-release,reserved,active,cancelled,expired'],
-        'ticketPdfUrl' => ['required', 'string', 'url'],
+        'ticketPdfUrl' => ['present', 'string'],
         ];
     }
 }

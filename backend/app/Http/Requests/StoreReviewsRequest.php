@@ -11,7 +11,7 @@ class StoreReviewsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
@@ -22,13 +22,11 @@ class StoreReviewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'orderItemId' => ['required', 'integer', 'exists:order_items,id'],
         'reviewerName' => ['required', 'string', 'max:255'],
-        'reviewedUserId'=> ['required', 'integer', 'exists:users,id'],
         'rating' => ['required', 'integer', 'min:1', 'max:5'],
         'title' => ['required', 'string', 'max:255'],
         'comment' => ['required', 'string'],
-        'isVisible' => ['required', 'boolean'],
+        'isVisible' => ['prohibited'],
         ];
     }
 }

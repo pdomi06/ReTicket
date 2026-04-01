@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    /** @use HasFactory<\Database\Factories\ReviewsFactory> */
+    /** @use HasFactory<\Database\Factories\ReviewFactory> */
     use HasFactory;
 
     protected $table = "reviews";
     protected $fillable = [
-        'orderItemId',
         'reviewerName',
-        'reviewedUserId',
         'rating',
         'title',
         'comment',
@@ -22,12 +20,4 @@ class Review extends Model
         'created_at',
         'updated_at'
     ];
-
-    public function orderItem(){
-        return $this->belongsTo(OrderItem::class, 'orderItemId');
-    }
-
-    public function user(){
-        return $this->belongsTo(User::class, 'reviewedUserId'); 
-    }
 }

@@ -28,7 +28,7 @@ class AuthController extends Controller implements HasMiddleware
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'passwordHash' => $data['password'],
+            'passwordHash' => Hash::make($data['password']),
             'isActive' => true,
             'isVerified' => false,
             'isOnline' => false,
@@ -85,9 +85,9 @@ class AuthController extends Controller implements HasMiddleware
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'user' => $user,
-                'token' => $token,
-                'token_type' => 'Bearer'
+            'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer'
             ]
         ], 200);
     }

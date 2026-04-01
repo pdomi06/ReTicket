@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\OriginalTicket;
+use App\Models\Event;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -13,7 +15,17 @@ class BulkStoreOriginalTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; 
+        $eventId = $this->input('eventId');
+        if (!is_numeric($eventId)) {
+            return false;
+        }
+
+        $event = Event::find((int) $eventId);
+        if (!$event) {
+            return false;
+        }
+
+        return $this->user()->can('createForEvent', [OriginalTicket::class, $event]);
     }
 
     /**

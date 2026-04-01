@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\TicketForSale;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTicketForSaleRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreTicketForSaleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', TicketForSale::class);
     }
 
     /**
@@ -26,7 +27,6 @@ class StoreTicketForSaleRequest extends FormRequest
         'fromUserId' => ['sometimes', 'integer', 'exists:user,id'],
         'eventId' => ['required', 'integer', 'exists:events,id'],
         'price' => ['required', 'numeric', 'min:0'],
-        'inBasket' => ['required', 'boolean'],
         ];
     }
 }

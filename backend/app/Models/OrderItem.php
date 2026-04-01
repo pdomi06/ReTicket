@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
-    /** @use HasFactory<\Database\Factories\OrderItemsFactory> */
+    /** @use HasFactory<\Database\Factories\OrderItemFactory> */
     use HasFactory;
 
     protected $table = "order_item";
-
-
 
     protected $fillable = [
         'orderId',
@@ -22,9 +20,9 @@ class OrderItem extends Model
     ];
 
 
-    public function ticketForSale()
+    public function activeTicket()
     {
-        return $this->belongsTo(TicketForSale::class, 'ticketListingId');
+        return $this->belongsTo(ActiveTicket::class, 'ticketListingId', 'ticketListingId');
     }
 
     public function order()

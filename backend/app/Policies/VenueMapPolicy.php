@@ -2,26 +2,37 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
 use App\Models\VenueMap;
 use App\Models\User;
 
 class VenueMapPolicy
 {
     /**
+     * Admin can perform every action on venue maps.
+     */
+    public function before(?User $user, string $ability): ?bool
+    {
+        if ($user && $user->role === 'admin') {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, VenueMap $venueMap): bool
+    public function view(?User $user, VenueMap $venueMap): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +40,7 @@ class VenueMapPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**

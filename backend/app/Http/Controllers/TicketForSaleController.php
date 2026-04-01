@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OriginalTicket;
 use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTicketForSaleRequest;
@@ -18,18 +19,20 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search', 'checkOut']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut']),
         ];
     }
 
     public function index()
     {
+        $this->authorize('viewAny', TicketForSale::class);
         $tickets_forsale = TicketForSale::all();
         return response()->json($tickets_forsale, 200);
     }
 
     public function search(SearchTicketForSaleRequest $request)
     {
+        $this->authorize('viewAny', TicketForSale::class);
         $filters = $request->validated();
         $query = TicketForSale::query();
 
@@ -58,29 +61,65 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function store(StoreTicketForSaleRequest $request)
     {
-        $ticket_forsale = TicketForSale::create($request->validated());
+        $this->authorize('create', TicketForSale::class);
+
+        $data = $request->validated();
+        $originalTicket = OriginalTicket::with('event')->findOrFail($data['originalTicketId']);
+
+        if ((int) $originalTicket->eventId !== (int) $data['eventId']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The selected original ticket does not belong to the selected event.',
+            ], 422);
+        }
+
+        if ($originalTicket->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only active original tickets can be listed for sale.',
+            ], 422);
+        }
+
+        if (TicketForSale::where('originalTicketId', $originalTicket->id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This ticket is already listed for sale.',
+            ], 409);
+        }
+
+        $user = $request->user();
+        $data['fromUserId'] = $user->id;
+
+        $data['inBasket'] = false;
+
+
+        $ticket_forsale = TicketForSale::create($data);
         return response()->json($ticket_forsale, 201);
     }
 
     public function show(TicketForSale $ticketForSale)
     {
+        $this->authorize('view', $ticketForSale);
         return response()->json($ticketForSale, 200);
     }
 
     public function update(UpdateTicketForSaleRequest $request, TicketForSale $ticketForSale)
     {
+        $this->authorize('update', $ticketForSale);
         $ticketForSale->update($request->validated());
         return response()->json($ticketForSale, 200);
     }
 
     public function destroy(TicketForSale $ticketForSale)
     {
+        $this->authorize('delete', $ticketForSale);
         $ticketForSale->delete();
         return response()->json(["message" => "Ticket for sale deleted successfully"], 200);
     }
 
     public function basketChange(TicketForSale $ticketForSale)
     {
+        $this->authorize('modifyBasket', $ticketForSale);
         $ticketForSale->inBasket = !$ticketForSale->inBasket;
         $ticketForSale->save();
 
@@ -89,6 +128,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function addToBasket(TicketForSale $ticketForSale)
     {
+        $this->authorize('modifyBasket', $ticketForSale);
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', false)
@@ -107,6 +147,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function removeFromBasket(TicketForSale $ticketForSale)
     {
+        $this->authorize('modifyBasket', $ticketForSale);
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', true)

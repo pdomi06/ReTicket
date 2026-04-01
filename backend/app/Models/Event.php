@@ -14,6 +14,7 @@ class Event extends Model
     protected $table = 'events';
     protected $fillable = [
         'name',
+        'createdBy',
         'description',
         'venue',
         'address',
@@ -78,5 +79,9 @@ class Event extends Model
     public function originalTickets()
     {
         return $this->hasMany(OriginalTicket::class, 'eventId');
+    }
+    public function organizer()
+    {
+        return $this->belongsTo(User::class, 'createdBy');
     }
 }

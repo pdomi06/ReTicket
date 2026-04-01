@@ -16,7 +16,7 @@ class VenueMapController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'show']),
         ];
     }
     /**
@@ -24,6 +24,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $this->authorize('viewAny', VenueMap::class);
         $venue_maps = VenueMap::all();
         return response()->json($venue_maps, 200);
     }
@@ -38,7 +39,9 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function store(StoreVenueMapRequest $request)
     {
-        $venue_map = VenueMap::create($request->validated());
+        $this->authorize('create', VenueMap::class);
+        $data = $request->validated();
+        $venue_map = VenueMap::create($data);
         return response()->json($venue_map, 201);
     }
 
@@ -47,6 +50,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function show(VenueMap $venue)
     {
+        $this->authorize('view', $venue);
         return response()->json($venue, 200);
     }
 
@@ -55,6 +59,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function update(UpdateVenueMapRequest $request, VenueMap $venue)
     {
+        $this->authorize('update', $venue);
         $venue->update($request->validated());
         return response()->json($venue, 200);
     }
@@ -64,6 +69,7 @@ class VenueMapController extends Controller implements HasMiddleware
      */
     public function destroy(VenueMap $venue)
     {
+        $this->authorize('delete', $venue);
         $venue->delete();
         return response()->json(["message" => "Venue map deleted successfully"], 200);
     }

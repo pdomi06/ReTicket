@@ -2,16 +2,18 @@
 
 namespace App\Http\Requests;
 
+use App\Models\EmailVerification;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class UpdateEmailVerifyRequest extends FormRequest
+class SendVerificationLinkRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('requestLink', EmailVerification::class);
     }
 
     /**
@@ -22,8 +24,7 @@ class UpdateEmailVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userId' => ['sometimes','exists:users,id'],
-            'token' => ['sometimes','string','unique:email_verifies,token'],
+            'email' => ['required', 'email'],
         ];
     }
 }

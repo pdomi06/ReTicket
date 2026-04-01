@@ -11,7 +11,8 @@ class UpdateOriginalTicketsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $ticket = $this->route('originalTicket');
+        return $this->user()->can('update', $ticket);
     }
 
     /**

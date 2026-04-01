@@ -14,7 +14,7 @@ class ReviewsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index']),
+            new Middleware('auth:sanctum', except: ['index', 'show']),
         ];
     }
     /**
@@ -22,7 +22,7 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $reviews = Review::all();
+        $reviews = Review::where('isVisible', true)->get();
         return response()->json($reviews, 200);
     }
 
@@ -31,7 +31,10 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function store(StoreReviewsRequest $request)
     {
-        $review = Review::create($request->validated());
+        $this->authorize('create', Review::class);
+        $data = $request->validated();
+        $data['isVisible'] = false;
+        $review = Review::create($data);
         return response()->json($review, 201);
     }
 
@@ -40,6 +43,7 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function show(Review $review)
     {
+        $this->authorize('view', $review);
         return response()->json($review, 200);
     }
 
@@ -48,6 +52,7 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function update(UpdateReviewsRequest $request, Review $review)
     {
+        $this->authorize('update', $review);
         $review->update($request->validated());
         return response()->json($review, 200);
     }
@@ -57,6 +62,7 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function destroy(Review $review)
     {
+        $this->authorize('delete', $review);
         $review->delete();
         return response()->json(["message" => "Review deleted successfully"], 200);
     }

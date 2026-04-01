@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('active_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
-            $table->text('ticketListingId');
+            $table->string('ticketListingId');
         });
 
         Schema::enableForeignKeyConstraints();
