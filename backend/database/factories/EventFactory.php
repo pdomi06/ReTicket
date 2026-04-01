@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,9 @@ class EventFactory extends Factory
         $randomPicture = "https://picsum.photos/" . fake()->numberBetween(1920, 2000) . "/". fake()->numberBetween(1080, 1500);
         return [
             'name' => fake()->words(2, true),
+            'organizer_id' => User::factory()->state([
+                'role' => 'organizer',
+            ]),
             'description' => fake()->paragraph(),
             'venue' => fake()->company(),
             'address' => fake()->streetAddress(),
