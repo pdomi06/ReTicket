@@ -11,11 +11,7 @@ class StoreOrdersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $user = $this->user();
-        if(!$user){
-            return false;
-        }
-        return $user->email === $this->input('buyerEmail');
+        return (bool) $this->user();
     }
 
     /**
