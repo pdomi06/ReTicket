@@ -6,6 +6,7 @@ use App\Models\VenueMap;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class StoreVenueMapRequest extends FormRequest
 {
@@ -25,6 +26,7 @@ class StoreVenueMapRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'organizer_id' => ['required', 'integer', Rule::exists('users', 'id')->where('role', 'organizer')],
             'venue'   => ['required', 'string', 'max:255'],
             'section' => ['required', 'string', 'max:255'],
             'rows'    => ['required', 'integer', 'min:1'],

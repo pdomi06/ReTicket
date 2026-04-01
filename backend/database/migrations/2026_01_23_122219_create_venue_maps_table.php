@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('venue_maps', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('organizer_id');
-            $table->foreign('organizer_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('venue');
             $table->text('section');
             $table->unsignedSmallInteger('rows');

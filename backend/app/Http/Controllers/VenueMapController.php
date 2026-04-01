@@ -41,7 +41,6 @@ class VenueMapController extends Controller implements HasMiddleware
     {
         $this->authorize('create', VenueMap::class);
         $data = $request->validated();
-        $data['organizer_id'] = auth()->id();
         $venue_map = VenueMap::create($data);
         return response()->json($venue_map, 201);
     }

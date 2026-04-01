@@ -29,6 +29,7 @@ return new class extends Migration
             $table->enum('category', ["cultural", "music", "sport"]);
             $table->decimal('basePrice', 10, 2);
             $table->text('imageUrl');
+            $table->datetime('createdBy')->default(now());
             $table->dateTime('createdAt');
             $table->dateTime('updatedAt');
         });

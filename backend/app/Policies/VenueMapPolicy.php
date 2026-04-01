@@ -40,7 +40,7 @@ class VenueMapPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'organizer'], true);
+        return $user->role === 'admin';
     }
 
     /**
