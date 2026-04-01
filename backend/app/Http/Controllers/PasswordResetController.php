@@ -102,7 +102,7 @@ class PasswordResetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePasswordResetRequest $request, PasswordReset $passwordReset)
+    public function update(UpdatePasswordResetRequest $request)
     {
         $reset = PasswordReset::where('token', $request->input('token'))->first();
 
