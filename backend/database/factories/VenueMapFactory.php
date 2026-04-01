@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +18,6 @@ class VenueMapFactory extends Factory
     {
         return [
             'venue' => fake()->company(),
-            'organizer_id' => User::factory()->state([
-                'role' => 'organizer',
-            ]),
             'section' => fake()->randomLetter(),
             'rows' => fake() -> numberBetween(1,100),
             'cols' => fake() -> numberBetween(1,100),

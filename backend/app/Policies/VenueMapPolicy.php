@@ -48,12 +48,6 @@ class VenueMapPolicy
      */
     public function update(User $user, VenueMap $venueMap): bool
     {
-        if($user->role === 'organizer' && $venueMap->organizer_id === $user->id) {
-            return true;
-        }
-        if($user->role === 'admin') {
-            return true;
-        }
         return false;
     }
 
@@ -62,12 +56,6 @@ class VenueMapPolicy
      */
     public function delete(User $user, VenueMap $venueMap): bool
     {
-        if($user->role === 'organizer' && $venueMap->organizer_id === $user->id) {
-            return true;
-        }
-        if($user->role === 'admin') {
-            return true;
-        }
         return false;
     }
 
