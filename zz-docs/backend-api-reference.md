@@ -1,95 +1,145 @@
-# Backend API Reference
+# Backend API reference
 
-Base path examples assume `/api` prefix from Laravel API routes in `backend/routes/api.php`.
+## Purpose
 
-## Authentication
+Provide a code-verified reference for currently registered backend API endpoints, including effective auth exposure and known response/behavior differences.
 
-| Method | Path        | Description       |
-| ------ | ----------- | ----------------- |
-| POST   | `/login`    | User login        |
-| POST   | `/register` | User registration |
-| POST   | `/logout`   | Logout            |
+## Overview
 
-## Events and Venues
+- Route registration is in [backend/routes/api.php](backend/routes/api.php#L21).
+- Most resources use `Route::apiResource(...)` plus custom routes for search and bulk operations.
+- Effective protection is primarily controller-level `auth:sanctum` middleware using `HasMiddleware` implementations (for example [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L18)).
+- Success and error payload envelopes are inconsistent across endpoints and should be consumed per-endpoint.
 
-| Method              | Path               | Description                    |
-| ------------------- | ------------------ | ------------------------------ |
-| GET                 | `/events/search`   | Search events                  |
-| GET/POST/PUT/DELETE | `/events` resource | Event CRUD                     |
-| GET                 | `/venues/search`   | Search venue maps              |
-| GET/POST/PUT/DELETE | `/venues` resource | Venue map CRUD                 |
-| GET/POST/PUT/DELETE | `/venue` resource  | Alternate venue map CRUD route |
+Base path for all routes below: `/api`.
 
-## Ticket Resources
+## Key files and locations
 
-### Active Tickets
+- Route definitions: [backend/routes/api.php](backend/routes/api.php#L21)
+- Auth middleware pattern example: [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L13)
+- Public exceptions on ticket sale endpoints: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L21)
+- Public exceptions on original tickets endpoints: [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L18)
+- Global unauthenticated JSON payload behavior: [backend/bootstrap/app.php](backend/bootstrap/app.php#L27)
 
-| Method              | Path                      | Description        |
-| ------------------- | ------------------------- | ------------------ |
-| GET/POST/PUT/DELETE | `/activeTickets` resource | Active ticket CRUD |
+## Patterns and conventions
 
-### Original Tickets
+### Route style
 
-| Method              | Path                                 | Description                        |
-| ------------------- | ------------------------------------ | ---------------------------------- |
-| GET                 | `/originalTickets/search`            | Filter original tickets            |
-| GET                 | `/originalTickets/forSale/{eventId}` | Available for-sale seats for event |
-| GET                 | `/originalTickets/dashboard`         | Dashboard ticket listing           |
-| POST                | `/originalTickets/bulk`              | Bulk create original tickets       |
-| PUT                 | `/originalTickets/bulk`              | Bulk update original tickets       |
-| POST                | `/originalTickets/bulkStatusChange`  | Bulk status updates                |
-| GET/POST/PUT/DELETE | `/originalTickets` resource          | Original ticket CRUD               |
+- REST routing is built mainly with `Route::apiResource` in [backend/routes/api.php](backend/routes/api.php#L25).
+- Search and bulk endpoints are explicit routes outside resource declarations.
 
-### Ticket For Sale
+### Auth and access model
 
-| Method              | Path                                              | Description                |
-| ------------------- | ------------------------------------------------- | -------------------------- |
-| GET                 | `/ticketForSale/search`                           | Filter sale listings       |
-| POST                | `/ticketForSale/basketChange/{ticketForSale}`     | Basket toggle/change       |
-| POST                | `/ticketForSale/addToBasket/{ticketForSale}`      | Add listing to basket      |
-| POST                | `/ticketForSale/removeFromBasket/{ticketForSale}` | Remove listing from basket |
-| POST                | `/ticketForSale/checkOut`                         | Checkout selected listings |
-| GET/POST/PUT/DELETE | `/ticketForSale` resource                         | Ticket listing CRUD        |
+- Route file alone does not fully show access; controller middleware `except` clauses define public operations.
+- Notable public exception: `POST /ticketForSale/checkOut` is public by controller middleware exception in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L21).
+- `POST /logout` is protected via `AuthController` middleware even though route definition has no explicit route middleware in [backend/routes/api.php](backend/routes/api.php#L23).
 
-## Commerce
+### Response shape
 
-### Orders and Items
+- Wrapped shape `{ success, data, message }` appears on some endpoints (for example [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L34) and [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L84)).
+- Raw model/array responses appear on many resource endpoints (for example [backend/app/Http/Controllers/ActiveTicketsController.php](backend/app/Http/Controllers/ActiveTicketsController.php#L26)).
+- Unauthenticated API errors use `{ message, error }` globally from [backend/bootstrap/app.php](backend/bootstrap/app.php#L29).
 
-| Method              | Path                   | Description               |
-| ------------------- | ---------------------- | ------------------------- |
-| GET/POST/PUT/DELETE | `/orders` resource     | Order lifecycle CRUD      |
-| GET/POST/PUT/DELETE | `/orderItems` resource | Order item lifecycle CRUD |
+## Endpoint reference
 
-### Payouts
+### Authentication
 
-| Method              | Path                | Description |
-| ------------------- | ------------------- | ----------- |
-| GET/POST/PUT/DELETE | `/payouts` resource | Payout CRUD |
+| Method | Path      | Effective access | Notes                                                                                                                                        |
+| ------ | --------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | /login    | Public           | Throttled at route level (`throttle:3,1`) in [backend/routes/api.php](backend/routes/api.php#L21)                                            |
+| POST   | /register | Public           | Token issued on success in [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L39)            |
+| POST   | /logout   | Auth required    | Protected by controller middleware in [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L16) |
 
-## Account Recovery and Verification
+### Events and venues
 
-| Method              | Path                      | Description                    |
-| ------------------- | ------------------------- | ------------------------------ |
-| GET/POST/PUT/DELETE | `/emailVerify` resource   | Email verification record CRUD |
-| GET/POST/PUT/DELETE | `/passwordReset` resource | Password reset record CRUD     |
+| Method                    | Path            | Effective access | Notes                                                                                                                                         |
+| ------------------------- | --------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET                       | /events/search  | Public           | Search endpoint in [backend/routes/api.php](backend/routes/api.php#L24)                                                                       |
+| GET                       | /events         | Public           | `index` public by exception in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L19)     |
+| GET                       | /events/{event} | Public           | `show` public by exception in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L19)      |
+| POST                      | /events         | Auth required    | Resource create                                                                                                                               |
+| PUT/PATCH                 | /events/{event} | Auth required    | Resource update                                                                                                                               |
+| DELETE                    | /events/{event} | Auth required    | Resource delete                                                                                                                               |
+| GET                       | /venues/search  | Public           | Search endpoint in [backend/routes/api.php](backend/routes/api.php#L26)                                                                       |
+| GET                       | /venues         | Public           | `index` public by exception in [backend/app/Http/Controllers/VenueMapController.php](backend/app/Http/Controllers/VenueMapController.php#L19) |
+| GET                       | /venues/{venue} | Auth required    | `show` not in exception list                                                                                                                  |
+| POST                      | /venues         | Auth required    | Resource create                                                                                                                               |
+| PUT/PATCH                 | /venues/{venue} | Auth required    | Resource update                                                                                                                               |
+| DELETE                    | /venues/{venue} | Auth required    | Resource delete                                                                                                                               |
+| GET/POST/PUT/PATCH/DELETE | /venue...       | Same as /venues  | Alternate resource route family in [backend/routes/api.php](backend/routes/api.php#L28)                                                       |
 
-## User and Profile
+### Ticket resources
 
-| Method              | Path                     | Description        |
-| ------------------- | ------------------------ | ------------------ |
-| GET/POST/PUT/DELETE | `/user` resource         | User CRUD          |
-| GET/POST/PUT/DELETE | `/userSettings` resource | User settings CRUD |
+| Method    | Path                                            | Effective access | Notes                                                                                                                                                       |
+| --------- | ----------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET       | /activeTickets                                  | Public           | `index` public by exception in [backend/app/Http/Controllers/ActiveTicketsController.php](backend/app/Http/Controllers/ActiveTicketsController.php#L17)     |
+| GET       | /activeTickets/{activeTicket}                   | Auth required    | `show` not excluded                                                                                                                                         |
+| POST      | /activeTickets                                  | Auth required    | Resource create                                                                                                                                             |
+| PUT/PATCH | /activeTickets/{activeTicket}                   | Auth required    | Resource update                                                                                                                                             |
+| DELETE    | /activeTickets/{activeTicket}                   | Auth required    | Resource delete                                                                                                                                             |
+| GET       | /originalTickets                                | Public           | `index` public by exception in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L21) |
+| GET       | /originalTickets/{originalTicket}               | Auth required    | `show` not excluded                                                                                                                                         |
+| GET       | /originalTickets/search                         | Public           | Explicit search route                                                                                                                                       |
+| GET       | /originalTickets/forSale/{eventId}              | Public           | Explicit availability route                                                                                                                                 |
+| GET       | /originalTickets/dashboard                      | Auth required    | Not in exception list                                                                                                                                       |
+| POST      | /originalTickets                                | Auth required    | Resource create                                                                                                                                             |
+| PUT/PATCH | /originalTickets/{originalTicket}               | Auth required    | Resource update                                                                                                                                             |
+| DELETE    | /originalTickets/{originalTicket}               | Auth required    | Resource delete                                                                                                                                             |
+| POST      | /originalTickets/bulk                           | Auth required    | Bulk create route                                                                                                                                           |
+| PUT       | /originalTickets/bulk                           | Auth required    | Bulk update route                                                                                                                                           |
+| POST      | /originalTickets/bulkStatusChange               | Auth required    | Bulk status route                                                                                                                                           |
+| GET       | /ticketForSale                                  | Public           | `index` public by exception in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L21)     |
+| GET       | /ticketForSale/{ticketForSale}                  | Auth required    | `show` not excluded                                                                                                                                         |
+| GET       | /ticketForSale/search                           | Public           | Explicit search route                                                                                                                                       |
+| POST      | /ticketForSale/checkOut                         | Public           | Intentionally public by middleware exception                                                                                                                |
+| POST      | /ticketForSale/basketChange/{ticketForSale}     | Auth required    | Basket toggle route                                                                                                                                         |
+| POST      | /ticketForSale/addToBasket/{ticketForSale}      | Auth required    | Returns `409` on conflict in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L98)       |
+| POST      | /ticketForSale/removeFromBasket/{ticketForSale} | Auth required    | Returns `409` on conflict in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L116)      |
+| POST      | /ticketForSale                                  | Auth required    | Resource create                                                                                                                                             |
+| PUT/PATCH | /ticketForSale/{ticketForSale}                  | Auth required    | Resource update                                                                                                                                             |
+| DELETE    | /ticketForSale/{ticketForSale}                  | Auth required    | Resource delete                                                                                                                                             |
 
-## History and Reviews
+### Commerce and account resources
 
-| Method              | Path                      | Description         |
-| ------------------- | ------------------------- | ------------------- |
-| GET/POST/PUT/DELETE | `/ticketHistory` resource | Ticket history CRUD |
-| GET/POST/PUT/DELETE | `/reviews` resource       | Review CRUD         |
+| Method                    | Path family    | Effective access | Notes                                                                                                                                       |
+| ------------------------- | -------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET/POST/PUT/PATCH/DELETE | /orders        | Auth required    | Full resource protected in [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php#L17)       |
+| GET/POST/PUT/PATCH/DELETE | /orderItems    | Auth required    | Full resource protected                                                                                                                     |
+| GET/POST/PUT/PATCH/DELETE | /payouts       | Auth required    | Full resource protected                                                                                                                     |
+| GET/POST/PUT/PATCH/DELETE | /emailVerify   | Auth required    | Full resource protected                                                                                                                     |
+| GET/POST/PUT/PATCH/DELETE | /passwordReset | Auth required    | Full resource protected                                                                                                                     |
+| GET/POST/PUT/PATCH/DELETE | /user          | Auth required    | Full resource protected                                                                                                                     |
+| GET/POST/PUT/PATCH/DELETE | /userSettings  | Auth required    | Full resource protected                                                                                                                     |
+| GET/POST/PUT/PATCH/DELETE | /ticketHistory | Auth required    | Full resource protected                                                                                                                     |
+| GET                       | /reviews       | Public           | `index` public by exception in [backend/app/Http/Controllers/ReviewsController.php](backend/app/Http/Controllers/ReviewsController.php#L17) |
+| POST/PUT/PATCH/DELETE     | /reviews...    | Auth required    | Non-index actions protected                                                                                                                 |
 
-## Notes for Integrators
+## Examples (real code)
 
-- Most non-read operations are protected by controller middleware using `auth:sanctum`.
-- Selected read/search endpoints are public (for example event, venue, and listing discovery endpoints).
-- Some ownership checks are email-based (`orders.buyerEmail`), not strictly user-id based.
-- Keep frontend route usage aligned with backend naming (`/venues` and `/venue` are both registered).
+### Example 1: Public checkout route despite being a sensitive operation
+
+- Route registration: [backend/routes/api.php](backend/routes/api.php#L39)
+- Public exception in controller middleware: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L21)
+
+### Example 2: Logout protection coming from controller middleware
+
+- Route declaration: [backend/routes/api.php](backend/routes/api.php#L23)
+- Middleware application (`except: ['login', 'register']`): [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L16)
+
+### Example 3: Basket conflict response
+
+- Conditional DB update and `409` return when state changed concurrently: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L92)
+
+## Gotchas and known issues
+
+- The route file by itself is insufficient for auth mapping; always include controller middleware exceptions.
+- API response envelopes are inconsistent across controllers and endpoints.
+- `/venues` and `/venue` both exist and can cause client-side naming drift if not standardized.
+- `POST /ticketForSale/checkOut` is currently public, which may surprise integrators expecting checkout to require auth.
+
+## Related docs
+
+- [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
+- [zz-docs/backend-authentication.md](zz-docs/backend-authentication.md)
+- [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)
+- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)

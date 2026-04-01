@@ -1,33 +1,79 @@
-# Backend Search, Filtering, and Bulk Operations
+# Backend search, filtering, and bulk operations
 
-## Search Endpoints
+## Purpose
 
-Key searchable API paths:
+Document current search/filter and bulk mutation behavior exactly as implemented in backend controllers, request validation classes, and model scopes.
 
-- `/events/search`
-- `/venues/search`
-- `/originalTickets/search`
-- `/ticketForSale/search`
+## Overview
 
-## Model Scope Patterns
+Search is exposed through dedicated endpoints per resource type, while bulk writes are currently concentrated in original ticket management.
 
-### Event filtering
+- Search endpoints are explicitly routed in [backend/routes/api.php](backend/routes/api.php#L24).
+- Filter contracts are validated by Form Requests before query building.
+- Event search/list endpoints are paginated.
+- Bulk operations can trigger destructive rewrites and status-driven side effects.
 
-`Event::search($filters)` supports:
+## Key files and locations
 
-- `name` (name like)
-- `venue` (venue like)
-- `city` (city like)
-- `country` (country like)
-- `eventDate` (exact date)
-- `category` (exact category)
-- `maxPrice` (basePrice upper bound)
+- Route declarations: [backend/routes/api.php](backend/routes/api.php#L24)
+- Search controllers:
+  - [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L37)
+  - [backend/app/Http/Controllers/VenueMapController.php](backend/app/Http/Controllers/VenueMapController.php#L28)
+  - [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L32)
+  - [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L31)
+- Search request validators:
+  - [backend/app/Http/Requests/SearchEventsRequest.php](backend/app/Http/Requests/SearchEventsRequest.php#L20)
+  - [backend/app/Http/Requests/SearchVenueMapRequest.php](backend/app/Http/Requests/SearchVenueMapRequest.php#L20)
+  - [backend/app/Http/Requests/SearchOriginalTicketsRequest.php](backend/app/Http/Requests/SearchOriginalTicketsRequest.php#L20)
+  - [backend/app/Http/Requests/SearchTicketForSaleRequest.php](backend/app/Http/Requests/SearchTicketForSaleRequest.php#L20)
+- Bulk endpoints and logic:
+  - [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L106)
+  - [backend/app/Http/Requests/BulkStoreOriginalTicketsRequest.php](backend/app/Http/Requests/BulkStoreOriginalTicketsRequest.php#L24)
 
-Controller-level event list endpoints (`GET /events` and `GET /events/search`) return newest-first ordering by `created_at`.
+## Patterns and conventions
 
-### Original ticket filtering
+### Search endpoints
 
-`OriginalTicket::search($filters)` supports:
+- `GET /events/search`
+- `GET /venues/search`
+- `GET /originalTickets/search`
+- `GET /ticketForSale/search`
+
+All four paths are registered in [backend/routes/api.php](backend/routes/api.php#L24).
+
+### Filter contracts (validated input)
+
+#### Events (`SearchEventsRequest`)
+
+Supported query keys:
+
+- `name`
+- `venue`
+- `city`
+- `country`
+- `eventDate` (`Y-m-d`)
+- `timezone` (extra validation via `after()`)
+- `maxPrice`
+- `category` (`cultural|music|sport`)
+- `page`
+
+Reference: [backend/app/Http/Requests/SearchEventsRequest.php](backend/app/Http/Requests/SearchEventsRequest.php#L20)
+
+#### Venue maps (`SearchVenueMapRequest`)
+
+Supported query keys:
+
+- `venue`
+- `section`
+- `rows`
+- `cols`
+- `rate`
+
+Reference: [backend/app/Http/Requests/SearchVenueMapRequest.php](backend/app/Http/Requests/SearchVenueMapRequest.php#L20)
+
+#### Original tickets (`SearchOriginalTicketsRequest`)
+
+Supported query keys:
 
 - `eventId`
 - `section`
@@ -37,9 +83,11 @@ Controller-level event list endpoints (`GET /events` and `GET /events/search`) r
 - `status`
 - `ticketPdfUrl`
 
-### Ticket for sale filtering
+Reference: [backend/app/Http/Requests/SearchOriginalTicketsRequest.php](backend/app/Http/Requests/SearchOriginalTicketsRequest.php#L20)
 
-`TicketForSale::search($filters)` supports:
+#### Ticket for sale (`SearchTicketForSaleRequest`)
+
+Supported query keys:
 
 - `originalTicketId`
 - `fromUserId`
@@ -47,23 +95,56 @@ Controller-level event list endpoints (`GET /events` and `GET /events/search`) r
 - `price`
 - `inBasket`
 
-## Bulk Operations
+Reference: [backend/app/Http/Requests/SearchTicketForSaleRequest.php](backend/app/Http/Requests/SearchTicketForSaleRequest.php#L20)
 
-Original tickets include explicit bulk endpoints:
+### Query behavior
 
-- `POST /originalTickets/bulk`
-- `PUT /originalTickets/bulk`
-- `POST /originalTickets/bulkStatusChange`
+- Events search performs manual conditional query building and paginates (`paginate(20)`) in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L81).
+- Events index also paginates (`paginate(20)`) and includes `firstTicketStatus` derived from loaded ticket relation in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L23).
+- Venue maps search uses model scope `VenueMap::search(...)` in [backend/app/Http/Controllers/VenueMapController.php](backend/app/Http/Controllers/VenueMapController.php#L32).
+- Original tickets search uses manual conditional clauses (not the model scope) in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L36).
+- Ticket-for-sale search uses manual conditional clauses (not the model scope) in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L35).
 
-## Bulk Safety Recommendations
+### Bulk operation endpoints
 
-1. Validate seat uniqueness before bulk insert/update.
-2. Keep idempotency in mind for retry behavior.
-3. Log batch-level failures with actionable detail.
-4. Re-query dashboard/search views after batch changes to prevent stale UI.
+Original tickets expose three bulk actions:
 
-## Frontend Integration Note
+- `POST /originalTickets/bulk` -> seat grid expansion insert in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L106)
+- `PUT /originalTickets/bulk` -> delete existing event tickets/listings then reinsert in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L135)
+- `POST /originalTickets/bulkStatusChange` -> mass status update + for-sale synchronization in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L168)
 
-Event seat selection should always apply event-scoped filtering (`eventId`) before rendering availability maps.
+Bulk request shape for `bulk`/`bulk update` is validated by [backend/app/Http/Requests/BulkStoreOriginalTicketsRequest.php](backend/app/Http/Requests/BulkStoreOriginalTicketsRequest.php#L24).
 
-This protects against mixed-event or stale ticket datasets when users navigate quickly between events.
+## Examples (real code)
+
+### Example 1: Timezone-aware event-date filtering
+
+- `eventDate` and `timezone` are validated in [backend/app/Http/Requests/SearchEventsRequest.php](backend/app/Http/Requests/SearchEventsRequest.php#L26).
+- Controller converts date to day-range timestamps using timezone before `whereBetween` in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L64).
+
+### Example 2: Ticket for sale filtering
+
+- Filter keys applied conditionally in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L35).
+
+### Example 3: Bulk update destructive rewrite
+
+- `bulkUpdate` deletes existing `ticket_forsale` and `original_tickets` rows for the event before re-inserting generated seats in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L141).
+
+### Example 4: Status-change automation side effects
+
+- Changing event ticket status to `active` backfills sale listings; changing away from `active` deletes listings in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L184).
+
+## Gotchas and known issues
+
+- Not all controllers use model `scopeSearch` methods even when scopes exist; search logic is partly duplicated in controllers.
+- Events endpoints return paginated payload shape, while the other search endpoints return full arrays without pagination metadata.
+- `bulkUpdate` is destructive for event ticket/listing state before reinsertion.
+- `bulkStore` and `bulkUpdate` set `ticketPdfUrl` to an empty string in generated tickets; this differs from single-ticket create validation requiring a URL.
+- Search and list response envelopes are inconsistent across resources.
+
+## Related docs
+
+- [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
+- [zz-docs/backend-data-models.md](zz-docs/backend-data-models.md)
+- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)
+- [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)

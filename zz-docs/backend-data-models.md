@@ -1,132 +1,117 @@
-# Backend Data Models
+# Backend data models
 
-## Model Inventory
+## Purpose
 
-Core models in `backend/app/Models/`:
+Describe the backend model layer as implemented, including table mappings, key relationships, timestamp behavior, and verified schema/model mismatches.
 
-- `User`
-- `Event`
-- `OriginalTicket`
-- `ActiveTicket`
-- `TicketForSale`
-- `Order`
-- `OrderItem`
-- `Payout`
-- `TicketHistory`
-- `Review`
-- `VenueMap`
-- `EmailVerify`
-- `PasswordReset`
-- `UserSetting`
+## Overview
 
-## High-Impact Relationships
+The backend uses Eloquent models mapped to explicit table names, with a mixture of conventional and non-conventional key/link patterns.
 
-| Model          | Relationship             | Key                   | Notes                        |
-| -------------- | ------------------------ | --------------------- | ---------------------------- |
-| Event          | hasMany OriginalTicket   | `eventId`             | Event owns seat inventory    |
-| OriginalTicket | belongsTo Event          | `eventId`             | Canonical ticket source      |
-| OriginalTicket | hasMany TicketForSale    | `originalTicketId`    | Resale listings              |
-| OriginalTicket | hasMany ActiveTicket     | `originalTicketId`    | Active state mapping         |
-| TicketForSale  | belongsTo OriginalTicket | `originalTicketId`    | Sale entry per source ticket |
-| TicketForSale  | belongsTo User           | `fromUserId`          | Seller identity              |
-| Order          | hasMany OrderItem        | `orderId`             | Order line items             |
-| Order          | belongsTo User           | `buyerEmail -> email` | Email-based buyer relation   |
-| Payout         | belongsTo User           | `vendorId`            | Seller payout owner          |
+- Models are under [backend/app/Models](backend/app/Models).
+- Main domain flow spans events -> original tickets -> resale listings -> checkout history/active tickets.
+- Commerce flow uses orders/order items, with buyer linkage by email (`buyerEmail` -> `users.email`) in [backend/app/Models/Order.php](backend/app/Models/Order.php#L45).
+- Several model definitions do not fully match migration schemas and should be treated as known gaps.
 
-Note: `Payout` model currently defines an `orderItem()` relation in code, but current migration schema does not include an `orderItemId` column.
+## Key files and locations
 
-## Field and Timestamp Conventions
+- Model directory: [backend/app/Models](backend/app/Models)
+- Migration directory: [backend/database/migrations](backend/database/migrations)
+- Event model: [backend/app/Models/Event.php](backend/app/Models/Event.php#L9)
+- Original ticket model: [backend/app/Models/OriginalTicket.php](backend/app/Models/OriginalTicket.php#L8)
+- Ticket for sale model: [backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L8)
+- Order model: [backend/app/Models/Order.php](backend/app/Models/Order.php#L8)
+- Payout model: [backend/app/Models/Payout.php](backend/app/Models/Payout.php#L8)
 
-### Event
+## Patterns and conventions
 
-Important fields:
+### Model inventory and table mappings
 
-- `eventDate`, `eventEndDate`
-- `basePrice`
-- `createdBy`
-- `created_at`, `updated_at`
+- `User` -> `users` ([backend/app/Models/User.php](backend/app/Models/User.php#L22))
+- `Event` -> `events` ([backend/app/Models/Event.php](backend/app/Models/Event.php#L14))
+- `OriginalTicket` -> `original_tickets` ([backend/app/Models/OriginalTicket.php](backend/app/Models/OriginalTicket.php#L13))
+- `TicketForSale` -> `ticket_forsale` ([backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L14))
+- `ActiveTicket` -> `active_tickets` ([backend/app/Models/ActiveTicket.php](backend/app/Models/ActiveTicket.php#L13))
+- `TicketHistory` -> `ticket_history` ([backend/app/Models/TicketHistory.php](backend/app/Models/TicketHistory.php#L13))
+- `Order` -> `orders` ([backend/app/Models/Order.php](backend/app/Models/Order.php#L13))
+- `OrderItem` -> `order_item` ([backend/app/Models/OrderItem.php](backend/app/Models/OrderItem.php#L13))
+- `Payout` -> `payouts` ([backend/app/Models/Payout.php](backend/app/Models/Payout.php#L13))
+- `Review` -> `reviews` ([backend/app/Models/Review.php](backend/app/Models/Review.php#L13))
+- `VenueMap` -> `venue_maps` ([backend/app/Models/VenueMap.php](backend/app/Models/VenueMap.php#L13))
+- `EmailVerify` -> `email_verify` ([backend/app/Models/EmailVerify.php](backend/app/Models/EmailVerify.php#L13))
+- `PasswordReset` -> `password_reset` ([backend/app/Models/PasswordReset.php](backend/app/Models/PasswordReset.php#L13))
+- `UserSetting` -> `user_settings` ([backend/app/Models/UserSetting.php](backend/app/Models/UserSetting.php#L12))
 
-### OriginalTicket
+### High-impact relationships
 
-Important fields:
+| Model          | Relationship             | Key                     | Source                                                                             |
+| -------------- | ------------------------ | ----------------------- | ---------------------------------------------------------------------------------- |
+| Event          | hasMany OriginalTicket   | `eventId`               | [backend/app/Models/Event.php](backend/app/Models/Event.php#L80)                   |
+| OriginalTicket | belongsTo Event          | `eventId`               | [backend/app/Models/OriginalTicket.php](backend/app/Models/OriginalTicket.php#L58) |
+| OriginalTicket | hasMany TicketForSale    | `originalTicketId`      | [backend/app/Models/OriginalTicket.php](backend/app/Models/OriginalTicket.php#L62) |
+| OriginalTicket | hasMany ActiveTicket     | `originalTicketId`      | [backend/app/Models/OriginalTicket.php](backend/app/Models/OriginalTicket.php#L66) |
+| TicketForSale  | belongsTo OriginalTicket | `originalTicketId`      | [backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L47)   |
+| TicketForSale  | belongsTo User           | `fromUserId`            | [backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L52)   |
+| Order          | hasMany OrderItem        | `orderId`               | [backend/app/Models/Order.php](backend/app/Models/Order.php#L40)                   |
+| Order          | belongsTo User           | `buyerEmail` -> `email` | [backend/app/Models/Order.php](backend/app/Models/Order.php#L45)                   |
+| User           | hasMany Order            | `buyerEmail` -> `email` | [backend/app/Models/User.php](backend/app/Models/User.php#L71)                     |
+| User           | hasOne UserSetting       | `userId`                | [backend/app/Models/User.php](backend/app/Models/User.php#L81)                     |
+| Payout         | belongsTo User           | `vendorId`              | [backend/app/Models/Payout.php](backend/app/Models/Payout.php#L32)                 |
 
-- `eventId`
-- `section`, `row`, `seatNumber`
-- `status`
-- `ticketPdfUrl`
-- `created_at`, `updated_at`
+### Search scope patterns
 
-### TicketForSale
+- `Event::scopeSearch` includes text filters, category, max price, and timezone-aware event date filtering in [backend/app/Models/Event.php](backend/app/Models/Event.php#L34).
+- `OriginalTicket::scopeSearch` filters by event/seat/status/price/url in [backend/app/Models/OriginalTicket.php](backend/app/Models/OriginalTicket.php#L32).
+- `TicketForSale::scopeSearch` filters by listing owner/event/price/basket in [backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L25).
+- `VenueMap::scopeSearch` filters venue layout fields in [backend/app/Models/VenueMap.php](backend/app/Models/VenueMap.php#L22).
 
-Important fields:
+### Timestamp behavior matrix
 
-- `originalTicketId`
-- `fromUserId`
-- `eventId`
-- `price`
-- `inBasket`
+| Model          | Timestamp behavior                                                                                                                             |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| User           | Eloquent timestamps + casts (`created_at`, `updated_at`, `lastLogin`)                                                                          |
+| Event          | Eloquent timestamps from migration (`timestamps`)                                                                                              |
+| OriginalTicket | Eloquent timestamps from migration                                                                                                             |
+| Order          | Eloquent timestamps + extra domain times (`deliveredAt`, `completedAt`, `cancelledAt`)                                                         |
+| OrderItem      | Eloquent timestamps from migration                                                                                                             |
+| Payout         | Eloquent timestamps from migration                                                                                                             |
+| Review         | Eloquent timestamps from migration                                                                                                             |
+| UserSetting    | Eloquent timestamps from migration                                                                                                             |
+| EmailVerify    | Eloquent timestamps from migration                                                                                                             |
+| PasswordReset  | Eloquent timestamps from migration                                                                                                             |
+| TicketForSale  | `public $timestamps = false` in [backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L12)                               |
+| ActiveTicket   | no timestamps table columns + `public $timestamps = false` in [backend/app/Models/ActiveTicket.php](backend/app/Models/ActiveTicket.php#L29)   |
+| TicketHistory  | no timestamps table columns + `public $timestamps = false` in [backend/app/Models/TicketHistory.php](backend/app/Models/TicketHistory.php#L23) |
+| VenueMap       | no timestamps table columns + `public $timestamps = false` in [backend/app/Models/VenueMap.php](backend/app/Models/VenueMap.php#L40)           |
 
-### Order
+## Examples (real code)
 
-Important fields:
+### Example 1: Email-based ownership relation
 
-- `buyerEmail`
-- `subtotal`, `platformFee`, `tax`
-- `status`, `paymentStatus`, `deliverStatus`
-- `paymentIntentId`
-- `deliveredAt`, `completedAt`, `cancelledAt`
-- `created_at`, `updated_at`
+- Order -> User relation uses email key mapping, not user ID:
+  - [backend/app/Models/Order.php](backend/app/Models/Order.php#L45)
+  - [backend/app/Models/User.php](backend/app/Models/User.php#L71)
 
-### Payout
+### Example 2: Ticket listing timestamps are disabled
 
-Important fields:
+- Model-level `public $timestamps = false` in [backend/app/Models/TicketForSale.php](backend/app/Models/TicketForSale.php#L12)
+- Migration has no `timestamps()` call in [backend/database/migrations/2026_01_22_024400_create_ticket_forsale_table.php](backend/database/migrations/2026_01_22_024400_create_ticket_forsale_table.php#L14)
 
-- `vendorId`
-- `orderItemId`
-- `status`
-- `bank`, `iban`
-- `paidAt`
-- `created_at`, `updated_at`
+### Example 3: User settings primary key is `userId`
 
-## Schema Notes from Current Migrations
+- `UserSetting` uses non-incrementing primary key `userId` in [backend/app/Models/UserSetting.php](backend/app/Models/UserSetting.php#L13)
+- Migration sets `userId` as primary key in [backend/database/migrations/2026_01_22_024356_create_user_settings_table.php](backend/database/migrations/2026_01_22_024356_create_user_settings_table.php#L14)
 
-- `users` includes `balance` (default `0`) and Laravel timestamps (`created_at`, `updated_at`).
-- `events` defines `createdBy` as a foreign key to `users`.
-- `orders` stores `deliveredAt`, `completedAt`, and `cancelledAt` plus Laravel timestamps.
-- `order_item` stores Laravel timestamps.
-- `payouts` stores Laravel timestamps and domain fields such as `vendorId`, `status`, and `paidAt`.
+## Gotchas and known issues
 
-## Timestamp Matrix
+- `Payout` model defines `orderItemId` and `orderItem()` relation in [backend/app/Models/Payout.php](backend/app/Models/Payout.php#L15), but `payouts` migration does not create `orderItemId` in [backend/database/migrations/2026_01_22_024404_create_payouts_table.php](backend/database/migrations/2026_01_22_024404_create_payouts_table.php#L14).
+- `Review` model expects `orderItemId` and `reviewedUserId` in [backend/app/Models/Review.php](backend/app/Models/Review.php#L15), but `reviews` migration currently has neither column in [backend/database/migrations/2026_01_22_024405_create_reviews_table.php](backend/database/migrations/2026_01_22_024405_create_reviews_table.php#L14).
+- `Event` migration requires `createdBy` in [backend/database/migrations/2026_01_22_024357_create_events_table.php](backend/database/migrations/2026_01_22_024357_create_events_table.php#L26), but `Event::$fillable` does not include `createdBy` in [backend/app/Models/Event.php](backend/app/Models/Event.php#L15).
+- `EmailVerify` and `PasswordReset` models cast date columns as `datetime` while migrations define `date`; behavior should be treated as cast-up at application level.
 
-| Model          | Timestamp Handling                         |
-| -------------- | ------------------------------------------ |
-| User           | Uses default `created_at` and `updated_at` |
-| Event          | Uses default `created_at` and `updated_at` |
-| OriginalTicket | Uses default `created_at` and `updated_at` |
-| Order          | Uses default `created_at` and `updated_at` |
-| Review         | Uses default `created_at` and `updated_at` |
-| UserSetting    | Uses default `created_at` and `updated_at` |
-| EmailVerify    | Uses default `created_at` and `updated_at` |
-| PasswordReset  | Uses default `created_at` and `updated_at` |
-| OrderItem      | Uses default `created_at` and `updated_at` |
-| Payout         | Uses default `created_at` and `updated_at` |
+## Related docs
 
-## Implementation Notes
-
-- Migration schemas include several fields that are not present in all model `$fillable` arrays. This is expected in the current codebase and should be considered when creating or updating records through mass assignment.
-
-## Ownership Keys Used in Authorization
-
-- Seller ownership: `ticket_forsale.fromUserId == user.id`
-- Buyer access: `orders.buyerEmail == user.email`
-- Payout visibility: `payouts.vendorId == user.id`
-
-## Search Scope Patterns
-
-Observed model scope usage:
-
-- `Event::search($filters)` for event text/date/category/max price filtering
-- `OriginalTicket::search($filters)` for seat and status filtering
-- `TicketForSale::search($filters)` for seller/event/basket filtering
-
-See [Backend Search, Filtering, and Bulk Operations](./backend-search-filtering-bulk.md) for behavior details.
+- [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
+- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)
+- [zz-docs/backend-search-filtering-bulk.md](zz-docs/backend-search-filtering-bulk.md)
+- [zz-docs/permissions.md](zz-docs/permissions.md)
