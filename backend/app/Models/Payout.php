@@ -17,15 +17,18 @@ class Payout extends Model
         'status',
         'bank',
         'iban',
+        'createdAt',
         'paidAt',
     ];
 
     protected $casts = [
+        'createdAt' => "datetime",
         'paidAt' => "datetime",
     ];
-    //const CREATED_AT = "createdAt";
+    const CREATED_AT = "createdAt";
+    const UPDATED_AT = null;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function orderItem(){
         return $this->belongsTo(OrderItem::class, 'orderItemId');

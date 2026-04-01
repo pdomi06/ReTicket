@@ -14,7 +14,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index']),
+            new Middleware('auth:sanctum', except: ['index', 'show']),
         ];
     }
     /**

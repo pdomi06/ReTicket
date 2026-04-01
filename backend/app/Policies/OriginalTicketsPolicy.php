@@ -26,7 +26,7 @@ class OriginalTicketsPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, OriginalTicket $originalTickets): bool
+    public function view(?User $user, OriginalTicket $originalTickets): bool
     {
         return true;
     }

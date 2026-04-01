@@ -18,7 +18,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'show']),
         ];
     }
     /**

@@ -18,7 +18,7 @@ class OriginalTicketsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search', 'getOnlyAvailableTicketsInForSale']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'getOnlyAvailableTicketsInForSale', 'show']),
         ];
     }
     /**
