@@ -15,7 +15,7 @@ class OrdersController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum'),
+            new Middleware('auth:sanctum', except: ['checkOut']),
         ];
     }
 
@@ -90,30 +90,5 @@ class OrdersController extends Controller implements HasMiddleware
         $this->authorize('delete', $order);
         $order->delete();
         return response()->json(["message" => "Order deleted successfully"], 200);
-    }
-
-    public function checkOut(CheckOutOrdersRequest $request)
-    {
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        
-        $checkoutSession = \Stripe\Checkout\Session::create([
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => env('CASHIER_CURRENCY', 'huf'),
-                    'unit_amount' => $request->subtotal + $request->platformFee,
-                    'product_data' => [
-                        'name' => 'Custom Payment',
-                    ],
-                ],
-                'quantity' => 1,
-            ]],
-            'mode' => 'payment',
-            'success_url' => env('FRONTEND_URL') . '?success=true',
-            'automatic_tax' => [
-                'enabled' => true,
-            ],
-        ]);
-
-        return response()->json($checkoutSession, 200);
     }
 }

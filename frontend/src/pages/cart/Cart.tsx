@@ -1,15 +1,17 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { CartContext } from "../../contexts/cart/CartContextDef";
 import Button from "../../components/ui/button/Button";
-import Input from "../../components/ui/input/Input";
 import styles from "./Cart.module.css";
+import { useSearchParams } from "react-router-dom";
 
 const Cart = () => {
     const { tickets, removeFromCart, clearCart } = useContext(CartContext);
-    const [checkoutEmail, setCheckoutEmail] = useState("");
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
-    const [checkoutSuccess, setCheckoutSuccess] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
+    const [searchParams] = useSearchParams();
+    const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
+    const [paymentId, setPaymentId] = useState<string | null>(null);
+    const [paymentEmail, setPaymentEmail] = useState<string | null>(null);
 
     const subtotal = useMemo(
         () => tickets.reduce((sum, ticket) => sum + Number(ticket.price || 0), 0),
@@ -17,6 +19,46 @@ const Cart = () => {
     );
     const serviceFee = useMemo(() => subtotal * 0.1, [subtotal]).toFixed(0);
     const total = useMemo(() => subtotal + Number(serviceFee), [subtotal, serviceFee]).toFixed(0);
+
+    useEffect(() => {
+        const sessionId = searchParams.get("session_id");
+        const wasSuccessful = searchParams.get("success") === "true";
+
+        if (!wasSuccessful || !sessionId) {
+            return;
+        }
+
+        setPaymentSessionId(sessionId);
+
+        const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
+
+        const loadPaymentDetails = async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/checkout/session?session_id=${encodeURIComponent(sessionId)}`, {
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to load payment details.");
+                }
+
+                const data = (await response.json()) as {
+                    session_id?: string;
+                    payment_id?: string | null;
+                    email?: string | null;
+                };
+
+                setPaymentId(data.payment_id ?? null);
+                setPaymentEmail(data.email ?? null);
+            } catch (error) {
+                console.error("Error loading payment details:", error);
+            }
+        };
+
+        void loadPaymentDetails();
+    }, [searchParams]);
 
     const handleClearCart = async () => {
         await Promise.all(tickets.map((ticket) => removeFromCart(ticket)));
@@ -39,14 +81,59 @@ const Cart = () => {
         );
     }
 
-    const validateEmail = (email: string): boolean => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
     async function handleCheckOut() {
+        if (isCheckingOut) {
+            return;
+        }
 
-    };
+        setIsCheckingOut(true);
+        setCheckoutError(null);
+
+        try {
+            const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
+            const response = await fetch(`${apiBaseUrl}/checkout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    total: Number(total),
+                }),
+            });
+
+            const contentType = response.headers.get("content-type") ?? "";
+
+            if (!response.ok) {
+                let message = "Checkout failed.";
+
+                if (contentType.includes("application/json")) {
+                    const data = (await response.json()) as { message?: string; error?: string };
+                    message = data.message ?? data.error ?? message;
+                } else {
+                    message = await response.text();
+                }
+
+                throw new Error(message);
+            }
+
+            if (!contentType.includes("application/json")) {
+                throw new Error("Checkout response was not valid JSON.");
+            }
+
+            const data = (await response.json()) as { url?: string };
+            if (!data.url) {
+                throw new Error("Checkout URL was not returned.");
+            }
+
+            clearCart();
+            window.location.assign(data.url);
+        } catch (error) {
+            setCheckoutError(error instanceof Error ? error.message : "Checkout failed.");
+        } finally {
+            setIsCheckingOut(false);
+        }
+    }
 
     return (
         <section className="container my-4 my-md-5">
@@ -106,29 +193,11 @@ const Cart = () => {
                     <div className={`card p-3 p-md-4 ${styles.cartCard}`}>
                         <h2 className="h4 mb-3 text-light">Checkout</h2>
 
-                        {checkoutSuccess && (
-                            <div className="alert alert-success mb-3" role="alert">
-                                ✓ Checkout successful! Your tickets have been processed.
-                            </div>
-                        )}
-
                         {checkoutError && (
                             <div className="alert alert-danger mb-3" role="alert">
                                 ✗ {checkoutError}
                             </div>
                         )}
-
-                        <div className="mb-3">
-                            <Input
-                                type="email"
-                                label="Email Address"
-                                name="checkoutEmail"
-                                value={checkoutEmail}
-                                onChange={(e) => setCheckoutEmail(e.target.value)}
-                                theme="dark"
-                            />
-                            <small className="text-muted">We'll send your ticket details to this email</small>
-                        </div>
 
                         <h3 className="h6 mb-3 text-light">Order Summary</h3>
                         <div className="d-flex justify-content-between mb-2 pt-2 border-top">
