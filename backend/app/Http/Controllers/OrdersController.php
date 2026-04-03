@@ -43,11 +43,6 @@ class OrdersController extends Controller implements HasMiddleware
         $this->authorize('create', Order::class);
         $data = $request->validated();
 
-        $data['status'] = 'created';
-
-        if (auth()->user()) {
-            $data['deliveryEmail'] = auth()->user()->email;
-        }
         DB::transaction(function () use ($data) {
             $order = new Order($data);
             $order->orderNumber = $this->generateOrderNumber();

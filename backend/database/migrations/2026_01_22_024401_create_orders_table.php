@@ -19,9 +19,9 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('platformFee', 10, 2);
             $table->decimal('tax', 10, 2)->nullable();
-            $table->enum('status', ["created", "processing", "completed", "failed", "cancelled"]);
+            $table->enum('status', ["created", "processing", "completed", "failed", "cancelled", "refunded"])->default("created");
             $table->text('paymentIntentId')->nullable();
-            $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed", "refunded"])->nullable();
+            $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed"])->nullable();
             $table->text('deliveryEmail')->nullable();
             $table->enum('deliverStatus', ["pending", "sent", "delivered"])->nullable();
             $table->date('deliveredAt')->nullable();

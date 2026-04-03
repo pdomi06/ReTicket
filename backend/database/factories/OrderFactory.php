@@ -17,8 +17,8 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $status = ["created", "processing", "completed", "failed", "cancelled"];
-        $paymentStatus = ["pending", "authorized", "captured", "failed", "refunded"];
+        $status = ["created", "processing", "completed", "failed", "cancelled", "refunded"];
+        $paymentStatus = ["pending", "authorized", "captured", "failed"];
         $deliverStatus = ["pending", "sent", "delivered"];
         $orderNumber = fake()->unique()->numberBetween(1000000, 9999999);
         

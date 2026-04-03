@@ -27,6 +27,7 @@ export const OrderStatus = {
   Completed: "completed",
   Failed: "failed",
   Cancelled: "cancelled",
+  Refunded: "refunded",
 } as const;
 
 // Orders - paymentStatus
@@ -35,7 +36,6 @@ export const PaymentStatus = {
   Authorized: "authorized",
   Captured: "captured",
   Failed: "failed",
-  Refunded: "refunded",
 } as const;
 
 // Orders - deliverStatus
