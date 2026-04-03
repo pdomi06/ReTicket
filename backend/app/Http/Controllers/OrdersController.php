@@ -9,6 +9,11 @@ use App\Http\Requests\UpdateOrdersRequest;
 use App\Http\Requests\CheckOutOrdersRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use App\Models\TicketForSale;
+use App\Models\ActiveTicket;
+use App\Models\OrderItem;
 
 class OrdersController extends Controller implements HasMiddleware
 {
