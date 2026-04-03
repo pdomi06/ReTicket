@@ -24,6 +24,8 @@ class StoreOrdersRequest extends FormRequest
         return [
         'subtotal' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],
+        'tickets' => ['required', 'array', 'min:1'],
+        'tickets.*' => ['integer', 'exists:active_tickets,ticketListingId'],
         ];
     }
 }
