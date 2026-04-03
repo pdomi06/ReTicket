@@ -27,15 +27,15 @@ class UpdateOrdersRequest extends FormRequest
             'buyerEmail' => ['sometimes', 'email', 'exists:users,email'],
             'subtotal' => ['sometimes', 'numeric', 'min:0'],
             'platformFee' => ['sometimes', 'numeric', 'min:0'],
-            'tax' => ['nullable', 'numeric', 'min:0'],
+            'tax' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'status' => ['sometimes', 'in:pending,processing,completed,failed,refunded'],
             'paymentIntentId' => ['sometimes', 'string'],
             'paymentStatus' => ['sometimes', 'in:pending,authorized,captured,failed,refunded'],
             'deliveryEmail' => ['sometimes', 'email', 'exists:users,email'],
             'deliverStatus' => ['sometimes', 'in:pending,sent,delivered'],
-            'deliveredAt' => ['nullable', 'date'],
-            'completedAt' => ['nullable', 'date'],
-            'cancelledAt' => ['nullable', 'date'],
+            'deliveredAt' => ['sometimes', 'nullable', 'date'],
+            'completedAt' => ['sometimes', 'nullable', 'date'],
+            'cancelledAt' => ['sometimes', 'nullable', 'date'],
         ];
     }
 }
