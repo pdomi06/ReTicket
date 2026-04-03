@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class TicketForSaleController extends Controller implements HasMiddleware
 {
@@ -192,6 +193,11 @@ class TicketForSaleController extends Controller implements HasMiddleware
         }
 
         return response()->json(['success' => true, 'message' => 'Ticket(s) marked as sold and history recorded.'], 200);
+    }
+
+    public function finalize(Request $request)
+    {
+        // TODO: Implement finalize logic
     }
 
     private function generateUniqueTicketListingId(): string

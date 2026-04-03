@@ -14,12 +14,15 @@ class StripeController extends Controller
     public function checkOut(Request $request)
     {
         \Stripe\Stripe::setApiKey(config('stripe.sk'));
-        $frontendUrl = rtrim(config('services.frontend.url', env('FRONTEND_URL', 'http://localhost:5173')), '/');
+        $frontendUrl = rtrim(config(env('FRONTEND_URL', 'http://localhost:5173')), '/');
         $total = (float) $request->input('total', 5000);
         $currency = strtolower((string) env('CASHIER_CURRENCY', 'huf'));
-        $unitAmount = $currency === 'huf'
-            ? (int) round($total * 100)
-            : (int) round($total);
+        $unitAmount = (int) round($total * 100);
+
+        $order = Orders::where('id', $request->input('orderId'))->first();
+        $order->status = 'processing';
+        $order->paymentStatus = "pending";
+        $order->save();
 
         $checkoutSession = \Stripe\Checkout\Session::create([
             'mode' => 'payment',
@@ -33,8 +36,8 @@ class StripeController extends Controller
                 ],
                 'quantity' => 1,
             ]],
-            'success_url' => $frontendUrl . '/cart?success=true&session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => $frontendUrl . '/cart?canceled=true',
+            'success_url' => $frontendUrl . '/cart?state=succesful&session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => $frontendUrl . '/cart?state=failed',
             'automatic_tax' => [
                 'enabled' => true,
             ],

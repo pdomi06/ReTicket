@@ -39,6 +39,7 @@ Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleControll
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
 Route::post('ticketForSale/checkOut', [TicketForSaleController::class, 'checkOut']);
+Route::post('ticketForSale/finalize', [TicketForSaleController::class, 'finalize']);
 Route::post('checkout', [StripeController::class, 'checkOut']);
 Route::get('checkout/session', [StripeController::class, 'checkoutSession']);
 Route::post('orders/checkOut', [StripeController::class, 'checkOut']);

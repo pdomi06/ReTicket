@@ -50,15 +50,16 @@ class OrdersController extends Controller implements HasMiddleware
 
             foreach ($data['tickets'] as $ticketId) {
                 $ticketForSale = TicketForSale::where('id', $ticketId)->first();
-                $ticket = ActiveTicket::insert([
-                    'ticketListingId' => $this->generateUniqueTicketListingId(),
-                    "originalTicketId" => $ticketForSale->originalTicketId,
-                ]);
-                OrderItem::create([
+                $orderItem = OrderItem::insert([
                     'orderId' => $order->id,
                     'ticketListingId' => $ticket['ticketListingId'],
                     'price' => $ticketForSale->price,
                 ]);
+                $ticket = ActiveTicket::insert([
+                    'ticketListingId' => $this->generateUniqueTicketListingId(),
+                    "originalTicketId" => $ticketForSale->originalTicketId,
+                ]);
+
             }
         });
 
