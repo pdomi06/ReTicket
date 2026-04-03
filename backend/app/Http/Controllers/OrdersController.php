@@ -38,18 +38,29 @@ class OrdersController extends Controller implements HasMiddleware
         $this->authorize('create', Order::class);
         $data = $request->validated();
 
-        $data['status'] = 'pending';
-        $data['paymentStatus'] = 'pending';
-        $data['deliverStatus'] = 'pending';
+        $data['status'] = 'created';
 
         if (auth()->user()) {
-            $data['buyerEmail'] = auth()->user()->email;
             $data['deliveryEmail'] = auth()->user()->email;
         }
+        DB::transaction(function () use ($data) {
+            $order = new Order($data);
+            $order->orderNumber = $this->generateOrderNumber();
+            $order->save();
 
-        $order = new Order($data);
-        $order->orderNumber = $this->generateOrderNumber();
-        $order->save();
+            foreach ($data['tickets'] as $ticketId) {
+                $ticketForSale = TicketForSale::where('id', $ticketId)->first();
+                $ticket = ActiveTicket::insert([
+                    'ticketListingId' => $this->generateUniqueTicketListingId(),
+                    "originalTicketId" => $ticketForSale->originalTicketId,
+                ]);
+                OrderItem::create([
+                    'orderId' => $order->id,
+                    'ticketListingId' => $ticket['ticketListingId'],
+                    'price' => $ticketForSale->price,
+                ]);
+            }
+        });
 
         return response()->json($order, 201);
     }
@@ -61,6 +72,15 @@ class OrdersController extends Controller implements HasMiddleware
         } while (Order::where('orderNumber', $orderNumber)->exists());
 
         return $orderNumber;
+    }
+
+    private function generateUniqueTicketListingId(): string
+    {
+        do {
+            $ticketListingId = Str::ulid()->toString();
+        } while (DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists());
+
+        return $ticketListingId;
     }
 
     /**
