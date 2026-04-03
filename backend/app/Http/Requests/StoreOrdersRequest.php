@@ -22,15 +22,8 @@ class StoreOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'buyerEmail' => ['required', 'email', 'exists:users,email'],
         'subtotal' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],
-        'tax' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-        'paymentIntentId' => ['required', 'string'],
-        'deliveryEmail' => ['required', 'email', 'exists:users,email'],
-        'status' => ['prohibited'],
-        'paymentStatus' => ['prohibited'],
-        'deliverStatus' => ['prohibited'],
         ];
     }
 }

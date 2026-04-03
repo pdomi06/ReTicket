@@ -13,7 +13,6 @@ class Order extends Model
     protected $table = "orders";
 
     protected $fillable = [
-        'buyerEmail',
         'subtotal',
         'platformFee',
         'tax',
@@ -39,8 +38,4 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'orderId');
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'buyerEmail', 'email');
-    }
 }

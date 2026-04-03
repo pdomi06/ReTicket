@@ -17,7 +17,7 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $status = ["pending", "processing", "completed", "failed", "refunded"];
+        $status = ["created", "processing", "completed", "failed", "cancelled"];
         $paymentStatus = ["pending", "authorized", "captured", "failed", "refunded"];
         $deliverStatus = ["pending", "sent", "delivered"];
         $orderNumber = fake()->unique()->numberBetween(1000000, 9999999);
@@ -26,7 +26,6 @@ class OrderFactory extends Factory
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
         return [
             'orderNumber' => $orderNumber,
-            'buyerEmail' => $user->email,
             'subtotal' => fake()->randomFloat(2, 10, 500),
             'platformFee' => fake()->randomFloat(2, 1, 50),
             'tax' => fake()->optional()->randomFloat(2, 0.5, 20),

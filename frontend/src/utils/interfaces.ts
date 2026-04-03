@@ -116,7 +116,6 @@ export interface ITicketForsale {
 export interface IOrder {
   id: number;
   orderNumber: number;
-  buyerEmail: string;
   subtotal: number;
   platformFee: number;
   tax: number | null;

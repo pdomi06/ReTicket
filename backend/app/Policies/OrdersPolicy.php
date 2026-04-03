@@ -29,7 +29,7 @@ class OrdersPolicy
      */
     public function view(User $user, Order $orders): bool
     {
-        return $user->email === $orders->buyerEmail;
+        return $user->email === $orders->deliveryEmail;
     }
 
     /**

@@ -16,15 +16,14 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('orderNumber')->unique();
-            $table->text('buyerEmail');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('platformFee', 10, 2);
             $table->decimal('tax', 10, 2)->nullable();
-            $table->enum('status', ["pending", "processing", "completed", "failed", "refunded"]);
-            $table->text('paymentIntentId');
-            $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed", "refunded"]);
-            $table->text('deliveryEmail');
-            $table->enum('deliverStatus', ["pending", "sent", "delivered"]);
+            $table->enum('status', ["created", "processing", "completed", "failed", "cancelled"]);
+            $table->text('paymentIntentId')->nullable();
+            $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed", "refunded"])->nullable();
+            $table->text('deliveryEmail')->nullable();
+            $table->enum('deliverStatus', ["pending", "sent", "delivered"])->nullable();
             $table->date('deliveredAt')->nullable();
             $table->timestamps();
             $table->dateTime('completedAt')->nullable();

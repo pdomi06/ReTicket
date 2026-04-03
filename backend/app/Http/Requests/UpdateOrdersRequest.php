@@ -24,15 +24,14 @@ class UpdateOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'buyerEmail' => ['sometimes', 'email', 'exists:users,email'],
             'subtotal' => ['sometimes', 'numeric', 'min:0'],
             'platformFee' => ['sometimes', 'numeric', 'min:0'],
             'tax' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'status' => ['sometimes', 'in:pending,processing,completed,failed,refunded'],
-            'paymentIntentId' => ['sometimes', 'string'],
-            'paymentStatus' => ['sometimes', 'in:pending,authorized,captured,failed,refunded'],
-            'deliveryEmail' => ['sometimes', 'email', 'exists:users,email'],
-            'deliverStatus' => ['sometimes', 'in:pending,sent,delivered'],
+            'status' => ['sometimes', 'nullable', 'in:created,processing,completed,failed,cancelled'],
+            'paymentIntentId' => ['sometimes', 'nullable', 'string'],
+            'paymentStatus' => ['sometimes', 'nullable', 'in:pending,authorized,captured,failed,refunded'],
+            'deliveryEmail' => ['sometimes', 'nullable', 'email', 'exists:users,email'],
+            'deliverStatus' => ['sometimes', 'nullable', 'in:pending,sent,delivered'],
             'deliveredAt' => ['sometimes', 'nullable', 'date'],
             'completedAt' => ['sometimes', 'nullable', 'date'],
             'cancelledAt' => ['sometimes', 'nullable', 'date'],

@@ -17,7 +17,7 @@ class StoreOrderItemsRequest extends FormRequest
         if(!$order){
             return false;
         }
-        if($order->buyerEmail !== $this->user()->email){
+        if($order->deliveryEmail !== $this->user()->email){
             return false;
         }
         return $this->user()->can('create', OrderItem::class);
