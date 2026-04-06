@@ -11,3 +11,5 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return redirect('/');
 })->name('login');
+
+Auth::routes(['reset' => true]);

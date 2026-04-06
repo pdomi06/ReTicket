@@ -8,7 +8,6 @@ use App\Models\Event;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OriginalTicket;
-use App\Models\PasswordReset;
 use App\Models\Payout;
 use App\Models\Review;
 use App\Models\TicketForSale;
@@ -46,7 +45,6 @@ class AuthServiceProvider extends ServiceProvider
         Order::class => OrdersPolicy::class,
         OrderItem::class => OrderItemsPolicy::class,
         OriginalTicket::class => OriginalTicketsPolicy::class,
-        PasswordReset::class => PasswordResetPolicy::class,
         Payout::class => PayoutsPolicy::class,
         Review::class => ReviewsPolicy::class,
         TicketForSale::class => TicketForSalePolicy::class,
