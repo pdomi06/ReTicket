@@ -21,7 +21,6 @@ use App\Policies\EventsPolicy;
 use App\Policies\OrderItemsPolicy;
 use App\Policies\OrdersPolicy;
 use App\Policies\OriginalTicketsPolicy;
-use App\Policies\PasswordResetPolicy;
 use App\Policies\PayoutsPolicy;
 use App\Policies\ReviewsPolicy;
 use App\Policies\TicketForSalePolicy;

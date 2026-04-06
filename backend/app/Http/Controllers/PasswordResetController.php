@@ -18,8 +18,7 @@ class PasswordResetController extends Controller
      */
     public function index()
     {
-        $password_resets = PasswordResetModel::all();
-        return response()->json($password_resets, 200);
+        abort(404);
     }
 
     /**
@@ -27,16 +26,9 @@ class PasswordResetController extends Controller
      */
     public function store(StorePasswordResetRequest $request)
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-        ]);
-
         $status = Password::sendResetLink($request->only('email'));
 
-        \Log::info('Password reset requested', [
-        'email' => $request->email,
-        'status' => $status,
-    ]);
+        \Log::debug('Password reset link requested');
 
         return response()->json([
             'message' => 'If a user with that email address exists, we have sent a password reset link.'
