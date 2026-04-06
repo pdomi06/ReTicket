@@ -49,12 +49,6 @@ class PasswordResetController extends Controller
      */
     public function update(UpdatePasswordResetRequest $request)
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', PasswordRule::defaults()],
-        ]);
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
