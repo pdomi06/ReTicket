@@ -10,19 +10,23 @@ class PasswordResetModel extends Model
     /** @use HasFactory<\Database\Factories\PasswordResetFactory> */
     use HasFactory;
 
-    protected $table = "password_reset";
+    protected $table = "password_reset_tokens";
+    protected $primaryKey = 'email';
+    public $incrementing = false;
+    public $timestamps = false;
+
     protected $fillable = [
-        'userId',
+        'email',
         'token',
-        'expiresAt',
-        'verifiedAt',
         'created_at'
     ];
+
     protected $casts = [
-        'expiresAt' => 'datetime',
+        'created_at' => 'datetime',
     ];
+
     public function user()
     {
-        return $this->belongsTo(User::class, 'userId');
+        return $this->belongsTo(User::class, 'email', 'email');
     }
 }

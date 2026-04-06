@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePasswordResetRequest;
 use App\Http\Requests\UpdatePasswordResetRequest;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use App\Models\PasswordResetModel;
@@ -32,11 +31,17 @@ class PasswordResetController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
-        return response()->json(["message" => "If a user with that email exists, a password reset link has been sent."], 200);
+        \Log::info('Password reset requested', [
+        'email' => $request->email,
+        'status' => $status,
+    ]);
+
+        return response()->json([
+            'message' => 'If a user with that email address exists, we have sent a password reset link.'
+        ], 200);
+
     }
 
     /**
@@ -65,14 +70,14 @@ class PasswordResetController extends Controller
                     'passwordHash' => Hash::make($password),
                 ])->save();
 
+                $user->tokens()->delete();
+
                 event(new PasswordReset($user));
             }
         );
-        return match($status){
+        return match ($status) {
             Password::PASSWORD_RESET => response()->json(["message" => "Password reset successfully."], 200),
-            Password::INVALID_TOKEN => response()->json(["message" => "Invalid token."], 400),
-            Password::INVALID_USER => response()->json(["message" => "User not found."], 404),
-            default => response()->json(["message" => "An error occurred."], 400),  
+            default => response()->json(["message" => "Unable to reset password. Please check your email and token and try again."], 400),
         };
 
     }
