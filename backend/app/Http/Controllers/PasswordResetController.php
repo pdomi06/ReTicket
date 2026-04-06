@@ -41,7 +41,7 @@ class PasswordResetController extends Controller
      */
     public function show(PasswordResetModel $passwordReset)
     {
-        return response()->json($passwordReset, 200);
+        abort(404);
     }
 
     /**
@@ -73,7 +73,6 @@ class PasswordResetController extends Controller
      */
     public function destroy(PasswordResetModel $passwordReset)
     {
-        $passwordReset->delete();
-        return response()->json(["message" => "Password reset deleted successfully"], 200);
+        abort(404);
     }
 }
