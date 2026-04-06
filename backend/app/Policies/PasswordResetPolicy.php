@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\PasswordReset;
+use App\Models\PasswordResetModel;
 
 class PasswordResetPolicy
 {
@@ -43,7 +43,7 @@ class PasswordResetPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, PasswordReset $passwordReset): bool
+    public function view(User $user, PasswordResetModel $passwordReset): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class PasswordResetPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, PasswordReset $passwordReset): bool
+    public function update(User $user, PasswordResetModel $passwordReset): bool
     {
         return false;
     }
@@ -67,7 +67,7 @@ class PasswordResetPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, PasswordReset $passwordReset): bool
+    public function delete(User $user, PasswordResetModel $passwordReset): bool
     {
         return false;
     }
@@ -75,7 +75,7 @@ class PasswordResetPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, PasswordReset $passwordReset): bool
+    public function restore(User $user, PasswordResetModel $passwordReset): bool
     {
         return false;
     }
@@ -83,7 +83,7 @@ class PasswordResetPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, PasswordReset $passwordReset): bool
+    public function forceDelete(User $user, PasswordResetModel $passwordReset): bool
     {
         return false;
     }
