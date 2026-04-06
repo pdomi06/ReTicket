@@ -9,7 +9,7 @@ use App\Http\Requests\UpdatePasswordResetRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
-use App\Models\PasswordResetModel;
+use App\Models\PasswordResetToken;
 
 class PasswordResetController extends Controller
 {
@@ -39,7 +39,7 @@ class PasswordResetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PasswordResetModel $passwordReset)
+    public function show(PasswordResetToken $passwordReset)
     {
         abort(404);
     }
@@ -71,7 +71,7 @@ class PasswordResetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PasswordResetModel $passwordReset)
+    public function destroy(PasswordResetToken $passwordReset)
     {
         abort(404);
     }
