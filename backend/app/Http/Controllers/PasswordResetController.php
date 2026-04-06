@@ -6,9 +6,8 @@ use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePasswordResetRequest;
 use App\Http\Requests\UpdatePasswordResetRequest;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\Rules\Password as PasswordRule;
 use App\Models\PasswordResetToken;
 
 class PasswordResetController extends Controller
@@ -28,7 +27,12 @@ class PasswordResetController extends Controller
     {
         $status = Password::sendResetLink($request->only('email'));
 
-        \Log::debug('Password reset link requested');
+        if ($status !== Password::RESET_LINK_SENT && $status !== Password::INVALID_USER) {
+            Log::warning('Password reset link request non-success status', [
+                'status' => $status,
+                'ip' => $request->ip(),
+            ]);
+        }
 
         return response()->json([
             'message' => 'If a user with that email address exists, we have sent a password reset link.'
@@ -53,7 +57,7 @@ class PasswordResetController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'passwordHash' => Hash::make($password),
+                    'passwordHash' => $password,
                 ])->save();
 
                 $user->tokens()->delete();
