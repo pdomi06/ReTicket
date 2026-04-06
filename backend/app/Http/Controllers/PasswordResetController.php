@@ -9,6 +9,7 @@ use App\Http\Requests\UpdatePasswordResetRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use App\Models\PasswordResetModel;
 
 class PasswordResetController extends Controller
@@ -54,7 +55,7 @@ class PasswordResetController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', PasswordRule::defaults()],
         ]);
 
         $status = Password::reset(
