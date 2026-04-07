@@ -38,7 +38,8 @@ class User extends Authenticatable
         'kycStatus',
         'created_at',
         'updated_at',
-        'lastLogin'
+        'lastLogin',
+        'email_verified_at'
     ];
 
     /**
@@ -63,6 +64,7 @@ class User extends Authenticatable
             'updated_at' => 'datetime',
             'lastLogin' => 'datetime',
             'passwordHash' => 'hashed',
+            'email_verified_at' => 'datetime',
         ];
     }
 

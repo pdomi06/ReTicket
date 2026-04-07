@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending");
             $table->timestamps();
             $table->dateTime('lastLogin')->nullable();
+            $table->timestamp('email_verified_at')->nullable()->after('email');
         });
     }
 
