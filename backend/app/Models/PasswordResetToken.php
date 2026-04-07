@@ -11,7 +11,7 @@ class PasswordResetToken extends Model
     /** @use HasFactory<\Database\Factories\PasswordResetFactory> */
     use HasFactory;
 
-    protected $table = 'password_reset_tokens';
+    protected $table = 'password_reset';
 
     protected $primaryKey = 'email';
 
