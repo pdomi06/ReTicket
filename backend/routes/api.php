@@ -1,7 +1,6 @@
 <?php
-
+use Illuminate\Http\Request;
 use App\Http\Controllers\ActiveTicketsController;
-use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\OrdersController;
@@ -15,7 +14,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\VenueMapController;
 use App\Http\Controllers\AuthController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmailChangeController;
+
 
 
 Route::post('login', [AuthController::class, 'login'])->middleware('throttle:3,1');
@@ -40,19 +42,55 @@ Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleCont
 Route::post('ticketForSale/checkOut', [TicketForSaleController::class, 'checkOut']);
 Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
-Route::post('email/verify/send', [EmailVerificationController::class, 'sendLink']);
-Route::post('email/verify', [EmailVerificationController::class, 'verify']);
-Route::apiResource("orderItems", OrderItemsController::class);
-Route::apiResource("orders", OrdersController::class);
+
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    $user = User::find($id);
+
+    if (!$user) {
+        return response()->json(['message' => 'User not found.'], 404);
+    }
+
+    if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Invalid verification link.'], 403);
+    }
+
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+
+    if (!$user->isVerified) {
+        $user->isVerified = true;
+        $user->save();
+    }
+
+    return response()->json(['message' => 'Email verified successfully.'], 200);
+})->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return response()->json(['message' => 'Verification link sent.'], 200);
+})->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+
+
+Route::post('/user/email/change', [EmailChangeController::class, 'requestChange']);
+
+Route::get('/user/email/confirm/{id}', [EmailChangeController::class, 'confirmChange'])
+    ->middleware(['signed'])->name('email.change.confirm');
+
+
+Route::apiResource("orderItems", OrderItemsController::class)->middleware(['verified']);
+Route::apiResource("orders", OrdersController::class)->middleware(['verified']);
 Route::post('password/forgot', [PasswordResetController::class, 'store']);
 Route::post('password/reset', [PasswordResetController::class, 'update']);
 Route::get('payouts', [PayoutsController::class, 'index']);
 Route::get('payouts/{payout}', [PayoutsController::class, 'show']);
 Route::put('payouts/{payout}', [PayoutsController::class, 'update']);
-Route::get('my/payouts', [PayoutsController::class, 'myPayouts'])->middleware('auth:sanctum');
+Route::get('my/payouts', [PayoutsController::class, 'myPayouts'])->middleware(['verified']);
 Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
 Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
-Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware('auth:sanctum');
-Route::apiResource("userSettings", UserSettingsController::class);
+Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware(['verified']);
+Route::apiResource("userSettings", UserSettingsController::class)->middleware(['verified']);

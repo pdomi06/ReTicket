@@ -13,7 +13,7 @@ class EmailVerificationController extends Controller
     public function sendLink(SendVerificationLinkRequest $request)
     {
         $user = User::where('email', $request->email)->first();
-        if (!$user || $user->isVerified) {
+        if (!$user || $user->hasVerifiedEmail()) {
             return response()->json(['message' => 'If that email exists, we have sent a verification link.'], 200);
         }
         EmailVerification::where('userId', $user->id)->delete();
@@ -44,8 +44,7 @@ class EmailVerificationController extends Controller
             return response()->json(['message' => 'User not found.'], 404);
         }
 
-        $user->isVerified = true;
-        $user->save();
+        $user->markEmailAsVerified();
 
         $verification->verifiedAt = now();
         $verification->save();

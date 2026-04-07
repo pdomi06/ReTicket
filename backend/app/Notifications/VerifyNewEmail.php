@@ -2,23 +2,24 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
-use Config;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use URL;
 
-class VerifyEmail extends Notification
+class VerifyNewEmail extends Notification
 {
     use Queueable;
+
+    protected $confirmationUrl;
+    protected $newEmail;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($confirmationUrl, $newEmail)
     {
-        //
+        $this->confirmationUrl = $confirmationUrl;
+        $this->newEmail = $newEmail;
     }
 
     /**
@@ -36,25 +37,11 @@ class VerifyEmail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $verificationUrl = $this->verificationUrl($notifiable);
         return (new MailMessage)
-            ->subject('Verify Your Email Address')
-            ->line('Please click the button below to verify your email address.')
-            ->action('Verify Email Address', $verificationUrl)
-            ->line('If you did not create an account, no further action is required.');
-    }
-
-
-    protected function verificationUrl($notifiable)
-    {
-        return URL::temporarySignedRoute(
-            'verification.verify',
-            Carbon::now()->AddMinutes(Config::get('auth.verification.expire', 60)),
-            [
-                'id' => $notifiable->getKey(),
-                'hash' => sha1($notifiable->getEmailForVerification()),
-            ]
-        );
+            ->subject('Confirm Your New Email Address')
+            ->line('You are receiving this email because you requested to change your email address.')
+            ->action('Confirm Email Change', $this->confirmationUrl)
+            ->line('If you did not request to change your email address, no further action is required.');
     }
 
     /**

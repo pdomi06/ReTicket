@@ -25,18 +25,20 @@ class UserFactory extends Factory
     {
 
         $kycStatus = ["pending", "rejected", "approved"];
+        $isVerified = fake()->boolean(90);
         return [
             'email' => fake()->unique()->safeEmail(),
             'passwordHash' => Hash::make('password'),
             'name' => fake()->name(),
             'phone' => fake()->phoneNumber(),
-            'isVerified' => fake()->boolean(90),
+            'isVerified' => $isVerified,
             'isActive' => fake()->boolean(95),
             'isOnline' => fake()->boolean(50),
             'kycStatus' => fake()->randomElement($kycStatus),
             'created_at' => now(),
             'updated_at' => now(),
             'lastLogin' => fake()->dateTimeBetween('-1 year', 'now'),
+            'email_verified_at' => $isVerified ? now() : null,
         ];
     }
 
@@ -47,6 +49,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'isVerified' => false,
+            'email_verified_at' => null,
         ]);
     }
 }
