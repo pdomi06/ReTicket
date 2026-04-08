@@ -16,7 +16,7 @@ const CreateVenue = () => {
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venues`, {
                 headers
             });
 
@@ -55,7 +55,7 @@ const CreateVenue = () => {
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venues`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(venue)
