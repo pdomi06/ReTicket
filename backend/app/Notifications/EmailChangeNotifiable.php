@@ -2,26 +2,24 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Notifiable;
 
-class EmailChangeNotifiable extends Notification
+class EmailChangeNotifiable
 {
-    use Queueable;
     use Notifiable;
-    protected $email;
+
+    protected string $email;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($email)
+    public function __construct(string $email)
     {
         $this->email = $email;
     }
 
 
-    public function routeNotificationForMail()
+    public function routeNotificationForMail(): string
     {
         return $this->email;
     }

@@ -59,11 +59,6 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, 
         $user->markEmailAsVerified();
     }
 
-    if (!$user->isVerified) {
-        $user->isVerified = true;
-        $user->save();
-    }
-
     return response()->json(['message' => 'Email verified successfully.'], 200);
 })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 

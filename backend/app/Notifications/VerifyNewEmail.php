@@ -40,6 +40,7 @@ class VerifyNewEmail extends Notification
         return (new MailMessage)
             ->subject('Confirm Your New Email Address')
             ->line('You are receiving this email because you requested to change your email address.')
+            ->line('Requested new email: ' . $this->newEmail)
             ->action('Confirm Email Change', $this->confirmationUrl)
             ->line('If you did not request to change your email address, no further action is required.');
     }
