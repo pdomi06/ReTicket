@@ -123,7 +123,7 @@ export interface IOrder {
   paymentIntentId: string;
   paymentStatus: typeof PaymentStatus[keyof typeof PaymentStatus];
   deliveryEmail: string;
-  deliverStatus: typeof DeliveryStatus[keyof typeof DeliveryStatus];
+  deliveryStatus: typeof DeliveryStatus[keyof typeof DeliveryStatus];
   deliveredAt: string | null;
   created_at: string;
   updated_at: string;
@@ -143,7 +143,8 @@ export interface IOrderItem {
 export interface IActiveTicket {
   id: number;
   originalTicketId: number;
-  ticketListingId: number;
+  ticketListingId: string;
+  orderId: number;
 }
 
 export interface IPayout {
