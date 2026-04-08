@@ -11,11 +11,12 @@ use App\Models\Order;
 use App\Models\TicketForSale;
 use App\Models\UserSetting;
 use App\Models\Payout;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasApiTokens, Notifiable;
+    use HasFactory, HasApiTokens, Notifiable, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.

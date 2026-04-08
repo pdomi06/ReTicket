@@ -11,18 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
         Schema::create('password_reset', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('userId')->constrained('users')->onDelete('cascade');
-            $table->text('token')->unique();
-            $table->dateTime('expiresAt');
-            $table->dateTime('verifiedAt')->nullable();
-            $table->timestamps();
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
