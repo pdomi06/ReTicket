@@ -14,6 +14,7 @@ class ActiveTicket extends Model
     protected $fillable = [
         'originalTicketId',
         'ticketListingId',
+        'orderId',
     ];
 
     public function originalTicket()
@@ -24,6 +25,11 @@ class ActiveTicket extends Model
     public function ticketListing()
     {
         return $this->belongsTo(TicketForSale::class, 'ticketListingId');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'orderId');
     }
 
     public $timestamps = false;
