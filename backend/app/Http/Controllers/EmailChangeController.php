@@ -5,19 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\EmailChangeNotifiable;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
 use App\Notifications\VerifyNewEmail;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
-class EmailChangeController extends \Illuminate\Routing\Controller
+class EmailChangeController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('auth:sanctum')->except('confirmChange');
+        return [
+            new Middleware('auth:sanctum', except: ['confirmChange']),
+        ];
     }
+
     public function requestChange(Request $request)
     {
         $request->validate([
@@ -26,7 +31,7 @@ class EmailChangeController extends \Illuminate\Routing\Controller
         ]);
 
         $user = $request->user();
-        if(!Hash::check($request->current_password, $user->getAuthPassword())) {
+        if (!Hash::check($request->current_password, $user->getAuthPassword())) {
             return response()->json(['message' => 'Current password is incorrect.'], 422);
         }
 
@@ -39,15 +44,15 @@ class EmailChangeController extends \Illuminate\Routing\Controller
             ]
         );
 
-        
-            $notifiable = new EmailChangeNotifiable($request->new_email);
-            $notifiable->notify(new VerifyNewEmail($confirmationUrl, $request->new_email));
+        $notifiable = new EmailChangeNotifiable($request->new_email);
+        $notifiable->notify(new VerifyNewEmail($confirmationUrl, $request->new_email));
+
         return response()->json(['message' => 'Verification link sent to your new email address.'], 200);
     }
 
     public function confirmChange(Request $request)
     {
-        if(!$request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             return response()->json(['message' => 'Invalid or expired token.'], 400);
         }
 
@@ -72,5 +77,5 @@ class EmailChangeController extends \Illuminate\Routing\Controller
         });
 
         return response()->json(['message' => 'Email successfully changed.'], 200);
-        }
+    }
 }

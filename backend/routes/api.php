@@ -69,7 +69,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 
 
-Route::post('/user/email/change', [EmailChangeController::class, 'requestChange']);
+Route::post('/user/email/change', [EmailChangeController::class, 'requestChange'])
+    ->middleware(['throttle:6,1']);
 
 Route::get('/user/email/confirm/{id}', [EmailChangeController::class, 'confirmChange'])
     ->middleware(['signed'])->name('email.change.confirm');
