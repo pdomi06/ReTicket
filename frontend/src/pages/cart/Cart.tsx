@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CartContext } from "../../contexts/cart/CartContextDef";
 import Button from "../../components/ui/button/Button";
 import styles from "./Cart.module.css";
@@ -9,9 +9,8 @@ const Cart = () => {
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [searchParams] = useSearchParams();
-    const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
-    const [paymentId, setPaymentId] = useState<string | null>(null);
-    const [paymentEmail, setPaymentEmail] = useState<string | null>(null);
+    const [checkoutText, setCheckoutText] = useState("Checkout");
+    const handledSessionIdRef = useRef<string | null>(null);
 
     const subtotal = useMemo(
         () => tickets.reduce((sum, ticket) => sum + Number(ticket.price || 0), 0),
@@ -22,17 +21,29 @@ const Cart = () => {
 
     useEffect(() => {
         const sessionId = searchParams.get("session_id");
-        const wasSuccessful = searchParams.get("success") === "true";
 
-        if (!wasSuccessful || !sessionId) {
+        if (!sessionId || handledSessionIdRef.current === sessionId) {
             return;
         }
 
-        setPaymentSessionId(sessionId);
+        handledSessionIdRef.current = sessionId;
 
-        const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
+        const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL);
 
-        const loadPaymentDetails = async () => {
+        const finalizeTickets = async () => {
+            await fetch(`${apiBaseUrl}/ticketForSale/finalize`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    orderId: localStorage.getItem('orderId'),
+                }),
+            });
+        };
+
+        const handlePaymentDetails = async () => {
+            const checkoutSuccessful = searchParams.get("state") === "succesful";
             try {
                 const response = await fetch(`${apiBaseUrl}/checkout/session?session_id=${encodeURIComponent(sessionId)}`, {
                     headers: {
@@ -44,21 +55,37 @@ const Cart = () => {
                     throw new Error("Failed to load payment details.");
                 }
 
-                const data = (await response.json()) as {
-                    session_id?: string;
-                    payment_id?: string | null;
-                    email?: string | null;
-                };
+                const data = await response.json();
 
-                setPaymentId(data.payment_id ?? null);
-                setPaymentEmail(data.email ?? null);
+                const updatedOrder = await fetch(`${apiBaseUrl}/orders/${localStorage.getItem('orderId')}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        paymentIntentId: data.payment_id,
+                        paymentStatus: checkoutSuccessful ? "authorized" : "failed",
+                        deliveryEmail: data.email ? data.email : "",
+                        deliveryStatus: checkoutSuccessful ? "pending" : null,
+                    }),
+                });
+                if (!updatedOrder.ok) {
+                    console.error("Failed to update order with payment details.");
+                }
+                if (checkoutSuccessful) {
+                    await finalizeTickets();
+                    clearCart();
+                }
             } catch (error) {
                 console.error("Error loading payment details:", error);
             }
+
         };
 
-        void loadPaymentDetails();
-    }, [searchParams]);
+        void handlePaymentDetails();
+
+
+    }, [searchParams, clearCart, tickets]);
 
     const handleClearCart = async () => {
         await Promise.all(tickets.map((ticket) => removeFromCart(ticket)));
@@ -82,16 +109,49 @@ const Cart = () => {
     }
 
     async function handleCheckOut() {
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
         if (isCheckingOut) {
             return;
         }
 
         setIsCheckingOut(true);
+        setCheckoutText("Processing...");
         setCheckoutError(null);
 
         try {
-            const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
-            const response = await fetch(`${apiBaseUrl}/checkout`, {
+            setCheckoutText("Creating Order...");
+            const response = await fetch(`${apiBaseUrl}/orders`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    subtotal: Number(subtotal),
+                    platformFee: Number(serviceFee),
+                    tickets: tickets.map((ticket) => ticket.id),
+                }),
+            });
+
+            if (!response.ok) {
+                let message = "Failed to create order.";
+                const contentType = response.headers.get("content-type") ?? "";
+                if (contentType.includes("application/json")) {
+                    const data = (await response.json()) as { message?: string; error?: string };
+                    message = data.message ?? data.error ?? message;
+                } else {
+                    message = await response.text();
+                }
+                setCheckoutError(message);
+                setIsCheckingOut(false);
+                setCheckoutText("Failed");
+                return;
+            }
+            const order = await response.json();
+
+            setCheckoutText("Redirecting to Payment...");
+            const checkoutResponse = await fetch(`${apiBaseUrl}/checkout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,21 +159,21 @@ const Cart = () => {
                 },
                 body: JSON.stringify({
                     total: Number(total),
+                    orderId: order.id,
                 }),
             });
+            localStorage.setItem('orderId', order.id);
 
-            const contentType = response.headers.get("content-type") ?? "";
+            const contentType = checkoutResponse.headers.get("content-type") ?? "";
 
-            if (!response.ok) {
+            if (!checkoutResponse.ok) {
                 let message = "Checkout failed.";
-
                 if (contentType.includes("application/json")) {
-                    const data = (await response.json()) as { message?: string; error?: string };
+                    const data = (await checkoutResponse.json()) as { message?: string; error?: string };
                     message = data.message ?? data.error ?? message;
                 } else {
-                    message = await response.text();
+                    message = await checkoutResponse.text();
                 }
-
                 throw new Error(message);
             }
 
@@ -121,17 +181,16 @@ const Cart = () => {
                 throw new Error("Checkout response was not valid JSON.");
             }
 
-            const data = (await response.json()) as { url?: string };
+            const data = (await checkoutResponse.json()) as { url?: string };
             if (!data.url) {
                 throw new Error("Checkout URL was not returned.");
             }
 
-            clearCart();
             window.location.assign(data.url);
         } catch (error) {
             setCheckoutError(error instanceof Error ? error.message : "Checkout failed.");
-        } finally {
             setIsCheckingOut(false);
+            setCheckoutText("Checkout");
         }
     }
 
@@ -215,7 +274,7 @@ const Cart = () => {
 
                         <div className="d-grid gap-2">
                             <Button
-                                text={isCheckingOut ? "Processing..." : "Checkout"}
+                                text={checkoutText}
                                 variant="primary"
                                 onClick={handleCheckOut}
                                 disabled={isCheckingOut}

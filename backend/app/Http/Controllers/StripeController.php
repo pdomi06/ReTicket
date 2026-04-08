@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class StripeController extends Controller
@@ -14,12 +15,18 @@ class StripeController extends Controller
     public function checkOut(Request $request)
     {
         \Stripe\Stripe::setApiKey(config('stripe.sk'));
-        $frontendUrl = rtrim(config(env('FRONTEND_URL', 'http://localhost:5173')), '/');
+        $frontendUrl = rtrim((string) env('FRONTEND_URL', 'http://localhost:5173'), '/');
         $total = (float) $request->input('total', 5000);
         $currency = strtolower((string) env('CASHIER_CURRENCY', 'huf'));
         $unitAmount = (int) round($total * 100);
 
-        $order = Orders::where('id', $request->input('orderId'))->first();
+        $order = Order::where('id', $request->input('orderId'))->first();
+        if (! $order) {
+            return response()->json([
+                'message' => 'Order not found.',
+            ], 404);
+        }
+
         $order->status = 'processing';
         $order->paymentStatus = "pending";
         $order->save();

@@ -20,7 +20,7 @@ class OrdersController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['checkOut']),
+            new Middleware('auth:sanctum', except: ['store', 'update']),
         ];
     }
 
@@ -40,27 +40,31 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
-        $this->authorize('create', Order::class);
         $data = $request->validated();
 
-        DB::transaction(function () use ($data) {
+        $order = DB::transaction(function () use ($data) {
             $order = new Order($data);
             $order->orderNumber = $this->generateOrderNumber();
             $order->save();
 
             foreach ($data['tickets'] as $ticketId) {
-                $ticketForSale = TicketForSale::where('id', $ticketId)->first();
-                $orderItem = OrderItem::insert([
+                $ticketForSale = TicketForSale::findOrFail($ticketId);
+                $ticketListingId = $this->generateUniqueTicketListingId();
+
+                OrderItem::create([
                     'orderId' => $order->id,
-                    'ticketListingId' => $ticket['ticketListingId'],
+                    'ticketListingId' => $ticketListingId,
                     'price' => $ticketForSale->price,
                 ]);
-                $ticket = ActiveTicket::insert([
-                    'ticketListingId' => $this->generateUniqueTicketListingId(),
-                    "originalTicketId" => $ticketForSale->originalTicketId,
-                ]);
 
+                ActiveTicket::create([
+                    'ticketListingId' => $ticketListingId,
+                    'originalTicketId' => $ticketForSale->originalTicketId,
+                    'orderId' => $order->id,
+                ]);
             }
+
+            return $order;
         });
 
         return response()->json($order, 201);
@@ -98,7 +102,6 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function update(UpdateOrdersRequest $request, Order $order)
     {
-        $this->authorize('update', $order);
         $order->update($request->validated());
         return response()->json($order, 200);
     }
