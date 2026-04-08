@@ -26,11 +26,11 @@ class SearchVenueMapRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'venue' => ['nullable', 'string', 'max:255'],
-            'section' => ['nullable', 'string', 'max:255'],
-            'rows' => ['nullable', 'integer', 'min:1'],
-            'cols' => ['nullable', 'integer', 'min:1'],
-            'rate' => ['nullable', 'numeric', 'decimal:1', 'min:0.1', 'max:9.9'],
+            'venue' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'section' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'rows' => ['sometimes', 'nullable', 'integer', 'min:1'],
+            'cols' => ['sometimes', 'nullable', 'integer', 'min:1'],
+            'rate' => ['sometimes', 'nullable', 'numeric', 'decimal:1', 'min:0.1', 'max:9.9'],
         ];
     }
 }

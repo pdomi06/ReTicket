@@ -73,8 +73,8 @@ class TicketForSalePolicy
         return false;
     }
 
-    public function modifyBasket(User $user, TicketForSale $ticketForsale): bool
+    public function modifyBasket(?User $user, TicketForSale $ticketForsale): bool
     {
-        return $user->id !== $ticketForsale->fromUserId;
+        return true;
     }
 }

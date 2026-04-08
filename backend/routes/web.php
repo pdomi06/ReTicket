@@ -11,3 +11,7 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return redirect('/');
 })->name('login');
+
+Route::get("/", 'App\Http\Controllers\StripeController@index')->name('index');
+Route::post("/checkout", 'App\Http\Controllers\StripeController@checkOut')->name('checkout');
+Route::get("/success", 'App\Http\Controllers\StripeController@success')->name('success');

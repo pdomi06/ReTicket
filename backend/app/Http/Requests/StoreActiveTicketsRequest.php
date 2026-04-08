@@ -31,6 +31,7 @@ class StoreActiveTicketsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'orderId' => ['required', 'exists:orders,id'],
             'originalTicketId' => ['required','exists:original_tickets,id',
             function($attribute, $value, $fail){
                 $originalTicket = OriginalTicket::find($value);

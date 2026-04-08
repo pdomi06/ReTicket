@@ -22,15 +22,15 @@ class SearchEventsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['nullable', 'string', 'max:255'],
-            'venue' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:255'],
-            'country' => ['nullable', 'string', 'max:255'],
-            'eventDate' => ['nullable', 'date_format:Y-m-d'],
-            'timezone' => ['nullable', 'string'],
-            'maxPrice' => ['nullable', 'numeric', 'min:0'],
-            'category' => ['nullable', 'in:cultural,music,sport'],
-            'page' => ['nullable', 'integer', 'min:1'],
+            'name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'venue' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'city' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'country' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'eventDate' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
+            'timezone' => ['sometimes', 'nullable', 'string'],
+            'maxPrice' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'category' => ['sometimes', 'nullable', 'in:cultural,music,sport'],
+            'page' => ['sometimes', 'nullable', 'integer', 'min:1'],
         ];
     }
 

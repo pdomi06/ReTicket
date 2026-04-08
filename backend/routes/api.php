@@ -15,6 +15,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\VenueMapController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StripeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -38,6 +39,10 @@ Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleControll
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
 Route::post('ticketForSale/checkOut', [TicketForSaleController::class, 'checkOut']);
+Route::post('ticketForSale/finalize', [TicketForSaleController::class, 'finalize']);
+Route::post('checkout', [StripeController::class, 'checkOut']);
+Route::get('checkout/session', [StripeController::class, 'checkoutSession']);
+Route::post('orders/checkOut', [StripeController::class, 'checkOut']);
 Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
 Route::post('email/verify/send', [EmailVerificationController::class, 'sendLink']);
@@ -54,5 +59,4 @@ Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
 Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
-Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware('auth:sanctum');
 Route::apiResource("userSettings", UserSettingsController::class);

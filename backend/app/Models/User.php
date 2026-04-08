@@ -74,7 +74,7 @@ class User extends Authenticatable
 
     public function orders()
     {
-        return $this->hasMany(Order::class, 'buyerEmail', 'email');
+        return $this->hasMany(Order::class, 'deliveryEmail', 'email');
     }
 
     public function ticketsForSale()

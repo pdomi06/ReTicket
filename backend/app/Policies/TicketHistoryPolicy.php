@@ -28,7 +28,7 @@ class TicketHistoryPolicy
      */
     public function view(User $user, TicketHistory $ticketHistory): bool
     {
-        return $user->id === $ticketHistory->fromUserId || $user->id === $ticketHistory->toUserId;
+        return $user->id === $ticketHistory->fromUserId || $user->email === $ticketHistory->toUser;
     }
 
     /**

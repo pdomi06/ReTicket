@@ -1,15 +1,16 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CartContext } from "../../contexts/cart/CartContextDef";
 import Button from "../../components/ui/button/Button";
-import Input from "../../components/ui/input/Input";
 import styles from "./Cart.module.css";
+import { useSearchParams } from "react-router-dom";
 
 const Cart = () => {
     const { tickets, removeFromCart, clearCart } = useContext(CartContext);
-    const [checkoutEmail, setCheckoutEmail] = useState("");
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
-    const [checkoutSuccess, setCheckoutSuccess] = useState(false);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
+    const [searchParams] = useSearchParams();
+    const [checkoutText, setCheckoutText] = useState("Checkout");
+    const handledSessionIdRef = useRef<string | null>(null);
 
     const subtotal = useMemo(
         () => tickets.reduce((sum, ticket) => sum + Number(ticket.price || 0), 0),
@@ -17,6 +18,74 @@ const Cart = () => {
     );
     const serviceFee = useMemo(() => subtotal * 0.1, [subtotal]).toFixed(0);
     const total = useMemo(() => subtotal + Number(serviceFee), [subtotal, serviceFee]).toFixed(0);
+
+    useEffect(() => {
+        const sessionId = searchParams.get("session_id");
+
+        if (!sessionId || handledSessionIdRef.current === sessionId) {
+            return;
+        }
+
+        handledSessionIdRef.current = sessionId;
+
+        const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL);
+
+        const finalizeTickets = async () => {
+            await fetch(`${apiBaseUrl}/ticketForSale/finalize`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    orderId: localStorage.getItem('orderId'),
+                }),
+            });
+        };
+
+        const handlePaymentDetails = async () => {
+            const checkoutSuccessful = searchParams.get("state") === "succesful";
+            try {
+                const response = await fetch(`${apiBaseUrl}/checkout/session?session_id=${encodeURIComponent(sessionId)}`, {
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to load payment details.");
+                }
+
+                const data = await response.json();
+
+                const updatedOrder = await fetch(`${apiBaseUrl}/orders/${localStorage.getItem('orderId')}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        paymentIntentId: data.payment_id,
+                        paymentStatus: checkoutSuccessful ? "authorized" : "failed",
+                        deliveryEmail: data.email ? data.email : "",
+                        deliveryStatus: checkoutSuccessful ? "pending" : null,
+                    }),
+                });
+                if (!updatedOrder.ok) {
+                    console.error("Failed to update order with payment details.");
+                }
+                if (checkoutSuccessful) {
+                    await finalizeTickets();
+                    clearCart();
+                }
+            } catch (error) {
+                console.error("Error loading payment details:", error);
+            }
+
+        };
+
+        void handlePaymentDetails();
+
+
+    }, [searchParams, clearCart, tickets]);
 
     const handleClearCart = async () => {
         await Promise.all(tickets.map((ticket) => removeFromCart(ticket)));
@@ -39,85 +108,91 @@ const Cart = () => {
         );
     }
 
-    const validateEmail = (email: string): boolean => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
     async function handleCheckOut() {
-        setCheckoutError(null);
-        setCheckoutSuccess(false);
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-        // Validate email
-        if (!checkoutEmail.trim()) {
-            setCheckoutError("Please enter an email address");
-            return;
-        }
-
-        if (!validateEmail(checkoutEmail)) {
-            setCheckoutError("Please enter a valid email address");
-            return;
-        }
-
-        // Validate tickets
-        if (tickets.length === 0) {
-            setCheckoutError("Your cart is empty. Please add tickets before checking out.");
+        if (isCheckingOut) {
             return;
         }
 
         setIsCheckingOut(true);
+        setCheckoutText("Processing...");
+        setCheckoutError(null);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ticketForSale/checkOut`, {
+            setCheckoutText("Creating Order...");
+            const response = await fetch(`${apiBaseUrl}/orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept": "application/json",
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({
-                    email: checkoutEmail.trim(),
+                    subtotal: Number(subtotal),
+                    platformFee: Number(serviceFee),
                     tickets: tickets.map((ticket) => ticket.id),
                 }),
             });
 
             if (!response.ok) {
-                let errorMessage = `Checkout failed (${response.status})`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-
-                    // Handle validation errors
-                    if (errorData.errors) {
-                        const validationErrors = Object.values(errorData.errors).flat();
-                        errorMessage = validationErrors.join(", ");
-                    }
-                } catch {
-                    // If JSON parse fails, use HTTP status text
-                    errorMessage = response.statusText || errorMessage;
+                let message = "Failed to create order.";
+                const contentType = response.headers.get("content-type") ?? "";
+                if (contentType.includes("application/json")) {
+                    const data = (await response.json()) as { message?: string; error?: string };
+                    message = data.message ?? data.error ?? message;
+                } else {
+                    message = await response.text();
                 }
-                throw new Error(errorMessage);
+                setCheckoutError(message);
+                setIsCheckingOut(false);
+                setCheckoutText("Failed");
+                return;
+            }
+            const order = await response.json();
+
+            setCheckoutText("Redirecting to Payment...");
+            const checkoutResponse = await fetch(`${apiBaseUrl}/checkout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    total: Number(total),
+                    orderId: order.id,
+                }),
+            });
+            localStorage.setItem('orderId', order.id);
+
+            const contentType = checkoutResponse.headers.get("content-type") ?? "";
+
+            if (!checkoutResponse.ok) {
+                let message = "Checkout failed.";
+                if (contentType.includes("application/json")) {
+                    const data = (await checkoutResponse.json()) as { message?: string; error?: string };
+                    message = data.message ?? data.error ?? message;
+                } else {
+                    message = await checkoutResponse.text();
+                }
+                throw new Error(message);
             }
 
-            const result = await response.json();
-            console.log("Checkout result:", result);
+            if (!contentType.includes("application/json")) {
+                throw new Error("Checkout response was not valid JSON.");
+            }
 
-            // Clear cart on success
-            clearCart();
-            setCheckoutEmail("");
-            setCheckoutSuccess(true);
+            const data = (await checkoutResponse.json()) as { url?: string };
+            if (!data.url) {
+                throw new Error("Checkout URL was not returned.");
+            }
 
-            // Optional: reset success message after 3 seconds
-            setTimeout(() => {
-                setCheckoutSuccess(false);
-            }, 3000);
+            window.location.assign(data.url);
         } catch (error) {
-            console.error("Checkout error:", error);
-            const errorMsg = error instanceof Error ? error.message : "Checkout failed. Please try again.";
-            setCheckoutError(errorMsg);
-        } finally {
+            setCheckoutError(error instanceof Error ? error.message : "Checkout failed.");
             setIsCheckingOut(false);
+            setCheckoutText("Checkout");
         }
-    };
+    }
 
     return (
         <section className="container my-4 my-md-5">
@@ -177,29 +252,11 @@ const Cart = () => {
                     <div className={`card p-3 p-md-4 ${styles.cartCard}`}>
                         <h2 className="h4 mb-3 text-light">Checkout</h2>
 
-                        {checkoutSuccess && (
-                            <div className="alert alert-success mb-3" role="alert">
-                                ✓ Checkout successful! Your tickets have been processed.
-                            </div>
-                        )}
-
                         {checkoutError && (
                             <div className="alert alert-danger mb-3" role="alert">
                                 ✗ {checkoutError}
                             </div>
                         )}
-
-                        <div className="mb-3">
-                            <Input
-                                type="email"
-                                label="Email Address"
-                                name="checkoutEmail"
-                                value={checkoutEmail}
-                                onChange={(e) => setCheckoutEmail(e.target.value)}
-                                theme="dark"
-                            />
-                            <small className="text-muted">We'll send your ticket details to this email</small>
-                        </div>
 
                         <h3 className="h6 mb-3 text-light">Order Summary</h3>
                         <div className="d-flex justify-content-between mb-2 pt-2 border-top">
@@ -217,7 +274,7 @@ const Cart = () => {
 
                         <div className="d-grid gap-2">
                             <Button
-                                text={isCheckingOut ? "Processing..." : "Checkout"}
+                                text={checkoutText}
                                 variant="primary"
                                 onClick={handleCheckOut}
                                 disabled={isCheckingOut}

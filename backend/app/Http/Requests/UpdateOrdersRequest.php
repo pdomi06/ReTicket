@@ -7,13 +7,21 @@ use Illuminate\Validation\Rule;
 
 class UpdateOrdersRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('deliveryStatus') && $this->has('deliverStatus')) {
+            $this->merge([
+                'deliveryStatus' => $this->input('deliverStatus'),
+            ]);
+        }
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $order = $this->route('order');
-        return $this->user()->can('update', $order);
+        return true;
     }
 
     /**
@@ -24,18 +32,17 @@ class UpdateOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'buyerEmail' => ['sometimes', 'email', 'exists:users,email'],
             'subtotal' => ['sometimes', 'numeric', 'min:0'],
             'platformFee' => ['sometimes', 'numeric', 'min:0'],
-            'tax' => ['nullable', 'numeric', 'min:0'],
-            'status' => ['sometimes', 'in:pending,processing,completed,failed,refunded'],
-            'paymentIntentId' => ['sometimes', 'string'],
-            'paymentStatus' => ['sometimes', 'in:pending,authorized,captured,failed,refunded'],
-            'deliveryEmail' => ['sometimes', 'email', 'exists:users,email'],
-            'deliverStatus' => ['sometimes', 'in:pending,sent,delivered'],
-            'deliveredAt' => ['nullable', 'date'],
-            'completedAt' => ['nullable', 'date'],
-            'cancelledAt' => ['nullable', 'date'],
+            'tax' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'status' => ['sometimes', 'nullable', 'in:created,processing,completed,failed,cancelled,refunded'],
+            'paymentIntentId' => ['sometimes', 'nullable', 'string'],
+            'paymentStatus' => ['sometimes', 'nullable', 'in:pending,authorized,captured,failed'],
+            'deliveryEmail' => ['sometimes', 'nullable', 'email'],
+            'deliveryStatus' => ['sometimes', 'nullable', 'in:pending,sent,delivered'],
+            'deliveredAt' => ['sometimes', 'nullable', 'date'],
+            'completedAt' => ['sometimes', 'nullable', 'date'],
+            'cancelledAt' => ['sometimes', 'nullable', 'date'],
         ];
     }
 }

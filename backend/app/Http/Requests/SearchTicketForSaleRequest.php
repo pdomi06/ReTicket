@@ -22,11 +22,11 @@ class SearchTicketForSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'originalTicketId' => ['nullable', 'integer'],
-            'fromUserId' => ['nullable', 'integer'],
-            'eventId' => ['nullable', 'integer'],
-            'price' => ['nullable', 'numeric', 'min:0'],
-            'inBasket' => ['nullable', 'boolean'],
+            'originalTicketId' => ['sometimes', 'nullable', 'integer'],
+            'fromUserId' => ['sometimes', 'nullable', 'integer'],
+            'eventId' => ['sometimes', 'nullable', 'integer'],
+            'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'inBasket' => ['sometimes', 'nullable', 'boolean'],
         ];
     }
 }

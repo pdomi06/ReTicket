@@ -22,10 +22,11 @@ export const TicketStatus = {
 
 // Orders - status
 export const OrderStatus = {
-  Pending: "pending",
+  Created: "created",
   Processing: "processing",
   Completed: "completed",
   Failed: "failed",
+  Cancelled: "cancelled",
   Refunded: "refunded",
 } as const;
 
@@ -35,7 +36,6 @@ export const PaymentStatus = {
   Authorized: "authorized",
   Captured: "captured",
   Failed: "failed",
-  Refunded: "refunded",
 } as const;
 
 // Orders - deliverStatus

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\OriginalTicket;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Str;
 
@@ -21,6 +22,7 @@ class ActiveTicketFactory extends Factory
         return [
             'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
             'ticketListingId' => Str::random(10),
+            'orderId' => Order::inRandomOrder()->value('id') ?? Order::factory()->create()->id,
         ];
     }
 }
