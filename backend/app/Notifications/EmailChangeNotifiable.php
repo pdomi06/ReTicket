@@ -19,7 +19,7 @@ class EmailChangeNotifiable
     }
 
 
-    public function routeNotificationForMail(): string
+    public function routeNotificationForMail($notification = null): string
     {
         return $this->email;
     }
