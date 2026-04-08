@@ -20,6 +20,7 @@ class Order extends Model
         'paymentIntentId',
         'paymentStatus',
         'deliveryEmail',
+        'deliveryStatus',
         'deliverStatus',
         'deliveredAt',
         'created_at',
@@ -28,14 +29,34 @@ class Order extends Model
         'cancelledAt',
     ];
 
+    protected $appends = [
+        'deliveryStatus',
+    ];
+
     protected $casts = [
         'deliveredAt' => 'datetime',
         'completedAt' => 'datetime',
         'cancelledAt' => 'datetime',
     ];
+
+    public function setDeliveryStatusAttribute(?string $value): void
+    {
+        $this->attributes['deliverStatus'] = $value;
+    }
+
+    public function getDeliveryStatusAttribute(): ?string
+    {
+        return $this->attributes['deliverStatus'] ?? null;
+    }
+
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class, 'orderId');
+    }
+
+    public function activeTickets()
+    {
+        return $this->hasMany(ActiveTicket::class, 'orderId');
     }
 
 }
