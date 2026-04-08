@@ -112,7 +112,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasVerifiedEmail(): bool
     {
-        return $this->email_verified_at !== null;
+        if ($this->email_verified_at !== null) {
+            return true;
+        }
+
+        return $this->isVerified === true;
     }
 
     public function markEmailAsVerified(): bool
