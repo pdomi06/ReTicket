@@ -15,7 +15,7 @@ class TicketHistory extends Model
         'originalTicketId',
         'ticketListingId',
         'fromUserId',
-        'toUserId',
+        'toUser',
         'price',
         'platformFee',
     ];
@@ -23,7 +23,6 @@ class TicketHistory extends Model
     protected $casts = [
         'originalTicketId' => 'integer',
         'fromUserId' => 'integer',
-        'toUserId' => 'integer',
     ];
 
     public $timestamps = false;
@@ -33,8 +32,4 @@ class TicketHistory extends Model
         return $this->belongsTo(User::class, 'fromUserId');
     }
 
-    public function toUser()
-    {
-        return $this->belongsTo(User::class, 'toUserId');
-    }
 }

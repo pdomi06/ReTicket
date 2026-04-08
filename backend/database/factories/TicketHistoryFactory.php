@@ -24,7 +24,7 @@ class TicketHistoryFactory extends Factory
             'ticketListingId' => ActiveTicket::inRandomOrder()->value('ticketListingId')
                 ?? ActiveTicket::factory()->create()->ticketListingId,
             'fromUserId' => User::inRandomOrder()->first()->id ?? User::factory(),
-            'toUserId' => User::inRandomOrder()->value('id') ?? User::factory(),
+            'toUser' => User::inRandomOrder()->value('email') ?? User::factory()->create()->email,
             'price' => fake()->randomFloat(2, 10, 500),
             'platformFee' => fake()->randomFloat(2, 1, 50),
         ];
