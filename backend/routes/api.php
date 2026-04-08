@@ -59,5 +59,4 @@ Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
 Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
-Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware('auth:sanctum');
 Route::apiResource("userSettings", UserSettingsController::class);
