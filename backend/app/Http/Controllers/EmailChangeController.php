@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\User;
 use App\Notifications\EmailChangeNotifiable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Notifications\VerifyNewEmail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 
 class EmailChangeController extends \Illuminate\Routing\Controller
@@ -57,8 +59,17 @@ class EmailChangeController extends \Illuminate\Routing\Controller
             return response()->json(['message' => 'The new email address is already in use.'], 422);
         }
 
-        $user->email = $newEmail;
-        $user->markEmailAsVerified();
+        $oldEmail = $user->email;
+
+        DB::transaction(function () use ($user, $newEmail, $oldEmail): void {
+            $user->email = $newEmail;
+            if (!$user->markEmailAsVerified()) {
+                throw new \RuntimeException('Failed to update user verification state.');
+            }
+
+            Order::where('buyerEmail', $oldEmail)->update(['buyerEmail' => $newEmail]);
+            Order::where('deliveryEmail', $oldEmail)->update(['deliveryEmail' => $newEmail]);
+        });
 
         return response()->json(['message' => 'Email successfully changed.'], 200);
         }
