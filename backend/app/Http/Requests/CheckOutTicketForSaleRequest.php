@@ -23,6 +23,7 @@ class CheckOutTicketForSaleRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email'],
+            'orderId' => ['required', 'integer', 'exists:orders,id'],
             'tickets' => ['required', 'array'],
             'tickets.*' => ['required', 'integer', 'exists:ticket_forsale,id'],
         ];
@@ -35,6 +36,7 @@ class CheckOutTicketForSaleRequest extends FormRequest
     {
         return [
             'email' => 'email parameter',
+            'orderId' => 'order id parameter',
             'tickets' => 'tickets array',
             'tickets.*' => 'ticket ID',
         ];

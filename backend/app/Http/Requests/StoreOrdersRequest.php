@@ -11,7 +11,7 @@ class StoreOrdersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return (bool) $this->user();
+        return true;
     }
 
     /**
@@ -22,10 +22,10 @@ class StoreOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'subtotal' => ['required', 'numeric', 'min:0'],
-        'platformFee' => ['required', 'numeric', 'min:0'],
-        'tickets' => ['required', 'array', 'min:1'],
-        'tickets.*' => ['integer', 'exists:active_tickets,ticketListingId'],
+            'subtotal' => ['required', 'numeric', 'min:0'],
+            'platformFee' => ['required', 'numeric', 'min:0'],
+            'tickets' => ['required', 'array', 'min:1'],
+            'tickets.*' => ['required', 'integer', 'exists:ticket_forsale,id'],
         ];
     }
 }

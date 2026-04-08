@@ -7,13 +7,21 @@ use Illuminate\Validation\Rule;
 
 class UpdateOrdersRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('deliveryStatus') && $this->has('deliverStatus')) {
+            $this->merge([
+                'deliveryStatus' => $this->input('deliverStatus'),
+            ]);
+        }
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $order = $this->route('order');
-        return $this->user()->can('update', $order);
+        return true;
     }
 
     /**
@@ -30,8 +38,8 @@ class UpdateOrdersRequest extends FormRequest
             'status' => ['sometimes', 'nullable', 'in:created,processing,completed,failed,cancelled,refunded'],
             'paymentIntentId' => ['sometimes', 'nullable', 'string'],
             'paymentStatus' => ['sometimes', 'nullable', 'in:pending,authorized,captured,failed'],
-            'deliveryEmail' => ['sometimes', 'nullable', 'email', 'exists:users,email'],
-            'deliverStatus' => ['sometimes', 'nullable', 'in:pending,sent,delivered'],
+            'deliveryEmail' => ['sometimes', 'nullable', 'email'],
+            'deliveryStatus' => ['sometimes', 'nullable', 'in:pending,sent,delivered'],
             'deliveredAt' => ['sometimes', 'nullable', 'date'],
             'completedAt' => ['sometimes', 'nullable', 'date'],
             'cancelledAt' => ['sometimes', 'nullable', 'date'],
