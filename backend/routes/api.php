@@ -80,17 +80,18 @@ Route::get('/user/email/confirm/{id}', [EmailChangeController::class, 'confirmCh
     ->middleware(['signed'])->name('email.change.confirm');
 
 
-Route::apiResource("orderItems", OrderItemsController::class)->middleware(['verified']);
-Route::apiResource("orders", OrdersController::class)->middleware(['verified']);
+Route::apiResource("orderItems", OrderItemsController::class);
+Route::apiResource("orders", OrdersController::class);
+Route::get('my/payouts', [PayoutsController::class, 'myPayouts']);
+Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory']);
+Route::apiResource("userSettings", UserSettingsController::class);
+
 Route::post('password/forgot', [PasswordResetController::class, 'store']);
 Route::post('password/reset', [PasswordResetController::class, 'update']);
 Route::get('payouts', [PayoutsController::class, 'index']);
 Route::get('payouts/{payout}', [PayoutsController::class, 'show']);
 Route::put('payouts/{payout}', [PayoutsController::class, 'update']);
-Route::get('my/payouts', [PayoutsController::class, 'myPayouts'])->middleware(['verified']);
 Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
 Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
-Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory'])->middleware(['verified']);
-Route::apiResource("userSettings", UserSettingsController::class)->middleware(['verified']);

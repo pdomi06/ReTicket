@@ -15,6 +15,7 @@ class OrdersController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth:sanctum'),
+            new Middleware('verified'),
         ];
     }
     /**
