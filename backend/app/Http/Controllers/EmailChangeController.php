@@ -52,10 +52,6 @@ class EmailChangeController extends Controller implements HasMiddleware
 
     public function confirmChange(Request $request)
     {
-        if (!$request->hasValidSignature()) {
-            return response()->json(['message' => 'Invalid or expired token.'], 400);
-        }
-
         $user = User::findOrFail($request->id);
         $newEmail = $request->query('new_email');
 

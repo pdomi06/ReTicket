@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\ActiveTicketsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\VenueMapController;
 use App\Http\Controllers\AuthController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailChangeController;
 
@@ -44,26 +44,20 @@ Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
 
 
-Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
-    $user = User::find($id);
-
-    if (!$user) {
-        return response()->json(['message' => 'User not found.'], 404);
-    }
-
-    if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
-        return response()->json(['message' => 'Invalid verification link.'], 403);
-    }
-
-    if (!$user->hasVerifiedEmail()) {
-        $user->markEmailAsVerified();
-    }
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
 
     return response()->json(['message' => 'Email verified successfully.'], 200);
-})->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+})->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
+    $user = $request->user();
+
+    if ($user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Email is already verified.'], 200);
+    }
+
+    $user->sendEmailVerificationNotification();
     return response()->json(['message' => 'Verification link sent.'], 200);
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
@@ -73,7 +67,7 @@ Route::post('/user/email/change', [EmailChangeController::class, 'requestChange'
     ->middleware(['throttle:6,1']);
 
 Route::get('/user/email/confirm/{id}', [EmailChangeController::class, 'confirmChange'])
-    ->middleware(['signed'])->name('email.change.confirm');
+    ->middleware(['signed', 'throttle:6,1'])->name('email.change.confirm');
 
 
 Route::apiResource("orderItems", OrderItemsController::class);
