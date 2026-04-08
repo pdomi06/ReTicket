@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PasswordReset;
+use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePasswordResetRequest;
 use App\Http\Requests\UpdatePasswordResetRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
+use App\Models\PasswordResetToken;
 
 class PasswordResetController extends Controller
 {
@@ -17,8 +17,7 @@ class PasswordResetController extends Controller
      */
     public function index()
     {
-        $password_resets = PasswordReset::all();
-        return response()->json($password_resets, 200);
+        abort(404);
     }
 
     /**
@@ -26,31 +25,27 @@ class PasswordResetController extends Controller
      */
     public function store(StorePasswordResetRequest $request)
     {
-        $user = User::where('email', $request->input('email'))->first();
-        if (!$user) {
-            return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 200);
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status !== Password::RESET_LINK_SENT && $status !== Password::INVALID_USER) {
+            Log::warning('Password reset link request non-success status', [
+                'status' => $status,
+                'ip' => $request->ip(),
+            ]);
         }
-        PasswordReset::where('userId', $user->id)->delete();
-        $token = Str::random(60);
-        $expiresAt = now()->addHours(1);
 
-        PasswordReset::create([
-            'userId' => $user->id,
-            'token' => $token,
-            'expiresAt' => $expiresAt,
-            'verifiedAt' => null,
-            'createdAt' => now(),
-        ]);
+        return response()->json([
+            'message' => 'If a user with that email address exists, we have sent a password reset link.'
+        ], 200);
 
-        return response()->json(['message' => 'If that email exists, we have sent a reset link.'], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(PasswordReset $passwordReset)
+    public function show(PasswordResetToken $passwordReset)
     {
-        return response()->json($passwordReset, 200);
+        abort(404);
     }
 
     /**
@@ -58,38 +53,30 @@ class PasswordResetController extends Controller
      */
     public function update(UpdatePasswordResetRequest $request)
     {
-        $reset = PasswordReset::where('token', $request->input('token'))->first();
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'passwordHash' => $password,
+                ])->save();
 
-        if ($reset === null) {
-            return response()->json(['message' => 'Invalid token'], 400);
-        }
+                $user->tokens()->delete();
 
-        $isExpired = now()->gt($reset->expiresAt);
-        $isUsed = $reset->verifiedAt !== null;
-        if ($isExpired || $isUsed) {
-            return response()->json(['message' => 'Token expired or already used.'], 400);
-        }
-
-        $user = User::find($reset->userId);
-        if ($user === null) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-        $user->passwordHash = Hash::make($request->password);
-        $user->save();
-
-        $reset->verifiedAt = now();
-        $reset->save();
-
-        return response()->json(['message' => 'Password reset successful'], 200);
+                event(new PasswordReset($user));
+            }
+        );
+        return match ($status) {
+            Password::PASSWORD_RESET => response()->json(["message" => "Password reset successfully."], 200),
+            default => response()->json(["message" => "Unable to reset password. Please check your email and token and try again."], 400),
+        };
 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PasswordReset $passwordReset)
+    public function destroy(PasswordResetToken $passwordReset)
     {
-        $passwordReset->delete();
-        return response()->json(["message" => "Password reset deleted successfully"], 200);
+        abort(404);
     }
 }
