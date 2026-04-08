@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Models\User;
 use App\Http\Controllers\ActiveTicketsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
@@ -44,11 +44,23 @@ Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
 
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
+Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    $user = User::find($id);
+
+    if (!$user) {
+        return response()->json(['message' => 'User not found.'], 404);
+    }
+
+    if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Invalid verification link.'], 403);
+    }
+
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
 
     return response()->json(['message' => 'Email verified successfully.'], 200);
-})->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])->name('verification.verify');
+})->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $user = $request->user();

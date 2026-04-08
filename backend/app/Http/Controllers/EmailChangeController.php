@@ -52,8 +52,13 @@ class EmailChangeController extends Controller implements HasMiddleware
 
     public function confirmChange(Request $request)
     {
-        $user = User::findOrFail($request->id);
-        $newEmail = $request->query('new_email');
+        $data = $request->validate([
+            'id' => ['required', 'integer', 'exists:users,id'],
+            'new_email' => ['required', 'email'],
+        ]);
+
+        $user = User::findOrFail($data['id']);
+        $newEmail = $data['new_email'];
 
         $existingUser = User::where('email', $newEmail)->where('id', '!=', $user->id)->first();
         if ($existingUser) {
