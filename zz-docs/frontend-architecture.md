@@ -88,6 +88,7 @@ The frontend is a React 19 + TypeScript SPA built with Vite, using React Router 
   - `/test` page in [frontend/src/pages/test/test.tsx](frontend/src/pages/test/test.tsx#L2)
   - welcome mock cards/TODO note in [frontend/src/pages/welcome/Welcome.tsx](frontend/src/pages/welcome/Welcome.tsx#L16)
   - dashboard website management stub in [frontend/src/pages/dashboard/website/WebsiteManagement.tsx](frontend/src/pages/dashboard/website/WebsiteManagement.tsx#L1)
+- Dashboard edit pages currently call `/venue` backend endpoints in some places while backend route definitions are under `/venues`, creating a known API path mismatch risk.
 - Additional installed dependencies (for example `@auth0/auth0-react`, `next-themes`) are present in [frontend/package.json](frontend/package.json#L12) but corresponding architecture usage was not verified in app source (TBD).
 
 ## Related docs

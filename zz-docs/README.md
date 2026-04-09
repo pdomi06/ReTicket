@@ -19,8 +19,10 @@ This folder contains the project documentation chunks for backend, frontend, and
 | [troubleshooting.md](./troubleshooting.md)                                       | Common setup/runtime issues and practical fixes.                                  | verified |
 | [permissions.md](./permissions.md)                                               | Role and permission matrix used across backend/frontend flows.                    | verified |
 | [backend-authentication.md](./backend-authentication.md)                         | Backend auth model, token flow, middleware behavior, and edge cases.              | new      |
+| [backend-account-recovery.md](./backend-account-recovery.md)                     | Email verification and password reset endpoint flows and token behavior.          | new      |
 | [backend-error-handling.md](./backend-error-handling.md)                         | Backend error response patterns, validation errors, and exception behavior.       | new      |
 | [backend-file-storage.md](./backend-file-storage.md)                             | File storage configuration and current upload/storage usage patterns.             | new      |
+| [backend-payment-processing.md](./backend-payment-processing.md)                 | Order plus Stripe checkout orchestration and finalize behavior.                   | new      |
 | [backend-queue-jobs-scheduling.md](./backend-queue-jobs-scheduling.md)           | Queue/scheduling configuration and current async processing status.               | new      |
 | [backend-api-reference.md](./backend-api-reference.md)                           | Endpoint catalog with effective access behavior from real route/controller logic. | updated  |
 | [backend-architecture.md](./backend-architecture.md)                             | Verified backend architecture, request lifecycle, and subsystem responsibilities. | updated  |

@@ -42,8 +42,10 @@ The nav brand links to `/`, cart links to `/cart`, and seller CTA links to `/ven
 ### Checkout path
 
 1. `/cart` displays ticket list, subtotal, service fee, and total in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L12).
-2. Checkout validates email and non-empty cart client-side in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L46).
-3. On success, `checkOut` response clears cart and shows success message in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L70) and [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L102).
+2. On checkout click, frontend creates an order via `POST /orders` in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L112).
+3. Frontend requests Stripe checkout URL with `POST /checkout` and redirects browser in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L154).
+4. After Stripe redirect back, frontend reads `session_id` and calls `GET /checkout/session`, then `PATCH /orders/{id}`, then `POST /ticketForSale/finalize` in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L27).
+5. On successful completion path, cart is cleared in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L72).
 
 ## Authentication and guarded areas
 

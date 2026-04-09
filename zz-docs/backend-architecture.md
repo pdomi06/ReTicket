@@ -40,7 +40,7 @@ The backend is a Laravel 12 REST API with Sanctum token auth, mostly Eloquent-ba
 
 - Core resources are exposed using `Route::apiResource` for events, venues, tickets, orders, payouts, reviews, users, and settings in [backend/routes/api.php](backend/routes/api.php#L25).
 - Search and workflow endpoints are custom routes (`/search`, bulk operations, basket actions, checkout).
-- Duplicate venue route families (`/venues` and `/venue`) are both active in [backend/routes/api.php](backend/routes/api.php#L27).
+- Venue routes are currently exposed under `/venues` resource paths in [backend/routes/api.php](backend/routes/api.php#L25).
 
 ### Authorization architecture
 
@@ -59,7 +59,8 @@ The backend is a Laravel 12 REST API with Sanctum token auth, mostly Eloquent-ba
 - Primary data access pattern is Eloquent models and resource controllers.
 - Query builder (`DB::table`) is used in concurrency-sensitive ticket-sale flows for atomic state changes and transactional writes:
   - Basket add/remove conditional update in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L92)
-  - Checkout writes/history inserts in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L137)
+  - Finalize and legacy checkout writes/history inserts in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
+- Payment orchestration is split between [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php), [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php), and [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php).
 - Soft deletes are not implemented (no `SoftDeletes` trait usage found in `backend/app/**`; no `deleted_at` migration columns found).
 
 ### Infrastructure characteristics
@@ -94,8 +95,8 @@ The backend is a Laravel 12 REST API with Sanctum token auth, mostly Eloquent-ba
 
 - Access control is spread across controllers; route inspection alone is insufficient for public/protected mapping.
 - Response envelopes vary across endpoints, increasing frontend integration branching.
-- `/venue` and `/venues` both exist and can drift in client usage.
 - Checkout is public by design in current controller middleware configuration.
+- Multiple checkout-related endpoints exist with overlapping responsibilities (`/checkout`, `/orders/checkOut`, `/ticketForSale/checkOut`, `/ticketForSale/finalize`).
 - Soft delete recovery patterns are unavailable because soft deletes are not implemented.
 
 ## Related docs

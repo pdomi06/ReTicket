@@ -75,6 +75,8 @@ VITE_API_BASE_URL=http://127.0.0.1:8000/api
 3. Login/register flow can call API endpoints.
 4. Event browse page can fetch events from API.
 
+If you want to validate payment flow locally, also configure backend Stripe env values (`STRIPE_SECRET`, `STRIPE_KEY`, `FRONTEND_URL`).
+
 ## Testing
 
 From `backend/`:

@@ -97,6 +97,7 @@ Authentication is implemented with Laravel Sanctum personal access tokens.
 ## Related docs
 
 - [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
+- [zz-docs/backend-account-recovery.md](zz-docs/backend-account-recovery.md)
 - [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)
 - [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
 - [zz-docs/frontend-authentication.md](zz-docs/frontend-authentication.md)

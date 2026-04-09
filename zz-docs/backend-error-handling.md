@@ -19,6 +19,8 @@ Error handling is mixed between a small centralized layer and many local control
 - Authentication controller custom 401/403 responses: [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L60)
 - Ticket basket conflict handling (`409`): [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L98)
 - Original ticket not-found business response (`404`): [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L179)
+- Stripe checkout order-not-found response (`404`): [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php#L21)
+- Account recovery token validation responses (`400`/`404`): [backend/app/Http/Controllers/EmailVerificationController.php](backend/app/Http/Controllers/EmailVerificationController.php#L30), [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php#L52)
 - Custom Form Request validation payloads:
   - [backend/app/Http/Requests/BulkStoreOriginalTicketsRequest.php](backend/app/Http/Requests/BulkStoreOriginalTicketsRequest.php#L40)
   - [backend/app/Http/Requests/StoreVenueMapRequest.php](backend/app/Http/Requests/StoreVenueMapRequest.php#L35)
@@ -58,6 +60,9 @@ Controllers return explicit error responses for domain rules and concurrency out
 - Inactive account: HTTP `403` in [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L69)
 - Basket conflict on concurrent updates: HTTP `409` in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L98) and [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L116)
 - Bulk status change with missing tickets: HTTP `404` in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L179)
+- Stripe checkout with unknown order: HTTP `404` in [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php#L21)
+- Email verification invalid/expired token: HTTP `400` in [backend/app/Http/Controllers/EmailVerificationController.php](backend/app/Http/Controllers/EmailVerificationController.php#L31)
+- Password reset failed token/application: HTTP `400` in [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php#L63)
 
 ### Response envelope inconsistency
 
@@ -67,6 +72,19 @@ Error payload shapes are not standardized globally:
 - Auth business errors: `{ success, message, data }` from [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php#L61)
 - Validation custom responses: `{ message, errors }` from Form Requests above
 - Some not-found/business responses only include `{ message }`, for example [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L179)
+
+### Endpoint error envelope matrix
+
+| Area                                  | Example endpoint                     | Typical non-2xx shape                             |
+| ------------------------------------- | ------------------------------------ | ------------------------------------------------- |
+| Global unauthenticated                | any protected endpoint without token | `{ message, error }`                              |
+| Auth login/register/logout            | `/login`                             | `{ success, message, data }`                      |
+| Validation failures (most requests)   | `/events`, `/orders`                 | Laravel default `422` with `message` and `errors` |
+| Validation failures (custom override) | `/originalTickets/bulk`, `/venues`   | explicit `{ message, errors }`                    |
+| Basket conflicts                      | `/ticketForSale/addToBasket/{id}`    | `{ success: false, message }` with `409`          |
+| Stripe checkout missing order         | `/checkout`                          | `{ message }` with `404`                          |
+| Email verify invalid token            | `/email/verify`                      | `{ message }` with `400`                          |
+| Password reset invalid token          | `/password/reset`                    | `{ message }` with `400`                          |
 
 ## Examples (real code)
 
