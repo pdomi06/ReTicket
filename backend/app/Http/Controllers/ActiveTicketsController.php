@@ -6,6 +6,7 @@ use App\Models\ActiveTicket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
 use App\Http\Requests\UpdateActiveTicketsRequest;
+use App\Http\Requests\ValidateActiveTicketRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -64,5 +65,13 @@ class ActiveTicketsController extends Controller implements HasMiddleware
         $this->authorize('delete', $activeTicket);
         $activeTicket->delete();
         return response()->json(["message" => "Active ticket deleted successfully"], 200);
+    }
+
+    /**
+     * Validate an active ticket.
+     */
+    public function validate(ValidateActiveTicketRequest $request)
+    {
+        // TODO: Implement ticket validation logic
     }
 }
