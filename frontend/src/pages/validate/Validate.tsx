@@ -1,7 +1,10 @@
 
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { IEvent } from "../../utils/interfaces";
+import Select from "../../components/ui/select/Select";
+import Button from "../../components/ui/button/Button";
+import styles from "./Validate.module.css";
 
 interface User {
     id: string;
@@ -15,7 +18,12 @@ const Validate = () => {
     const navigate = useNavigate();
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
     const [user, setUser] = useState<User | null>(null);
+    const [events, setEvents] = useState<IEvent[]>([]);
+    const [selectedEventId, setSelectedEventId] = useState<string>("");
+    const [loadingEvents, setLoadingEvents] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    // Check authorization
     useEffect(() => {
         // Check if user is logged in
         const token = localStorage.getItem("token");
@@ -46,6 +54,69 @@ const Validate = () => {
         setUser(userData);
     }, [navigate]);
 
+    // Fetch events when authorized
+    useEffect(() => {
+        if (!isAuthorized) return;
+
+        async function fetchEvents() {
+            try {
+                setLoadingEvents(true);
+                setErrorMessage(null);
+                const token = localStorage.getItem("token");
+                const headers: HeadersInit = {
+                    Authorization: `Bearer ${token}`,
+                };
+
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
+                    headers,
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch events");
+                }
+
+                const data = await response.json();
+
+                if (Array.isArray(data)) {
+                    setEvents(data);
+                } else if (Array.isArray(data?.data)) {
+                    setEvents(data.data);
+                } else {
+                    setEvents([]);
+                }
+            } catch (error) {
+                console.error("Error fetching events:", error);
+                setErrorMessage(
+                    error instanceof Error ? error.message : "Failed to load events"
+                );
+                setEvents([]);
+            } finally {
+                setLoadingEvents(false);
+            }
+        }
+
+        fetchEvents();
+    }, [isAuthorized]);
+
+    const handleEventSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedEventId(e.target.value);
+    };
+
+    const handleApplyEvent = () => {
+        if (!selectedEventId) {
+            setErrorMessage("Please select an event");
+            return;
+        }
+
+        const selectedEvent = events.find((e) => e.id.toString() === selectedEventId);
+        if (selectedEvent) {
+            console.log("Selected event:", selectedEvent);
+            // TODO: Store selected event and proceed to validation
+            // You can navigate or dispatch an action here
+            setErrorMessage(null);
+        }
+    };
+
     if (isAuthorized === null) {
         return <div>Loading...</div>;
     }
@@ -53,19 +124,66 @@ const Validate = () => {
     if (!isAuthorized) {
         console.log(user)
         return (
-            <div style={{ padding: "2rem", textAlign: "center" }}>
-                <h1>Access Denied</h1>
-                <p>You are not authorized to access this page.</p>
-                <p>This page is only accessible to organizers.</p>
-                {user && <p>Your role: <strong>{user.role}</strong></p>}
+            <div className={styles.accessDeniedContainer}>
+                <h1 className={styles.accessDeniedHeading}>Access Denied</h1>
+                <p className={styles.accessDeniedMessage}>You are not authorized to access this page.</p>
+                <p className={styles.accessDeniedMessage}>This page is only accessible to organizers.</p>
+                {user && (
+                    <div className={styles.accessDeniedRole}>
+                        <span className={styles.roleLabel}>Your role: </span>
+                        <span className={styles.roleBadge}>{user.role}</span>
+                    </div>
+                )}
             </div>
         );
     }
 
     return (
-        <div>
-            <h1>Validate Tickets</h1>
-            {user && <p>Welcome, {user.name}!</p>}
+        <div className={styles.container}>
+            <h1 className={styles.heading}>Validate Tickets</h1>
+            {user && <p className={styles.welcome}>Welcome, {user.name}!</p>}
+
+            {errorMessage && (
+                <div className={styles.errorMessage}>
+                    {errorMessage}
+                </div>
+            )}
+
+            {loadingEvents ? (
+                <p className={styles.loadingMessage}>Loading events...</p>
+            ) : events.length > 0 ? (
+                <div className={styles.eventSelectorSection}>
+                    <label className={styles.eventLabel}>Event</label>
+                    <div className={styles.selectorWrapper}>
+                        <Select
+                            name="events"
+                            label="Select an Event"
+                            value={selectedEventId}
+                            onChange={handleEventSelect}
+                        >
+                            <option value="">-- Choose an Event --</option>
+                            {events.map((event) => (
+                                <option key={event.id} value={event.id.toString()}>
+                                    {event.name}
+                                </option>
+                            ))}
+                        </Select>
+                    </div>
+
+                    <div className={styles.buttonWrapper}>
+                        <Button
+                            type="button"
+                            text="Apply"
+                            onClick={handleApplyEvent}
+                            disabled={!selectedEventId}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <div className={styles.emptyState}>
+                    <p>No events available.</p>
+                </div>
+            )}
         </div>
     );
 };
