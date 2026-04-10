@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import type { IEvent } from "../../utils/interfaces";
 import Select from "../../components/ui/select/Select";
 import Button from "../../components/ui/button/Button";
+import Input from "../../components/ui/input/Input";
 import styles from "./Validate.module.css";
 
 interface User {
@@ -163,23 +164,19 @@ const Validate = () => {
 
             {selectedEvent ? (
                 <div className={styles.ticketCodeSection}>
-                    <label className={styles.eventLabel}>Event</label>
-                    <p className={styles.selectedEventName}>{selectedEvent.name}</p>
+                    <h2 className={styles.eventHeading}>{selectedEvent.name}</h2>
 
-                    <label htmlFor="ticketCode" className={styles.ticketCodeLabel}>
-                        Ticket Code
-                    </label>
-                    <input
-                        id="ticketCode"
-                        type="text"
-                        className={styles.ticketCodeInput}
-                        placeholder="Enter ticket code"
-                        value={ticketCode}
-                        onChange={(e) => setTicketCode(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") handleValidateTicket();
-                        }}
-                    />
+                    <div className={styles.ticketCodeInputWrapper}>
+                        <Input
+                            type="text"
+                            name="ticketCode"
+                            label="Ticket Code"
+                            value={ticketCode}
+                            onChange={(e) => setTicketCode(e.target.value)}
+                            theme="dark"
+                            size="medium"
+                        />
+                    </div>
 
                     <div className={styles.buttonWrapper}>
                         <Button

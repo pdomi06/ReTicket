@@ -161,41 +161,26 @@
     color: var(--color-text);
     margin-bottom: 24px;
     padding: 12px;
-    background-color: rgba(255, 255, 255, 0.04);
-    border-radius: 6px;
+    background-color: var(--color-main);
+    border-radius: 8px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
 }
 
-.ticketCodeLabel {
-    font-family: var(--font-main);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.ticketCodeInput {
-    width: 100%;
-    padding: 10px 14px;
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 6px;
-    font-family: var(--font-main);
-    font-size: 14px;
+.eventHeading {
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    font-weight: 400;
     color: var(--color-text);
     margin-bottom: 16px;
-    box-sizing: border-box;
-    transition: border-color 0.2s ease;
+    margin-top: 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.ticketCodeInput::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-.ticketCodeInput:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.25);
-    background-color: rgba(255, 255, 255, 0.06);
+.ticketCodeInputWrapper {
+    margin-bottom: 16px;
+    margin-top: 16px;
 }
