@@ -147,3 +147,55 @@
     font-weight: 500;
     text-transform: capitalize;
 }
+
+.ticketCodeSection {
+    background-color: var(--color-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.selectedEventName {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-text);
+    margin-bottom: 24px;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+}
+
+.ticketCodeLabel {
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.ticketCodeInput {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-text);
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.ticketCodeInput::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.ticketCodeInput:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.06);
+}

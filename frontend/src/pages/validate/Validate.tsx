@@ -20,6 +20,8 @@ const Validate = () => {
     const [user, setUser] = useState<User | null>(null);
     const [events, setEvents] = useState<IEvent[]>([]);
     const [selectedEventId, setSelectedEventId] = useState<string>("");
+    const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
+    const [ticketCode, setTicketCode] = useState<string>("");
     const [loadingEvents, setLoadingEvents] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -108,13 +110,23 @@ const Validate = () => {
             return;
         }
 
-        const selectedEvent = events.find((e) => e.id.toString() === selectedEventId);
-        if (selectedEvent) {
-            console.log("Selected event:", selectedEvent);
-            // TODO: Store selected event and proceed to validation
-            // You can navigate or dispatch an action here
+        const event = events.find((e) => e.id.toString() === selectedEventId);
+        if (event) {
+            console.log("Selected event:", event);
+            setSelectedEvent(event);
+            setTicketCode("");
             setErrorMessage(null);
         }
+    };
+
+    const handleValidateTicket = () => {
+        if (!ticketCode.trim()) {
+            setErrorMessage("Please enter a ticket code");
+            return;
+        }
+
+        console.log("Validating ticket code:", ticketCode, "for event:", selectedEvent);
+        // TODO: Implement ticket validation logic
     };
 
     if (isAuthorized === null) {
@@ -149,7 +161,36 @@ const Validate = () => {
                 </div>
             )}
 
-            {loadingEvents ? (
+            {selectedEvent ? (
+                <div className={styles.ticketCodeSection}>
+                    <label className={styles.eventLabel}>Event</label>
+                    <p className={styles.selectedEventName}>{selectedEvent.name}</p>
+
+                    <label htmlFor="ticketCode" className={styles.ticketCodeLabel}>
+                        Ticket Code
+                    </label>
+                    <input
+                        id="ticketCode"
+                        type="text"
+                        className={styles.ticketCodeInput}
+                        placeholder="Enter ticket code"
+                        value={ticketCode}
+                        onChange={(e) => setTicketCode(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") handleValidateTicket();
+                        }}
+                    />
+
+                    <div className={styles.buttonWrapper}>
+                        <Button
+                            type="button"
+                            text="Validate"
+                            onClick={handleValidateTicket}
+                            disabled={!ticketCode.trim()}
+                        />
+                    </div>
+                </div>
+            ) : loadingEvents ? (
                 <p className={styles.loadingMessage}>Loading events...</p>
             ) : events.length > 0 ? (
                 <div className={styles.eventSelectorSection}>
