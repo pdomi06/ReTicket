@@ -120,14 +120,54 @@ const Validate = () => {
         }
     };
 
-    const handleValidateTicket = () => {
+    const handleValidateTicket = async () => {
         if (!ticketCode.trim()) {
             setErrorMessage("Please enter a ticket code");
             return;
         }
 
-        console.log("Validating ticket code:", ticketCode, "for event:", selectedEvent);
-        // TODO: Implement ticket validation logic
+        if (!selectedEvent) {
+            setErrorMessage("No event selected");
+            return;
+        }
+
+        try {
+            setErrorMessage(null);
+            const token = localStorage.getItem("token");
+            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+            const response = await fetch(`${apiBaseUrl}/activeTickets/validate`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    ticketListingId: ticketCode,
+                    eventId: selectedEvent.id,
+                }),
+            });
+
+            if (!response.ok) {
+                let errorMsg = "Ticket validation failed";
+                try {
+                    const data = await response.json();
+                    errorMsg = data.message || data.error || errorMsg;
+                } catch {
+                    errorMsg = await response.text();
+                }
+                setErrorMessage(errorMsg);
+                return;
+            }
+
+            const data = await response.json();
+            console.log("Ticket validated:", data);
+            // TODO: Handle successful validation (show result, navigate, etc.)
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error ? error.message : "Failed to validate ticket"
+            );
+        }
     };
 
     if (isAuthorized === null) {
