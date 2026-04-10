@@ -20,9 +20,11 @@ class ActiveTicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'originalTicketId' => OriginalTicket::inRandomOrder()->first()->id ?? OriginalTicket::factory(),
+            'originalTicketId' => OriginalTicket::inRandomOrder()->value('id') ?? OriginalTicket::factory()->create()->id,
             'ticketListingId' => Str::random(10),
             'orderId' => Order::inRandomOrder()->value('id') ?? Order::factory()->create()->id,
+            'isValidated' => false,
+            'validatedAt' => null,
         ];
     }
 }

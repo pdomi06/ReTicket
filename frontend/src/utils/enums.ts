@@ -38,7 +38,7 @@ export const PaymentStatus = {
   Failed: "failed",
 } as const;
 
-// Orders - deliverStatus
+// Orders - deliveryStatus
 export const DeliveryStatus = {
   Pending: "pending",
   Sent: "sent",

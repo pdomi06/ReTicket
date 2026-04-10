@@ -25,7 +25,9 @@ class UpdateActiveTicketsRequest extends FormRequest
         return [
             'orderId' => ['sometimes', 'exists:orders,id'],
             'originalTicketId' => ['sometimes','exists:original_tickets,id'],
-                    'ticketListingId' => ['sometimes', 'string', 'unique:active_tickets,ticketListingId,' . $this->route('activeTicket')->id],
+            'ticketListingId' => ['sometimes', 'string', 'unique:active_tickets,ticketListingId,' . $this->route('activeTicket')->id],
+            'isValidated' => ['sometimes', 'boolean'],
+            'validatedAt' => ['sometimes', 'nullable', 'date'],
         ];
     }
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
             $table->string('ticketListingId');
             $table->foreignId('orderId')->constrained('orders')->onDelete('cascade');
+            $table->boolean('isValidated')->default(false);
+            $table->dateTime('validatedAt')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();

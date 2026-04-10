@@ -19,7 +19,7 @@ class OrderFactory extends Factory
     {
         $status = ["created", "processing", "completed", "failed", "cancelled", "refunded"];
         $paymentStatus = ["pending", "authorized", "captured", "failed"];
-        $deliverStatus = ["pending", "sent", "delivered"];
+        $deliveryStatus = ["pending", "sent", "delivered"];
         $orderNumber = fake()->unique()->numberBetween(1000000, 9999999);
         
 
@@ -33,7 +33,7 @@ class OrderFactory extends Factory
             'paymentIntentId' => 'pi_' . fake()->unique()->regexify('[A-Za-z0-9]{24}'),
             'paymentStatus' => fake()->randomElement($paymentStatus),
             'deliveryEmail' => $user->email,
-            'deliverStatus' => fake()->randomElement($deliverStatus),
+            'deliveryStatus' => fake()->randomElement($deliveryStatus),
             'deliveredAt' => fake()->dateTimeBetween('-1 month', 'now'),
             'created_at' => fake()->dateTimeBetween('-2 months', 'now'),
             'updated_at' => fake()->dateTimeBetween('-1 month', 'now'),
