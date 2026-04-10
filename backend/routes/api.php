@@ -82,8 +82,23 @@ Route::get('/user/email/confirm/{id}', [EmailChangeController::class, 'confirmCh
     ->middleware(['signed', 'throttle:6,1'])->name('email.change.confirm');
 
 
-Route::apiResource("orderItems", OrderItemsController::class);
-Route::apiResource("orders", OrdersController::class);
+Route::post('orderItems', [OrderItemsController::class, 'store'])
+    ->withoutMiddleware(['auth:sanctum', 'verified'])
+    ->name('orderItems.store');
+Route::match(['put', 'patch'], 'orderItems/{orderItem}', [OrderItemsController::class, 'update'])
+    ->withoutMiddleware(['auth:sanctum', 'verified'])
+    ->name('orderItems.update');
+Route::apiResource("orderItems", OrderItemsController::class)->except(['store', 'update']);
+Route::post('orders', [OrdersController::class, 'store'])
+    ->withoutMiddleware(['auth:sanctum', 'verified'])
+    ->name('orders.store');
+Route::get('orders/{order}', [OrdersController::class, 'show'])
+    ->withoutMiddleware(['auth:sanctum', 'verified'])
+    ->name('orders.show');
+Route::match(['put', 'patch'], 'orders/{order}', [OrdersController::class, 'update'])
+    ->withoutMiddleware(['auth:sanctum', 'verified'])
+    ->name('orders.update');
+Route::apiResource("orders", OrdersController::class)->except(['store', 'show', 'update']);
 Route::get('my/payouts', [PayoutsController::class, 'myPayouts']);
 Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory']);
 Route::apiResource("userSettings", UserSettingsController::class);

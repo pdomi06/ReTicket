@@ -37,7 +37,7 @@ class OrdersPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class OrdersPolicy
      */
     public function update(User $user, Order $orders): bool
     {
-        return false;
+        return $user->email === $orders->buyerEmail;
     }
 
     /**

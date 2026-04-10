@@ -35,16 +35,11 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
-        $this->authorize('create', Order::class);
         $data = $request->validated();
 
         $data['status'] = 'pending';
         $data['paymentStatus'] = 'pending';
         $data['deliverStatus'] = 'pending';
-        if(auth()->user()) {
-            $data['buyerEmail'] = auth()->user()->email;
-            $data['deliveryEmail'] = auth()->user()->email;
-        }
         $order = new Order($data);
         $order->orderNumber = $this->generateOrderNumber();
         $order->save();
@@ -66,7 +61,16 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function show(Order $order)
     {
-        $this->authorize('view', $order);
+        if (auth()->check()) {
+            if (!auth()->user()->can('view', $order)) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+        } else {
+            $buyerEmail = request()->query('email');
+            if (!$buyerEmail || strcasecmp($order->buyerEmail, $buyerEmail) !== 0) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+        }
         return response()->json($order, 200);
     }
 
@@ -75,7 +79,6 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function update(UpdateOrdersRequest $request, Order $order)
     {
-        $this->authorize('update', $order);
         $order->update($request->validated());
         return response()->json($order, 200);
     }

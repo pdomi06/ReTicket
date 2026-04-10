@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderItemsRequest extends FormRequest
 {
@@ -12,7 +13,30 @@ class UpdateOrderItemsRequest extends FormRequest
     public function authorize(): bool
     {
         $orderItem = $this->route('orderItem');
-        return $this->user()->can('update', $orderItem);
+
+        if (!$orderItem) {
+            return false;
+        }
+
+        if ($this->user()?->can('update', $orderItem)) {
+            return true;
+        }
+
+        $order = $orderItem->order;
+
+        if (!$order) {
+            return false;
+        }
+
+        if ($this->user()) {
+            return $order->buyerEmail === $this->user()->email;
+        }
+
+        $buyerEmail = $this->input('buyerEmail');
+
+        return is_string($buyerEmail)
+            && $buyerEmail !== ''
+            && strcasecmp($order->buyerEmail, $buyerEmail) === 0;
     }
 
     /**
@@ -23,7 +47,8 @@ class UpdateOrderItemsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'price' => ['sometimes','numeric','min:0'],
+            'buyerEmail' => [Rule::requiredIf(fn () => !$this->user()), 'nullable', 'email'],
+            'price' => ['sometimes', 'numeric', 'min:0'],
         ];
     }
 }

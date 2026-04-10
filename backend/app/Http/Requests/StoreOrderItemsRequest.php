@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreOrderItemsRequest extends FormRequest
 {
@@ -14,13 +15,24 @@ class StoreOrderItemsRequest extends FormRequest
     public function authorize(): bool
     {
         $order = Order::find($this->input('orderId'));
-        if(!$order){
+
+        if (!$order) {
             return false;
         }
-        if($order->buyerEmail !== $this->user()->email){
-            return false;
+
+        if ($this->user()?->can('create', OrderItem::class)) {
+            return true;
         }
-        return $this->user()->can('create', OrderItem::class);
+
+        if ($this->user()) {
+            return $order->buyerEmail === $this->user()->email;
+        }
+
+        $buyerEmail = $this->input('buyerEmail');
+
+        return is_string($buyerEmail)
+            && $buyerEmail !== ''
+            && strcasecmp($order->buyerEmail, $buyerEmail) === 0;
     }
 
     /**
@@ -31,9 +43,10 @@ class StoreOrderItemsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'orderId' => ['required','integer','exists:orders,id'],
-            'ticketListingId' => ['required','exists:active_tickets,ticketListingId'],
-            'price' => ['required','numeric','min:0'],
+            'orderId' => ['required', 'integer', 'exists:orders,id'],
+            'buyerEmail' => [Rule::requiredIf(fn () => !$this->user()), 'nullable', 'email'],
+            'ticketListingId' => ['required', 'exists:active_tickets,ticketListingId'],
+            'price' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

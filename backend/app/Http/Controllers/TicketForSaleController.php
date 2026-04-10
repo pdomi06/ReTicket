@@ -19,7 +19,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut', 'basketChange', 'addToBasket', 'removeFromBasket']),
         ];
     }
 
@@ -119,7 +119,13 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function basketChange(TicketForSale $ticketForSale)
     {
-        $this->authorize('modifyBasket', $ticketForSale);
+        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot modify your own listed ticket basket state.',
+            ], 403);
+        }
+
         $ticketForSale->inBasket = !$ticketForSale->inBasket;
         $ticketForSale->save();
 
@@ -128,7 +134,13 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function addToBasket(TicketForSale $ticketForSale)
     {
-        $this->authorize('modifyBasket', $ticketForSale);
+        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot add your own listed ticket to basket.',
+            ], 403);
+        }
+
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', false)
@@ -147,7 +159,13 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function removeFromBasket(TicketForSale $ticketForSale)
     {
-        $this->authorize('modifyBasket', $ticketForSale);
+        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot remove your own listed ticket from basket.',
+            ], 403);
+        }
+
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', true)
@@ -167,7 +185,15 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function checkOut(CheckOutTicketForSaleRequest $request)
     {
         $email = $request->validated()['email'];
+        $paymentIntentId = $request->validated()['paymentIntentId'];
         $ticketIds = $request->validated()['tickets'];
+
+        if (!is_string($paymentIntentId) || $paymentIntentId === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment reference is required.',
+            ], 422);
+        }
 
         foreach ($ticketIds as $ticketId) {
             $ticketForSale = TicketForSale::find($ticketId);
