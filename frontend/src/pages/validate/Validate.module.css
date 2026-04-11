@@ -37,6 +37,18 @@
     line-height: 1.4;
 }
 
+.validationResult {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background-color: rgba(76, 175, 80, 0.08);
+    color: #66bb6a;
+    border-radius: 6px;
+    border: 1px solid rgba(76, 175, 80, 0.15);
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
 .loadingMessage {
     font-family: var(--font-main);
     font-size: 14px;
