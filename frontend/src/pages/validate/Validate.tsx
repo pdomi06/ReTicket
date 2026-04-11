@@ -25,6 +25,7 @@ const Validate = () => {
     const [ticketCode, setTicketCode] = useState<string>("");
     const [loadingEvents, setLoadingEvents] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [validationResult, setValidationResult] = useState<string | null>(null);
 
     // Check authorization
     useEffect(() => {
@@ -148,21 +149,15 @@ const Validate = () => {
                 }),
             });
 
-            if (!response.ok) {
-                let errorMsg = "Ticket validation failed";
-                try {
-                    const data = await response.json();
-                    errorMsg = data.message || data.error || errorMsg;
-                } catch {
-                    errorMsg = await response.text();
-                }
-                setErrorMessage(errorMsg);
-                return;
+            const data = await response.json();
+            if (data.success) {
+                const ticket = data.originalTicket;
+                setValidationResult(`Ticket for seat ${ticket.section} ${ticket.row}-${ticket.seatNumber} is validated!`);
+
+            } else {
+                setErrorMessage(data.error || "Ticket validation failed");
             }
 
-            const data = await response.json();
-            console.log("Ticket validated:", data);
-            // TODO: Handle successful validation (show result, navigate, etc.)
         } catch (error) {
             setErrorMessage(
                 error instanceof Error ? error.message : "Failed to validate ticket"
@@ -196,6 +191,11 @@ const Validate = () => {
             <h1 className={styles.heading}>Validate Tickets</h1>
             {user && <p className={styles.welcome}>Welcome, {user.name}!</p>}
 
+            {validationResult && (
+                <div className={styles.validationResult}>
+                    {validationResult}
+                </div>
+            )}
             {errorMessage && (
                 <div className={styles.errorMessage}>
                     {errorMessage}

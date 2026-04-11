@@ -15,7 +15,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'show']),
+            new Middleware('auth:sanctum', except: ['index', 'show', 'validate']),
         ];
     }
     /**
@@ -126,7 +126,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
         return response()->json([
             'success' => true,
             'message' => 'Ticket validated successfully.',
-            'activeTicket' => $activeTicket,
+            'originalTicket' => $originalTicket,
         ], 200);
     }
 }
