@@ -4,6 +4,7 @@ import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
+import Notification from "../../../components/ui/notification/Notification";
 import { EventCategory } from "../../../utils/enums";
 import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import style from "./EditEvent.module.css";
@@ -212,12 +213,7 @@ const EditEvent = () => {
                     <h1>Edit Event</h1>
                     <hr />
                     {message && (
-                        <div
-                            className={`alert alert-${message.type === "success" ? "success" : "danger"} mb-3`}
-                            role="alert"
-                        >
-                            {message.text}
-                        </div>
+                        <Notification text={message.text} variant={message.type === "success" ? "success" : "error"} />
                     )}
                     <div className="d-grid gap-3">
                         <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />

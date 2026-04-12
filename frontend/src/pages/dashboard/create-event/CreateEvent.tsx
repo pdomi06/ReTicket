@@ -6,6 +6,7 @@ import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import { EventCategory } from "../../../utils/enums";
 import { toUnixSeconds } from "../../../utils/dateTime";
+import Notification from "../../../components/ui/notification/Notification";
 import style from "./CreateEvent.module.css";
 
 const CreateEvent = () => {
@@ -159,12 +160,7 @@ const CreateEvent = () => {
                     <h1>Create Event</h1>
                     <hr />
                     {message && (
-                        <div
-                            className={`alert alert-${message.type === "success" ? "success" : "danger"} mb-3`}
-                            role="alert"
-                        >
-                            {message.text}
-                        </div>
+                        <Notification text={message.text} variant={message.type === "success" ? "success" : "error"} />
                     )}
                     <div className="d-grid gap-3">
                         <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />

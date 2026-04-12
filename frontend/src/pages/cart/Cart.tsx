@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CartContext } from "../../contexts/cart/CartContextDef";
 import Button from "../../components/ui/button/Button";
+import Notification from "../../components/ui/notification/Notification";
 import styles from "./Cart.module.css";
 import { useSearchParams } from "react-router-dom";
 
@@ -253,9 +254,7 @@ const Cart = () => {
                         <h2 className="h4 mb-3 text-light">Checkout</h2>
 
                         {checkoutError && (
-                            <div className="alert alert-danger mb-3" role="alert">
-                                ✗ {checkoutError}
-                            </div>
+                            <Notification text={checkoutError} variant="error" />
                         )}
 
                         <h3 className="h6 mb-3 text-light">Order Summary</h3>

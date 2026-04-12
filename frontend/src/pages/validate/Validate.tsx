@@ -5,6 +5,7 @@ import type { IEvent } from "../../utils/interfaces";
 import Select from "../../components/ui/select/Select";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
+import Notification from "../../components/ui/notification/Notification";
 import styles from "./Validate.module.css";
 
 interface User {
@@ -204,14 +205,10 @@ const Validate = () => {
             {user && <p className={styles.welcome}>Welcome, {user.name}!</p>}
 
             {validationResult && (
-                <div className={styles.validationResult}>
-                    {validationResult}
-                </div>
+                <Notification text={validationResult} variant="success" />
             )}
             {errorMessage && (
-                <div className={styles.errorMessage}>
-                    {errorMessage}
-                </div>
+                <Notification text={errorMessage} variant="error" />
             )}
 
             {selectedEvent ? (
