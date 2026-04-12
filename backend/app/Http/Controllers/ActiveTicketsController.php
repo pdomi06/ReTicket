@@ -73,8 +73,6 @@ class ActiveTicketsController extends Controller implements HasMiddleware
      */
     public function validateTicket(ValidateActiveTicketRequest $request)
     {
-        $this->authorize('validateTicket', ActiveTicket::class);
-
         $data = $request->validated();
 
         $activeTicket = ActiveTicket::where('ticketListingId', $data['ticketListingId'])->first();
@@ -92,6 +90,8 @@ class ActiveTicketsController extends Controller implements HasMiddleware
                 'error' => 'Ticket was not found.',
             ], 404);
         }
+
+        $this->authorize('validateTicket', $activeTicket);
 
         if ($activeTicket->isValidated) {
             $history = TicketHistory::where('ticketListingId', $data['ticketListingId'])->first();
