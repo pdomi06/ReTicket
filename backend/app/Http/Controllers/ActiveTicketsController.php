@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActiveTicket;
+use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
 use App\Http\Requests\UpdateActiveTicketsRequest;
@@ -15,7 +16,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'show', 'validate']),
+            new Middleware('auth:sanctum', except: ['index', 'show']),
         ];
     }
     /**
@@ -70,8 +71,10 @@ class ActiveTicketsController extends Controller implements HasMiddleware
     /**
      * Validate an active ticket.
      */
-    public function validate(ValidateActiveTicketRequest $request)
+    public function validateTicket(ValidateActiveTicketRequest $request)
     {
+        $this->authorize('validateTicket', ActiveTicket::class);
+
         $data = $request->validated();
 
         $activeTicket = ActiveTicket::where('ticketListingId', $data['ticketListingId'])->first();
@@ -100,7 +103,6 @@ class ActiveTicketsController extends Controller implements HasMiddleware
         
         $originalTicket = $activeTicket->originalTicket;
         if($originalTicket->eventId !== $data['eventId']){
-            $event = Events::where('id', $originalTicket->eventId)->first();
             return response()->json([
                 'success' => false,
                 'error' => 'This ticket does not belong to this event.',

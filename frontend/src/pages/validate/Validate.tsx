@@ -24,6 +24,7 @@ const Validate = () => {
     const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
     const [ticketCode, setTicketCode] = useState<string>("");
     const [loadingEvents, setLoadingEvents] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [validationResult, setValidationResult] = useState<string | null>(null);
 
@@ -117,23 +118,28 @@ const Validate = () => {
             console.log("Selected event:", event);
             setSelectedEvent(event);
             setTicketCode("");
+            setValidationResult(null);
             setErrorMessage(null);
         }
     };
 
     const handleValidateTicket = async () => {
         if (!ticketCode.trim()) {
+            setValidationResult(null);
             setErrorMessage("Please enter a ticket code");
             return;
         }
 
         if (!selectedEvent) {
+            setValidationResult(null);
             setErrorMessage("No event selected");
             return;
         }
 
         try {
             setErrorMessage(null);
+            setValidationResult(null);
+            setIsValidating(true);
             const token = localStorage.getItem("token");
             const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -149,19 +155,31 @@ const Validate = () => {
                 }),
             });
 
-            const data = await response.json();
+            const contentType = response.headers.get("content-type") ?? "";
+            const data = contentType.includes("application/json") ? await response.json() : null;
+
+            if (!response.ok) {
+                const message = data?.error || data?.message || "Ticket validation failed";
+                setErrorMessage(message);
+                return;
+            }
+
             if (data.success) {
                 const ticket = data.originalTicket;
                 setValidationResult(`Ticket for seat ${ticket.section} ${ticket.row}-${ticket.seatNumber} is validated!`);
 
             } else {
+                setValidationResult(null);
                 setErrorMessage(data.error || "Ticket validation failed");
             }
 
         } catch (error) {
+            setValidationResult(null);
             setErrorMessage(
                 error instanceof Error ? error.message : "Failed to validate ticket"
             );
+        } finally {
+            setIsValidating(false);
         }
     };
 
@@ -221,9 +239,9 @@ const Validate = () => {
                     <div className={styles.buttonWrapper}>
                         <Button
                             type="button"
-                            text="Validate"
+                            text={isValidating ? "Validating..." : "Validate"}
                             onClick={handleValidateTicket}
-                            disabled={!ticketCode.trim()}
+                            disabled={!ticketCode.trim() || isValidating}
                         />
                     </div>
                 </div>
