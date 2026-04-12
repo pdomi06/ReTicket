@@ -34,7 +34,7 @@
 .input-group.floating input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
+    box-shadow: var(--shadow-accent-focus);
 }
 
 .input-group.floating input:focus+label,

@@ -40,19 +40,22 @@
 .textarea-group.floating textarea:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
+    box-shadow: var(--shadow-accent-focus);
 }
 
-.textarea-group.floating textarea:focus + label,
-.textarea-group.floating textarea:not(:placeholder-shown) + label {
+.textarea-group.floating textarea:focus+label,
+.textarea-group.floating textarea:not(:placeholder-shown)+label {
     transform: translateY(-18px);
     font-size: 0.75rem;
     color: var(--color-accent);
 }
 
-.dark label, .dark textarea {
+.dark label,
+.dark textarea {
     background-color: var(--color-main);
 }
-.light label, .light textarea {
+
+.light label,
+.light textarea {
     background-color: var(--color-secondary);
 }

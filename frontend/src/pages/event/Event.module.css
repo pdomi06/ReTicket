@@ -24,14 +24,14 @@
 
 .categoryBadge {
     background-color: var(--color-accent) !important;
-    color: #001a20 !important;
+    color: var(--color-main) !important;
     font-size: 0.9rem;
     font-weight: 900 !important;
     letter-spacing: 0.05em;
     padding: 0.6rem 1.2rem !important;
     border-radius: 20px !important;
     border: none;
-    box-shadow: 0 4px 12px rgba(177, 156, 217, 0.35);
+    box-shadow: var(--shadow-accent-button);
     white-space: nowrap;
 }
 
@@ -167,26 +167,26 @@
 }
 
 .seatSelector label:hover {
-    background-color: rgba(177, 156, 217, 0.1);
+    background-color: var(--color-accent-surface-soft);
     border-color: var(--color-accent);
 }
 
 .seatSelector:has(input:checked) label {
     background-color: var(--color-accent);
-    color: #001a20;
+    color: var(--color-main);
     border-color: var(--color-accent);
 }
 
 .seatUnavailable label {
-    background-color: rgba(243, 6, 6, 0.3);
+    background-color: var(--color-danger-surface);
     color: var(--color-text-secondary);
-    border-color: rgba(177, 156, 217, 0.3);
+    border-color: var(--color-danger-border);
     cursor: not-allowed;
 }
 
 .seatUnavailable label:hover {
-    background-color: rgba(255, 38, 0, 0.3);
-    border-color: rgba(177, 156, 217, 0.3);
+    background-color: var(--color-danger-surface-hover);
+    border-color: var(--color-danger-border);
 }
 
 .seatGridContainer {
@@ -194,7 +194,7 @@
     min-height: 450px;
     overflow-y: auto;
     overflow-x: auto;
-    border: 1px solid rgba(177, 156, 217, 0.2);
+    border: 1px solid var(--color-accent-border);
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -218,8 +218,8 @@
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: linear-gradient(135deg, rgba(177, 156, 217, 0.08) 0%, rgba(177, 156, 217, 0.04) 100%);
-    border: 1px solid rgba(177, 156, 217, 0.15);
+    background: linear-gradient(135deg, var(--color-accent-surface-subtle) 0%, var(--color-accent-surface-faint) 100%);
+    border: 1px solid var(--color-accent-border-soft);
     border-radius: 8px;
 }
 
