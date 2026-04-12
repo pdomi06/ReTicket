@@ -57,6 +57,19 @@ Resolution:
 1. Keep optimistic UI rollback paths in place.
 2. Re-fetch seat availability after failed basket update.
 
+### Checkout fails with Stripe key errors
+
+Observed risk:
+
+- Missing or stale `STRIPE_SECRET`/`STRIPE_KEY` values.
+- Cached backend config after env changes.
+
+Resolution:
+
+1. Verify backend env values for Stripe and `FRONTEND_URL`.
+2. Run `php artisan config:clear` in backend after env changes.
+3. Re-test `POST /checkout` and check backend logs.
+
 ## Data Consistency
 
 ### Wrong seat availability across events

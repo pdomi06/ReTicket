@@ -22,7 +22,7 @@ export default function Venues() {
 
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/venue`,
+          `${import.meta.env.VITE_API_BASE_URL}/venues`,
           {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -143,7 +143,7 @@ export default function Venues() {
                         <Button text="Edit" link={`/dashboard/edit-venue/${venue.id}`} variant="outline" />
                       </div>
                       <div className="col-2">
-                        <Button text="Delete" link={`/dashboard/delete-venue`} variant="outline" />
+                        <Button text="Delete" link={`/dashboard/delete-venue/${venue.id}`} variant="outline" />
                       </div>
                     </div>
                   </td>

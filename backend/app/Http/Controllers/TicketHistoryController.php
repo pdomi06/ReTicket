@@ -66,12 +66,4 @@ class TicketHistoryController extends Controller implements HasMiddleware
         $ticketHistory->delete();
         return response()->json(["message" => "Ticket history deleted successfully"], 200);
     }
-
-    public function myHistory(){
-        $user = auth()->user();
-        $ticket_histories = TicketHistory::where('fromUserId', $user->id)
-            ->orWhere('toUserId', $user->id)
-            ->get();
-        return response()->json($ticket_histories, 200);
-    }
 }

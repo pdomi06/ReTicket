@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\PasswordReset;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PasswordResetToken;
 use Illuminate\Database\Seeder;
 
 class PasswordResetSeeder extends Seeder
@@ -13,6 +12,6 @@ class PasswordResetSeeder extends Seeder
      */
     public function run(): void
     {
-        PasswordReset::factory(10)->create();
+        PasswordResetToken::factory(10)->create();
     }
 }

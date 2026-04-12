@@ -27,6 +27,13 @@ Laravel backend follows standard `.env` setup for:
 - `DB_*` settings
 - CORS/session/security defaults from Laravel config
 
+Payment and checkout related variables used by current code:
+
+- `STRIPE_SECRET`
+- `STRIPE_KEY`
+- `FRONTEND_URL`
+- `CASHIER_CURRENCY` (optional; defaults to `huf` in checkout flow)
+
 Keep backend `.env` aligned with database and app URL.
 
 ## Build Commands

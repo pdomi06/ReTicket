@@ -96,13 +96,13 @@ Implementation: [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.
 
 Validation behavior:
 
-1. Requires non-empty email in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L53).
-2. Uses regex email validation in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L42).
-3. Requires non-empty ticket list in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L63).
-4. Normalizes and merges backend validation errors from `errors` payload when present in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L85).
-5. Displays validation/request outcome via alert-style inline messages (`checkoutError`, `checkoutSuccess`) in [frontend/src/pages/cart/Cart.tsx](frontend/src/pages/cart/Cart.tsx#L180).
+1. Prevents duplicate submits while checkout is in progress (`isCheckingOut` guard).
+2. Creates order first (`POST /orders`) and captures backend message/body content-type before parsing.
+3. Requests checkout session (`POST /checkout`) and validates JSON content-type before reading URL.
+4. Surfaces failure states through `checkoutError` and button state text updates (`Processing...`, `Failed`, etc.).
+5. On return from Stripe, uses query params plus follow-up API calls (`/checkout/session`, `/orders/{id}`, `/ticketForSale/finalize`) and logs failures locally.
 
-This page has the most explicit client-side validation among current forms.
+This page currently focuses more on network-response validation and flow state handling than field-level client validation.
 
 ## Dashboard CRUD forms
 

@@ -6,20 +6,21 @@ Describe the major backend workflows as they are currently implemented in contro
 
 ## Overview
 
-Core workflows are split across event/ticket lifecycle actions, resale checkout transitions, and CRUD-style commerce/recovery resources.
+Core workflows are split across event/ticket lifecycle actions, basket and resale listing transitions, order plus Stripe payment handling, and account recovery.
 
-- Workflow entry points are routed in [backend/routes/api.php](backend/routes/api.php#L21).
+- Workflow entry points are routed in [backend/routes/api.php](backend/routes/api.php).
 - Access control is primarily controller middleware with `auth:sanctum` plus per-controller exceptions.
-- Several domain flows include non-obvious side effects (basket conflicts, status-driven listing sync, checkout history inserts).
+- Several domain flows include non-obvious side effects (basket conflicts, status-driven listing sync, active-ticket pre-creation, finalize idempotency checks).
 
 ## Key files and locations
 
-- Event flow controller: [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L14)
-- Ticket inventory flow controller: [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L16)
-- Resale and checkout flow controller: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L16)
-- Orders and order items: [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php#L11), [backend/app/Http/Controllers/OrderItemsController.php](backend/app/Http/Controllers/OrderItemsController.php#L11)
-- Payout workflow endpoints: [backend/app/Http/Controllers/PayoutsController.php](backend/app/Http/Controllers/PayoutsController.php#L11)
-- History and recovery resources: [backend/app/Http/Controllers/TicketHistoryController.php](backend/app/Http/Controllers/TicketHistoryController.php#L11), [backend/app/Http/Controllers/EmailVerifyController.php](backend/app/Http/Controllers/EmailVerifyController.php#L11), [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php#L11)
+- Event flow controller: [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php)
+- Ticket inventory flow controller: [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php)
+- Listing, basket, finalize flow controller: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
+- Orders and order items: [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php), [backend/app/Http/Controllers/OrderItemsController.php](backend/app/Http/Controllers/OrderItemsController.php)
+- Stripe payment flow: [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php)
+- Payout flow endpoints: [backend/app/Http/Controllers/PayoutsController.php](backend/app/Http/Controllers/PayoutsController.php)
+- Recovery flow endpoints: [backend/app/Http/Controllers/EmailVerificationController.php](backend/app/Http/Controllers/EmailVerificationController.php), [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php)
 
 ## Patterns and conventions
 
@@ -49,43 +50,62 @@ Reference: [backend/app/Http/Controllers/OriginalTicketsController.php](backend/
    - `POST /ticketForSale/addToBasket/{ticketForSale}`
    - `POST /ticketForSale/removeFromBasket/{ticketForSale}`
    - `POST /ticketForSale/basketChange/{ticketForSale}`
-4. Add/remove basket operations use conditional updates and return `409` on stale state conflicts.
+4. `addToBasket` and `removeFromBasket` use conditional updates and return `409` on stale state conflicts.
+5. `basketChange` remains auth-required while add/remove are currently public.
 
 Reference: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L92)
 
-### Workflow 4: Checkout side effects
+### Workflow 4: Order creation and active-ticket staging
 
-Checkout endpoint: `POST /ticketForSale/checkOut` in [backend/routes/api.php](backend/routes/api.php#L39).
+Order creation endpoint: `POST /orders` in [backend/routes/api.php](backend/routes/api.php).
 
-For each ticket ID:
+For each requested ticket ID in the payload:
 
-1. Finds listing by ID.
-2. Generates unique ULID-style `ticketListingId` with existence check.
-3. Runs transaction that:
-   - inserts into `ticket_history`
-   - inserts into `active_tickets`
-   - deletes the source `ticket_forsale` row
+1. Creates an `orders` row with generated `orderNumber`.
+2. Loads `ticket_forsale` row by ID.
+3. Generates unique `ticketListingId`.
+4. Creates `order_item` row.
+5. Creates `active_tickets` row.
 
-References: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L126), [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L156)
+Reference: [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php)
 
-### Workflow 5: Orders, order items, and payouts
+### Workflow 5: Stripe checkout and return handling
 
-Orders (`/orders`), order items (`/orderItems`), and payouts (`/payouts`) are currently standard CRUD resources behind `auth:sanctum` middleware:
+Stripe endpoints:
 
-- [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php#L13)
-- [backend/app/Http/Controllers/OrderItemsController.php](backend/app/Http/Controllers/OrderItemsController.php#L13)
-- [backend/app/Http/Controllers/PayoutsController.php](backend/app/Http/Controllers/PayoutsController.php#L13)
+1. `POST /checkout` (or alias `POST /orders/checkOut`) creates checkout session and returns `url`.
+2. `GET /checkout/session?session_id=...` returns payment intent and customer email.
+3. Clients update order payment metadata via `PATCH /orders/{order}`.
+4. Clients call `POST /ticketForSale/finalize` with `orderId` to finish listing/history transitions.
 
-No orchestration logic linking checkout directly to order/order item/payout creation was found in current controllers. That linkage is TBD.
+References: [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php), [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
 
-### Workflow 6: History and recovery resources
+### Workflow 6: Legacy checkout endpoint
 
-- Ticket history resource (`/ticketHistory`) is CRUD with auth middleware: [backend/app/Http/Controllers/TicketHistoryController.php](backend/app/Http/Controllers/TicketHistoryController.php#L13)
-- Email verify and password reset resources are CRUD with auth middleware:
-  - [backend/app/Http/Controllers/EmailVerifyController.php](backend/app/Http/Controllers/EmailVerifyController.php#L13)
-  - [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php#L13)
+`POST /ticketForSale/checkOut` still exists and directly inserts into `ticket_history` and `active_tickets`, then deletes source listings.
 
-These resources currently behave as data-record CRUD endpoints rather than end-user token/email workflows. End-user flow orchestration is TBD.
+Reference: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
+
+### Workflow 7: Account recovery
+
+Email verification flow:
+
+1. `POST /email/verify/send` creates token records for unverified users.
+2. `POST /email/verify` validates token, marks user verified, and stamps `verifiedAt`.
+
+Password reset flow:
+
+1. `POST /password/forgot` dispatches reset link through Laravel password broker.
+2. `POST /password/reset` validates token and updates `passwordHash`, then revokes existing tokens.
+
+References: [backend/app/Http/Controllers/EmailVerificationController.php](backend/app/Http/Controllers/EmailVerificationController.php), [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php)
+
+### Workflow 8: Payout retrieval
+
+- `GET /payouts` and `GET /payouts/{payout}` provide admin/authorized views.
+- `GET /my/payouts` returns payouts filtered by authenticated vendor ID.
+
+Reference: [backend/app/Http/Controllers/PayoutsController.php](backend/app/Http/Controllers/PayoutsController.php)
 
 ## Examples (real code)
 
@@ -97,8 +117,8 @@ These resources currently behave as data-record CRUD endpoints rather than end-u
 
 ### Example 2: Public checkout route
 
-- Route is declared in [backend/routes/api.php](backend/routes/api.php#L39).
-- Controller middleware exception keeps `checkOut` public in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php#L21).
+- Route is declared in [backend/routes/api.php](backend/routes/api.php).
+- Controller middleware exception keeps `checkOut` public in [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php).
 
 ### Example 3: Status-change listing automation
 
@@ -109,8 +129,9 @@ These resources currently behave as data-record CRUD endpoints rather than end-u
 - Checkout is public by current middleware exception, which is easy to miss if reading only route declarations.
 - Basket operations are race-sensitive and intentionally return `409` in concurrent conditions.
 - `bulkUpdate` for original tickets deletes existing ticket and listing rows for an event before reinserting.
-- Orders/order items/payouts currently run as separate CRUD resources; direct workflow coupling to checkout is not implemented in controller code (TBD).
-- Policies largely return `false` in current policy files; practical workflow access is governed mainly by controller middleware.
+- Order creation and payment execution are split between `OrdersController`, `StripeController`, and `TicketForSaleController/finalize`, so clients must execute multiple calls in sequence.
+- Both modern (`/orders` + `/checkout` + `/ticketForSale/finalize`) and legacy (`/ticketForSale/checkOut`) checkout paths exist.
+- Policies are implemented but unevenly restrictive across resources, so effective access depends on both middleware and policy methods.
 
 ## Related docs
 
@@ -118,3 +139,5 @@ These resources currently behave as data-record CRUD endpoints rather than end-u
 - [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
 - [zz-docs/backend-search-filtering-bulk.md](zz-docs/backend-search-filtering-bulk.md)
 - [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)
+- [zz-docs/backend-payment-processing.md](zz-docs/backend-payment-processing.md)
+- [zz-docs/backend-account-recovery.md](zz-docs/backend-account-recovery.md)

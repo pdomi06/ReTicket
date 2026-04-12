@@ -12,14 +12,7 @@ class StoreOrdersRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if ($this->user()?->can('create', Order::class)) {
-            return true;
-        }
-
-        $email = $this->input('buyerEmail');
-        $paymentIntentId = $this->input('paymentIntentId');
-
-        return is_string($email) && is_string($paymentIntentId) && $email !== '' && $paymentIntentId !== '';
+        return true;
     }
 
     /**
@@ -30,15 +23,10 @@ class StoreOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'buyerEmail' => ['required', 'email'],
-        'subtotal' => ['required', 'numeric', 'min:0'],
-        'platformFee' => ['required', 'numeric', 'min:0'],
-        'tax' => ['nullable', 'numeric', 'min:0'],
-        'paymentIntentId' => ['required', 'string'],
-        'deliveryEmail' => ['required', 'email'],
-        'status' => ['prohibited'],
-        'paymentStatus' => ['prohibited'],
-        'deliverStatus' => ['prohibited'],
+            'subtotal' => ['required', 'numeric', 'min:0'],
+            'platformFee' => ['required', 'numeric', 'min:0'],
+            'tickets' => ['required', 'array', 'min:1'],
+            'tickets.*' => ['required', 'integer', 'exists:ticket_forsale,id'],
         ];
     }
 }

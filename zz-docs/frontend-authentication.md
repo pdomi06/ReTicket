@@ -102,6 +102,10 @@ No matches were found for logout/remove-token patterns, and there is no dedicate
 
 No explicit token refresh lifecycle was found in frontend source.
 
+### Backend recovery endpoints exist, but frontend flows are missing
+
+Backend exposes account recovery endpoints (`/email/verify/send`, `/email/verify`, `/password/forgot`, `/password/reset`), but corresponding frontend pages/actions were not found in the route tree.
+
 ### No centralized auth provider/state machine
 
 Auth state is not managed through a dedicated auth context/provider; checks are page-level and localStorage-driven.

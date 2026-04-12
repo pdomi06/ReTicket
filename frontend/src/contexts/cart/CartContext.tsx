@@ -32,11 +32,11 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                                 headers,
                             });
 
-                            if (res.ok) {
+                            if (res.ok || res.status === 409) {
                                 return ticket;
                             }
 
-                            console.warn(`Failed to re-add ticket ${ticket.id} to basket on restore.`);
+                            console.warn(`Failed to re-add ticket ${ticket.id} to basket on restore: ${res.status}`);
                             return null;
                         } catch (err) {
                             console.error(`Error re-adding ticket ${ticket.id} to basket on restore:`, err);

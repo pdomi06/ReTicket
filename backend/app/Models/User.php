@@ -12,11 +12,12 @@ use App\Models\Order;
 use App\Models\TicketForSale;
 use App\Models\UserSetting;
 use App\Models\Payout;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasApiTokens, Notifiable;
+    use HasFactory, HasApiTokens, Notifiable, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -77,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function orders()
     {
-        return $this->hasMany(Order::class, 'buyerEmail', 'email');
+        return $this->hasMany(Order::class, 'deliveryEmail', 'email');
     }
 
     public function ticketsForSale()

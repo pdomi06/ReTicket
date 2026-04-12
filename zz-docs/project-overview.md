@@ -8,7 +8,6 @@ The project is split into:
 
 - `backend/`: Laravel API and domain logic.
 - `frontend/`: React + TypeScript single-page application.
-- `webpages/`: legacy static prototypes.
 - `zz-docs/`: project documentation chunks.
 
 ## High-Level Architecture
@@ -25,7 +24,7 @@ The project is split into:
 - Event: A managed show/concert/sports listing owned by an organizer.
 - Original Ticket: The canonical seat ticket attached to an event.
 - Ticket For Sale: A resale listing tied to an original ticket and vendor.
-- Order and Order Item: Purchase records for buyer checkout.
+- Order and Order Item: Purchase records used in checkout and Stripe payment flow.
 - Payout: Vendor settlement record linked to sold order items.
 
 ## Roles
@@ -37,7 +36,7 @@ See [Permissions and Role Matrix](./permissions.md) for full details.
 - Vendor: manages own sale listings and views own payouts.
 - Guest: public read-only usage with limited actions.
 
-Role references exist in project documentation and policy design, but enforcement is currently mixed because some policy classes are still stubs.
+Role references exist in project documentation and policy design, but enforcement is currently mixed because policy strictness differs by resource and action.
 
 ## Repository Landmarks
 

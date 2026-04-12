@@ -23,6 +23,7 @@ class UpdateActiveTicketsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'orderId' => ['sometimes', 'exists:orders,id'],
             'originalTicketId' => ['sometimes','exists:original_tickets,id'],
                     'ticketListingId' => ['sometimes', 'string', 'unique:active_tickets,ticketListingId,' . $this->route('activeTicket')->id],
         ];

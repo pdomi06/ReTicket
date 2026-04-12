@@ -6,28 +6,33 @@ use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrdersRequest;
 use App\Http\Requests\UpdateOrdersRequest;
+use App\Http\Requests\CheckOutOrdersRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use App\Models\TicketForSale;
+use App\Models\ActiveTicket;
+use App\Models\OrderItem;
 
 class OrdersController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum'),
-            new Middleware('verified'),
+            new Middleware('auth:sanctum', except: ['store', 'update']),
         ];
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $this->authorize('viewAny', Order::class);
-        $user = auth()->user();
-        $orders = Order::query();
+        $orders = Order::all();
 
-        return response()->json($orders->get(), 200);
+        return response()->json($orders, 200);
     }
 
     /**
@@ -37,12 +42,30 @@ class OrdersController extends Controller implements HasMiddleware
     {
         $data = $request->validated();
 
-        $data['status'] = 'pending';
-        $data['paymentStatus'] = 'pending';
-        $data['deliverStatus'] = 'pending';
-        $order = new Order($data);
-        $order->orderNumber = $this->generateOrderNumber();
-        $order->save();
+        $order = DB::transaction(function () use ($data) {
+            $order = new Order($data);
+            $order->orderNumber = $this->generateOrderNumber();
+            $order->save();
+
+            foreach ($data['tickets'] as $ticketId) {
+                $ticketForSale = TicketForSale::findOrFail($ticketId);
+                $ticketListingId = $this->generateUniqueTicketListingId();
+
+                OrderItem::create([
+                    'orderId' => $order->id,
+                    'ticketListingId' => $ticketListingId,
+                    'price' => $ticketForSale->price,
+                ]);
+
+                ActiveTicket::create([
+                    'ticketListingId' => $ticketListingId,
+                    'originalTicketId' => $ticketForSale->originalTicketId,
+                    'orderId' => $order->id,
+                ]);
+            }
+
+            return $order;
+        });
 
         return response()->json($order, 201);
     }
@@ -54,6 +77,15 @@ class OrdersController extends Controller implements HasMiddleware
         } while (Order::where('orderNumber', $orderNumber)->exists());
 
         return $orderNumber;
+    }
+
+    private function generateUniqueTicketListingId(): string
+    {
+        do {
+            $ticketListingId = Str::ulid()->toString();
+        } while (DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists());
+
+        return $ticketListingId;
     }
 
     /**

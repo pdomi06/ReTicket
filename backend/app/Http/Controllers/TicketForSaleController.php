@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class TicketForSaleController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut', 'basketChange', 'addToBasket', 'removeFromBasket']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut', 'finalize', 'addToBasket', 'removeFromBasket']),
         ];
     }
 
@@ -134,13 +135,6 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function addToBasket(TicketForSale $ticketForSale)
     {
-        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You cannot add your own listed ticket to basket.',
-            ], 403);
-        }
-
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', false)
@@ -159,13 +153,6 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function removeFromBasket(TicketForSale $ticketForSale)
     {
-        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You cannot remove your own listed ticket from basket.',
-            ], 403);
-        }
-
         $affected = DB::table('ticket_forsale')
             ->where('id', $ticketForSale->id)
             ->where('inBasket', true)
@@ -185,7 +172,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function checkOut(CheckOutTicketForSaleRequest $request)
     {
         $email = $request->validated()['email'];
-        $paymentIntentId = $request->validated()['paymentIntentId'];
+        $orderId = $request->validated()['orderId'];
         $ticketIds = $request->validated()['tickets'];
 
         if (!is_string($paymentIntentId) || $paymentIntentId === '') {
@@ -199,7 +186,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
             $ticketForSale = TicketForSale::find($ticketId);
             $ticketListingId = $this->generateUniqueTicketListingId();
 
-            DB::transaction(function () use ($ticketForSale, $ticketListingId, $email) {
+            DB::transaction(function () use ($ticketForSale, $ticketListingId, $email, $orderId) {
                 $platformFee = round($ticketForSale->price * 0.1, 2);
                 DB::table('ticket_history')->insert([
                     'originalTicketId' => $ticketForSale->originalTicketId,
@@ -212,12 +199,75 @@ class TicketForSaleController extends Controller implements HasMiddleware
                 DB::table('active_tickets')->insert([
                     'originalTicketId' => $ticketForSale->originalTicketId,
                     'ticketListingId' => $ticketListingId,
+                    'orderId' => $orderId,
                 ]);
                 $ticketForSale->delete();
             });
         }
 
         return response()->json(['success' => true, 'message' => 'Ticket(s) marked as sold and history recorded.'], 200);
+    }
+
+    public function finalize(Request $request)
+    {
+        $validated = $request->validate([
+            'orderId' => ['required', 'integer', 'exists:orders,id'],
+        ]);
+
+        $orderId = (int) $validated['orderId'];
+        $order = DB::table('orders')->where('id', $orderId)->first();
+        $tickets = DB::table('active_tickets')->where('orderId', $orderId)->get();
+
+        $historyCreated = 0;
+        $listingsDeleted = 0;
+
+        foreach ($tickets as $ticket) {
+            DB::transaction(function () use ($ticket, $order, &$historyCreated, &$listingsDeleted) {
+                $ticketForSale = DB::table('ticket_forsale')
+                    ->where('originalTicketId', $ticket->originalTicketId)
+                    ->first();
+
+                if (! $ticketForSale) {
+                    return;
+                }
+
+                $alreadyFinalized = DB::table('ticket_history')
+                    ->where('ticketListingId', $ticket->ticketListingId)
+                    ->exists();
+
+                if (! $alreadyFinalized) {
+                    DB::table('ticket_history')->insert([
+                        'originalTicketId' => $ticket->originalTicketId,
+                        'ticketListingId' => $ticket->ticketListingId,
+                        'fromUserId' => $ticketForSale->fromUserId,
+                        'toUser' => $order->deliveryEmail,
+                        'price' => $ticketForSale->price,
+                        'platformFee' => round($ticketForSale->price * 0.1, 2),
+                    ]);
+
+                    $historyCreated++;
+                }
+
+                $deleted = DB::table('ticket_forsale')
+                    ->where('id', $ticketForSale->id)
+                    ->delete();
+
+                if ($deleted > 0) {
+                    $listingsDeleted += $deleted;
+                }
+            });
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket(s) finalized and user information updated.',
+            'data' => [
+                'orderId' => $orderId,
+                'ticketCount' => $tickets->count(),
+                'historyCreated' => $historyCreated,
+                'listingsDeleted' => $listingsDeleted,
+            ],
+        ], 200);
     }
 
     private function generateUniqueTicketListingId(): string
