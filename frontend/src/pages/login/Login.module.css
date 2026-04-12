@@ -59,25 +59,12 @@ body {
 .login-form {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 15px;
   margin-top: 20px;
 }
 
-.login-form label {
-  font-weight: bold;
-  text-align: left;
-}
 
-.login-form input {
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  width: 330px;
-  margin-bottom: 10px;
-  background-color: #001a20a1;
-  color: white;
-}
 
 .login-form button {
   background-color: var(--color-accent);

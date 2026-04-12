@@ -76,9 +76,9 @@ const Login = () => {
         )}
         <form method="POST" className={style["login-form"]} onSubmit={handleSubmit}>
 
-          <Input type="email" name="email" label="Email" />
+          <Input type="email" name="email" label="Email" theme="dark" />
 
-          <Input type="password" name="password" label="Password" />
+          <Input type="password" name="password" label="Password" theme="dark" />
 
           <Button type="submit" text="Login" variant="primary" />
         </form>

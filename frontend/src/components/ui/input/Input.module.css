@@ -37,36 +37,65 @@
     box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.25);
 }
 
-.input-group.floating input:focus + label,
-.input-group.floating input:not(:placeholder-shown) + label {
+.input-group.floating input:focus+label,
+.input-group.floating input:not(:placeholder-shown)+label {
     transform: translateY(-18px);
     font-size: 0.75rem;
     color: var(--color-accent);
 }
 
-.dark label, .dark input {
+.dark label,
+.dark input {
     background-color: var(--color-main);
 }
-.light label, .light input {
+
+.input-group.floating input:-webkit-autofill,
+.input-group.floating input:-webkit-autofill:hover,
+.input-group.floating input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-text);
+    caret-color: var(--color-text);
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-main) inset;
+    box-shadow: 0 0 0 1000px var(--color-main) inset;
+}
+
+.light label,
+.light input {
     background-color: var(--color-secondary);
+}
+
+.light input:-webkit-autofill,
+.light input:-webkit-autofill:hover,
+.light input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-secondary) inset;
+    box-shadow: 0 0 0 1000px var(--color-secondary) inset;
 }
 
 .size-small input {
     padding: 10px 8px 4px;
 }
+
 .size-small label {
     top: 10px;
     padding: 0 2px;
 }
+
 .size-medium input {
     padding: 14px 12px 6px;
 }
+
 .size-medium label {
     padding: 0 4px;
 }
+
 .size-large input {
     padding: 18px 16px 8px;
 }
+
 .size-large label {
     top: 18px;
     padding: 0 6px;
