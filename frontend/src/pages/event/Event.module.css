@@ -48,7 +48,7 @@
     flex-direction: column;
     position: relative;
     scrollbar-width: thin;
-    scrollbar-color: var(--color-accent) rgba(0, 0, 0, 0.1);
+    scrollbar-color: var(--color-accent) var(--color-border-subtle);
 }
 
 @media (max-width: 768px) {
@@ -63,7 +63,7 @@
 }
 
 .datesList::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--color-border-subtle);
     border-radius: 10px;
 }
 
@@ -194,7 +194,7 @@
     min-height: 450px;
     overflow-y: auto;
     overflow-x: auto;
-    border: 1px solid var(--color-accent-border);
+    border: 1px solid var(--color-accent-border-soft);
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -218,7 +218,7 @@
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: linear-gradient(135deg, var(--color-accent-surface-subtle) 0%, var(--color-accent-surface-faint) 100%);
+    background: var(--color-accent-surface-subtle);
     border: 1px solid var(--color-accent-border-soft);
     border-radius: 8px;
 }

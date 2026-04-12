@@ -1,6 +1,6 @@
 
 .carouser {
-    background-color: black;
+    background-color: var(--color-main);
     margin: 0;
     padding: 0;
 }

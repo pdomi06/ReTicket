@@ -9,10 +9,10 @@
 }
 
 .cartCard {
-    background: linear-gradient(160deg, rgba(10, 46, 56, 0.9), rgba(0, 26, 32, 0.95));
-    border: 1px solid rgba(177, 156, 217, 0.28);
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-accent-border);
     border-radius: 16px;
-    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.32);
+    box-shadow: var(--shadow-md);
 }
 
 .emptyCard {
@@ -27,12 +27,20 @@
 
 .ticketItem {
     transition: background-color 0.2s ease;
-    border-color: rgba(177, 156, 217, 0.24) !important;
+    border-color: var(--color-accent-border-soft) !important;
 }
 
 
 .ticketItem:hover {
-    background-color: rgba(255, 255, 255, 0.03) !important;
+    background-color: var(--color-accent-surface-faint) !important;
+}
+
+.summaryDivider {
+    border-top: 1px solid var(--color-accent-border-soft) !important;
+}
+
+.summaryTotal {
+    border-top: 1px solid var(--color-accent-border-soft) !important;
 }
 
 .ticketInfo {

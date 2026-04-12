@@ -14,9 +14,6 @@
   --spacing-2xl: 48px;
   --spacing-3xl: 64px;
   --transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
 /* Global Resets */
@@ -142,7 +139,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   transition: var(--transition);
-  border: 2px solid var(--color-accent-border-strong);
+  border: 2px solid var(--color-accent-border);
   text-align: center;
 }
 
@@ -303,7 +300,7 @@ body {
 
 .faqItem {
   background: var(--color-main);
-  border: 2px solid var(--color-accent-border-strong);
+  border: 2px solid var(--color-accent-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: var(--transition);
@@ -351,7 +348,7 @@ body {
 .faqAnswer {
   padding: 0 var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
   animation: slideDown 300ms ease-out;
-  border-top: 2px solid var(--color-accent-border-strong);
+  border-top: 2px solid var(--color-accent-border);
   padding-top: var(--spacing-md);
 }
 
@@ -386,7 +383,7 @@ body {
 .ctaContent {
   max-width: 700px;
   margin: 0 auto;
-  color: white;
+  color: var(--color-text);
 }
 
 .ctaContent h2 {

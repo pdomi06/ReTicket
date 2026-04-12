@@ -2,7 +2,7 @@
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.65);
+    background-color: var(--color-modal-overlay);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
@@ -18,9 +18,9 @@
 
 .modal {
     background-color: var(--color-secondary);
-    border: 1px solid rgba(177, 156, 217, 0.25);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(177, 156, 217, 0.1);
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-border-subtle);
     display: flex;
     flex-direction: column;
     max-height: 90vh;
@@ -52,7 +52,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(177, 156, 217, 0.2);
+    border-bottom: 1px solid var(--color-border);
     flex-shrink: 0;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .closeBtn:hover {
-    background-color: rgba(177, 156, 217, 0.15);
+    background-color: var(--color-accent-surface-soft);
     color: var(--color-accent);
 }
 
@@ -94,7 +94,7 @@
     color: var(--color-text-secondary);
     line-height: 1.6;
     scrollbar-width: thin;
-    scrollbar-color: var(--color-accent) rgba(0, 0, 0, 0.1);
+    scrollbar-color: var(--color-accent) var(--color-border-subtle);
 }
 
 .body::-webkit-scrollbar {
@@ -102,7 +102,7 @@
 }
 
 .body::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--color-border-subtle);
     border-radius: 10px;
 }
 
@@ -114,7 +114,7 @@
 /* Footer */
 .footer {
     padding: 1rem 1.5rem 1.25rem;
-    border-top: 1px solid rgba(177, 156, 217, 0.2);
+    border-top: 1px solid var(--color-border);
     flex-shrink: 0;
 }
 

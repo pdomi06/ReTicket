@@ -1,38 +1,254 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
+    /* ── Backgrounds ── */
     --color-main: #0f0f0f;
     --color-secondary: #1a1a1a;
+    --color-surface: #222222;
+    --color-surface-raised: #2a2a2a;
+    --color-surface-overlay: #333333;
+
+    /* ── Accent (Amber/Gold) ── */
     --color-accent: #e8a020;
+    --color-accent-hover: #f0b030;
     --color-accent-muted-bg: rgba(232, 160, 32, 0.3);
     --color-accent-surface-faint: rgba(232, 160, 32, 0.04);
     --color-accent-surface-subtle: rgba(232, 160, 32, 0.08);
-    --color-accent-surface-soft: rgba(232, 160, 32, 0.1);
+    --color-accent-surface-soft: rgba(232, 160, 32, 0.12);
     --color-accent-border-soft: rgba(232, 160, 32, 0.15);
-    --color-accent-border: rgba(232, 160, 32, 0.2);
-    --color-accent-border-strong: rgba(232, 160, 32, 0.3);
+    --color-accent-border: rgba(232, 160, 32, 0.25);
+    --color-accent-border-strong: rgba(232, 160, 32, 0.45);
+    --color-accent-gradient: linear-gradient(135deg, #e8a020, #f5c96a);
+
+    /* ── Text ── */
     --color-text: #ffffff;
     --color-text-secondary: #a0a0a0;
+    --color-text-muted: #666666;
+    --color-text-disabled: #444444;
+    --color-text-on-accent: #0f0f0f;
+
+    /* ── Semantic: Success ── */
+    --color-success: #22c55e;
+    --color-success-surface: rgba(34, 197, 94, 0.1);
+    --color-success-border: rgba(34, 197, 94, 0.35);
+
+    /* ── Semantic: Danger ── */
+    --color-danger: #ff3d3d;
+    --color-danger-surface: rgba(255, 61, 61, 0.1);
+    --color-danger-surface-hover: rgba(255, 61, 61, 0.18);
+    --color-danger-border: rgba(255, 61, 61, 0.35);
+
+    /* ── Semantic: Warning ── */
+    --color-warning: #facc15;
+    --color-warning-surface: rgba(250, 204, 21, 0.1);
+    --color-warning-border: rgba(250, 204, 21, 0.35);
+
+    /* ── Semantic: Info ── */
+    --color-info: #38bdf8;
+    --color-info-surface: rgba(56, 189, 248, 0.1);
+    --color-info-border: rgba(56, 189, 248, 0.35);
+
+    /* ── Borders & Dividers ── */
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-subtle: rgba(255, 255, 255, 0.04);
+    --color-border-strong: rgba(255, 255, 255, 0.16);
+
+    /* ── Overlays ── */
     --color-dark-overlay: rgba(0, 0, 0, 0.9);
-    --color-highlighter: #ff3d3d;
-    --color-danger-surface: rgba(255, 61, 61, 0.25);
-    --color-danger-surface-hover: rgba(255, 61, 61, 0.35);
-    --color-danger-border: rgba(255, 61, 61, 0.55);
+    --color-modal-overlay: rgba(0, 0, 0, 0.7);
+    --color-tooltip-bg: #2a2a2a;
+
+    /* ── Highlighter ── */
+    --color-highlighter: #ff6b35;
+    --color-highlighter-surface: rgba(255, 107, 53, 0.1);
+    --color-highlighter-border: rgba(255, 107, 53, 0.35);
+
+    /* ── Scrollbar ── */
+    --color-scrollbar-track: #1a1a1a;
     --color-scrollbar-secondary: #e8a020;
     --color-scrollbar-hover-start: #f5c96a;
     --color-scrollbar-hover-end: #f0b840;
+
+    /* ── Shadows ── */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
     --shadow-accent-focus: 0 0 0 2px rgba(232, 160, 32, 0.25);
     --shadow-accent-button: 0 4px 15px rgba(232, 160, 32, 0.3);
     --shadow-accent-button-hover: 0 8px 25px rgba(232, 160, 32, 0.5);
     --shadow-accent-outline: 0 2px 8px rgba(232, 160, 32, 0.2);
     --shadow-accent-outline-hover: 0 8px 20px rgba(232, 160, 32, 0.4);
+
+    /* ── Typography ── */
+    --font-main: 'Noto Sans', sans-serif;
+    --font-secondary: 'Playfair Display', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* ── Charts ── */
+    --chart-color-1: #e8a020;
+    --chart-color-2: #ff6b35;
+    --chart-color-3: #22c55e;
+    --chart-color-4: #38bdf8;
+    --chart-color-5: #a855f7;
+    --chart-color-6: #facc15;
+}
+
+/* ── DARK THEME (explicit class, same as :root default) ── */
+[data-theme="dark"] {
+    --color-main: #0f0f0f;
+    --color-secondary: #1a1a1a;
+    --color-surface: #222222;
+    --color-surface-raised: #2a2a2a;
+    --color-surface-overlay: #333333;
+
+    --color-accent: #e8a020;
+    --color-accent-hover: #f0b030;
+    --color-accent-muted-bg: rgba(232, 160, 32, 0.3);
+    --color-accent-surface-faint: rgba(232, 160, 32, 0.04);
+    --color-accent-surface-subtle: rgba(232, 160, 32, 0.08);
+    --color-accent-surface-soft: rgba(232, 160, 32, 0.12);
+    --color-accent-border-soft: rgba(232, 160, 32, 0.15);
+    --color-accent-border: rgba(232, 160, 32, 0.25);
+    --color-accent-border-strong: rgba(232, 160, 32, 0.45);
+    --color-accent-gradient: linear-gradient(135deg, #e8a020, #f5c96a);
+
+    --color-text: #ffffff;
+    --color-text-secondary: #a0a0a0;
+    --color-text-muted: #666666;
+    --color-text-disabled: #444444;
+    --color-text-on-accent: #0f0f0f;
+
+    --color-success: #22c55e;
+    --color-success-surface: rgba(34, 197, 94, 0.1);
+    --color-success-border: rgba(34, 197, 94, 0.35);
+
+    --color-danger: #ff3d3d;
+    --color-danger-surface: rgba(255, 61, 61, 0.1);
+    --color-danger-surface-hover: rgba(255, 61, 61, 0.18);
+    --color-danger-border: rgba(255, 61, 61, 0.35);
+
+    --color-warning: #facc15;
+    --color-warning-surface: rgba(250, 204, 21, 0.1);
+    --color-warning-border: rgba(250, 204, 21, 0.35);
+
+    --color-info: #38bdf8;
+    --color-info-surface: rgba(56, 189, 248, 0.1);
+    --color-info-border: rgba(56, 189, 248, 0.35);
+
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-subtle: rgba(255, 255, 255, 0.04);
+    --color-border-strong: rgba(255, 255, 255, 0.16);
+
+    --color-dark-overlay: rgba(0, 0, 0, 0.9);
+    --color-modal-overlay: rgba(0, 0, 0, 0.7);
+    --color-tooltip-bg: #2a2a2a;
+
+    --color-highlighter: #ff6b35;
+    --color-highlighter-surface: rgba(255, 107, 53, 0.1);
+    --color-highlighter-border: rgba(255, 107, 53, 0.35);
+
+    --color-scrollbar-track: #1a1a1a;
+    --color-scrollbar-secondary: #e8a020;
+    --color-scrollbar-hover-start: #f5c96a;
+    --color-scrollbar-hover-end: #f0b840;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-accent-focus: 0 0 0 2px rgba(232, 160, 32, 0.25);
+    --shadow-accent-button: 0 4px 15px rgba(232, 160, 32, 0.3);
+    --shadow-accent-button-hover: 0 8px 25px rgba(232, 160, 32, 0.5);
+    --shadow-accent-outline: 0 2px 8px rgba(232, 160, 32, 0.2);
+    --shadow-accent-outline-hover: 0 8px 20px rgba(232, 160, 32, 0.4);
+
+    --chart-color-1: #e8a020;
+    --chart-color-2: #ff6b35;
+    --chart-color-3: #22c55e;
+    --chart-color-4: #38bdf8;
+    --chart-color-5: #a855f7;
+    --chart-color-6: #facc15;
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+    --color-main: #f5f5f0;
+    --color-secondary: #eaeae4;
+    --color-surface: #ffffff;
+    --color-surface-raised: #f0f0eb;
+    --color-surface-overlay: #e8e8e2;
+
+    --color-accent: #c47d0a;
+    --color-accent-hover: #d98e10;
+    --color-accent-muted-bg: rgba(196, 125, 10, 0.15);
+    --color-accent-surface-faint: rgba(196, 125, 10, 0.03);
+    --color-accent-surface-subtle: rgba(196, 125, 10, 0.06);
+    --color-accent-surface-soft: rgba(196, 125, 10, 0.1);
+    --color-accent-border-soft: rgba(196, 125, 10, 0.2);
+    --color-accent-border: rgba(196, 125, 10, 0.35);
+    --color-accent-border-strong: rgba(196, 125, 10, 0.55);
+    --color-accent-gradient: linear-gradient(135deg, #c47d0a, #e8a020);
+
+    --color-text: #111111;
+    --color-text-secondary: #555555;
+    --color-text-muted: #888888;
+    --color-text-disabled: #bbbbbb;
+    --color-text-on-accent: #ffffff;
+
+    --color-success: #16a34a;
+    --color-success-surface: rgba(22, 163, 74, 0.08);
+    --color-success-border: rgba(22, 163, 74, 0.3);
+
+    --color-danger: #dc2626;
+    --color-danger-surface: rgba(220, 38, 38, 0.08);
+    --color-danger-surface-hover: rgba(220, 38, 38, 0.14);
+    --color-danger-border: rgba(220, 38, 38, 0.3);
+
+    --color-warning: #ca8a04;
+    --color-warning-surface: rgba(202, 138, 4, 0.08);
+    --color-warning-border: rgba(202, 138, 4, 0.3);
+
+    --color-info: #0284c7;
+    --color-info-surface: rgba(2, 132, 199, 0.08);
+    --color-info-border: rgba(2, 132, 199, 0.3);
+
+    --color-border: rgba(0, 0, 0, 0.08);
+    --color-border-subtle: rgba(0, 0, 0, 0.04);
+    --color-border-strong: rgba(0, 0, 0, 0.16);
+
+    --color-dark-overlay: rgba(0, 0, 0, 0.6);
+    --color-modal-overlay: rgba(0, 0, 0, 0.4);
+    --color-tooltip-bg: #1a1a1a;
+
+    --color-highlighter: #e85d20;
+    --color-highlighter-surface: rgba(232, 93, 32, 0.08);
+    --color-highlighter-border: rgba(232, 93, 32, 0.3);
+
+    --color-scrollbar-track: #eaeae4;
+    --color-scrollbar-secondary: #c47d0a;
+    --color-scrollbar-hover-start: #e8a020;
+    --color-scrollbar-hover-end: #d49018;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+    --shadow-accent-focus: 0 0 0 2px rgba(196, 125, 10, 0.25);
+    --shadow-accent-button: 0 4px 15px rgba(196, 125, 10, 0.25);
+    --shadow-accent-button-hover: 0 8px 25px rgba(196, 125, 10, 0.4);
+    --shadow-accent-outline: 0 2px 8px rgba(196, 125, 10, 0.15);
+    --shadow-accent-outline-hover: 0 8px 20px rgba(196, 125, 10, 0.3);
+
+    --chart-color-1: #c47d0a;
+    --chart-color-2: #e85d20;
+    --chart-color-3: #16a34a;
+    --chart-color-4: #0284c7;
+    --chart-color-5: #7c3aed;
+    --chart-color-6: #ca8a04;
 }
 
 
 * {
     font-family: var(--font-main);
     color: var(--color-text);
-    scroll-behavior: smooth;
     box-sizing: border-box;
 }
 
@@ -63,10 +279,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--color-accent), var(--color-scrollbar-secondary));
+    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, var(--color-scrollbar-hover-start), var(--color-scrollbar-hover-end));
+    background: linear-gradient(135deg, var(--color-accent), var(--color-main));
 }

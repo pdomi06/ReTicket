@@ -3,22 +3,22 @@
 }
 
 .tableWrapper {
-    border: 1px solid rgba(177, 156, 217, 0.3);
+    border: 1px solid var(--color-border-strong);
     border-radius: 0.75rem;
     overflow: hidden;
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .table {
     --bs-table-bg: var(--color-main);
     --bs-table-color: var(--color-text);
-    --bs-table-border-color: rgba(177, 156, 217, 0.15);
-    --bs-table-hover-bg: #113440;
+    --bs-table-border-color: var(--color-border-subtle);
+    --bs-table-hover-bg: var(--color-accent-surface-soft);
     --bs-table-hover-color: var(--color-text);
-    --bs-table-striped-bg: #0e3039;
+    --bs-table-striped-bg: var(--color-accent-surface-subtle);
     --bs-table-striped-color: var(--color-text);
 
-    border-color: rgba(177, 156, 217, 0.15);
+    border-color: var(--color-border-subtle);
     margin-bottom: 0;
 }
 
@@ -38,12 +38,12 @@
 }
 
 .table tbody tr {
-    border-bottom: 1px solid rgba(177, 156, 217, 0.1);
+    border-bottom: 1px solid var(--color-border-subtle);
     transition: background-color 0.2s ease;
 }
 
 .table tbody tr:hover {
-    background-color: #113440;
+    background-color: var(--color-accent-surface-soft);
 }
 
 .table tbody td {
@@ -91,7 +91,7 @@
 
 .statusSelect {
     padding: 0.4rem 0.6rem;
-    border: 1px solid rgba(177, 156, 217, 0.3);
+    border: 1px solid var(--color-border-strong);
     border-radius: 0.5rem;
     background-color: var(--color-secondary);
     color: var(--color-text);
@@ -104,7 +104,7 @@
 .statusSelect:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px rgba(177, 156, 217, 0.15);
+    box-shadow: var(--shadow-accent-focus);
 }
 
 .statusSelect:disabled {
@@ -114,10 +114,10 @@
 
 .filtersSection {
     margin-bottom: 1.5rem;
-    background-color: rgba(177, 156, 217, 0.08);
+    background-color: var(--color-accent-surface-subtle);
     padding: 1.25rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(177, 156, 217, 0.2);
+    border: 1px solid var(--color-accent-border-soft);
 }
 
 .filterGroup {
@@ -139,7 +139,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(177, 156, 217, 0.3);
+    box-shadow: var(--shadow-accent-button);
     width: 100%;
     box-sizing: border-box;
 }
@@ -147,7 +147,7 @@
 .filterGroup .form-select:focus,
 .filterGroup .form-select:hover {
     outline: none;
-    box-shadow: 0 8px 25px rgba(177, 156, 217, 0.5) !important;
+    box-shadow: var(--shadow-accent-button-hover) !important;
     transform: translateY(-2px) !important;
 }
 

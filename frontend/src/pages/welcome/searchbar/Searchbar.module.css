@@ -1,4 +1,4 @@
 hr {
-    color: #005163;
+    color: var(--color-border-strong);
 }
 
