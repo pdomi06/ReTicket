@@ -21,7 +21,6 @@ class Order extends Model
         'paymentStatus',
         'deliveryEmail',
         'deliveryStatus',
-        'deliverStatus',
         'deliveredAt',
         'created_at',
         'updated_at',
@@ -41,12 +40,12 @@ class Order extends Model
 
     public function setDeliveryStatusAttribute(?string $value): void
     {
-        $this->attributes['deliverStatus'] = $value;
+        $this->attributes['deliveryStatus'] = $value;
     }
 
     public function getDeliveryStatusAttribute(): ?string
     {
-        return $this->attributes['deliverStatus'] ?? null;
+        return $this->attributes['deliveryStatus'] ?? null;
     }
 
     public function orderItems()

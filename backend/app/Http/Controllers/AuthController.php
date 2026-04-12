@@ -29,6 +29,7 @@ class AuthController extends Controller implements HasMiddleware
             'name' => $data['name'],
             'email' => $data['email'],
             'passwordHash' => Hash::make($data['password']),
+            'role' => 'vendor',
             'isActive' => true,
             'isVerified' => false,
             'isOnline' => false,

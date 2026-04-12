@@ -1,0 +1,184 @@
+.container {
+    min-height: calc(100vh - 60px);
+    padding-top: 8vh;
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.heading {
+    font-family: var(--font-secondary);
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--color-text);
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.welcome {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.errorMessage {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background-color: rgba(255, 100, 100, 0.08);
+    color: #ff8a8a;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 100, 100, 0.15);
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.validationResult {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background-color: rgba(76, 175, 80, 0.08);
+    color: #66bb6a;
+    border-radius: 6px;
+    border: 1px solid rgba(76, 175, 80, 0.15);
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.loadingMessage {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    padding: 24px;
+}
+
+.emptyState {
+    background-color: var(--color-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+.eventSelectorSection {
+    background-color: var(--color-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.eventLabel {
+    font-family: var(--font-main);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.selectorWrapper {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-family: var(--font-main);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.selectorWrapper fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.selectorWrapper legend {
+    display: none;
+}
+
+.buttonWrapper {
+    width: 100%;
+}
+
+.accessDeniedContainer {
+    background-color: var(--color-main);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 40px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.accessDeniedHeading {
+    font-family: var(--font-secondary);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--color-text);
+    margin-bottom: 16px;
+}
+
+.accessDeniedMessage {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.accessDeniedRole {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--color-main);
+    background-color: var(--color-accent);
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 16px;
+}
+
+.roleLabel {
+    font-weight: 400;
+}
+
+.roleBadge {
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.ticketCodeSection {
+    background-color: var(--color-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.eventHeading {
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--color-text);
+    margin-bottom: 16px;
+    margin-top: 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ticketCodeInputWrapper {
+    margin-bottom: 16px;
+    margin-top: 16px;
+}

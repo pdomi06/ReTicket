@@ -93,4 +93,18 @@ class ActiveTicketsPolicy
         $event = $originalTicket->event;
         return $event && $event->createdBy === $user->id;
     }
+
+    public function validateTicket(User $user, ActiveTicket $activeTicket): bool
+    {
+        if ($user->role !== 'organizer') {
+            return false;
+        }
+
+        $originalTicket = $activeTicket->originalTicket;
+        if (!$originalTicket || !$originalTicket->event) {
+            return false;
+        }
+
+        return $originalTicket->event->createdBy === $user->id;
+    }
 }

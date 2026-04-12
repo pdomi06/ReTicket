@@ -145,6 +145,8 @@ export interface IActiveTicket {
   originalTicketId: number;
   ticketListingId: string;
   orderId: number;
+  isValidated: boolean;
+  validatedAt: string | null;
 }
 
 export interface IPayout {

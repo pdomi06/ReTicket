@@ -15,6 +15,13 @@ class ActiveTicket extends Model
         'originalTicketId',
         'ticketListingId',
         'orderId',
+        'isValidated',
+        'validatedAt',
+    ];
+
+    protected $casts = [
+        'isValidated' => 'boolean',
+        'validatedAt' => 'datetime',
     ];
 
     public function originalTicket()
