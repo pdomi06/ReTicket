@@ -167,6 +167,9 @@ const Validate = () => {
             if (data.success) {
                 const ticket = data.originalTicket;
                 setValidationResult(`Ticket for seat ${ticket.section} ${ticket.row}-${ticket.seatNumber} is validated!`);
+                setTicketCode("");
+                setSelectedEventId("");
+                setSelectedEvent(null);
 
             } else {
                 setValidationResult(null);
