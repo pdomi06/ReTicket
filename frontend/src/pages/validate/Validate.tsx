@@ -28,38 +28,31 @@ const Validate = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [validationResult, setValidationResult] = useState<string | null>(null);
 
-    // Check authorization
     useEffect(() => {
-        // Check if user is logged in
         const token = localStorage.getItem("token");
         if (!token) {
             navigate("/login");
             return;
         }
 
-        // Parse user from localStorage
         let userData: User | null = null;
         try {
             const userString = localStorage.getItem("user");
             userData = userString ? JSON.parse(userString) : null;
         } catch (e) {
-            console.error("Failed to parse user from localStorage:", e);
             userData = null;
         }
 
-        // Check if user has organizer or admin role
         if (!userData || (userData.role !== "organizer" && userData.role !== "admin")) {
             setIsAuthorized(false);
             setUser(userData);
             return;
         }
 
-        // User is authorized
         setIsAuthorized(true);
         setUser(userData);
     }, [navigate]);
 
-    // Fetch events when authorized
     useEffect(() => {
         if (!isAuthorized) return;
 
@@ -90,7 +83,6 @@ const Validate = () => {
                     setEvents([]);
                 }
             } catch (error) {
-                console.error("Error fetching events:", error);
                 setErrorMessage(
                     error instanceof Error ? error.message : "Failed to load events"
                 );
@@ -115,7 +107,6 @@ const Validate = () => {
 
         const event = events.find((e) => e.id.toString() === selectedEventId);
         if (event) {
-            console.log("Selected event:", event);
             setSelectedEvent(event);
             setTicketCode("");
             setValidationResult(null);
@@ -191,7 +182,6 @@ const Validate = () => {
     }
 
     if (!isAuthorized) {
-        console.log(user)
         return (
             <div className={styles.accessDeniedContainer}>
                 <h1 className={styles.accessDeniedHeading}>Access Denied</h1>
