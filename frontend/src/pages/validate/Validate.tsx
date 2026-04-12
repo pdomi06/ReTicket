@@ -39,8 +39,9 @@ const Validate = () => {
         try {
             const userString = localStorage.getItem("user");
             userData = userString ? JSON.parse(userString) : null;
-        } catch (e) {
+        } catch (error) {
             userData = null;
+            setErrorMessage("Error parsing user data. " + (error instanceof Error ? error.message : ""));
         }
 
         if (!userData || (userData.role !== "organizer" && userData.role !== "admin")) {
