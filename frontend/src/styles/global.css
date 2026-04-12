@@ -1,16 +1,31 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
-
-    --color-main: #001a20;
-    --color-secondary: #0a2e38;
-    --color-accent: #b19cd9;
+    --color-main: #0f0f0f;
+    --color-secondary: #1a1a1a;
+    --color-accent: #e8a020;
+    --color-accent-muted-bg: rgba(232, 160, 32, 0.3);
+    --color-accent-surface-faint: rgba(232, 160, 32, 0.04);
+    --color-accent-surface-subtle: rgba(232, 160, 32, 0.08);
+    --color-accent-surface-soft: rgba(232, 160, 32, 0.1);
+    --color-accent-border-soft: rgba(232, 160, 32, 0.15);
+    --color-accent-border: rgba(232, 160, 32, 0.2);
+    --color-accent-border-strong: rgba(232, 160, 32, 0.3);
     --color-text: #ffffff;
-    --color-text-secondary: #b0b0b0;
+    --color-text-secondary: #a0a0a0;
     --color-dark-overlay: rgba(0, 0, 0, 0.9);
-    --color-highlighter: #ffd700;
-    --font-main: 'Noto Sans', sans-serif;
-    --font-secondary: 'Playfair Display', serif;
+    --color-highlighter: #ff3d3d;
+    --color-danger-surface: rgba(255, 61, 61, 0.25);
+    --color-danger-surface-hover: rgba(255, 61, 61, 0.35);
+    --color-danger-border: rgba(255, 61, 61, 0.55);
+    --color-scrollbar-secondary: #e8a020;
+    --color-scrollbar-hover-start: #f5c96a;
+    --color-scrollbar-hover-end: #f0b840;
+    --shadow-accent-focus: 0 0 0 2px rgba(232, 160, 32, 0.25);
+    --shadow-accent-button: 0 4px 15px rgba(232, 160, 32, 0.3);
+    --shadow-accent-button-hover: 0 8px 25px rgba(232, 160, 32, 0.5);
+    --shadow-accent-outline: 0 2px 8px rgba(232, 160, 32, 0.2);
+    --shadow-accent-outline-hover: 0 8px 20px rgba(232, 160, 32, 0.4);
 }
 
 
@@ -21,7 +36,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     scroll-behavior: smooth;
     background-color: var(--color-main);
     overflow-x: hidden;
@@ -39,7 +55,7 @@ html, body {
 
 ::-webkit-input-placeholder {
     color: var(--color-text-secondary);
-    
+
 }
 
 ::-webkit-scrollbar-track {
@@ -47,11 +63,10 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--color-accent), #9370db);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-scrollbar-secondary));
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #c9b0e8, #a888f0);
+    background: linear-gradient(135deg, var(--color-scrollbar-hover-start), var(--color-scrollbar-hover-end));
 }
-
