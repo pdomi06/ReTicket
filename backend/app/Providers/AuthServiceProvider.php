@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use App\Models\ActiveTicket;
-use App\Models\EmailVerification;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -16,7 +17,6 @@ use App\Models\User;
 use App\Models\UserSetting;
 use App\Models\VenueMap;
 use App\Policies\ActiveTicketsPolicy;
-use App\Policies\EmailVerificationPolicy;
 use App\Policies\EventsPolicy;
 use App\Policies\OrderItemsPolicy;
 use App\Policies\OrdersPolicy;
@@ -29,6 +29,7 @@ use App\Policies\UserPolicy;
 use App\Policies\UserSettingsPolicy;
 use App\Policies\VenueMapPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event as EventFacade;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -39,7 +40,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         ActiveTicket::class => ActiveTicketsPolicy::class,
-        EmailVerification::class => EmailVerificationPolicy::class,
         Event::class => EventsPolicy::class,
         Order::class => OrdersPolicy::class,
         OrderItem::class => OrderItemsPolicy::class,
@@ -59,5 +59,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        EventFacade::listen(Registered::class, SendEmailVerificationNotification::class);
     }
 }

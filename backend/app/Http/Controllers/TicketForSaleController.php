@@ -120,7 +120,13 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function basketChange(TicketForSale $ticketForSale)
     {
-        $this->authorize('modifyBasket', $ticketForSale);
+        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot modify your own listed ticket basket state.',
+            ], 403);
+        }
+
         $ticketForSale->inBasket = !$ticketForSale->inBasket;
         $ticketForSale->save();
 
@@ -168,6 +174,13 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $email = $request->validated()['email'];
         $orderId = $request->validated()['orderId'];
         $ticketIds = $request->validated()['tickets'];
+
+        if (!is_string($paymentIntentId) || $paymentIntentId === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment reference is required.',
+            ], 422);
+        }
 
         foreach ($ticketIds as $ticketId) {
             $ticketForSale = TicketForSale::find($ticketId);

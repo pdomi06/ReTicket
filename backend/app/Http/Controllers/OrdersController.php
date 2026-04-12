@@ -93,7 +93,16 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function show(Order $order)
     {
-        $this->authorize('view', $order);
+        if (auth()->check()) {
+            if (!auth()->user()->can('view', $order)) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+        } else {
+            $buyerEmail = request()->query('email');
+            if (!$buyerEmail || strcasecmp($order->buyerEmail, $buyerEmail) !== 0) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+        }
         return response()->json($order, 200);
     }
 
