@@ -69,12 +69,14 @@ export interface IEvent {
   category: typeof EventCategory[keyof typeof EventCategory];
   basePrice: number;
   imageUrl: string;
+  isFeatured: boolean;
+  views: number;
   created_at: string;
   updated_at: string;
   firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
 }
 
-export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate' | 'created_at' | 'updated_at' | 'firstTicketStatus'> & {
+export type IEventForm = Omit<IEvent, 'eventDate' | 'eventEndDate' | 'views' | 'created_at' | 'updated_at' | 'firstTicketStatus'> & {
   eventDate: number | string;
   eventEndDate: number | string;
 };
@@ -145,6 +147,8 @@ export interface IActiveTicket {
   originalTicketId: number;
   ticketListingId: string;
   orderId: number;
+  isValidated: boolean;
+  validatedAt: string | null;
 }
 
 export interface IPayout {

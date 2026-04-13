@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('active_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
-            $table->string('ticketListingId');
+            $table->string('ticketListingId')->unique();
             $table->foreignId('orderId')->constrained('orders')->onDelete('cascade');
+            $table->boolean('isValidated')->default(false);
+            $table->dateTime('validatedAt')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();

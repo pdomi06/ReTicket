@@ -2,10 +2,10 @@ body {
   font-family: "Noto Sans", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #001a20;
+  background-color: var(--color-main);
   height: 100vh;
   width: 100vw;
-  color: white;
+  color: var(--color-text);
 }
 
 .register-page {
@@ -16,11 +16,11 @@ body {
 }
 
 .register-container {
-  background-color: #0a2e38;
+  background-color: var(--color-secondary);
   padding: 40px;
   border-radius: 10px;
   text-align: center;
-  color: white;
+  color: var(--color-text);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -106,12 +106,23 @@ button {
 }
 
 .errors {
-  background-color: rgba(255, 0, 0, 0.432);
-  border: 1px solid rgba(255, 0, 0, 0.8);
-  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-align: left;
+  background-color: var(--color-danger-surface);
+  border: 1px solid var(--color-danger-border);
 }
 
 .error {
   margin: 0;
-  color: #c41e3a;
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.error+.error {
+  margin-top: 8px;
 }

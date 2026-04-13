@@ -14,9 +14,17 @@ class ReviewsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'show']),
+            new Middleware('auth:sanctum', except: ['index', 'show', 'visible']),
         ];
     }
+
+    public function visible()
+    {
+        $reviews = Review::where('isVisible', true)->get();
+        $reviews = $reviews->shuffle()->take(5);
+        return response()->json($reviews, 200);
+    }
+
     /**
      * Display a listing of the resource.
      */

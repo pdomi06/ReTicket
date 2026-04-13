@@ -35,6 +35,7 @@ class UpdateEventsRequest extends FormRequest
             'category' => ['sometimes','in:cultural,music,sport'],
             'basePrice' => ['sometimes','numeric','min:0'],
             'imageUrl' => ['sometimes','url'],
+            'isFeatured' => ['sometimes','boolean'],
         ];
     }
 

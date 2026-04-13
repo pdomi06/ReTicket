@@ -1,0 +1,21 @@
+.notification {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.error {
+    background-color: var(--color-danger-surface);
+    color: var(--color-danger);
+    border-color: var(--color-danger-border);
+}
+
+.success {
+    background-color: var(--color-success-surface);
+    color: var(--color-success);
+    border-color: var(--color-success-border);
+}

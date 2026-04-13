@@ -3,6 +3,7 @@ import type { IVenueMap, IEvent } from "../../../utils/interfaces";
 import Input from "../../../components/ui/input/Input";
 import style from './EditVenue.module.css'
 import Button from "../../../components/ui/button/Button";
+import Notification from '../../../components/ui/notification/Notification';
 import { defaultIVenueMap } from "../../../utils/defaults";
 import { useParams } from "react-router-dom";
 
@@ -145,12 +146,7 @@ const EditVenue = () => {
                     <h1>Edit Venue</h1>
                     <hr />
                     {message && (
-                        <div
-                            className={`alert alert-${message.type === 'success' ? 'success' : 'danger'} mb-3`}
-                            role="alert"
-                        >
-                            {message.text}
-                        </div>
+                        <Notification text={message.text} variant={message.type === 'success' ? 'success' : 'error'} />
                     )}
                     {affectedEvents.length > 0 && (
                         <div className="alert alert-warning mb-3" role="alert">

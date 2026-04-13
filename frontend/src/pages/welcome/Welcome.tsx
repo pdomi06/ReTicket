@@ -4,45 +4,77 @@ import Cards from "../../components/ui/cards/Cards.tsx"
 
 import Features from './features/Features.tsx';
 import SearchBar from './searchbar/Searchbar.tsx';
-import Carosuser from './carouser/Carouser.tsx';
-
-const mockPicture = '/img/mock/music_genre.png';
+import Carouser from './carouser/Carouser.tsx';
+import Reviews from './reviews/Reviews.tsx';
+import type { IEvent } from '../../utils/interfaces.ts';
+import React from 'react';
 
 const Welcome = () => {
+    const [mostPopularEvents, setMostPopularEvents] = React.useState<IEvent[]>([]);
+    const [lastMinuteDeals, setLastMinuteDeals] = React.useState<IEvent[]>([]);
+    const [upcomingEvents, setUpcomingEvents] = React.useState<IEvent[]>([]);
+    const [featuredEvents, setFeaturedEvents] = React.useState<IEvent[]>([]);
+
+    React.useEffect(() => {
+        fetchEvents();
+    }, []);
+
+    async function fetchEvents() {
+        console.log('Fetching events for welcome page...');
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/landing`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch events: ${response.statusText}`);
+            }
+            const res = await response.json();
+            setMostPopularEvents(res.data.mostPopularEvents || []);
+            setLastMinuteDeals(res.data.lastMinuteDeals || []);
+            setUpcomingEvents(res.data.upcomingEvents || []);
+            setFeaturedEvents(res.data.featuredEvents || []);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
+
+    }
+
     return (
         <main className={`${style['welcome-container']}`}>
-            <Carosuser />
+            <Carouser events={featuredEvents} />
             <SearchBar />
-            {/* TODO: Loading cards from api.*/}
-            <div className={`${style['upcomming-events-container']} container my-5`}>
-                <h1 className={style['events-title']}>Upcomming Events</h1>
-                <h6 className={style['events-subtitle']}>Trending events in the near future</h6>
+            <div className={`container my-5`}>
+                <h1 className={style['events-title']}>Most popular</h1>
+                <h6 className={style['events-subtitle']}>Don't miss out on the hottest events</h6>
                 <Cards>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
+                    {mostPopularEvents.map((event) => (
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
+                    ))}
                 </Cards>
             </div>
-            <div className={`${style['discounted-events-container']} container my-5`}>
-                <h1 className={style['events-title']}>Huge Discounts</h1>
-                <h6 className={style['events-subtitle']}>Save up to 50% on selected events</h6>
+            <div className={`container my-5`}>
+                <h1 className={style['events-title']}>Last Minute Deals</h1>
+                <h6 className={style['events-subtitle']}>Hurry! These deals are expiring soon</h6>
                 <Cards maximumcols={2}>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
-                    <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway'/>
+                    {lastMinuteDeals.map((event) => (
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
+                    ))}
                 </Cards>
             </div>
+            <div className={`container my-5`}>
+                <h1 className={style['events-title']}>Upcoming Events</h1>
+                <h6 className={style['events-subtitle']}>Stay tuned for exciting events coming soon</h6>
+                <Cards maximumcols={3}>
+                    {upcomingEvents.map((event) => (
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
+                    ))}
+                </Cards>
+            </div>
+
             <Features />
+            <Reviews />
         </main>
     )
 }
+
+
 
 export default Welcome;

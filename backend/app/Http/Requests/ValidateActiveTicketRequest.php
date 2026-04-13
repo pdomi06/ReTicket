@@ -4,15 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateActiveTicketsRequest extends FormRequest
+class ValidateActiveTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $activeTicket = $this->route('activeTicket');
-        return $this->user()->can('update', $activeTicket);
+        return $this->user() !== null;
     }
 
     /**
@@ -23,9 +22,8 @@ class UpdateActiveTicketsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'orderId' => ['sometimes', 'exists:orders,id'],
-            'originalTicketId' => ['sometimes','exists:original_tickets,id'],
-            'ticketListingId' => ['sometimes', 'string', 'unique:active_tickets,ticketListingId,' . $this->route('activeTicket')->id],
+            'ticketListingId' => ['required', 'string'],
+            'eventId' => ['required', 'exists:events,id'],
         ];
     }
 }

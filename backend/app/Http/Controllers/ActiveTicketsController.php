@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActiveTicket;
+use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
 use App\Http\Requests\UpdateActiveTicketsRequest;
+use App\Http\Requests\ValidateActiveTicketRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -64,5 +66,69 @@ class ActiveTicketsController extends Controller implements HasMiddleware
         $this->authorize('delete', $activeTicket);
         $activeTicket->delete();
         return response()->json(["message" => "Active ticket deleted successfully"], 200);
+    }
+
+    /**
+     * Validate an active ticket.
+     */
+    public function validateTicket(ValidateActiveTicketRequest $request)
+    {
+        $data = $request->validated();
+
+        $activeTicket = ActiveTicket::where('ticketListingId', $data['ticketListingId'])->first();
+
+        if (!$activeTicket) {
+            $history = TicketHistory::where('ticketListingId', $data['ticketListingId'])->first();
+            if ($history) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'This ticket was sold to ' . $history->toUser . '.',
+                ], 409);
+            }
+            return response()->json([
+                'success' => false,
+                'error' => 'Ticket was not found.',
+            ], 404);
+        }
+
+        $this->authorize('validateTicket', $activeTicket);
+
+        if ($activeTicket->isValidated) {
+            $history = TicketHistory::where('ticketListingId', $data['ticketListingId'])->first();
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket has already been validated at ' . $activeTicket->validatedAt . '.' . ($history ? ' Last sold to ' . $history->toUser . '.' : ''),
+            ], 409);
+        }
+        
+        $originalTicket = $activeTicket->originalTicket;
+        if($originalTicket->eventId !== $data['eventId']){
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket does not belong to this event.',
+            ], 409);
+        }
+        if($originalTicket->status === 'expired'){
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket is expired and cannot be validated.',
+            ], 409);
+        }
+        if($originalTicket->status === 'cancelled'){
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket is cancelled and cannot be validated.',
+            ], 409);
+        }
+
+        $activeTicket->isValidated = true;
+        $activeTicket->validatedAt = now();
+        $activeTicket->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket validated successfully.',
+            'originalTicket' => $originalTicket,
+        ], 200);
     }
 }

@@ -31,13 +31,13 @@
 .primary {
   background-color: var(--color-accent);
   color: var(--color-main);
-  box-shadow: 0 4px 15px rgba(177, 156, 217, 0.3);
+  box-shadow: var(--shadow-accent-button);
 }
 
 .primary:hover {
   background-color: var(--color-accent);
   color: var(--color-main);
-  box-shadow: 0 8px 25px rgba(177, 156, 217, 0.5);
+  box-shadow: var(--shadow-accent-button-hover);
   transform: translateY(-2px);
 }
 
@@ -45,25 +45,25 @@
   background-color: transparent;
   color: var(--color-accent);
   border: 2px solid var(--color-accent);
-  box-shadow: 0 2px 8px rgba(177, 156, 217, 0.2);
+  box-shadow: var(--shadow-accent-outline);
 }
 
 .outline:hover {
   background-color: var(--color-accent);
   color: var(--color-main);
-  box-shadow: 0 8px 20px rgba(177, 156, 217, 0.4);
+  box-shadow: var(--shadow-accent-outline-hover);
   transform: translateY(-2px);
 }
 
 .disabled {
-  background-color: rgba(177, 156, 217, 0.3);
+  background-color: var(--color-accent-muted-bg);
   color: var(--color-text-secondary);
   cursor: not-allowed !important;
   box-shadow: none;
 }
 
 .disabled:hover {
-  background-color: rgba(177, 156, 217, 0.3);
+  background-color: var(--color-accent-muted-bg);
   color: var(--color-text-secondary);
   cursor: not-allowed !important;
   box-shadow: none;

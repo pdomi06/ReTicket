@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventsRequest;
 use App\Http\Requests\UpdateEventsRequest;
 use App\Http\Requests\SearchEventsRequest;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
 
 class EventsController extends Controller implements HasMiddleware
@@ -16,9 +18,64 @@ class EventsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'show', 'search']),
+            new Middleware('auth:sanctum', except: ['index', 'show', 'search', 'landing']),
         ];
     }
+
+    public function landing()
+    {
+        $nowTimestamp = now()->timestamp;
+        $in12HoursTimestamp = now()->addHours(12)->timestamp;
+
+        $mostPopularEvents = Event::query()
+            ->where('eventDate', '>=', $nowTimestamp)
+            ->orderByDesc('views')
+            ->orderBy('eventDate')
+            ->limit(8)
+            ->get();
+
+        $lastMinuteDeals = Event::query()
+            ->where('eventDate', '>=', $in12HoursTimestamp)
+            ->orderBy('basePrice')
+            ->orderBy('eventDate')
+            ->limit(4)
+            ->get();
+
+        $events = Event::query()
+            ->where('eventDate', '>=', $nowTimestamp)
+            ->orderBy('eventDate')
+            ->get();
+
+        $upcomingEvents = [];
+
+        foreach ($events as $event) {
+            if ($event->originalTickets()->where('status', 'pre-release')->exists()) {
+                $upcomingEvents[] = $event;
+            }
+        }
+
+        $upcomingEvents = collect($upcomingEvents)
+            ->sortBy('eventDate')
+            ->take(6)
+            ->values();
+        $featuredEvents = Event::query()
+            ->where('isFeatured', true)
+            ->where('eventDate', '>=', $nowTimestamp)
+            ->orderByDesc('views')
+            ->orderBy('eventDate')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'mostPopularEvents' => $mostPopularEvents,
+                'lastMinuteDeals' => $lastMinuteDeals,
+                'upcomingEvents' => $upcomingEvents,
+                'featuredEvents' => $featuredEvents,
+            ],
+        ], 200);
+    }
+
     public function index()
     {
         $events = Event::with('originalTickets')
@@ -114,8 +171,20 @@ class EventsController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+    public function show(Request $request, Event $event)
     {
+        $viewerKey = auth()->check()
+            ? 'u:' . auth()->id()
+            : 'g:' . sha1(($request->ip() ?? 'noip') . '|' . ($request->userAgent() ?? 'noua'));
+
+        $cacheKey = "event:viewed:{$event->id}:{$viewerKey}";
+
+        // One view per visitor per event in 6-hour windows.
+        if (Cache::add($cacheKey, true, now()->addHours(6))) {
+            Event::whereKey($event->id)->increment('views');
+            $event->refresh();
+        }
+
         return response()->json(['success' => true, 'data' => $event], 200);
     }
 

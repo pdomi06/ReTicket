@@ -20,7 +20,7 @@
 }
 
 .brand span {
-    color: #ffffff;
+    color: var(--color-text);
     font-family: var(--font-main);
     font-size: 1.25rem;
     font-weight: 600;
@@ -38,7 +38,7 @@
 }
 
 .navbar-about {
-    color: #b0b0b0;
+    color: var(--color-text-secondary);
     font-family: var(--font-main);
     font-size: 0.9rem;
     font-weight: 500;
@@ -49,21 +49,24 @@
 }
 
 .navbar-about:hover {
-    color: #ffffff;
+    color: var(--color-text);
 }
 
 .navbar-vendor {
-    color: #001a20;
+    color: var(--color-main);
     font-family: var(--font-main);
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
     padding: 8px 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: var(--color-accent);
-    transition: background-color 0.2s ease;
+    box-shadow: var(--shadow-accent-outline);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .navbar-vendor:hover {
-    background-color: #b19cd9de;
+    background-color: var(--color-accent);
+    box-shadow: var(--shadow-accent-button);
+    transform: translateY(-1px);
 }

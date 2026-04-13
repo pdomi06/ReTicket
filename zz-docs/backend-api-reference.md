@@ -45,6 +45,7 @@ Base path for all routes listed below: `/api`.
 | Method    | Path            | Effective access | Notes                                                |
 | --------- | --------------- | ---------------- | ---------------------------------------------------- |
 | GET       | /events         | Public           | Paginated response (`success`, `data`, `pagination`) |
+| GET       | /events/landing | Public           | Upcoming events for landing page (max 12, by date)   |
 | GET       | /events/search  | Public           | Search with optional timezone-aware date filtering   |
 | GET       | /events/{event} | Public           | Wrapped response (`success`, `data`)                 |
 | POST      | /events         | Auth required    | Creates event with `createdBy=auth()->id()`          |

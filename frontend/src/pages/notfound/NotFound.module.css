@@ -1,7 +1,7 @@
-
 body {
-    background-color: var(--color-primary);
+    background-color: var(--color-main);
 }
+
 .notFound-container {
     display: flex;
     flex-direction: column;
@@ -10,12 +10,14 @@ body {
     height: 80vh;
     text-align: center;
 }
+
 .notFound-title {
     font-size: 2.5rem;
     color: var(--color-text);
     margin-bottom: 20px;
     font-family: var(--font-main);
 }
+
 .notFound-message {
     font-size: 1.2rem;
     color: var(--color-text-secondary);

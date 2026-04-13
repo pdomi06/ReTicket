@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('paymentIntentId')->nullable();
             $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed"])->nullable();
             $table->text('deliveryEmail')->nullable();
-            $table->enum('deliverStatus', ["pending", "sent", "delivered"])->nullable();
+            $table->enum('deliveryStatus', ["pending", "sent", "delivered"])->nullable();
             $table->date('deliveredAt')->nullable();
             $table->timestamps();
             $table->dateTime('completedAt')->nullable();

@@ -13,6 +13,7 @@ const Browse = lazy(() => import("../pages/browse/Browse.tsx"));
 const Event = lazy(() => import("../pages/event/Event.tsx"));
 const Vendor = lazy(() => import("../pages/vendor/Vendor.tsx"));
 const Cart = lazy(() => import("../pages/cart/Cart.tsx"));
+const Validate = lazy(() => import("../pages/validate/Validate.tsx"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
 const DashboardOverview = lazy(() => import("../pages/dashboard/overview/Overview.tsx"));
 const DashboardCreateVenue = lazy(() => import("../pages/dashboard/create-venue/CreateVenue.tsx"));
@@ -47,6 +48,7 @@ export const routes: RouteObject[] = [
       { path: "/event", element: <Event /> },
       { path: "/vendor", element: <Vendor /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/validate", element: <Validate /> },
       {
         path: "/dashboard",
         element: <Dashboard />,
