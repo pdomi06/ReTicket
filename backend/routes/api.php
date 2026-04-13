@@ -29,6 +29,7 @@ Route::apiResource('events', EventsController::class);
 Route::get('venues/search', [VenueMapController::class, 'search']);
 Route::apiResource('venues', VenueMapController::class);
 Route::post('activeTickets/validate', [ActiveTicketsController::class, 'validateTicket']);
+Route::post('activeTickets/checkTicket', [ActiveTicketsController::class, 'checkTicket']);
 Route::apiResource('activeTickets', ActiveTicketsController::class);
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);

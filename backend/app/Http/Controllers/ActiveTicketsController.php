@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActiveTicket;
+use App\Models\OriginalTicket;
 use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
 use App\Http\Requests\UpdateActiveTicketsRequest;
 use App\Http\Requests\ValidateActiveTicketRequest;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -16,7 +18,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'show']),
+            new Middleware('auth:sanctum', except: ['index', 'show', 'checkTicket']),
         ];
     }
     /**
@@ -142,7 +144,20 @@ class ActiveTicketsController extends Controller implements HasMiddleware
                 'message' => 'Ticket is not active.',
             ], 200);
         }
-        $originalTicket = OriginalTicket::find($activeTicket->originalTicketId);
+        $originalTicket = OriginalTicket::join('events', 'original_tickets.eventId', '=', 'events.id')
+            ->select([
+                'original_tickets.id',
+                'events.name as eventName',
+                'events.eventDate',
+                'events.venue',
+                'original_tickets.section',
+                'original_tickets.row',
+                'original_tickets.seatNumber',
+                'original_tickets.price',
+                'original_tickets.status',
+            ])
+            ->where('original_tickets.id', $activeTicket->originalTicketId)
+            ->first();
 
         return response()->json([
             'exists' => true,
