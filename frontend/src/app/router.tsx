@@ -20,7 +20,7 @@ const DashboardCreateVenue = lazy(() => import("../pages/dashboard/create-venue/
 const DashboardCreateEvent = lazy(() => import("../pages/dashboard/create-event/CreateEvent.tsx"));
 const DashboardEditVenue = lazy(() => import("../pages/dashboard/edit-venue/EditVenue.tsx"));
 const DashboardEditEvent = lazy(() => import("../pages/dashboard/edit-event/EditEvent.tsx"));
-const DashboardListTickets = lazy(() => import("../pages/dashboard/list-tickets/ListTickets.tsx"));
+const DashboardMyTickets = lazy(() => import("../pages/dashboard/my-tickets/MyTickets.tsx"));
 const DashboardMyEvents = lazy(() => import("../pages/dashboard/my-events/MyEvents.tsx"));
 const DashboardSalesHistory = lazy(() => import("../pages/dashboard/sales-history/SalesHistory.tsx"));
 const DashboardStatistics = lazy(() => import("../pages/dashboard/statistics/Statistics.tsx"));
@@ -58,7 +58,7 @@ export const routes: RouteObject[] = [
           { path: "create-event", element: <DashboardCreateEvent /> },
           { path: "edit-venue/:id", element: <DashboardEditVenue /> },
           { path: "edit-event/:id", element: <DashboardEditEvent /> },
-          { path: "list-tickets", element: <DashboardListTickets /> },
+          { path: "list-tickets", element: <DashboardMyTickets /> },
           { path: "my-events", element: <DashboardMyEvents /> },
           { path: "sales-history", element: <DashboardSalesHistory /> },
           { path: "statistics", element: <DashboardStatistics /> },

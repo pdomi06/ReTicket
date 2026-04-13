@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { LuCalendar, LuMapPin, LuTag, LuTicket } from "react-icons/lu";
 import type { IMyDashboardTicket } from "../../../utils/interfaces";
-import styles from "./ListTickets.module.css";
+import styles from "./MyTickets.module.css";
 import { formatUnixDateTime } from "../../../utils/dateTime";
 
-const ListTickets = () => {
+const MyTickets = () => {
     const [tickets, setTickets] = useState<IMyDashboardTicket[]>([]);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ const ListTickets = () => {
     return (
         <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
             <div className={styles.headerSection}>
-                <h1>Tickets</h1>
+                <h1>My Tickets</h1>
             </div>
 
             <div className={`table-responsive ${styles.tableWrapper}`}>
@@ -109,4 +109,4 @@ const ListTickets = () => {
     );
 };
 
-export default ListTickets;
+export default MyTickets;
