@@ -38,6 +38,11 @@ const Sidebar = () => {
         userData = null;
     }
 
+    const role = typeof userData?.role === "string" ? userData.role.toLowerCase() : "";
+    const showVendorSection = role === "vendor" || role === "organizer" || role === "admin";
+    const showOrganizerSection = role === "organizer" || role === "admin";
+    const showAdminSection = role === "admin";
+
     const getInitials = (name: string) => {
         return name
             .split(' ')
@@ -58,30 +63,41 @@ const Sidebar = () => {
                         <span>{label}</span>
                     </NavLink>
                 ))}
+                {showVendorSection && (
+                    <>
+                        <div className={style.sectionLabel}>VENDOR</div>
+                        {VENDOR_ITEMS.map(({ label, icon: Icon, link }) => (
+                            <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
+                                <Icon className={style.icon} />
+                                <span>{label}</span>
+                            </NavLink>
+                        ))}
+                    </>
+                )}
 
-                <div className={style.sectionLabel}>VENDOR</div>
-                {VENDOR_ITEMS.map(({ label, icon: Icon, link }) => (
-                    <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
-                        <Icon className={style.icon} />
-                        <span>{label}</span>
-                    </NavLink>
-                ))}
+                {showOrganizerSection && (
+                    <>
+                        <div className={style.sectionLabel}>ORGANIZER</div>
+                        {ORGANIZER_ITEMS.map(({ label, icon: Icon, link }) => (
+                            <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
+                                <Icon className={style.icon} />
+                                <span>{label}</span>
+                            </NavLink>
+                        ))}
+                    </>
+                )}
 
-                <div className={style.sectionLabel}>ORGANIZER</div>
-                {ORGANIZER_ITEMS.map(({ label, icon: Icon, link }) => (
-                    <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
-                        <Icon className={style.icon} />
-                        <span>{label}</span>
-                    </NavLink>
-                ))}
-
-                <div className={style.sectionLabel}>ADMIN</div>
-                {ADMIN_ITEMS.map(({ label, icon: Icon, link }) => (
-                    <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
-                        <Icon className={style.icon} />
-                        <span>{label}</span>
-                    </NavLink>
-                ))}
+                {showAdminSection && (
+                    <>
+                        <div className={style.sectionLabel}>ADMIN</div>
+                        {ADMIN_ITEMS.map(({ label, icon: Icon, link }) => (
+                            <NavLink key={link} to={link} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
+                                <Icon className={style.icon} />
+                                <span>{label}</span>
+                            </NavLink>
+                        ))}
+                    </>
+                )}
             </nav>
 
             {userData && (
