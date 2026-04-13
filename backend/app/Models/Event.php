@@ -76,6 +76,7 @@ class Event extends Model
         'eventDate' => 'integer',
         'eventEndDate' => 'integer',
         'isFeatured' => 'boolean',
+        'views' => 'integer',
     ];
 
     public function originalTickets()

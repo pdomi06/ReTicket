@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventsRequest;
 use App\Http\Requests\UpdateEventsRequest;
 use App\Http\Requests\SearchEventsRequest;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
 
 class EventsController extends Controller implements HasMiddleware
@@ -22,9 +24,26 @@ class EventsController extends Controller implements HasMiddleware
 
     public function landing()
     {
-        $mostPopularEvents = [];
+        $now = now()->timestamp;
+
+        $mostPopularEvents = Event::query()
+            ->where('eventDate', '>=', $now)
+            ->orderByDesc('views')
+            ->orderBy('eventDate')
+            ->limit(8)
+            ->get();
+
         $lastMinuteDeals = [];
         $upcomingEvents = [];
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'mostPopularEvents' => $mostPopularEvents,
+                'lastMinuteDeals' => $lastMinuteDeals,
+                'upcomingEvents' => $upcomingEvents,
+            ],
+        ], 200);
     }
 
     public function index()
@@ -122,8 +141,20 @@ class EventsController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+    public function show(Request $request, Event $event)
     {
+        $viewerKey = auth()->check()
+            ? 'u:' . auth()->id()
+            : 'g:' . sha1(($request->ip() ?? 'noip') . '|' . ($request->userAgent() ?? 'noua'));
+
+        $cacheKey = "event:viewed:{$event->id}:{$viewerKey}";
+
+        // One view per visitor per event in 6-hour windows.
+        if (Cache::add($cacheKey, true, now()->addHours(6))) {
+            Event::whereKey($event->id)->increment('views');
+            $event->refresh();
+        }
+
         return response()->json(['success' => true, 'data' => $event], 200);
     }
 
