@@ -33,6 +33,7 @@ export const defaultIEventContext: IEventContext = {
     basePrice: 0,
     imageUrl: '',
     isFeatured: false,
+    views: 0,
     created_at: '',
     updated_at: ''
   },
