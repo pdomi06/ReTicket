@@ -38,6 +38,7 @@ Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdat
 Route::post("originalTickets/bulkStatusChange", [OriginalTicketsController::class, "bulkStatusChange"]);
 Route::apiResource('originalTickets', OriginalTicketsController::class);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
+Route::get('ticketForSale/dashboard', [TicketForSaleController::class, 'dashboard']);
 Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);

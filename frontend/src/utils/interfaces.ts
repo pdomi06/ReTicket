@@ -263,3 +263,13 @@ export interface IDashboardTicket {
   price: number;
   status: typeof TicketStatus[keyof typeof TicketStatus];
 }
+export interface IMyDashboardTicket {
+  id: number;
+  eventName: string;
+  eventDate: number | string;
+  venue: string;
+  section: string;
+  row: number;
+  seatNumber: number;
+  price: number;
+}

@@ -31,6 +31,31 @@ class TicketForSaleController extends Controller implements HasMiddleware
         return response()->json($tickets_forsale, 200);
     }
 
+    public function dashboard(Request $request)
+    {
+        $this->authorize('viewAny', TicketForSale::class);
+
+        $user = $request->user();
+
+        $tickets = TicketForSale::query()
+            ->join('original_tickets', 'ticket_forsale.originalTicketId', '=', 'original_tickets.id')
+            ->join('events', 'original_tickets.eventId', '=', 'events.id')
+            ->where('ticket_forsale.fromUserId', $user->id)
+            ->select([
+                'ticket_forsale.id as id',
+                'events.name as eventName',
+                'events.eventDate',
+                'events.venue',
+                'original_tickets.section',
+                'original_tickets.row',
+                'original_tickets.seatNumber',
+                'ticket_forsale.price',
+            ])
+            ->get();
+
+        return response()->json($tickets, 200);
+    }
+
     public function search(SearchTicketForSaleRequest $request)
     {
         $this->authorize('viewAny', TicketForSale::class);
