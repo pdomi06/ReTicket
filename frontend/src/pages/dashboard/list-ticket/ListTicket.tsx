@@ -26,7 +26,7 @@ const ListTicket = () => {
                 <div className={styles.buttonWrapper}>
                     <Button
                         type="button"
-                        text="List Ticket"
+                        text="Check Ticket"
                         disabled={!ticketCode.trim()}
                     />
                 </div>
