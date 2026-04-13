@@ -26,6 +26,7 @@ class Event extends Model
         'category',
         'basePrice',
         'imageUrl',
+        'isFeatured',
         'created_at',
         'updated_at',
     ];
@@ -73,7 +74,8 @@ class Event extends Model
     }
     protected $casts = [
         'eventDate' => 'integer',
-        'eventEndDate' => 'integer'
+        'eventEndDate' => 'integer',
+        'isFeatured' => 'boolean',
     ];
 
     public function originalTickets()

@@ -61,6 +61,7 @@ const EditEvent = () => {
                     category: normalizedEventData.category,
                     basePrice: normalizedEventData.basePrice,
                     imageUrl: normalizedEventData.imageUrl,
+                    isFeatured: normalizedEventData.isFeatured,
                 });
             } catch (error) {
                 if (error instanceof Error && error.name !== 'AbortError') {
@@ -234,6 +235,16 @@ const EditEvent = () => {
                         <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={typeof eventParams.eventEndDate === "string" ? eventParams.eventEndDate : ''} />
                         <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
+                        <Select
+                            name="isFeatured"
+                            label="Featured Event"
+                            theme="dark"
+                            onChange={(e) => setEventParams({ ...eventParams, isFeatured: e.target.value === 'true' })}
+                            value={String(eventParams.isFeatured)}
+                        >
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </Select>
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
                             <option value="" disabled aria-hidden="true">
                                 Select Category

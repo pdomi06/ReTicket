@@ -38,6 +38,7 @@ class EventFactory extends Factory
             'category' => fake()->randomElement($category),
             'basePrice' => fake()->randomFloat(2, 10, 1000),
             'imageUrl' => $randomPicture,
+            'isFeatured' => fake()->boolean(20),
             'created_at' => now(),
             'updated_at' => now(),
         ];

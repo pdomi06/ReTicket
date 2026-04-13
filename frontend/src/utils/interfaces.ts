@@ -69,6 +69,7 @@ export interface IEvent {
   category: typeof EventCategory[keyof typeof EventCategory];
   basePrice: number;
   imageUrl: string;
+  isFeatured: boolean;
   created_at: string;
   updated_at: string;
   firstTicketStatus?: typeof TicketStatus[keyof typeof TicketStatus] | null;
