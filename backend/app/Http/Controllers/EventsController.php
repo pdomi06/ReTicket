@@ -22,25 +22,9 @@ class EventsController extends Controller implements HasMiddleware
 
     public function landing()
     {
-        $now = now()->timestamp;
-
-        $events = Event::with('originalTickets')
-            ->where('eventDate', '>=', $now)
-            ->orderBy('eventDate')
-            ->limit(12)
-            ->get();
-
-        $eventsData = $events->map(function ($event) {
-            return array_merge(
-                $event->toArray(),
-                ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
-            );
-        });
-
-        return response()->json([
-            'success' => true,
-            'data' => $eventsData,
-        ], 200);
+        $mostPopularEvents = [];
+        $lastMinuteDeals = [];
+        $upcomingEvents = [];
     }
 
     public function index()

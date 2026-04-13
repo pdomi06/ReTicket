@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('category', ["cultural", "music", "sport"]);
             $table->decimal('basePrice', 10, 2);
             $table->text('imageUrl');
+            $table->boolean('isFeatured')->default(false);
             $table->foreignId('createdBy')->constrained('users');
             $table->timestamps();
         });
