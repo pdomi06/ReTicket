@@ -5,6 +5,7 @@ import Cards from "../../components/ui/cards/Cards.tsx"
 import Features from './features/Features.tsx';
 import SearchBar from './searchbar/Searchbar.tsx';
 import Carosuser from './carouser/Carouser.tsx';
+import Reviews from './reviews/Reviews.tsx';
 
 const mockPicture = '/img/mock/music_genre.png';
 
@@ -40,6 +41,7 @@ const Welcome = () => {
                     <Card title="Brodway" description="Excelentshow" imageUrl={mockPicture} buttonText="View Details" link='/brodway' />
                 </Cards>
             </div>
+            <Reviews />
             <Features />
         </main>
     )
