@@ -34,8 +34,8 @@ const Reviews = () => {
 	}
 	return (
 		<section className={`container my-5 ${style['reviews-section']}`}>
-			<h2 className={style['events-title']}>Reviews</h2>
-			<p className={style['events-subtitle']}>Real feedback from people using ReTicket</p>
+			<h1 className={style['events-title']}>Reviews</h1>
+			<h6 className={style['events-subtitle']}>Real feedback from people using ReTicket</h6>
 			<Cards maximumcols={5}>
 				{reviews.map((review: IReview) => (
 					<div key={review.id} className={`col ${style['review-col']}`}>

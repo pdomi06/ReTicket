@@ -12,7 +12,8 @@
 .reviews-section {
 	border: none;
 	border-radius: 0;
-	padding: 0;
+	padding-left: var(--bs-gutter-x, 0.75rem);
+	padding-right: var(--bs-gutter-x, 0.75rem);
 	background: transparent;
 	position: static;
 	overflow: visible;
