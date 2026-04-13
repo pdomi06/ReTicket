@@ -4,7 +4,7 @@ import Cards from "../../components/ui/cards/Cards.tsx"
 
 import Features from './features/Features.tsx';
 import SearchBar from './searchbar/Searchbar.tsx';
-import Carosuser from './carouser/Carouser.tsx';
+import Carouser from './carouser/Carouser.tsx';
 import Reviews from './reviews/Reviews.tsx';
 import type { IEvent } from '../../utils/interfaces.ts';
 import React from 'react';
@@ -13,6 +13,7 @@ const Welcome = () => {
     const [mostPopularEvents, setMostPopularEvents] = React.useState<IEvent[]>([]);
     const [lastMinuteDeals, setLastMinuteDeals] = React.useState<IEvent[]>([]);
     const [upcomingEvents, setUpcomingEvents] = React.useState<IEvent[]>([]);
+    const [featuredEvents, setFeaturedEvents] = React.useState<IEvent[]>([]);
 
     React.useEffect(() => {
         fetchEvents();
@@ -29,6 +30,7 @@ const Welcome = () => {
             setMostPopularEvents(res.data.mostPopularEvents || []);
             setLastMinuteDeals(res.data.lastMinuteDeals || []);
             setUpcomingEvents(res.data.upcomingEvents || []);
+            setFeaturedEvents(res.data.featuredEvents || []);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
@@ -37,7 +39,7 @@ const Welcome = () => {
 
     return (
         <main className={`${style['welcome-container']}`}>
-            <Carosuser />
+            <Carouser events={featuredEvents} />
             <SearchBar />
             <div className={`${style['upcomming-events-container']} container my-5`}>
                 <h1 className={style['events-title']}>Most popular</h1>
@@ -67,8 +69,8 @@ const Welcome = () => {
                 </Cards>
             </div>
 
-            <Reviews />
             <Features />
+            <Reviews />
         </main>
     )
 }

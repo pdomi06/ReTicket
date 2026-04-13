@@ -1,38 +1,50 @@
 const mockPicture = '/img/mock/music_genre.png';
 
+import type { IEvent } from '../../../utils/interfaces';
 import style from './Carouser.module.css';
 
-const Carouser = () => {
+const Carouser = ({ events }: { events: IEvent[] }) => {
+
     return (
         <header className={`${style.carouser} container-fluid my-2`}>
             <div id="carouselExampleCaptions" className="carousel slide">
                 <div className="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    {events.length > 0 ? (
+                        events.map((event, index) => (
+                            <button
+                                key={`indicator-${event.id}`}
+                                type="button"
+                                data-bs-target="#carouselExampleCaptions"
+                                data-bs-slide-to={index}
+                                className={index === 0 ? 'active' : ''}
+                                aria-current={index === 0 ? 'true' : undefined}
+                                aria-label={`Slide ${index + 1}`}
+                            ></button>
+                        ))
+                    ) : (
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
+                    )}
                 </div>
                 <div className="carousel-inner">
-                    <div className="carousel-item active">
-                        <img src={mockPicture} className={`${style['carousel-img']} d-block w-100`} />
-                            <div className="carousel-caption d-none d-md-block">
-                                <h5>First slide label</h5>
-                                <p>Some representative placeholder content for the first slide.</p>
+                    {events.length > 0 ? (
+                        events.map((event, index) => (
+                            <div key={event.id} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                <img src={event.imageUrl || mockPicture} className={`${style['carousel-img']} d-block w-100`} alt={event.name} />
+                                <div className="carousel-caption d-none d-md-block">
+                                    <h5>{event.name}</h5>
+                                    <p>{event.description}</p>
+                                </div>
                             </div>
-                    </div>
-                    <div className="carousel-item">
-                        <img src={mockPicture} className={`${style['carousel-img']} d-block w-100`} />
+                        ))
+                    ) : (
+                        <div className="carousel-item active">
+                            <img src={mockPicture} className={`${style['carousel-img']} d-block w-100`} alt="No featured events" />
                             <div className="carousel-caption d-none d-md-block">
-                                <h5>Second slide label</h5>
-                                <p>Some representative placeholder content for the second slide.</p>
+                                <h5>No featured events</h5>
+                                <p>Check back later for exciting featured events!</p>
                             </div>
-                    </div>
-                    <div className="carousel-item">
-                        <img src={mockPicture} className={`${style['carousel-img']} d-block w-100`} alt="..." />
-                            <div className="carousel-caption d-none d-md-block">
-                                <h5>Third slide label</h5>
-                                <p>Some representative placeholder content for the third slide.</p>
-                            </div>
-                    </div>
+                        </div>
+                    )}
                 </div>
                 <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
                     <span className="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -45,6 +57,5 @@ const Carouser = () => {
             </div>
         </header>
     )
-}
-
+};
 export default Carouser;

@@ -24,17 +24,46 @@ class EventsController extends Controller implements HasMiddleware
 
     public function landing()
     {
-        $now = now()->timestamp;
+        $nowTimestamp = now()->timestamp;
+        $in12HoursTimestamp = now()->addHours(12)->timestamp;
 
         $mostPopularEvents = Event::query()
-            ->where('eventDate', '>=', $now)
+            ->where('eventDate', '>=', $nowTimestamp)
             ->orderByDesc('views')
             ->orderBy('eventDate')
             ->limit(8)
             ->get();
 
-        $lastMinuteDeals = [];
+        $lastMinuteDeals = Event::query()
+            ->where('eventDate', '>=', $in12HoursTimestamp)
+            ->orderBy('basePrice')
+            ->orderBy('eventDate')
+            ->limit(4)
+            ->get();
+
+        $events = Event::query()
+            ->where('eventDate', '>=', $nowTimestamp)
+            ->orderBy('eventDate')
+            ->get();
+
         $upcomingEvents = [];
+
+        foreach ($events as $event) {
+            if ($event->originalTickets()->where('status', 'pre-release')->exists()) {
+                $upcomingEvents[] = $event;
+            }
+        }
+
+        $upcomingEvents = collect($upcomingEvents)
+            ->sortBy('eventDate')
+            ->take(6)
+            ->values();
+        $featuredEvents = Event::query()
+            ->where('isFeatured', true)
+            ->where('eventDate', '>=', $nowTimestamp)
+            ->orderByDesc('views')
+            ->orderBy('eventDate')
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -42,6 +71,7 @@ class EventsController extends Controller implements HasMiddleware
                 'mostPopularEvents' => $mostPopularEvents,
                 'lastMinuteDeals' => $lastMinuteDeals,
                 'upcomingEvents' => $upcomingEvents,
+                'featuredEvents' => $featuredEvents,
             ],
         ], 200);
     }
