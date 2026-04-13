@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEmailNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use App\Models\UserSetting;
 use App\Models\Payout;
 use Illuminate\Auth\Passwords\CanResetPassword;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, HasApiTokens, Notifiable, CanResetPassword;
@@ -39,7 +40,8 @@ class User extends Authenticatable
         'kycStatus',
         'created_at',
         'updated_at',
-        'lastLogin'
+        'lastLogin',
+        'email_verified_at'
     ];
 
     /**
@@ -64,6 +66,8 @@ class User extends Authenticatable
             'updated_at' => 'datetime',
             'lastLogin' => 'datetime',
             'passwordHash' => 'hashed',
+            'isVerified' => 'boolean',
+            'email_verified_at' => 'datetime',
         ];
     }
 
@@ -90,5 +94,54 @@ class User extends Authenticatable
     public function payouts()
     {
         return $this->hasMany(Payout::class, 'vendorId');
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $user): void {
+            if ($user->isDirty('email_verified_at')) {
+                $user->isVerified = $user->email_verified_at !== null;
+
+                return;
+            }
+
+            if ($user->isDirty('isVerified')) {
+                $user->email_verified_at = $user->isVerified ? ($user->email_verified_at ?? now()) : null;
+            }
+        });
+    }
+
+    public function hasVerifiedEmail(): bool
+    {
+        if ($this->email_verified_at !== null) {
+            return true;
+        }
+
+        return $this->isVerified === true;
+    }
+
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill([
+            'email_verified_at' => now(),
+            'isVerified' => true,
+        ])->save();
+    }
+
+    public function markEmailAsUnverified(): bool
+    {
+        return $this->forceFill([
+            'email_verified_at' => null,
+            'isVerified' => false,
+        ])->save();
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification);
+    }
+    public function getEmailForVerification()
+    {
+        return $this->email;
     }
 }

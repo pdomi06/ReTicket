@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Auth\AuthenticationException;
+use App\Http\Middleware\ApiEnsureEmailIsVerified;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias(['verified' => ApiEnsureEmailIsVerified::class]);
         $middleware->append(HandleCors::class);
         $middleware->redirectGuestsTo(
             fn (Request $request) => $request->expectsJson() || $request->is('api/*')

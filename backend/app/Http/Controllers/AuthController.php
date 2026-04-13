@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +37,8 @@ class AuthController extends Controller implements HasMiddleware
             'kycStatus' => 'pending',
             'phone' => $data['phone'],
         ]);
+
+        event(new Registered($user));
 
         $token = $user->createToken('api-token')->plainTextToken;
 

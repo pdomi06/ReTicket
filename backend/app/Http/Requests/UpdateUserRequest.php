@@ -25,27 +25,14 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = $this->user();
-        $model = $this->route('user');
-        $isAdmin = $user->role === 'admin';
-        $isOwnProfile = $user->id === $model->id;
-        
         $rules = [
             'name' => ['sometimes', 'string', 'max:255'],
             'phone' => ['sometimes', 'string', 'max:20'],
             'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
+            'email' => ['prohibited'],
         ];
         
-        if ($isOwnProfile || $isAdmin) {
-            $rules['email'] = [
-                'sometimes', 
-                'email', 
-                'max:255',
-                Rule::unique('users', 'email')->ignore($model->id)
-            ];
-        }
-        
-        if ($isAdmin) {
+        if ($this->user()->role === 'admin') {
             $rules['role'] = ['sometimes', Rule::in(['vendor', 'organizer', 'admin'])];
             $rules['kycStatus'] = ['sometimes', Rule::in(['pending', 'rejected', 'approved'])];
             $rules['isVerified'] = ['sometimes', 'boolean'];
@@ -73,10 +60,6 @@ class UpdateUserRequest extends FormRequest
                     $this->offsetUnset($field);
                 }
             }
-        }
-        
-        if (!$isAdmin && $user->id !== $model->id && $this->has('email')) {
-            $this->offsetUnset('email');
         }
     }
 }
