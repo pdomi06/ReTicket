@@ -33,6 +33,7 @@ const DashboardReviews = lazy(() => import("../pages/dashboard/reviews/Reviews.t
 const DashboardWebsite = lazy(() => import("../pages/dashboard/website/WebsiteManagement.tsx"));
 const DashboardHistory = lazy(() => import("../pages/dashboard/history/TicketHistory.tsx"));
 const DashboardUserSettings = lazy(() => import("../pages/dashboard/user-settings/UserSettings.tsx"));
+const DashboardListTicket = lazy(() => import("../pages/dashboard/list-ticket/ListTicket.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -59,6 +60,7 @@ export const routes: RouteObject[] = [
           { path: "edit-venue/:id", element: <DashboardEditVenue /> },
           { path: "edit-event/:id", element: <DashboardEditEvent /> },
           { path: "list-tickets", element: <DashboardMyTickets /> },
+          { path: "list-ticket", element: <DashboardListTicket /> },
           { path: "my-events", element: <DashboardMyEvents /> },
           { path: "sales-history", element: <DashboardSalesHistory /> },
           { path: "statistics", element: <DashboardStatistics /> },

@@ -3,6 +3,7 @@ import { LuCalendar, LuMapPin, LuTag, LuTicket } from "react-icons/lu";
 import type { IMyDashboardTicket } from "../../../utils/interfaces";
 import styles from "./MyTickets.module.css";
 import { formatUnixDateTime } from "../../../utils/dateTime";
+import Button from "../../../components/ui/button/Button";
 
 const MyTickets = () => {
     const [tickets, setTickets] = useState<IMyDashboardTicket[]>([]);
@@ -46,6 +47,9 @@ const MyTickets = () => {
         <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
             <div className={styles.headerSection}>
                 <h1>My Tickets</h1>
+                <div>
+                    <Button text="List Ticket" link="/dashboard/list-ticket" />
+                </div>
             </div>
 
             <div className={`table-responsive ${styles.tableWrapper}`}>
