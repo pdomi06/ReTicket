@@ -19,15 +19,16 @@ const Welcome = () => {
     }, []);
 
     async function fetchEvents() {
+        console.log('Fetching events for welcome page...');
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/landing`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch events: ${response.statusText}`);
             }
-            const data = await response.json();
-            setMostPopularEvents(data.mostPopularEvents || []);
-            setLastMinuteDeals(data.lastMinuteDeals || []);
-            setUpcomingEvents(data.upcomingEvents || []);
+            const res = await response.json();
+            setMostPopularEvents(res.data.mostPopularEvents || []);
+            setLastMinuteDeals(res.data.lastMinuteDeals || []);
+            setUpcomingEvents(res.data.upcomingEvents || []);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
@@ -43,7 +44,7 @@ const Welcome = () => {
                 <h6 className={style['events-subtitle']}>Don't miss out on the hottest events</h6>
                 <Cards>
                     {mostPopularEvents.map((event) => (
-                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/events/${event.id}`} />
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
                 </Cards>
             </div>
@@ -52,7 +53,7 @@ const Welcome = () => {
                 <h6 className={style['events-subtitle']}>Hurry! These deals are expiring soon</h6>
                 <Cards maximumcols={2}>
                     {lastMinuteDeals.map((event) => (
-                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/events/${event.id}`} />
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
                 </Cards>
             </div>
@@ -61,7 +62,7 @@ const Welcome = () => {
                 <h6 className={style['events-subtitle']}>Stay tuned for exciting events coming soon</h6>
                 <Cards maximumcols={3}>
                     {upcomingEvents.map((event) => (
-                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/events/${event.id}`} />
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
                 </Cards>
             </div>
