@@ -57,6 +57,7 @@ Route::get('payouts', [PayoutsController::class, 'index']);
 Route::get('payouts/{payout}', [PayoutsController::class, 'show']);
 Route::put('payouts/{payout}', [PayoutsController::class, 'update']);
 Route::get('my/payouts', [PayoutsController::class, 'myPayouts'])->middleware('auth:sanctum');
+Route::get('reviews/visible', [ReviewsController::class, 'visible']);
 Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);

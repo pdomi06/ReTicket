@@ -14,9 +14,14 @@ class ReviewsController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'show']),
+            new Middleware('auth:sanctum', except: ['index', 'show', 'visible']),
         ];
     }
+
+    public function visible()
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
