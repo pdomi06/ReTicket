@@ -1,0 +1,30 @@
+.container {
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.heading {
+    font-family: var(--font-secondary);
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--color-text);
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.ticketCodeSection {
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.ticketCodeInputWrapper {
+    margin-bottom: 16px;
+}
+
+.buttonWrapper {
+    width: 100%;
+}
