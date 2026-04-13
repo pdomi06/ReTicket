@@ -131,4 +131,23 @@ class ActiveTicketsController extends Controller implements HasMiddleware
             'originalTicket' => $originalTicket,
         ], 200);
     }
+    public function checkTicket(Request $request)
+    {
+        
+        $activeTicket = ActiveTicket::where('ticketListingId', $request->ticketListingId)->first();
+
+        if (!$activeTicket) {
+            return response()->json([
+                'exists' => false,
+                'message' => 'Ticket is not active.',
+            ], 200);
+        }
+        $originalTicket = OriginalTicket::find($activeTicket->originalTicketId);
+
+        return response()->json([
+            'exists' => true,
+            'message' => 'Ticket is active.',
+            'originalTicket' => $originalTicket,
+        ], 200);
+    }
 }
