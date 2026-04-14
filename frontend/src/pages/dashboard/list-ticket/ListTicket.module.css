@@ -38,6 +38,48 @@
     box-shadow: var(--shadow-lg);
 }
 
+.resellCard {
+    margin-top: 16px;
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.resellInputWrapper {
+    margin-bottom: 16px;
+}
+
+.averageCard {
+    margin-top: 16px;
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.averageTitle {
+    margin: 0 0 10px;
+    color: var(--color-text);
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.averageText,
+.averageHint {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.averageHint {
+    margin-top: 8px;
+    color: var(--color-text-muted);
+}
+
 .ticketHeader {
     background-color: var(--color-secondary);
     padding: 22px;

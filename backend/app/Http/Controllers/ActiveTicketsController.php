@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActiveTicket;
 use App\Models\OriginalTicket;
+use App\Models\TicketForSale;
 use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
@@ -163,6 +164,67 @@ class ActiveTicketsController extends Controller implements HasMiddleware
             'exists' => true,
             'message' => 'Ticket is active.',
             'originalTicket' => $originalTicket,
+            'averagePrice' => TicketForSale::query()->avg('price'),
+        ], 200);
+    }
+    public function resellTicket(Request $request)
+    {
+        $activeTicket = ActiveTicket::where('ticketListingId', $request->ticketListingId)->first();
+        $price = (int)$request->price;
+
+        if (!$activeTicket) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Ticket was not found.',
+            ], 404);
+        }
+        
+        $this->authorize('resell', $activeTicket);
+
+        if ($activeTicket->isValidated) {
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket has already been validated and cannot be resold.',
+            ], 409);
+        }
+
+        $originalTicket = OriginalTicket::find($activeTicket->originalTicketId);
+        if (!$originalTicket || !$originalTicket->event) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Ticket details could not be resolved for resale.',
+            ], 404);
+        }
+
+        if ($originalTicket->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket is not valid and cannot be resold.',
+            ], 409);
+        }
+
+        if ((int) $originalTicket->event->eventDate < now()->timestamp) {
+            return response()->json([
+                'success' => false,
+                'error' => 'This ticket is no longer valid and cannot be resold.',
+            ], 409);
+        }
+
+        $ticketForSale = TicketForSale::create([
+            'originalTicketId' => $activeTicket->originalTicketId,
+            'fromUserId' => $activeTicket->userId,
+            'eventId' => $activeTicket->originalTicket->eventId,
+            'price' => $price,
+            'isResell' => true,
+            'inBasket' => false,
+        ]);
+
+        $activeTicket->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket listed for resale successfully.',
+            'ticketForSale' => $ticketForSale,
         ], 200);
     }
 }

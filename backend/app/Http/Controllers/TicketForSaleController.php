@@ -41,6 +41,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
             ->join('original_tickets', 'ticket_forsale.originalTicketId', '=', 'original_tickets.id')
             ->join('events', 'original_tickets.eventId', '=', 'events.id')
             ->where('ticket_forsale.fromUserId', $user->id)
+            ->where('isResell', true)
             ->select([
                 'ticket_forsale.id as id',
                 'events.name as eventName',
