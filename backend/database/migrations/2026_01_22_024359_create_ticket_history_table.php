@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('toUser');
             $table->decimal('price', 10, 2);
             $table->decimal('platformFee', 10, 2);
+            $table->boolean('isResell')->default(false);
         });
 
         Schema::enableForeignKeyConstraints();

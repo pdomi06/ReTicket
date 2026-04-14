@@ -24,6 +24,7 @@ class TicketForSaleFactory extends Factory
             'fromUserId' => User::inRandomOrder()->value('id') ?? User::factory(),
             'eventId' => Event::inRandomOrder()->value('id') ?? Event::factory(),
             'price' => fake()->randomFloat(2, 10, 100),
+            'isResell' => fake()->boolean(),
             'inBasket' => fake()->boolean(),
         ];
     }

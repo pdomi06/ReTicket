@@ -27,6 +27,7 @@ class UpdateTicketForSaleRequest extends FormRequest
         'fromUserId' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
         'eventId' => ['sometimes', 'integer', 'exists:events,id'],
         'price' => ['sometimes', 'numeric', 'min:0'],
+        'isResell' => ['sometimes', 'boolean'],
         ];
     }
 }

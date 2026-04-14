@@ -18,11 +18,13 @@ class TicketHistory extends Model
         'toUser',
         'price',
         'platformFee',
+        'isResell',
     ];
 
     protected $casts = [
         'originalTicketId' => 'integer',
         'fromUserId' => 'integer',
+        'isResell' => 'boolean',
     ];
 
     public $timestamps = false;

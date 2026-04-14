@@ -18,7 +18,13 @@ class TicketForSale extends Model
         'fromUserId',
         'eventId',
         'price',
+        'isResell',
         'inBasket',
+    ];
+
+    protected $casts = [
+        'isResell' => 'boolean',
+        'inBasket' => 'boolean',
     ];
     
 
@@ -36,6 +42,9 @@ class TicketForSale extends Model
             )
             ->when($filters['price'] ?? null, fn($q, $value) =>
                 $q->where('price', $value)
+            )
+            ->when($filters['isResell'] ?? null, fn($q, $value) =>
+                $q->where('isResell', $value)
             )
             ->when($filters['inBasket'] ?? null, fn($q, $value) =>
                 $q->where('inBasket', $value)

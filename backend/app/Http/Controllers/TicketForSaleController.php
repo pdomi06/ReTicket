@@ -78,6 +78,10 @@ class TicketForSaleController extends Controller implements HasMiddleware
             $query->where('price', $filters['price']);
         }
 
+        if (array_key_exists('isResell', $filters) && $filters['isResell'] !== null) {
+            $query->where('isResell', $filters['isResell']);
+        }
+
         if (array_key_exists('inBasket', $filters) && $filters['inBasket'] !== null) {
             $query->where('inBasket', $filters['inBasket']);
         }
@@ -220,6 +224,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
                     'toUser' => $email,
                     'price' => $ticketForSale->price,
                     'platformFee' => $platformFee,
+                    'isResell' => $ticketForSale->isResell,
                 ]);
                 DB::table('active_tickets')->insert([
                     'originalTicketId' => $ticketForSale->originalTicketId,
@@ -268,6 +273,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
                         'toUser' => $order->deliveryEmail,
                         'price' => $ticketForSale->price,
                         'platformFee' => round($ticketForSale->price * 0.1, 2),
+                        'isResell' => $ticketForSale->isResell,
                     ]);
 
                     $historyCreated++;

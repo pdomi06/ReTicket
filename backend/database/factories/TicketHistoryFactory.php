@@ -27,6 +27,7 @@ class TicketHistoryFactory extends Factory
             'toUser' => User::inRandomOrder()->value('email') ?? User::factory()->create()->email,
             'price' => fake()->randomFloat(2, 10, 500),
             'platformFee' => fake()->randomFloat(2, 1, 50),
+            'isResell' => fake()->boolean(),
         ];
     }
 }

@@ -26,6 +26,7 @@ class SearchTicketForSaleRequest extends FormRequest
             'fromUserId' => ['sometimes', 'nullable', 'integer'],
             'eventId' => ['sometimes', 'nullable', 'integer'],
             'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'isResell' => ['sometimes', 'nullable', 'boolean'],
             'inBasket' => ['sometimes', 'nullable', 'boolean'],
         ];
     }
