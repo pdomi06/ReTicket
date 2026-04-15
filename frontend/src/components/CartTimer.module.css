@@ -1,0 +1,28 @@
+.cartTimer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #0a2e38;
+}
+
+.cartTimerUrgent {
+  color: #c0392b;
+  font-weight: 700;
+  animation: pulse 1s infinite;
+}
+
+.cartTimerExpired {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
