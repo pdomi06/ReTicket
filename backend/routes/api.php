@@ -39,10 +39,10 @@ Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdat
 Route::post("originalTickets/bulkStatusChange", [OriginalTicketsController::class, "bulkStatusChange"]);
 Route::apiResource('originalTickets', OriginalTicketsController::class);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
-Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
-Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
-Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
-Route::post('ticketForSale/checkOut', [TicketForSaleController::class, 'checkOut']);
+Route::post('ticketForSale/basket/refresh', [TicketForSaleController::class, 'refreshBasket']);
+Route::get('ticketForSale/basket/verify', [TicketForSaleController::class, 'verifyBasket']);
+Route::post('ticketForSale/{id}/addToBasket', [TicketForSaleController::class, 'addToBasket']);
+Route::post('ticketForSale/{id}/removeFromBasket', [TicketForSaleController::class, 'removeFromBasket']);
 Route::post('ticketForSale/finalize', [TicketForSaleController::class, 'finalize']);
 Route::post('checkout', [StripeController::class, 'checkOut']);
 Route::get('checkout/session', [StripeController::class, 'checkoutSession']);
