@@ -109,7 +109,6 @@ Route::match(['put', 'patch'], 'orders/{order}', [OrdersController::class, 'upda
     ->name('orders.update');
 Route::apiResource("orders", OrdersController::class)->except(['store', 'show', 'update']);
 Route::get('my/payouts', [PayoutsController::class, 'myPayouts']);
-Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory']);
 Route::apiResource("userSettings", UserSettingsController::class);
 
 Route::post('password/forgot', [PasswordResetController::class, 'store']);
@@ -122,4 +121,5 @@ Route::get('reviews/visible', [ReviewsController::class, 'visible']);
 Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
-Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
+Route::get('ticketHistory/myHistory', [TicketHistoryController::class, 'myHistory']);
+Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show'])->whereNumber('ticketHistory');
