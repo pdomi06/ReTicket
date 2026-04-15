@@ -212,7 +212,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
 
         $ticketForSale = TicketForSale::create([
             'originalTicketId' => $activeTicket->originalTicketId,
-            'fromUserId' => $activeTicket->userId,
+            'fromUserId' => request()->user()->id,
             'eventId' => $activeTicket->originalTicket->eventId,
             'price' => $price,
             'isResell' => true,
