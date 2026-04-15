@@ -248,8 +248,9 @@ export interface IEventContext {
 export interface ICartContext {
   tickets: ITicketForsale[];
   addToCart: (eventId: number, row: number, seat: number) => Promise<boolean>;
-  removeFromCart: (ticket: ITicketForsale) => Promise<void>;
+  removeFromCart: (ticket: ITicketForsale, options?: { skipRefresh?: boolean }) => Promise<void>;
   clearCart: () => void;
+  basketExpiresAt: string | null;
 }
 
 export interface IDashboardTicket {
