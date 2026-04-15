@@ -19,7 +19,7 @@ class TicketHistoryController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth:sanctum'),
-            new Middleware('verified', except: ['myHistory']),
+            new Middleware('verified'),
         ];
     }
     /**
