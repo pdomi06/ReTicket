@@ -74,11 +74,11 @@ const MyTickets = () => {
                             </th>
                             <th className="text-center">
                                 <LuTicket size={16} className="me-2" />
-                                Rows
+                                Row
                             </th>
                             <th className="text-center">
                                 <LuTicket size={16} className="me-2" />
-                                Columns
+                                Seat
                             </th>
                             <th className="text-center">
                                 <LuTag size={16} className="me-2" />
@@ -99,10 +99,10 @@ const MyTickets = () => {
                                     <td>{ticket.eventName}</td>
                                     <td>{formatUnixDateTime(ticket.eventDate)}</td>
                                     <td>{ticket.venue}</td>
-                                    <td>{ticket.section}</td>
+                                    <td >{ticket.section}</td>
                                     <td className="text-center">{ticket.row}</td>
                                     <td className="text-center">{ticket.seatNumber}</td>
-                                    <td>{ticket.price} Ft</td>
+                                    <td className="text-center">{ticket.price} Ft</td>
                                 </tr>
                             ))
                         )}
