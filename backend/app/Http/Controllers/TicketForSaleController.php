@@ -169,37 +169,46 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function addToBasket(TicketForSale $ticketForSale)
     {
-        $affected = DB::table('ticket_forsale')
-            ->where('id', $ticketForSale->id)
-            ->where('inBasket', false)
-            ->update(['inBasket' => true]);
+        $ticketForSale = DB::transaction(function () use ($ticketForSale) {
+            $lockedTicketForSale = TicketForSale::query()
+                ->whereKey($ticketForSale->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        if ($affected === 0) {
+            if ($lockedTicketForSale->hasActiveReservation()) {
+                return null;
+            }
+
+            $lockedTicketForSale->inBasket = true;
+            $lockedTicketForSale->reservationStartedAt = now();
+            $lockedTicketForSale->save();
+
+            return $lockedTicketForSale;
+        });
+
+        if ($ticketForSale === null) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ticket is already in another basket.',
             ], 409);
         }
 
-        $ticketForSale->refresh();
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }
 
     public function removeFromBasket(TicketForSale $ticketForSale)
     {
-        $affected = DB::table('ticket_forsale')
-            ->where('id', $ticketForSale->id)
-            ->where('inBasket', true)
-            ->update(['inBasket' => false]);
-
-        if ($affected === 0) {
+        if (! $ticketForSale->inBasket) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ticket is not in a basket.',
             ], 409);
         }
 
-        $ticketForSale->refresh();
+        $ticketForSale->inBasket = false;
+        $ticketForSale->reservationStartedAt = null;
+        $ticketForSale->save();
+
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }
 
@@ -208,6 +217,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $email = $request->validated()['email'];
         $orderId = $request->validated()['orderId'];
         $ticketIds = $request->validated()['tickets'];
+        $paymentIntentId = $request->input('paymentIntentId');
 
         if (!is_string($paymentIntentId) || $paymentIntentId === '') {
             return response()->json([
