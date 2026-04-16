@@ -1,3 +1,4 @@
+.hero,
 .channels,
 .support,
 .vendorCta {
@@ -5,7 +6,7 @@
 }
 
 .hero {
-  background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-bg));
+  background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-main));
 }
 
 .heroContent {
@@ -126,7 +127,7 @@
   gap: 0.4rem;
   text-decoration: none;
   color: var(--color-text);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .supportCard:hover {
@@ -196,12 +197,12 @@
   background: var(--color-primary);
   color: var(--color-text);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, 0.5rem);
   padding: 0.9rem 2rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast, 0.2s ease);
 }
 
 .vendorCtaButton:hover {
@@ -233,7 +234,7 @@
 }
 
 .hero {
-	background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-bg));
+	background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-main));
 }
 
 .heroContent {

@@ -58,7 +58,7 @@ const sections: PrivacySection[] = [
   }
 ];
 
-const lastUpdated = new Date('2026-04-16');
+const lastUpdated = 'April 16, 2026';
 
 const Privacy = () => {
   return (
@@ -66,7 +66,7 @@ const Privacy = () => {
       <div className={styles.container}>
         <div className={styles.pageHeader}>
           <h1>Privacy Policy</h1>
-          <p className={styles.lastUpdated}>Last updated: {lastUpdated.toLocaleDateString()}</p>
+          <p className={styles.lastUpdated}>Last updated: {lastUpdated}</p>
           <p className={styles.intro}>
             Your privacy matters to us. Here's a straightforward explanation
             of how ReTicket handles your data.

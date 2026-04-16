@@ -1,5 +1,5 @@
 import styles from './Contact.module.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ContactVendorCTA = () => {
   const navigate = useNavigate();
@@ -14,12 +14,9 @@ const ContactVendorCTA = () => {
           your first ticket to getting paid. Plus, find answers to the most common
           seller questions in our FAQ.
         </p>
-        <button
-          className={styles.vendorCtaButton}
-          onClick={() => navigate('/vendor')}
-        >
-          Go to Vendor Guide →
-        </button>
+          <Link to="/vendor" className={styles.vendorCtaButton}>
+            Go to Vendor Guide →
+          </Link>
       </div>
     </section>
   );
