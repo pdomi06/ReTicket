@@ -42,21 +42,21 @@ Base path for all routes listed below: `/api`.
 
 ### Events and venues
 
-| Method    | Path            | Effective access | Notes                                                |
-| --------- | --------------- | ---------------- | ---------------------------------------------------- |
-| GET       | /events         | Public           | Paginated response (`success`, `data`, `pagination`) |
-| GET       | /events/landing | Public           | Upcoming events for landing page (max 12, by date)   |
-| GET       | /events/search  | Public           | Search with optional timezone-aware date filtering   |
-| GET       | /events/{event} | Public           | Wrapped response (`success`, `data`)                 |
-| POST      | /events         | Auth required    | Creates event with `createdBy=auth()->id()`          |
-| PUT/PATCH | /events/{event} | Auth required    | Policy-checked update                                |
-| DELETE    | /events/{event} | Auth required    | Policy-checked delete                                |
-| GET       | /venues         | Public           | Public by middleware exception                       |
-| GET       | /venues/search  | Public           | Search endpoint                                      |
-| GET       | /venues/{venue} | Public           | Public by middleware exception                       |
-| POST      | /venues         | Auth required    | Policy-checked create                                |
-| PUT/PATCH | /venues/{venue} | Auth required    | Policy-checked update                                |
-| DELETE    | /venues/{venue} | Auth required    | Policy-checked delete                                |
+| Method    | Path            | Effective access | Notes                                                                                         |
+| --------- | --------------- | ---------------- | --------------------------------------------------------------------------------------------- |
+| GET       | /events         | Public           | Paginated response (`success`, `data`, `pagination`)                                          |
+| GET       | /events/landing | Public           | Upcoming events for landing page (max 12, by date)                                            |
+| GET       | /events/search  | Public           | Grouped cursor pagination by normalized event name; includes all linked occurrences per group |
+| GET       | /events/{event} | Public           | Wrapped response (`success`, `data`)                                                          |
+| POST      | /events         | Auth required    | Creates event with `createdBy=auth()->id()`                                                   |
+| PUT/PATCH | /events/{event} | Auth required    | Policy-checked update                                                                         |
+| DELETE    | /events/{event} | Auth required    | Policy-checked delete                                                                         |
+| GET       | /venues         | Public           | Public by middleware exception                                                                |
+| GET       | /venues/search  | Public           | Search endpoint                                                                               |
+| GET       | /venues/{venue} | Public           | Public by middleware exception                                                                |
+| POST      | /venues         | Auth required    | Policy-checked create                                                                         |
+| PUT/PATCH | /venues/{venue} | Auth required    | Policy-checked update                                                                         |
+| DELETE    | /venues/{venue} | Auth required    | Policy-checked delete                                                                         |
 
 ### Ticket and listing resources
 
@@ -145,6 +145,7 @@ Base path for all routes listed below: `/api`.
 - Checkout has multiple entry points (`/checkout`, `/orders/checkOut`, `/ticketForSale/checkOut`) with different side effects.
 - Orders create/update are public in current middleware configuration.
 - Error and success response shapes are not globally normalized.
+- `GET /events/search` now uses cursor pagination fields (`limit`, `returned_count`, `has_more`, `next_cursor`, `total_groups`) and returns one grouped item per normalized event name with an `occurrences` array.
 
 ## Related docs
 
