@@ -19,8 +19,31 @@ class TicketForSale extends Model
         'eventId',
         'price',
         'inBasket',
+        'reservation_started_at',
     ];
-    
+
+    protected $casts = [
+        'inBasket' => 'boolean',
+        'reservation_started_at' => 'datetime',
+    ];
+
+    public function scopeExpired($query)
+    {
+        return $query
+            ->where('inBasket', true)
+            ->whereNotNull('reservation_started_at')
+            ->where('reservation_started_at', '<', now()->subMinutes(30));
+    }
+
+    /**
+     * Returns true when the ticket is held by someone and that hold has not expired.
+     */
+    public function hasActiveReservation(): bool
+    {
+        return $this->inBasket
+            && $this->reservation_started_at !== null
+            && $this->reservation_started_at->gt(now()->subMinutes(30));
+    }
 
     public function scopeSearch($query, array $filters)
     {
@@ -48,6 +71,11 @@ class TicketForSale extends Model
     }
 
     public function user()
+    {
+        return $this->belongsTo(User::class, 'fromUserId');
+    }
+
+    public function fromUser()
     {
         return $this->belongsTo(User::class, 'fromUserId');
     }
