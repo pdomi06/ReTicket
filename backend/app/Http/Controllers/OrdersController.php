@@ -40,62 +40,15 @@ class OrdersController extends Controller implements HasMiddleware
      */
     public function store(StoreOrdersRequest $request)
     {
-        $incomingToken = $request->header('X-Basket-Key');
-
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['message' => 'Missing or invalid basket token.'], 422);
-        }
-
         $data = $request->validated();
-        $ticketIds = $request->input('tickets', []);
 
-        DB::beginTransaction();
-
-        try {
-            $lockedTickets = [];
-
-            // Validate that every ticket in the order is still reserved by this token under row lock
-            foreach ($ticketIds as $ticketId) {
-                $ticket = TicketForSale::whereKey($ticketId)->lockForUpdate()->first();
-
-                if (! $ticket) {
-                    DB::rollBack();
-                    return response()->json(['message' => "Ticket {$ticketId} not found."], 404);
-                }
-
-                if (! $ticket->inBasket || $ticket->basket_token !== $incomingToken) {
-                    DB::rollBack();
-                    return response()->json(['message' => "Ticket {$ticketId} is not reserved by your session."], 409);
-                }
-
-                if (! $ticket->hasActiveReservation()) {
-                    DB::rollBack();
-                    return response()->json(['message' => "Your reservation for ticket {$ticketId} has expired. Please add it to your cart again."], 410);
-                }
-
-                if (ActiveTicket::where('originalTicketId', $ticket->originalTicketId)->exists()) {
-                    DB::rollBack();
-                    return response()->json(['message' => "Ticket {$ticketId} is already attached to an order."], 409);
-                }
-
-                $lockedTickets[] = $ticket;
-            }
-
-            $subtotal = array_reduce(
-                $lockedTickets,
-                fn(float $sum, TicketForSale $ticket): float => $sum + (float) $ticket->price,
-                0.0
-            );
-            $platformFee = round($subtotal * 0.1, 2);
-
-            $data['subtotal'] = $subtotal;
-            $data['platformFee'] = $platformFee;
-
+        $order = DB::transaction(function () use ($data) {
             $order = new Order($data);
             $order->orderNumber = $this->generateOrderNumber();
             $order->save();
 
-            foreach ($lockedTickets as $ticketForSale) {
+            foreach ($data['tickets'] as $ticketId) {
+                $ticketForSale = TicketForSale::findOrFail($ticketId);
                 $ticketListingId = $this->generateUniqueTicketListingId();
 
                 OrderItem::create([
@@ -111,13 +64,10 @@ class OrdersController extends Controller implements HasMiddleware
                 ]);
             }
 
-            DB::commit();
+            return $order;
+        });
 
-            return response()->json($order, 201);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return response()->json($order, 201);
     }
 
     private function generateOrderNumber(): int
@@ -136,13 +86,6 @@ class OrdersController extends Controller implements HasMiddleware
         } while (DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists());
 
         return $ticketListingId;
-    }
-
-    private function isValidBasketToken(?string $token): bool
-    {
-        return is_string($token)
-            && strlen($token) <= 36
-            && Str::isUuid($token);
     }
 
     /**
