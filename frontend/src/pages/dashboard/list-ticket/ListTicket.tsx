@@ -14,6 +14,18 @@ const ListTicket = () => {
     const [resellPrice, setResellPrice] = useState("");
     const [averagePrice, setAveragePrice] = useState<number | null>(null);
 
+    async function readResponseMessage(response: Response, fallbackMessage: string) {
+        const contentType = response.headers.get("content-type") ?? "";
+
+        if (contentType.includes("application/json")) {
+            const data = await response.json() as { message?: string; error?: string };
+            return data.message ?? data.error ?? fallbackMessage;
+        }
+
+        const text = await response.text();
+        return text.trim() || fallbackMessage;
+    }
+
     async function handleCheckTicket() {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/checkTicket`, {
@@ -26,8 +38,21 @@ const ListTicket = () => {
                 }),
             });
             if (!response.ok) {
-                throw new Error("Failed to check ticket");
+                setTicketMessage(await readResponseMessage(response, "Failed to check ticket."));
+                setNotificationVariant("error");
+                setTicketInfo(null);
+                setAveragePrice(null);
+                return;
             }
+            const contentType = response.headers.get("content-type") ?? "";
+            if (!contentType.includes("application/json")) {
+                setTicketMessage(await readResponseMessage(response, "Failed to check ticket."));
+                setNotificationVariant("error");
+                setTicketInfo(null);
+                setAveragePrice(null);
+                return;
+            }
+
             const data = await response.json();
             if (!data.exists) {
                 setTicketMessage(data.message || "Ticket not found");
@@ -49,6 +74,14 @@ const ListTicket = () => {
     }
     async function handleResell() {
         if (!ticketInfo) return;
+
+        const parsedResellPrice = Number(resellPrice);
+        if (!Number.isFinite(parsedResellPrice) || parsedResellPrice <= 0) {
+            setTicketMessage("Please enter a valid resell price greater than 0.");
+            setNotificationVariant("error");
+            return;
+        }
+
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/resell`, {
                 method: "POST",
@@ -58,12 +91,21 @@ const ListTicket = () => {
                 },
                 body: JSON.stringify({
                     ticketListingId: ticketCode,
-                    price: resellPrice,
+                    price: parsedResellPrice,
                 }),
             });
             if (!response.ok) {
-                throw new Error("Failed to resell ticket");
+                setTicketMessage(await readResponseMessage(response, "Failed to resell ticket."));
+                setNotificationVariant("error");
+                return;
             }
+            const contentType = response.headers.get("content-type") ?? "";
+            if (!contentType.includes("application/json")) {
+                setTicketMessage(await readResponseMessage(response, "Failed to resell ticket."));
+                setNotificationVariant("error");
+                return;
+            }
+
             const data = await response.json();
             if (data.success) {
                 setTicketMessage("Ticket resold successfully.");

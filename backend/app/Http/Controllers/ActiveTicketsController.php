@@ -8,6 +8,7 @@ use App\Models\TicketForSale;
 use App\Models\TicketHistory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActiveTicketsRequest;
+use App\Http\Requests\ResellActiveTicketRequest;
 use App\Http\Requests\UpdateActiveTicketsRequest;
 use App\Http\Requests\ValidateActiveTicketRequest;
 use Illuminate\Http\Request;
@@ -38,7 +39,9 @@ class ActiveTicketsController extends Controller implements HasMiddleware
     public function store(StoreActiveTicketsRequest $request)
     {
         $this->authorize('create', ActiveTicket::class);
+
         $active_ticket = ActiveTicket::create($request->validated());
+
         return response()->json($active_ticket, 201);
     }
 
@@ -167,10 +170,11 @@ class ActiveTicketsController extends Controller implements HasMiddleware
             'averagePrice' => TicketForSale::query()->where('eventId', $activeTicket->originalTicket->eventId)->avg('price'),
         ], 200);
     }
-    public function resellTicket(Request $request)
+    public function resellTicket(ResellActiveTicketRequest $request)
     {
-        $activeTicket = ActiveTicket::where('ticketListingId', $request->ticketListingId)->first();
-        $price = (int)$request->price;
+        $data = $request->validated();
+        $activeTicket = ActiveTicket::where('ticketListingId', $data['ticketListingId'])->first();
+        $price = round((float) $data['price'], 2);
 
         if (!$activeTicket) {
             return response()->json([
