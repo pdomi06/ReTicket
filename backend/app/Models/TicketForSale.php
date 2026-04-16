@@ -33,8 +33,10 @@ class TicketForSale extends Model
     {
         return $query
             ->where('inBasket', true)
-            ->whereNotNull('reservationStartedAt')
-            ->where('reservationStartedAt', '<', now()->subMinutes(self::RESERVATION_MINUTES));
+            ->where(function ($query) {
+                $query->whereNull('reservationStartedAt')
+                    ->orWhere('reservationStartedAt', '<', now()->subMinutes(self::RESERVATION_MINUTES));
+            });
     }
 
     /**
