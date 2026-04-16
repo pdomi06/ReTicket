@@ -33,8 +33,8 @@ const ContactChannels = () => {
         <p>Choose the channel that works best for you</p>
       </div>
       <div className={styles.channelsGrid}>
-        {channels.map((channel, index) => (
-          <div key={index} className={styles.channelCard}>
+        {channels.map((channel) => (
+          <div key={channel.label} className={styles.channelCard}>
             <div className={styles.channelIcon}>{channel.icon}</div>
             <h3 className={styles.channelLabel}>{channel.label}</h3>
             <a href={channel.href} className={styles.channelValue}>

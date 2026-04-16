@@ -1,8 +1,7 @@
 import styles from './Contact.module.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const ContactVendorCTA = () => {
-  const navigate = useNavigate();
 
   return (
     <section className={styles.vendorCta}>
