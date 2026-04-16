@@ -135,16 +135,29 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function addToBasket(TicketForSale $ticketForSale)
     {
-        if ($ticketForSale->hasActiveReservation()) {
+        $ticketForSale = DB::transaction(function () use ($ticketForSale) {
+            $lockedTicketForSale = TicketForSale::query()
+                ->whereKey($ticketForSale->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($lockedTicketForSale->hasActiveReservation()) {
+                return null;
+            }
+
+            $lockedTicketForSale->inBasket = true;
+            $lockedTicketForSale->reservationStartedAt = now();
+            $lockedTicketForSale->save();
+
+            return $lockedTicketForSale;
+        });
+
+        if ($ticketForSale === null) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ticket is already in another basket.',
             ], 409);
         }
-
-        $ticketForSale->inBasket = true;
-        $ticketForSale->reservationStartedAt = now();
-        $ticketForSale->save();
 
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }

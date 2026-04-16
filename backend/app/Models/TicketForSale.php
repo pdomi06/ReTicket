@@ -9,6 +9,8 @@ class TicketForSale extends Model
 {
     use HasFactory;
 
+    public const RESERVATION_MINUTES = 30;
+
     public $timestamps = false;
 
     protected $table = 'ticket_forsale';
@@ -32,7 +34,7 @@ class TicketForSale extends Model
         return $query
             ->where('inBasket', true)
             ->whereNotNull('reservationStartedAt')
-            ->where('reservationStartedAt', '<', now()->subMinutes(30));
+            ->where('reservationStartedAt', '<', now()->subMinutes(self::RESERVATION_MINUTES));
     }
 
     /**
@@ -42,7 +44,7 @@ class TicketForSale extends Model
     {
         return $this->inBasket
             && $this->reservationStartedAt !== null
-            && $this->reservationStartedAt->gt(now()->subMinutes(30));
+            && $this->reservationStartedAt->gt(now()->subMinutes(self::RESERVATION_MINUTES));
     }
 
     public function scopeSearch($query, array $filters)
@@ -75,8 +77,11 @@ class TicketForSale extends Model
         return $this->belongsTo(User::class, 'fromUserId');
     }
 
+    /**
+     * @deprecated Use user() instead.
+     */
     public function fromUser()
     {
-        return $this->belongsTo(User::class, 'fromUserId');
+        return $this->user();
     }
 }

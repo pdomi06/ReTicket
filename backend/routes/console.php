@@ -14,4 +14,6 @@ app(ConsoleKernel::class)->addCommands([
     ReleaseExpiredReservations::class,
 ]);
 
-Schedule::command('tickets:release-expired')->everyTenMinutes();
+Schedule::command('tickets:release-expired')
+    ->everyTenMinutes()
+    ->withoutOverlapping();
