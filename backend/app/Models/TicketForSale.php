@@ -19,20 +19,20 @@ class TicketForSale extends Model
         'eventId',
         'price',
         'inBasket',
-        'reservation_started_at',
+        'reservationStartedAt',
     ];
 
     protected $casts = [
         'inBasket' => 'boolean',
-        'reservation_started_at' => 'datetime',
+        'reservationStartedAt' => 'datetime',
     ];
 
     public function scopeExpired($query)
     {
         return $query
             ->where('inBasket', true)
-            ->whereNotNull('reservation_started_at')
-            ->where('reservation_started_at', '<', now()->subMinutes(30));
+            ->whereNotNull('reservationStartedAt')
+            ->where('reservationStartedAt', '<', now()->subMinutes(30));
     }
 
     /**
@@ -41,8 +41,8 @@ class TicketForSale extends Model
     public function hasActiveReservation(): bool
     {
         return $this->inBasket
-            && $this->reservation_started_at !== null
-            && $this->reservation_started_at->gt(now()->subMinutes(30));
+            && $this->reservationStartedAt !== null
+            && $this->reservationStartedAt->gt(now()->subMinutes(30));
     }
 
     public function scopeSearch($query, array $filters)

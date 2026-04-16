@@ -15,7 +15,7 @@ class ReleaseExpiredReservations extends Command
     {
         $count = TicketForSale::query()->expired()->update([
             'inBasket' => false,
-            'reservation_started_at' => null,
+            'reservationStartedAt' => null,
         ]);
 
         $this->info("Released {$count} expired reservations.");

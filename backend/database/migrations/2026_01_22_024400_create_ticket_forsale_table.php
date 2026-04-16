@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('eventId')->constrained('events')->onDelete('cascade');
             $table->decimal('price', 10, 2);
             $table->boolean('inBasket');
+            $table->timestamp('reservationStartedAt')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();

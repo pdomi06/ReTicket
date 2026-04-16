@@ -143,7 +143,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         }
 
         $ticketForSale->inBasket = true;
-        $ticketForSale->reservation_started_at = now();
+        $ticketForSale->reservationStartedAt = now();
         $ticketForSale->save();
 
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
@@ -159,7 +159,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         }
 
         $ticketForSale->inBasket = false;
-        $ticketForSale->reservation_started_at = null;
+        $ticketForSale->reservationStartedAt = null;
         $ticketForSale->save();
 
         return response()->json(['success' => true, 'data' => $ticketForSale], 200);
