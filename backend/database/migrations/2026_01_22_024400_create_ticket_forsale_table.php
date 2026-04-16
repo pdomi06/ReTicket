@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('eventId')->constrained('events')->onDelete('cascade');
             $table->decimal('price', 10, 2);
             $table->boolean('inBasket');
+            $table->boolean('isResell')->default(false);
         });
 
         Schema::enableForeignKeyConstraints();

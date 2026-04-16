@@ -28,6 +28,7 @@ class StoreTicketHistoryRequest extends FormRequest
         'toUser' => ['required', 'email'],
         'price' => ['required', 'numeric', 'min:0'],
         'platformFee' => ['required', 'numeric', 'min:0'],
+        'isResell' => ['sometimes', 'boolean'],
         ];
     }
 }

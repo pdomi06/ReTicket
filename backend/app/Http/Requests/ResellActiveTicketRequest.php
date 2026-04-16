@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SearchTicketForSaleRequest extends FormRequest
+class ResellActiveTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
@@ -22,12 +22,8 @@ class SearchTicketForSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'originalTicketId' => ['sometimes', 'nullable', 'integer'],
-            'fromUserId' => ['sometimes', 'nullable', 'integer'],
-            'eventId' => ['sometimes', 'nullable', 'integer'],
-            'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'isResell' => ['sometimes', 'nullable', 'boolean'],
-            'inBasket' => ['sometimes', 'nullable', 'boolean'],
+            'ticketListingId' => ['required', 'string', 'exists:active_tickets,ticketListingId'],
+            'price' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

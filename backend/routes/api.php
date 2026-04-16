@@ -1,7 +1,8 @@
 <?php
-use Illuminate\Http\Request;
-use App\Models\User;
+
 use App\Http\Controllers\ActiveTicketsController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailChangeController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\OrdersController;
@@ -9,17 +10,15 @@ use App\Http\Controllers\OriginalTicketsController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PayoutsController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TicketForSaleController;
 use App\Http\Controllers\TicketHistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\VenueMapController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StripeController;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EmailChangeController;
-
-
 
 Route::post('login', [AuthController::class, 'login'])->middleware('throttle:3,1');
 Route::post('register', [AuthController::class, 'register']);
@@ -30,6 +29,9 @@ Route::apiResource('events', EventsController::class);
 Route::get('venues/search', [VenueMapController::class, 'search']);
 Route::apiResource('venues', VenueMapController::class);
 Route::post('activeTickets/validate', [ActiveTicketsController::class, 'validateTicket']);
+Route::post('activeTickets/checkTicket', [ActiveTicketsController::class, 'checkTicket'])
+    ->middleware('throttle:10,1');
+Route::post('activeTickets/resell', [ActiveTicketsController::class, 'resellTicket']);
 Route::apiResource('activeTickets', ActiveTicketsController::class);
 Route::get('originalTickets/search', [OriginalTicketsController::class, 'search']);
 Route::get("originalTickets/forSale/{eventId}", [OriginalTicketsController::class, "getOnlyAvailableTicketsInForSale"]);
@@ -39,6 +41,7 @@ Route::put("originalTickets/bulk", [OriginalTicketsController::class, "bulkUpdat
 Route::post("originalTickets/bulkStatusChange", [OriginalTicketsController::class, "bulkStatusChange"]);
 Route::apiResource('originalTickets', OriginalTicketsController::class);
 Route::get('ticketForSale/search', [TicketForSaleController::class, 'search']);
+Route::get('ticketForSale/dashboard', [TicketForSaleController::class, 'dashboard']);
 Route::post('ticketForSale/basketChange/{ticketForSale}', [TicketForSaleController::class, 'basketChange']);
 Route::post('ticketForSale/addToBasket/{ticketForSale}', [TicketForSaleController::class, 'addToBasket']);
 Route::post('ticketForSale/removeFromBasket/{ticketForSale}', [TicketForSaleController::class, 'removeFromBasket']);
@@ -107,7 +110,6 @@ Route::match(['put', 'patch'], 'orders/{order}', [OrdersController::class, 'upda
     ->name('orders.update');
 Route::apiResource("orders", OrdersController::class)->except(['store', 'show', 'update']);
 Route::get('my/payouts', [PayoutsController::class, 'myPayouts']);
-Route::get('ticketHistory/my/history', [TicketHistoryController::class, 'myHistory']);
 Route::apiResource("userSettings", UserSettingsController::class);
 
 Route::post('password/forgot', [PasswordResetController::class, 'store']);
@@ -120,6 +122,5 @@ Route::get('reviews/visible', [ReviewsController::class, 'visible']);
 Route::apiResource("reviews", ReviewsController::class);
 Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
-Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
-Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show']);
-Route::apiResource("userSettings", UserSettingsController::class);
+Route::get('ticketHistory/myHistory', [TicketHistoryController::class, 'myHistory']);
+Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show'])->whereNumber('ticketHistory');

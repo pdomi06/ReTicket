@@ -107,4 +107,7 @@ class ActiveTicketsPolicy
 
         return $originalTicket->event->createdBy === $user->id;
     }
+    public function resell(User $user): bool {
+        return $user ? true : false;
+    }
 }

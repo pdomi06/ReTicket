@@ -31,6 +31,32 @@ class TicketForSaleController extends Controller implements HasMiddleware
         return response()->json($tickets_forsale, 200);
     }
 
+    public function dashboard(Request $request)
+    {
+        $this->authorize('viewAny', TicketForSale::class);
+
+        $user = $request->user();
+
+        $tickets = TicketForSale::query()
+            ->join('original_tickets', 'ticket_forsale.originalTicketId', '=', 'original_tickets.id')
+            ->join('events', 'original_tickets.eventId', '=', 'events.id')
+            ->where('ticket_forsale.fromUserId', $user->id)
+            ->where('isResell', true)
+            ->select([
+                'ticket_forsale.id as id',
+                'events.name as eventName',
+                'events.eventDate',
+                'events.venue',
+                'original_tickets.section',
+                'original_tickets.row',
+                'original_tickets.seatNumber',
+                'ticket_forsale.price',
+            ])
+            ->get();
+
+        return response()->json($tickets, 200);
+    }
+
     public function search(SearchTicketForSaleRequest $request)
     {
         $this->authorize('viewAny', TicketForSale::class);
@@ -53,6 +79,10 @@ class TicketForSaleController extends Controller implements HasMiddleware
             $query->where('price', $filters['price']);
         }
 
+        if (array_key_exists('isResell', $filters) && $filters['isResell'] !== null) {
+            $query->where('isResell', $filters['isResell']);
+        }
+
         if (array_key_exists('inBasket', $filters) && $filters['inBasket'] !== null) {
             $query->where('inBasket', $filters['inBasket']);
         }
@@ -61,8 +91,8 @@ class TicketForSaleController extends Controller implements HasMiddleware
     }
 
     public function store(StoreTicketForSaleRequest $request)
-    {
-        $this->authorize('create', TicketForSale::class);
+        {
+            $this->authorize('create', TicketForSale::class);
 
         $data = $request->validated();
         $originalTicket = OriginalTicket::with('event')->findOrFail($data['originalTicketId']);
@@ -91,6 +121,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $user = $request->user();
         $data['fromUserId'] = $user->id;
 
+        $data['isResell'] = false;
         $data['inBasket'] = false;
 
 
@@ -107,7 +138,10 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function update(UpdateTicketForSaleRequest $request, TicketForSale $ticketForSale)
     {
         $this->authorize('update', $ticketForSale);
-        $ticketForSale->update($request->validated());
+        $data = $request->validated();
+        $data['isResell'] = $ticketForSale->isResell;
+
+        $ticketForSale->update($data);
         return response()->json($ticketForSale, 200);
     }
 
@@ -195,6 +229,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
                     'toUser' => $email,
                     'price' => $ticketForSale->price,
                     'platformFee' => $platformFee,
+                    'isResell' => $ticketForSale->isResell,
                 ]);
                 DB::table('active_tickets')->insert([
                     'originalTicketId' => $ticketForSale->originalTicketId,
@@ -243,6 +278,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
                         'toUser' => $order->deliveryEmail,
                         'price' => $ticketForSale->price,
                         'platformFee' => round($ticketForSale->price * 0.1, 2),
+                        'isResell' => $ticketForSale->isResell,
                     ]);
 
                     $historyCreated++;
