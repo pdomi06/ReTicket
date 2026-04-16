@@ -1,0 +1,467 @@
+/* ============================================
+   CONTACT PAGE STYLING
+   ============================================ */
+
+:root {
+  --color-primary: var(--color-accent);
+  --color-bg: var(--color-main);
+  --color-bg-card: var(--color-surface);
+  --color-text-muted: var(--color-text-secondary);
+
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.5rem;
+  --space-3xl: 4rem;
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+}
+
+.hero,
+.channels,
+.support,
+.vendorCta {
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+.hero {
+  background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-bg));
+}
+
+.heroContent {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.heroTitle {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.15;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+}
+
+.heroSubtext {
+  margin: var(--space-lg) auto 0;
+  max-width: 680px;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  font-size: 1.08rem;
+}
+
+.sectionHeader {
+  max-width: 760px;
+  margin: 0 auto var(--space-2xl);
+  text-align: center;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sectionHeader p {
+  margin: var(--space-sm) 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.channels {
+  background: var(--color-secondary);
+}
+
+.channelsGrid {
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.channelCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.channelIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.channelLabel {
+  color: var(--color-text);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.channelValue {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: text-decoration-color var(--transition-fast);
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+.channelValue:hover {
+  text-decoration-color: var(--color-primary);
+}
+
+.channelNote {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0;
+  line-height: 1.5;
+}
+
+.support {
+  background: var(--color-bg);
+}
+
+.supportGrid {
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.supportCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.supportCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-accent-outline);
+}
+
+.supportIcon {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.supportTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.supportDesc {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.supportArrow {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  margin-top: auto;
+}
+
+.vendorCta {
+  background: var(--color-surface-raised);
+  border-top: 1px solid var(--color-border);
+}
+
+.vendorCtaContent {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.vendorCtaIcon {
+  font-size: 3rem;
+}
+
+.vendorCtaTitle {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.vendorCtaSubtext {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.vendorCtaButton {
+  background: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.vendorCtaButton:hover {
+  background: var(--color-accent-hover);
+}
+
+@media (max-width: 900px) {
+  .channelsGrid,
+  .supportGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero,
+  .channels,
+  .support,
+  .vendorCta {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .channelCard {
+    padding: 2rem 1.5rem;
+  }
+}
+/* ============================================
+	 CONTACT PAGE STYLING
+	 ============================================ */
+
+:root {
+	--color-primary: var(--color-accent);
+	--color-bg: var(--color-main);
+	--color-bg-card: var(--color-surface);
+	--color-text-muted: var(--color-text-secondary);
+
+	--radius-lg: 16px;
+	--radius-md: 12px;
+	--space-sm: 0.75rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2rem;
+	--space-2xl: 3rem;
+	--space-3xl: 4rem;
+	--transition-fast: 0.2s ease;
+}
+
+.hero,
+.contactInfo,
+.faq {
+	padding: var(--space-3xl) var(--space-xl);
+}
+
+.hero {
+	background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-bg));
+}
+
+.heroContent {
+	max-width: 860px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.heroTitle {
+	margin: 0;
+	font-size: clamp(2rem, 5vw, 3.2rem);
+	font-weight: 900;
+	color: var(--color-text);
+	line-height: 1.15;
+}
+
+.heroSubtext {
+	margin: var(--space-lg) auto 0;
+	max-width: 620px;
+	font-size: 1.1rem;
+	color: var(--color-text-muted);
+	line-height: 1.6;
+}
+
+.contactInfo {
+	background: var(--color-secondary);
+}
+
+.infoGrid {
+	max-width: 1100px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--space-xl);
+}
+
+.infoCard {
+	background: var(--color-bg-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-xl);
+}
+
+.infoCard h3 {
+	margin: 0;
+	color: var(--color-text);
+	font-size: 1.35rem;
+}
+
+.infoIcon {
+	font-size: 2rem;
+	margin-bottom: var(--space-md);
+}
+
+.infoSubtext {
+	color: var(--color-text-muted);
+	font-size: 0.95rem;
+	margin: var(--space-sm) 0;
+	line-height: 1.5;
+}
+
+.infoLink {
+	display: inline-block;
+	margin-top: var(--space-sm);
+	color: var(--color-primary);
+	font-weight: 600;
+	text-decoration: underline;
+	text-decoration-color: var(--color-accent-border-strong);
+	text-underline-offset: 3px;
+}
+
+.socialsGrid {
+	margin-top: var(--space-md);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-sm);
+}
+
+.socialLink {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	color: var(--color-text);
+	text-decoration: none;
+	transition: color var(--transition-fast);
+}
+
+.socialLink:hover {
+	color: var(--color-primary);
+}
+
+.socialIcon {
+	font-size: 1.2rem;
+}
+
+.faq {
+	background: var(--color-bg);
+}
+
+.sectionHeader {
+	max-width: 760px;
+	margin: 0 auto var(--space-xl);
+	text-align: center;
+}
+
+.sectionHeader h2 {
+	margin: 0;
+	color: var(--color-text);
+	font-weight: 800;
+	font-size: 2.5rem;
+	line-height: 1.2;
+}
+
+.sectionHeader p {
+	color: var(--color-text-muted);
+	margin: 0.5rem 0 0;
+}
+
+.faqList {
+	max-width: 900px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.faqItem {
+	background: var(--color-bg-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+}
+
+.faqItemOpen {
+	border-left: 3px solid var(--color-primary);
+}
+
+.faqQuestion {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1.25rem 1.5rem;
+	background: transparent;
+	border: none;
+	color: var(--color-text);
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	text-align: left;
+}
+
+.faqChevron {
+	color: var(--color-primary);
+	font-size: 0.75rem;
+	transition: transform var(--transition-fast);
+}
+
+.faqAnswer {
+	padding: 0 1.5rem 1.25rem;
+	color: var(--color-text-muted);
+	line-height: 1.7;
+	font-size: 0.95rem;
+}
+
+.faqAnswer p {
+	margin: 0;
+}
+
+@media (max-width: 900px) {
+	.infoGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.sectionHeader h2 {
+		font-size: 2rem;
+	}
+}
+
+@media (max-width: 640px) {
+	.hero,
+	.contactInfo,
+	.faq {
+		padding: var(--space-2xl) var(--space-lg);
+	}
+}

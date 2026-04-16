@@ -1,0 +1,62 @@
+import styles from './contact.module.css';
+
+interface SupportCategory {
+  icon: string;
+  title: string;
+  description: string;
+  emailSubject: string;
+}
+
+const categories: SupportCategory[] = [
+  {
+    icon: '🎟️',
+    title: 'Buying a Ticket',
+    description: 'Questions about purchasing, QR codes, or entry issues',
+    emailSubject: 'Buying Support'
+  },
+  {
+    icon: '💰',
+    title: 'Selling a Ticket',
+    description: 'Help with listings, pricing, or payouts',
+    emailSubject: 'Selling Support'
+  },
+  {
+    icon: '👤',
+    title: 'My Account',
+    description: 'Login problems, profile settings, or security concerns',
+    emailSubject: 'Account Support'
+  },
+  {
+    icon: '🔧',
+    title: 'Technical Issue',
+    description: 'Something on the platform not working as expected',
+    emailSubject: 'Technical Support'
+  }
+];
+
+const ContactSupport = () => {
+  return (
+    <section className={styles.support}>
+      <div className={styles.sectionHeader}>
+        <h2>What Do You Need Help With?</h2>
+        <p>Click a category to send us a pre-filled email</p>
+      </div>
+      <div className={styles.supportGrid}>
+        {categories.map((cat, index) => (
+          <a
+            key={index}
+            href={`mailto:support@reticket.com?subject=${encodeURIComponent(cat.emailSubject)}`}
+            className={styles.supportCard}
+          >
+            <div className={styles.supportIcon}>{cat.icon}</div>
+            <h3 className={styles.supportTitle}>{cat.title}</h3>
+            <p className={styles.supportDesc}>{cat.description}</p>
+            <span className={styles.supportArrow}>→</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default ContactSupport;
