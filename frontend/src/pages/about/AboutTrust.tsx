@@ -13,7 +13,7 @@ const AboutTrust = () => {
     },
     {
       title: 'User-First Design',
-      description: 'Simple, intuitive, and fast (thanks to React and typescript)'
+      description: 'Simple, intuitive, and fast (thanks to React and TypeScript)'
     },
     {
       title: 'Full Transparency',

@@ -58,7 +58,7 @@ const sections: TermsSection[] = [
   }
 ];
 
-const lastUpdated = new Date('2026.04.16');
+const lastUpdated = new Date('2026-04-16');
 
 const Terms = () => {
   return (
