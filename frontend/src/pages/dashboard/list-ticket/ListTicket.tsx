@@ -10,6 +10,7 @@ const ListTicket = () => {
     const [ticketCode, setTicketCode] = useState("");
     const [ticketInfo, setTicketInfo] = useState<IDashboardTicket | null>(null);
     const [ticketMessage, setTicketMessage] = useState("");
+    const [notificationVariant, setNotificationVariant] = useState<"success" | "error">("success");
     const [resellPrice, setResellPrice] = useState("");
     const [averagePrice, setAveragePrice] = useState<number | null>(null);
 
@@ -30,15 +31,19 @@ const ListTicket = () => {
             const data = await response.json();
             if (!data.exists) {
                 setTicketMessage(data.message || "Ticket not found");
+                setNotificationVariant("error");
                 setTicketInfo(null);
                 setAveragePrice(null);
                 return;
             }
             setTicketMessage(data.message || "Ticket found");
+            setNotificationVariant("success");
             setTicketInfo(data.originalTicket);
             const parsedAveragePrice = Number(data.averagePrice);
             setAveragePrice(Number.isFinite(parsedAveragePrice) ? parsedAveragePrice : null);
         } catch (error) {
+            setTicketMessage("Failed to check ticket.");
+            setNotificationVariant("error");
             console.error("Error checking ticket:", error);
         }
     }
@@ -62,11 +67,15 @@ const ListTicket = () => {
             const data = await response.json();
             if (data.success) {
                 setTicketMessage("Ticket resold successfully.");
+                setNotificationVariant("success");
                 setTicketInfo(null);
             } else {
                 setTicketMessage(data.error || "Failed to resell ticket.");
+                setNotificationVariant("error");
             }
         } catch (error) {
+            setTicketMessage("Failed to resell ticket.");
+            setNotificationVariant("error");
             console.error("Error reselling ticket:", error);
         }
     }
@@ -79,7 +88,7 @@ const ListTicket = () => {
             {ticketMessage && (
                 <Notification
                     text={ticketMessage}
-                    variant={ticketInfo ? "success" : "error"}
+                    variant={notificationVariant}
                 />
             )}
 

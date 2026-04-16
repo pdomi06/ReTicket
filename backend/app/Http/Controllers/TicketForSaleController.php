@@ -91,8 +91,8 @@ class TicketForSaleController extends Controller implements HasMiddleware
     }
 
     public function store(StoreTicketForSaleRequest $request)
-    {
-        $this->authorize('create', TicketForSale::class);
+        {
+            $this->authorize('create', TicketForSale::class);
 
         $data = $request->validated();
         $originalTicket = OriginalTicket::with('event')->findOrFail($data['originalTicketId']);
@@ -121,6 +121,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $user = $request->user();
         $data['fromUserId'] = $user->id;
 
+        $data['isResell'] = false;
         $data['inBasket'] = false;
 
 
@@ -137,7 +138,10 @@ class TicketForSaleController extends Controller implements HasMiddleware
     public function update(UpdateTicketForSaleRequest $request, TicketForSale $ticketForSale)
     {
         $this->authorize('update', $ticketForSale);
-        $ticketForSale->update($request->validated());
+        $data = $request->validated();
+        $data['isResell'] = $ticketForSale->isResell;
+
+        $ticketForSale->update($data);
         return response()->json($ticketForSale, 200);
     }
 

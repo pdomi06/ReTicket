@@ -43,8 +43,8 @@ class TicketForSale extends Model
             ->when($filters['price'] ?? null, fn($q, $value) =>
                 $q->where('price', $value)
             )
-            ->when($filters['isResell'] ?? null, fn($q, $value) =>
-                $q->where('isResell', $value)
+            ->when(array_key_exists('isResell', $filters) && $filters['isResell'] !== null, fn($q) =>
+                $q->where('isResell', $filters['isResell'])
             )
             ->when($filters['inBasket'] ?? null, fn($q, $value) =>
                 $q->where('inBasket', $value)

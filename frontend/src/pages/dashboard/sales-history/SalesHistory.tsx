@@ -87,7 +87,7 @@ const SalesHistory = () => {
                         <strong className={styles.balanceStatValue}>{salesSummary.totalEarned} Ft</strong>
                     </div>
                     <div className={styles.balanceStat}>
-                        <span className={styles.balanceStatLabel}>Unauthorized</span>
+                        <span className={styles.balanceStatLabel}>Pending</span>
                         {salesSummary.totalEarned - salesSummary.balance === 0 && (
                             <strong className={styles.balanceStatValue}> - </strong>
                         )}

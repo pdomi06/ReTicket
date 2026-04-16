@@ -27,7 +27,6 @@ class StoreTicketForSaleRequest extends FormRequest
         'fromUserId' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
         'eventId' => ['required', 'integer', 'exists:events,id'],
         'price' => ['required', 'numeric', 'min:0'],
-        'isResell' => ['sometimes', 'boolean'],
         ];
     }
 }

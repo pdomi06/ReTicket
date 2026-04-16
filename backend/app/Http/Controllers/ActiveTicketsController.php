@@ -164,7 +164,7 @@ class ActiveTicketsController extends Controller implements HasMiddleware
             'exists' => true,
             'message' => 'Ticket is active.',
             'originalTicket' => $originalTicket,
-            'averagePrice' => TicketForSale::query()->avg('price'),
+            'averagePrice' => TicketForSale::query()->where('eventId', $activeTicket->originalTicket->eventId)->avg('price'),
         ], 200);
     }
     public function resellTicket(Request $request)
