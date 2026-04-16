@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { type RouteObject } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import About from "../pages/about/About.tsx";
+import Contact from "../pages/contact/Contact.tsx";
 
 
 const Home = lazy(() => import("../pages/test/test.tsx"));
@@ -52,6 +53,7 @@ export const routes: RouteObject[] = [
       { path: "/cart", element: <Cart /> },
       { path: "/validate", element: <Validate /> },
       { path: "/about", element: <About /> },
+      {path: "/contact", element:<Contact/>},
       {
         path: "/dashboard",
         element: <Dashboard />,
