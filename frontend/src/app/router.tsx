@@ -1,12 +1,12 @@
 import { lazy } from "react";
 import { type RouteObject } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout.tsx";
-import About from "../pages/about/About.tsx";
-import Contact from "../pages/contact/Contact.tsx";
-import Terms from "../pages/terms/Terms.tsx";
-import Privacy from "../pages/privacy/Privacy.tsx";
 
 
+const About = lazy(() => import("../pages/about/About.tsx"));
+const Contact = lazy(() => import("../pages/contact/Contact.tsx"));
+const Terms = lazy(() => import("../pages/terms/Terms.tsx"));
+const Privacy = lazy(() => import("../pages/privacy/Privacy.tsx"));
 const Home = lazy(() => import("../pages/test/test.tsx"));
 const Login = lazy(() => import("../pages/login/Login.tsx"));
 const Register = lazy(() => import("../pages/register/Register.tsx"));
