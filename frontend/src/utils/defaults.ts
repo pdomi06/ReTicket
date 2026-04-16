@@ -52,6 +52,5 @@ export const defaultICartContext: ICartContext = {
   tickets: [],
   addToCart: async () => false,
   removeFromCart: async () => {},
-  clearCart: () => {},
-  basketExpiresAt: null
+  clearCart: () => {}
 }
