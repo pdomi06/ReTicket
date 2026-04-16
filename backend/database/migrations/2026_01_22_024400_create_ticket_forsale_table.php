@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->boolean('inBasket');
             $table->timestamp('reservationStartedAt')->nullable();
+            $table->boolean('isResell')->default(false);
         });
 
         Schema::enableForeignKeyConstraints();

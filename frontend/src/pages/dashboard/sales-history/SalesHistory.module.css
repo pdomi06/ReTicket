@@ -1,0 +1,225 @@
+.ticketsContainer {
+    background-color: transparent;
+}
+
+.balanceCard {
+    background: linear-gradient(180deg, rgba(24, 24, 24, 0.98) 0%, rgba(17, 17, 17, 0.98) 100%);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    padding: 1.25rem 1.25rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.balanceHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.balanceLabel {
+    margin: 0 0 0.35rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.balanceValueRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.balanceValue {
+    margin: 0;
+    color: var(--color-text);
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.balanceBadge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(221, 152, 0, 0.55);
+    border-radius: 999px;
+    color: #f5a800;
+    background-color: rgba(245, 168, 0, 0.12);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.35rem 0.7rem;
+    white-space: nowrap;
+}
+
+.balanceNote {
+    margin: 0.45rem 0 0;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+}
+
+.balanceDivider {
+    height: 1px;
+    background-color: var(--color-border-subtle);
+    margin: 1rem 0;
+}
+
+.balanceStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.balanceStat {
+    background-color: rgba(10, 10, 10, 0.45);
+    border-radius: 0.85rem;
+    border: 1px solid var(--color-border-subtle);
+    padding: 0.9rem 1rem;
+    min-width: 0;
+}
+
+.balanceStatLabel {
+    display: block;
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.balanceStatValue {
+    color: var(--color-text);
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.tableWrapper {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.table {
+    --bs-table-bg: var(--color-main);
+    --bs-table-color: var(--color-text);
+    --bs-table-border-color: var(--color-border-subtle);
+    --bs-table-hover-bg: var(--color-accent-surface-soft);
+    --bs-table-hover-color: var(--color-text);
+    --bs-table-striped-bg: var(--color-accent-surface-subtle);
+    --bs-table-striped-color: var(--color-text);
+
+    border-color: var(--color-border-subtle);
+    margin-bottom: 0;
+}
+
+.table thead {
+    background-color: var(--color-secondary);
+    border-bottom: 2px solid var(--color-accent);
+}
+
+.table thead th {
+    background-color: var(--color-secondary) !important;
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--color-accent-surface-soft);
+}
+
+.table tbody td {
+    background-color: transparent !important;
+    color: var(--color-text);
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.headerSection h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.filtersSection {
+    margin-bottom: 1.5rem;
+    background-color: var(--color-accent-surface-subtle);
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-accent-border-soft);
+}
+
+.filterGroup {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filterGroup .form-select {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: var(--color-main);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: var(--shadow-accent-button);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filterGroup .form-select:focus,
+.filterGroup .form-select:hover {
+    outline: none;
+    box-shadow: var(--shadow-accent-button-hover) !important;
+    transform: translateY(-2px) !important;
+}
+
+.resultCount {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: 0.75rem 0 0 0;
+}
+
+@media (max-width: 768px) {
+    .headerSection {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .balanceHeader {
+        flex-direction: column;
+    }
+
+    .balanceStats {
+        grid-template-columns: 1fr;
+    }
+}

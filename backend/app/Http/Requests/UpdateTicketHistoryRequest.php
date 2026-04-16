@@ -28,6 +28,7 @@ class UpdateTicketHistoryRequest extends FormRequest
         'toUser' => ['sometimes', 'email'],
         'price' => ['sometimes', 'numeric', 'min:0'],
         'platformFee' => ['sometimes', 'numeric', 'min:0'],
+        'isResell' => ['sometimes', 'boolean'],
         ];
     }
 }

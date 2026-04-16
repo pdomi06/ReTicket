@@ -102,6 +102,7 @@ export interface ITicketHistory {
   toUser: string;
   price: number;
   platformFee: number;
+  isResell: boolean;
 }
 
 export interface ITicketForsale {
@@ -109,6 +110,7 @@ export interface ITicketForsale {
   originalTicketId: number;
   fromUserId: number | null;
   price: number;
+  isResell: boolean;
   inBasket: boolean;
   eventId: number;
   row?: number;
@@ -262,4 +264,14 @@ export interface IDashboardTicket {
   seatNumber: number;
   price: number;
   status: typeof TicketStatus[keyof typeof TicketStatus];
+}
+export interface IMyDashboardTicket {
+  id: number;
+  eventName: string;
+  eventDate: number | string;
+  venue: string;
+  section: string;
+  row: number;
+  seatNumber: number;
+  price: number;
 }
