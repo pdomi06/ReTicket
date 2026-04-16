@@ -23,10 +23,10 @@ class StoreOrdersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'subtotal' => ['sometimes', 'numeric', 'min:0'],
-            'platformFee' => ['sometimes', 'numeric', 'min:0'],
+            'subtotal' => ['required', 'numeric', 'min:0'],
+            'platformFee' => ['required', 'numeric', 'min:0'],
             'tickets' => ['required', 'array', 'min:1'],
-            'tickets.*' => ['required', 'integer', 'distinct', 'exists:ticket_forsale,id'],
+            'tickets.*' => ['required', 'integer', 'exists:ticket_forsale,id'],
         ];
     }
 }

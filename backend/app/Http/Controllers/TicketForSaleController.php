@@ -17,12 +17,10 @@ use Illuminate\Http\Request;
 
 class TicketForSaleController extends Controller implements HasMiddleware
 {
-    private const RESERVATION_TTL_MINUTES = 30;
-
     public static function middleware(): array
     {
         return [
-            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut', 'finalize', 'addToBasket', 'removeFromBasket', 'refreshBasket', 'verifyBasket']),
+            new Middleware('auth:sanctum', except: ['index', 'search', 'show', 'checkOut', 'finalize', 'addToBasket', 'removeFromBasket']),
         ];
     }
 
@@ -56,22 +54,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         }
 
         if (array_key_exists('inBasket', $filters) && $filters['inBasket'] !== null) {
-            $inBasketFilter = filter_var($filters['inBasket'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-
-            if ($inBasketFilter === false) {
-                $query->where(function ($q) {
-                    $q->where('inBasket', false)
-                        ->orWhere(function ($inner) {
-                            $inner->where('inBasket', true)
-                                ->where(function ($expires) {
-                                    $expires->where('reservation_expires_at', '<=', now())
-                                        ->orWhereNull('reservation_expires_at');
-                                });
-                        });
-                });
-            } else {
-                $query->where('inBasket', true);
-            }
+            $query->where('inBasket', $filters['inBasket']);
         }
 
         return response()->json(['success' => true, 'data' => $query->get()], 200);
@@ -135,174 +118,72 @@ class TicketForSaleController extends Controller implements HasMiddleware
         return response()->json(["message" => "Ticket for sale deleted successfully"], 200);
     }
 
-    public function addToBasket(Request $request, $id)
+    public function basketChange(TicketForSale $ticketForSale)
     {
-        $incomingToken = $request->header('X-Basket-Key');
-
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['message' => 'Missing basket token.'], 422);
-        }
-
-        $now = now();
-        $expiry = $now->copy()->addMinutes(self::RESERVATION_TTL_MINUTES);
-
-        return DB::transaction(function () use ($id, $incomingToken, $now, $expiry) {
-            $ticket = TicketForSale::whereKey($id)->lockForUpdate()->firstOrFail();
-
-            // Conflict check: ticket is held by a DIFFERENT token that hasn't expired
-            if ($ticket->hasActiveReservation() && $ticket->basket_token !== $incomingToken) {
-                return response()->json(['message' => 'Ticket is already reserved by another session.'], 409);
-            }
-
-            $ticket->update([
-                'inBasket' => true,
-                'basket_token' => $incomingToken,
-                'reservation_started_at' => $now,
-                'reservation_expires_at' => $expiry,
-            ]);
-
-            // Reset timer for this token's active cart items on every add interaction.
-            TicketForSale::where('basket_token', $incomingToken)
-                ->where('inBasket', true)
-                ->where(function ($q) use ($ticket, $now) {
-                    $q->where('id', $ticket->id)
-                        ->orWhere('reservation_expires_at', '>', $now);
-                })
-                ->update([
-                    'reservation_started_at' => $now,
-                    'reservation_expires_at' => $expiry,
-                ]);
-
+        if (auth()->check() && auth()->id() === $ticketForSale->fromUserId) {
             return response()->json([
-                'message' => 'Ticket added to basket.',
-                'basketExpiresAt' => $expiry->toIso8601String(),
-                'ticket' => $ticket->fresh(),
-            ]);
-        });
-    }
-
-    public function removeFromBasket(Request $request, $id)
-    {
-        $incomingToken = $request->header('X-Basket-Key');
-
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['message' => 'Missing basket token.'], 422);
+                'success' => false,
+                'message' => 'You cannot modify your own listed ticket basket state.',
+            ], 403);
         }
 
-        $now = now();
+        $ticketForSale->inBasket = !$ticketForSale->inBasket;
+        $ticketForSale->save();
 
-        return DB::transaction(function () use ($id, $incomingToken, $now) {
-            $ticket = TicketForSale::whereKey($id)->lockForUpdate()->firstOrFail();
-
-            // Allow removal only by the owner or if the hold has already expired
-            if ($ticket->inBasket && $ticket->basket_token !== $incomingToken && $ticket->hasActiveReservation()) {
-                return response()->json(['message' => 'You do not own this reservation.'], 403);
-            }
-
-            $ticket->update([
-                'inBasket' => false,
-                'basket_token' => null,
-                'reservation_started_at' => null,
-                'reservation_expires_at' => null,
-            ]);
-
-            // Reset timer for the owner's REMAINING cart items
-            if ($incomingToken) {
-                $newExpiry = $now->copy()->addMinutes(self::RESERVATION_TTL_MINUTES);
-                TicketForSale::where('basket_token', $incomingToken)
-                    ->where('inBasket', true)
-                    ->where('reservation_expires_at', '>', $now)
-                    ->update([
-                        'reservation_started_at' => $now,
-                        'reservation_expires_at' => $newExpiry,
-                    ]);
-            }
-
-            return response()->json(['message' => 'Ticket removed from basket.']);
-        });
+        return response()->json($ticketForSale, 200);
     }
 
-    /**
-     * Resets the 30-minute TTL for every ticket held by the given basket token.
-     * Called periodically by the frontend while the cart has items.
-     */
-    public function refreshBasket(Request $request)
+    public function addToBasket(TicketForSale $ticketForSale)
     {
-        $incomingToken = $request->header('X-Basket-Key');
+        $affected = DB::table('ticket_forsale')
+            ->where('id', $ticketForSale->id)
+            ->where('inBasket', false)
+            ->update(['inBasket' => true]);
 
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['message' => 'Missing basket token.'], 422);
+        if ($affected === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket is already in another basket.',
+            ], 409);
         }
 
-        $now = now();
-        $newExpiry = $now->copy()->addMinutes(self::RESERVATION_TTL_MINUTES);
+        $ticketForSale->refresh();
+        return response()->json(['success' => true, 'data' => $ticketForSale], 200);
+    }
 
-        $updated = TicketForSale::where('basket_token', $incomingToken)
+    public function removeFromBasket(TicketForSale $ticketForSale)
+    {
+        $affected = DB::table('ticket_forsale')
+            ->where('id', $ticketForSale->id)
             ->where('inBasket', true)
-            ->where('reservation_expires_at', '>', $now)
-            ->update([
-                'reservation_started_at' => $now,
-                'reservation_expires_at' => $newExpiry,
-            ]);
+            ->update(['inBasket' => false]);
 
-        return response()->json([
-            'refreshed' => $updated,
-            'basketExpiresAt' => $updated > 0 ? $newExpiry->toIso8601String() : null,
-        ]);
-    }
-
-    /**
-     * Returns the current server-side expiry for every ticket held by this token.
-     * Called by CartContext on mount to verify localStorage state against the server.
-     */
-    public function verifyBasket(Request $request)
-    {
-        $incomingToken = $request->header('X-Basket-Key');
-
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['tickets' => [], 'basketExpiresAt' => null]);
+        if ($affected === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket is not in a basket.',
+            ], 409);
         }
 
-        $tickets = TicketForSale::where('basket_token', $incomingToken)
-            ->where('inBasket', true)
-            ->where('reservation_expires_at', '>', now())
-            ->get(['id', 'reservation_expires_at']);
-
-        $minExpiry = $tickets->min('reservation_expires_at');
-
-        return response()->json([
-            'tickets' => $tickets,
-            'basketExpiresAt' => $minExpiry ? \Carbon\Carbon::parse($minExpiry)->toIso8601String() : null,
-        ]);
+        $ticketForSale->refresh();
+        return response()->json(['success' => true, 'data' => $ticketForSale], 200);
     }
 
     public function checkOut(CheckOutTicketForSaleRequest $request)
     {
-        $incomingToken = $request->header('X-Basket-Key');
-
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['message' => 'Missing or invalid basket token.'], 422);
-        }
-
         $email = $request->validated()['email'];
         $orderId = $request->validated()['orderId'];
         $ticketIds = $request->validated()['tickets'];
 
+        if (!is_string($paymentIntentId) || $paymentIntentId === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment reference is required.',
+            ], 422);
+        }
+
         foreach ($ticketIds as $ticketId) {
             $ticketForSale = TicketForSale::find($ticketId);
-
-            if (! $ticketForSale) {
-                return response()->json(['message' => "Ticket {$ticketId} not found."], 404);
-            }
-
-            if (! $ticketForSale->inBasket || $ticketForSale->basket_token !== $incomingToken) {
-                return response()->json(['message' => "Ticket {$ticketId} is not reserved by your session."], 409);
-            }
-
-            if (! $ticketForSale->hasActiveReservation()) {
-                return response()->json(['message' => "Your reservation for ticket {$ticketId} has expired. Please add it to your cart again."], 410);
-            }
-
             $ticketListingId = $this->generateUniqueTicketListingId();
 
             DB::transaction(function () use ($ticketForSale, $ticketListingId, $email, $orderId) {
@@ -329,12 +210,6 @@ class TicketForSaleController extends Controller implements HasMiddleware
 
     public function finalize(Request $request)
     {
-        $incomingToken = $request->header('X-Basket-Key');
-
-        if (! $this->isValidBasketToken($incomingToken)) {
-            return response()->json(['message' => 'Missing or invalid basket token.'], 422);
-        }
-
         $validated = $request->validate([
             'orderId' => ['required', 'integer', 'exists:orders,id'],
         ]);
@@ -342,17 +217,6 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $orderId = (int) $validated['orderId'];
         $order = DB::table('orders')->where('id', $orderId)->first();
         $tickets = DB::table('active_tickets')->where('orderId', $orderId)->get();
-
-        // Verify ownership: all tickets in this order must be held by the incoming basket token
-        foreach ($tickets as $ticket) {
-            $ticketForSale = DB::table('ticket_forsale')
-                ->where('originalTicketId', $ticket->originalTicketId)
-                ->first();
-
-            if (! $ticketForSale || ! $ticketForSale->inBasket || $ticketForSale->basket_token !== $incomingToken) {
-                return response()->json(['message' => 'You do not own the tickets in this order.'], 403);
-            }
-        }
 
         $historyCreated = 0;
         $listingsDeleted = 0;
@@ -413,12 +277,5 @@ class TicketForSaleController extends Controller implements HasMiddleware
         } while (DB::table('active_tickets')->where('ticketListingId', $ticketListingId)->exists());
 
         return $ticketListingId;
-    }
-
-    private function isValidBasketToken(?string $token): bool
-    {
-        return is_string($token)
-            && strlen($token) <= 36
-            && Str::isUuid($token);
     }
 }
