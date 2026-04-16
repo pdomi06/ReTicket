@@ -1,4 +1,4 @@
-import styles from './contact.module.css';
+import styles from './Contact.module.css';
 
 interface Channel {
   icon: string;
