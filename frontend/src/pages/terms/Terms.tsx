@@ -58,21 +58,23 @@ const sections: TermsSection[] = [
   }
 ];
 
+const lastUpdated = new Date('2026.04.16');
+
 const Terms = () => {
   return (
     <main className={styles.page}>
       <div className={styles.container}>
         <div className={styles.pageHeader}>
           <h1>Terms of Service</h1>
-          <p className={styles.lastUpdated}>Last updated: {new Date().toLocaleString('default', { month: 'long' })} 2026</p>
+          <p className={styles.lastUpdated}>Last updated: {lastUpdated.toLocaleDateString()}</p>
           <p className={styles.intro}>
             Please read these terms carefully before using ReTicket. By using
             our platform you agree to the following.
           </p>
         </div>
         <div className={styles.sections}>
-          {sections.map((section, index) => (
-            <div key={index} className={styles.section}>
+          {sections.map((section) => (
+            <div key={section.title} className={styles.section}>
               <h2 className={styles.sectionTitle}>{section.title}</h2>
               <p className={styles.sectionContent}>{section.content}</p>
             </div>

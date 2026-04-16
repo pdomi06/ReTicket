@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import styles from './About.module.css';
 
 const AboutCTA = () => {
@@ -10,18 +11,18 @@ const AboutCTA = () => {
 				</p>
 				<p className={styles.ctaTagline}>Buy. Sell. Enter. With confidence.</p>
 				<div className={styles.ctaButtons}>
-					<a href="/browse" className={styles.ctaPrimary}>
+					<Link to="/browse" className={styles.ctaPrimary}>
 						Explore Events
-					</a>
-					<a href="/register" className={styles.ctaSecondary}>
+					</Link>
+					<Link to="/register" className={styles.ctaSecondary}>
 						Get Started
-					</a>
+					</Link>
 				</div>
 				<p className={styles.ctaContact}>
 					Have questions? We're here to help.{' '}
-					<a href="/contact" className={styles.contactLink}>
+					<Link to="/contact" className={styles.contactLink}>
 						Contact us
-					</a>
+					</Link>
 				</p>
 			</div>
 		</section>

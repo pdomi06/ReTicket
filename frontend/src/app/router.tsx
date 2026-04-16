@@ -55,7 +55,7 @@ export const routes: RouteObject[] = [
       { path: "/cart", element: <Cart /> },
       { path: "/validate", element: <Validate /> },
       { path: "/about", element: <About /> },
-      {path: "/contact", element:<Contact/>},
+      { path: "/contact", element:<Contact/>},
       { path: "/terms", element: <Terms /> },
       { path: "/privacy", element: <Privacy /> },
       {
