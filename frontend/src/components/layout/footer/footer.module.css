@@ -55,6 +55,8 @@
 }
 
 .footer-links {
+  display: flex;
+  justify-content: center;
   list-style: none;
   padding: 0;
   flex-wrap: wrap;
@@ -69,6 +71,10 @@
   text-decoration: none;
   letter-spacing: 1px;
   transition: opacity 0.3s;
+}
+.footer-links a:not(:last-child){
+  border-right: 1px solid currentColor;
+  padding-right: 6px;
 }
 
 .footer-links a:hover {

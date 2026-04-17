@@ -1,8 +1,12 @@
 import { lazy } from "react";
-import { type RouteObject } from "react-router-dom";
+import { type RouteObject } from "react-router";
 import MainLayout from "../components/layout/MainLayout.tsx";
 
 
+const About = lazy(() => import("../pages/about/About.tsx"));
+const Contact = lazy(() => import("../pages/contact/Contact.tsx"));
+const Terms = lazy(() => import("../pages/terms/Terms.tsx"));
+const Privacy = lazy(() => import("../pages/privacy/Privacy.tsx"));
 const Home = lazy(() => import("../pages/test/test.tsx"));
 const Login = lazy(() => import("../pages/login/Login.tsx"));
 const Register = lazy(() => import("../pages/register/Register.tsx"));
@@ -50,6 +54,10 @@ export const routes: RouteObject[] = [
       { path: "/vendor", element: <Vendor /> },
       { path: "/cart", element: <Cart /> },
       { path: "/validate", element: <Validate /> },
+      { path: "/about", element: <About /> },
+      { path: "/contact", element:<Contact/> },
+      { path: "/terms", element: <Terms /> },
+      { path: "/privacy", element: <Privacy /> },
       {
         path: "/dashboard",
         element: <Dashboard />,
