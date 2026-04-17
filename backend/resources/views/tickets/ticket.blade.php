@@ -1,174 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Ticket</title>
+    <title>Event Ticket | Clean Spaced Layout for PDF</title>
     <style>
-        @page {
-            margin: 24px;
-        }
-
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: DejaVu Sans, sans-serif;
-            color: #111827;
-            background: #f7f7f8;
+            font-family: 'DejaVu Sans', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             font-size: 13px;
-            line-height: 1.35;
+            color: #111827;
+            background: #f1f5f9;
+            padding: 28px 20px;
         }
 
-        .page-safe {
-            width: 100%;
-            max-width: 760px;
-            margin: 0 auto;
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
+        /* main ticket card – no interactive elements, safe for PDF */
         .ticket-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            overflow: hidden;
+            max-width: 780px;
+            margin: 0 auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
             background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
         }
 
+        /* header with event branding */
         .ticket-header {
-            padding: 22px 24px;
             background: #111827;
             border-top: 6px solid #e8a020;
+            padding: 26px 28px;
         }
 
         .header-title {
-            margin: 0;
-            font-size: 28px;
-            line-height: 1.15;
             color: #ffffff;
+            font-size: 30px;
             font-weight: 800;
+            letter-spacing: -0.3px;
+            margin: 0;
+            line-height: 1.2;
         }
 
         .header-subtitle {
-            margin: 8px 0 0;
-            color: #d1d5db;
-            font-size: 13px;
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: 500;
         }
 
+        /* content area */
         .content {
-            padding: 20px 24px 16px;
+            padding: 24px 28px 20px;
         }
 
-        .info-grid {
+        /* info table styling */
+        .info-table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
         }
 
-        .info-grid td {
+        .info-table td {
             width: 50%;
             vertical-align: top;
-            padding: 10px 4px;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 6px;
+            border-bottom: 1px solid #edf2f7;
         }
 
         .label {
-            margin: 0 0 4px;
-            color: #6b7280;
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.7px;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            color: #5b6e8c;
+            margin-bottom: 6px;
         }
 
         .value {
-            margin: 0;
-            color: #111827;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
-            word-wrap: break-word;
+            color: #0f172a;
+            line-height: 1.4;
         }
 
+        /* --- SPACIOUS SEAT SECTION: NO BUBBLES, NO HOVER, MAXIMUM GAP --- */
+        /* Flex container with generous gap between seat parts */
+        .seat-details-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;           /* large, clear spacing between "Section Floor", "Row 1", "Seat 1" */
+            align-items: baseline;
+            margin-top: 2px;
+        }
+
+        /* each seat segment – clean text, no background, no padding, no rounded bubbles.
+           Removed all hover effects, transitions, shadows, and dead interactive styles. */
+        .seat-part {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.3;
+            letter-spacing: normal;
+            background: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            backdrop-filter: none;
+            display: inline-block;
+        }
+
+        /* General admission (single item) – same clean style */
+        .seat-part.single-chip {
+            background: none;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* barcode box – clean, no hover effects */
         .barcode-box {
-            margin-top: 16px;
-            border: 1px dashed #9ca3af;
-            border-radius: 10px;
-            padding: 14px;
-            background: #f9fafb;
+            margin-top: 28px;
+            border: 1px dashed #94a3b8;
+            border-radius: 20px;
+            padding: 18px 12px;
+            background: #fafcff;
             text-align: center;
         }
 
         .barcode-label {
-            margin: 0 0 8px;
             font-size: 11px;
             text-transform: uppercase;
-            color: #6b7280;
-            letter-spacing: 0.8px;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+            color: #4b556b;
+            margin-bottom: 10px;
         }
 
         .barcode-value {
-            margin: 0;
-            font-family: DejaVu Sans Mono, monospace;
-            font-size: 18px;
-            letter-spacing: 4px;
-            color: #111827;
+            font-family: 'Courier New', 'SF Mono', monospace;
+            font-size: 22px;
+            letter-spacing: 6px;
             font-weight: 700;
+            color: #0b1e33;
+            background: #ffffff;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
         }
 
+        /* footer – simple, non-interactive */
         .ticket-footer {
-            padding: 12px 24px 16px;
-            color: #6b7280;
+            padding: 16px 28px 22px;
             font-size: 11px;
-            border-top: 1px solid #f1f5f9;
-            background: #fcfcfd;
+            color: #5f6c84;
+            border-top: 1px solid #ecf3fa;
+            background: #fefefe;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* responsive: gap remains comfortable even on narrow screens */
+        @media (max-width: 550px) {
+            .content {
+                padding: 18px 20px;
+            }
+            .seat-details-wrapper {
+                gap: 24px;
+            }
+            .barcode-value {
+                font-size: 18px;
+                letter-spacing: 4px;
+            }
+            .header-title {
+                font-size: 24px;
+            }
+        }
+
+        /* clean border removal for last row */
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* extra spacing for readability */
+        .info-table td:first-child {
+            padding-right: 16px;
         }
     </style>
 </head>
 <body>
-    <div class="page-safe">
-        <div class="ticket-card">
-            <div class="ticket-header">
-                <h1 class="header-title">{{ $ticket->event_name }}</h1>
-                <p class="header-subtitle">{{ $ticket->venue }}</p>
-            </div>
+    <div class="ticket-card">
+        <!-- header: dynamic event & venue -->
+        <div class="ticket-header">
+            <div class="header-title">{{ $ticket->event_name }}</div>
+            <div class="header-subtitle">{{ $ticket->venue }}</div>
+        </div>
 
-            <div class="content">
-                <table class="info-grid" role="presentation">
-                    <tr>
-                        <td>
-                            <p class="label">Event Date</p>
-                            <p class="value">{{ $ticket->event_date }}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="label">Event Time</p>
-                            <p class="value">{{ $ticket->event_time }}</p>
-                        </td>
-                        <td>
-                            <p class="label">Seat / General Admission</p>
-                            <p class="value">{{ $ticket->seat ?? 'General Admission' }}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <p class="label">Ticket Number</p>
-                            <p class="value">{{ $ticket->ticket_number }}</p>
-                        </td>
-                    </tr>
-                </table>
+        <div class="content">
+            <table class="info-table">
+                <!-- row 1: ticket holder & event date -->
+                <tr>
+                    <td>
+                        <div class="label">Ticket Holder</div>
+                        <div class="value">{{ $ticket->ticket_holder ?? $ticket->holder_name ?? 'Ticket Holder' }}</div>
+                    </td>
+                    <td>
+                        <div class="label">Event Date</div>
+                        <div class="value">{{ $ticket->event_date }}</div>
+                    </td>
+                </tr>
+                <!-- row 2: event time & SEAT / GENERAL ADMISSION (enhanced spacing, no dead code) -->
+                <tr>
+                    <td>
+                        <div class="label">Event Time</div>
+                        <div class="value">{{ $ticket->event_time }}</div>
+                    </td>
+                    <td>
+                        <div class="label">Seat / General Admission</div>
+                        <!--
+                            ===========================================================
+                            SPACIOUS SEAT DISPLAY – LARGE GAP (32px) BETWEEN ELEMENTS
+                            Removed all hover, transitions, background bubbles.
+                            Splits "Section Floor | Row 1 | Seat 1" into separate pieces.
+                            ===========================================================
+                        -->
+                        <div class="value seat-details-wrapper">
+                            @php
+                                // Get seat info: fallback to 'General Admission' if null/empty
+                                $rawSeat = $ticket->seat ?? null;
+                                $seatInfo = (!empty($rawSeat) || $rawSeat === '0') ? $rawSeat : 'General Admission';
+                                
+                                $seatParts = [];
+                                
+                                // if seat info contains pipe separator (e.g., "Section Floor | Row 1 | Seat 1")
+                                // split into clean segments for maximum visual spacing
+                                if (is_string($seatInfo) && strpos($seatInfo, '|') !== false) {
+                                    $rawParts = explode('|', $seatInfo);
+                                    $seatParts = array_map('trim', $rawParts);
+                                    // remove empty segments if any
+                                    $seatParts = array_filter($seatParts, function($part) {
+                                        return $part !== '';
+                                    });
+                                    $seatParts = array_values($seatParts);
+                                } else {
+                                    // plain seat string (e.g., "General Admission" or "Section Floor Row 1 Seat 1")
+                                    // keep as a single unit for clarity
+                                    $seatParts = [$seatInfo];
+                                }
+                            @endphp
 
-                <div class="barcode-box">
-                    <p class="barcode-label">Ticket Verification Code</p>
-                    <p class="barcode-value">{{ $ticket->ticket_number }}</p>
-                </div>
-            </div>
+                            @forelse($seatParts as $index => $segment)
+                                <!-- each seat detail is plain text with generous gap (32px) – no bubble background, no hover -->
+                                <span class="seat-part {{ count($seatParts) === 1 ? 'single-chip' : '' }}">
+                                    {{ $segment }}
+                                </span>
+                            @empty
+                                <!-- ultimate fallback -->
+                                <span class="seat-part single-chip">General Admission</span>
+                            @endforelse
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
-            <div class="ticket-footer">
-                Present this ticket at the entrance. Non-transferable.
+            <!-- barcode section with ticket verification code -->
+            <div class="barcode-box">
+                <div class="barcode-label">Ticket Verification Code</div>
+                <div class="barcode-value">{{ $ticket->ticket_number }}</div>
             </div>
+        </div>
+
+        <div class="ticket-footer">
+            ✦ Present this ticket at the entrance. Non-transferable. ✦
         </div>
     </div>
 </body>
