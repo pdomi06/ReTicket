@@ -37,23 +37,26 @@ const categories: SupportCategory[] = [
 const ContactSupport = () => {
   return (
     <section className={styles.support}>
-      <div className={styles.sectionHeader}>
-        <h2>What Do You Need Help With?</h2>
-        <p>Click a category to send us a pre-filled email</p>
-      </div>
-      <div className={styles.supportGrid}>
-        {categories.map((cat, index) => (
-          <a
-            key={index}
-            href={`mailto:support@reticket.com?subject=${encodeURIComponent(cat.emailSubject)}`}
-            className={styles.supportCard}
-          >
-            <div className={styles.supportIcon}>{cat.icon}</div>
-            <h3 className={styles.supportTitle}>{cat.title}</h3>
-            <p className={styles.supportDesc}>{cat.description}</p>
-            <span className={styles.supportArrow}>→</span>
-          </a>
-        ))}
+      <div className="container-xl">
+        <div className={styles.sectionHeader}>
+          <h2>What Do You Need Help With?</h2>
+          <p>Click a category to send us a pre-filled email</p>
+        </div>
+        <div className="row g-4 g-lg-5 justify-content-center">
+          {categories.map((cat, index) => (
+            <div key={index} className="col-12 col-md-6">
+              <a
+                href={`mailto:support@reticket.com?subject=${encodeURIComponent(cat.emailSubject)}`}
+                className={`${styles.supportCard} h-100`}
+              >
+                <div className={styles.supportIcon}>{cat.icon}</div>
+                <h3 className={styles.supportTitle}>{cat.title}</h3>
+                <p className={styles.supportDesc}>{cat.description}</p>
+                <span className={styles.supportArrow}>→</span>
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -28,21 +28,25 @@ const channels: Channel[] = [
 const ContactChannels = () => {
   return (
     <section className={styles.channels}>
-      <div className={styles.sectionHeader}>
-        <h2>Contact Us Directly</h2>
-        <p>Choose the channel that works best for you</p>
-      </div>
-      <div className={styles.channelsGrid}>
-        {channels.map((channel) => (
-          <div key={channel.label} className={styles.channelCard}>
-            <div className={styles.channelIcon}>{channel.icon}</div>
-            <h3 className={styles.channelLabel}>{channel.label}</h3>
-            <a href={channel.href} className={styles.channelValue}>
-              {channel.value}
-            </a>
-            <p className={styles.channelNote}>{channel.note}</p>
-          </div>
-        ))}
+      <div className="container-xl">
+        <div className={styles.sectionHeader}>
+          <h2>Contact Us Directly</h2>
+          <p>Choose the channel that works best for you</p>
+        </div>
+        <div className="row g-4 g-lg-5 justify-content-center">
+          {channels.map((channel) => (
+            <div key={channel.label} className="col-12 col-md-6">
+              <div className={`${styles.channelCard} h-100`}>
+                <div className={styles.channelIcon}>{channel.icon}</div>
+                <h3 className={styles.channelLabel}>{channel.label}</h3>
+                <a href={channel.href} className={styles.channelValue}>
+                  {channel.value}
+                </a>
+                <p className={styles.channelNote}>{channel.note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

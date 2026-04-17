@@ -2,7 +2,7 @@
 .channels,
 .support,
 .vendorCta {
-  padding: var(--space-3xl) var(--space-xl);
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
 }
 
 .hero {
@@ -33,7 +33,7 @@
 
 .sectionHeader {
   max-width: 760px;
-  margin: 0 auto var(--space-2xl);
+  margin: 0 auto clamp(2rem, 4vw, 3rem);
   text-align: center;
 }
 
@@ -55,19 +55,11 @@
   background: var(--color-secondary);
 }
 
-.channelsGrid {
-  max-width: 980px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-
 .channelCard {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 2.5rem 2rem;
+  padding: 2.75rem 2.25rem;
   text-align: center;
 }
 
@@ -109,22 +101,14 @@
   background: var(--color-bg);
 }
 
-.supportGrid {
-  max-width: 980px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
 .supportCard {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 1.75rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.55rem;
   text-decoration: none;
   color: var(--color-text);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -141,14 +125,14 @@
 }
 
 .supportTitle {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
 }
 
 .supportDesc {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   color: var(--color-text-muted);
   line-height: 1.5;
   margin: 0;
@@ -166,7 +150,7 @@
 }
 
 .vendorCtaContent {
-  max-width: 600px;
+  max-width: 760px;
   margin: 0 auto;
   text-align: center;
   display: flex;
@@ -196,9 +180,13 @@
 .vendorCtaButton {
   background: var(--color-primary);
   color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: var(--radius-md, 0.5rem);
   padding: 0.9rem 2rem;
+  min-width: 220px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -207,217 +195,4 @@
 
 .vendorCtaButton:hover {
   background: var(--color-accent-hover);
-}
-
-@media (max-width: 900px) {
-  .channelsGrid,
-  .supportGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .hero,
-  .channels,
-  .support,
-  .vendorCta {
-    padding: var(--space-2xl) var(--space-lg);
-  }
-
-  .channelCard {
-    padding: 2rem 1.5rem;
-  }
-}
-
-.faq {
-	padding: var(--space-3xl) var(--space-xl);
-}
-
-.hero {
-	background: radial-gradient(circle at top, var(--color-accent-surface-soft), var(--color-main));
-}
-
-.heroContent {
-	max-width: 860px;
-	margin: 0 auto;
-	text-align: center;
-}
-
-.heroTitle {
-	margin: 0;
-	font-size: clamp(2rem, 5vw, 3.2rem);
-	font-weight: 900;
-	color: var(--color-text);
-	line-height: 1.15;
-}
-
-.heroSubtext {
-	margin: var(--space-lg) auto 0;
-	max-width: 620px;
-	font-size: 1.1rem;
-	color: var(--color-text-muted);
-	line-height: 1.6;
-}
-
-.contactInfo {
-	background: var(--color-secondary);
-}
-
-.infoGrid {
-	max-width: 1100px;
-	margin: 0 auto;
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: var(--space-xl);
-}
-
-.infoCard {
-	background: var(--color-bg-card);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-lg);
-	padding: var(--space-xl);
-}
-
-.infoCard h3 {
-	margin: 0;
-	color: var(--color-text);
-	font-size: 1.35rem;
-}
-
-.infoIcon {
-	font-size: 2rem;
-	margin-bottom: var(--space-md);
-}
-
-.infoSubtext {
-	color: var(--color-text-muted);
-	font-size: 0.95rem;
-	margin: var(--space-sm) 0;
-	line-height: 1.5;
-}
-
-.infoLink {
-	display: inline-block;
-	margin-top: var(--space-sm);
-	color: var(--color-primary);
-	font-weight: 600;
-	text-decoration: underline;
-	text-decoration-color: var(--color-accent-border-strong);
-	text-underline-offset: 3px;
-}
-
-.socialsGrid {
-	margin-top: var(--space-md);
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-sm);
-}
-
-.socialLink {
-	display: flex;
-	align-items: center;
-	gap: var(--space-sm);
-	color: var(--color-text);
-	text-decoration: none;
-	transition: color var(--transition-fast);
-}
-
-.socialLink:hover {
-	color: var(--color-primary);
-}
-
-.socialIcon {
-	font-size: 1.2rem;
-}
-
-.faq {
-	background: var(--color-bg);
-}
-
-.sectionHeader {
-	max-width: 760px;
-	margin: 0 auto var(--space-xl);
-	text-align: center;
-}
-
-.sectionHeader h2 {
-	margin: 0;
-	color: var(--color-text);
-	font-weight: 800;
-	font-size: 2.5rem;
-	line-height: 1.2;
-}
-
-.sectionHeader p {
-	color: var(--color-text-muted);
-	margin: 0.5rem 0 0;
-}
-
-.faqList {
-	max-width: 900px;
-	margin: 0 auto;
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-}
-
-.faqItem {
-	background: var(--color-bg-card);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-md);
-	overflow: hidden;
-}
-
-.faqItemOpen {
-	border-left: 3px solid var(--color-primary);
-}
-
-.faqQuestion {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 1.25rem 1.5rem;
-	background: transparent;
-	border: none;
-	color: var(--color-text);
-	font-size: 1rem;
-	font-weight: 600;
-	cursor: pointer;
-	text-align: left;
-}
-
-.faqChevron {
-	color: var(--color-primary);
-	font-size: 0.75rem;
-	transition: transform var(--transition-fast);
-}
-
-.faqAnswer {
-	padding: 0 1.5rem 1.25rem;
-	color: var(--color-text-muted);
-	line-height: 1.7;
-	font-size: 0.95rem;
-}
-
-.faqAnswer p {
-	margin: 0;
-}
-
-@media (max-width: 900px) {
-	.infoGrid {
-		grid-template-columns: 1fr;
-	}
-
-	.sectionHeader h2 {
-		font-size: 2rem;
-	}
-}
-
-@media (max-width: 640px) {
-	.hero,
-	.contactInfo,
-	.faq {
-		padding: var(--space-2xl) var(--space-lg);
-	}
 }
