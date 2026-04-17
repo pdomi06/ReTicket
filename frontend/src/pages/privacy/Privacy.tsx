@@ -1,4 +1,4 @@
-import styles from './privacy.module.css';
+import styles from './Privacy.module.css';
 
 interface PrivacySection {
   title: string;

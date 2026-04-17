@@ -1,4 +1,4 @@
-import styles from './terms.module.css';
+import styles from './Terms.module.css';
 
 interface TermsSection {
   title: string;
