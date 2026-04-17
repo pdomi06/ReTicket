@@ -1,25 +1,17 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import type { IEvent } from "../../utils/interfaces";
 import Select from "../../components/ui/select/Select";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
 import Notification from "../../components/ui/notification/Notification";
 import styles from "./Validate.module.css";
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    [key: string]: unknown;
-}
+import { useAuth } from "../../contexts/auth/useAuth";
+import { apiFetch } from "../../lib/apiFetch";
 
 const Validate = () => {
-    const navigate = useNavigate();
+    const { user, status } = useAuth();
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-    const [user, setUser] = useState<User | null>(null);
     const [events, setEvents] = useState<IEvent[]>([]);
     const [selectedEventId, setSelectedEventId] = useState<string>("");
     const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
@@ -30,30 +22,17 @@ const Validate = () => {
     const [validationResult, setValidationResult] = useState<string | null>(null);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/login");
+        if (status !== "ready") {
             return;
         }
 
-        let userData: User | null = null;
-        try {
-            const userString = localStorage.getItem("user");
-            userData = userString ? JSON.parse(userString) : null;
-        } catch (error) {
-            userData = null;
-            setErrorMessage("Error parsing user data. " + (error instanceof Error ? error.message : ""));
-        }
-
-        if (!userData || (userData.role !== "organizer" && userData.role !== "admin")) {
+        if (!user || (user.role !== "organizer" && user.role !== "admin")) {
             setIsAuthorized(false);
-            setUser(userData);
             return;
         }
 
         setIsAuthorized(true);
-        setUser(userData);
-    }, [navigate]);
+    }, [status, user]);
 
     useEffect(() => {
         if (!isAuthorized) return;
@@ -62,13 +41,8 @@ const Validate = () => {
             try {
                 setLoadingEvents(true);
                 setErrorMessage(null);
-                const token = localStorage.getItem("token");
-                const headers: HeadersInit = {
-                    Authorization: `Bearer ${token}`,
-                };
-
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
-                    headers,
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
+                    method: "GET",
                 });
 
                 if (!response.ok) {
@@ -133,14 +107,12 @@ const Validate = () => {
             setErrorMessage(null);
             setValidationResult(null);
             setIsValidating(true);
-            const token = localStorage.getItem("token");
             const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-            const response = await fetch(`${apiBaseUrl}/activeTickets/validate`, {
+            const response = await apiFetch(`${apiBaseUrl}/activeTickets/validate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     ticketListingId: ticketCode,

@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { type RouteObject } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import RequireAuth from "../components/auth/RequireAuth";
 
 
 const Home = lazy(() => import("../pages/test/test.tsx"));
@@ -44,15 +45,15 @@ export const routes: RouteObject[] = [
       { path: "/test", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/profile", element: <Profile /> },
+      { path: "/profile", element: <RequireAuth><Profile /></RequireAuth> },
       { path: "/browse", element: <Browse /> },
       { path: "/event", element: <Event /> },
       { path: "/vendor", element: <Vendor /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/validate", element: <Validate /> },
+      { path: "/validate", element: <RequireAuth><Validate /></RequireAuth> },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: <RequireAuth><Dashboard /></RequireAuth>,
         children: [
           { index: true, element: <DashboardOverview /> },
           { path: "create-venue", element: <DashboardCreateVenue /> },

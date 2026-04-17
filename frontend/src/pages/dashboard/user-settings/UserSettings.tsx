@@ -1,14 +1,6 @@
 import { LuLock, LuShieldCheck } from "react-icons/lu";
 import styles from "./UserSettings.module.css";
-
-type LocalUserShape = {
-    name?: string;
-    email?: string;
-    phone?: string;
-    created_at?: string;
-    role?: string;
-    email_verified?: boolean;
-};
+import { useAuth } from "../../../contexts/auth/useAuth";
 
 function getInitials(name: string) {
     return name
@@ -21,14 +13,7 @@ function getInitials(name: string) {
 }
 
 const UserSettings = () => {
-    const userRaw = localStorage.getItem("user");
-
-    let userData: LocalUserShape | null = null;
-    try {
-        userData = userRaw ? (JSON.parse(userRaw) as LocalUserShape) : null;
-    } catch {
-        userData = null;
-    }
+    const { user: userData } = useAuth();
 
     const fullName = userData?.name?.trim() || "Emily Johnson";
     const email = userData?.email?.trim() || "johnson@example.com";

@@ -7,38 +7,29 @@ Provide a code-verified endpoint catalog for the current backend API, including 
 ## Overview
 
 - Route registration lives in [backend/routes/api.php](backend/routes/api.php).
-- Effective endpoint protection depends on controller middleware exceptions (not only route definitions).
+- Effective endpoint protection depends on controller middleware exceptions, not only route definitions.
 - API response envelopes are mixed (`{success,data}`, raw models/arrays, and `{message,error}` for unauthenticated JSON requests).
 
 Base path for all routes listed below: `/api`.
-
-## Key files
-
-- Routes: [backend/routes/api.php](backend/routes/api.php)
-- Auth middleware pattern: [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php)
-- Ticket sale and basket behavior: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
-- Orders and checkout prep behavior: [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php)
-- Stripe checkout endpoints: [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php)
-- Account recovery endpoints: [backend/app/Http/Controllers/EmailVerificationController.php](backend/app/Http/Controllers/EmailVerificationController.php), [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php)
-- Global unauthenticated JSON payload: [backend/bootstrap/app.php](backend/bootstrap/app.php)
 
 ## Access model notes
 
 - Controller middleware `except` arrays define many public operations.
 - `POST /logout` is auth-protected by `AuthController` middleware, even though the route line itself has no explicit route middleware.
+- `GET /me` is the canonical session validation endpoint for the frontend.
 - Basket operations (`addToBasket`, `removeFromBasket`) are currently public endpoints.
 - `OrdersController` is mixed access: `store` and `update` are public, while `index`, `show`, and `destroy` require auth.
-- `authorize(...)` policy checks still apply in many actions, so middleware-level public routes can still return `403` depending on policy logic and record state.
 
 ## Endpoint reference
 
 ### Authentication
 
-| Method | Path      | Effective access | Notes                              |
-| ------ | --------- | ---------------- | ---------------------------------- |
-| POST   | /login    | Public           | Throttled (`throttle:3,1`)         |
-| POST   | /register | Public           | Returns user + bearer token        |
-| POST   | /logout   | Auth required    | Protected by controller middleware |
+| Method | Path      | Effective access | Notes                                  |
+| ------ | --------- | ---------------- | -------------------------------------- |
+| POST   | /login    | Public           | Throttled (`throttle:3,1`)             |
+| POST   | /register | Public           | Returns user + bearer token            |
+| POST   | /logout   | Auth required    | Protected by controller middleware     |
+| GET    | /me       | Auth required    | Returns current user under `data.user` |
 
 ### Events and venues
 
@@ -145,12 +136,4 @@ Base path for all routes listed below: `/api`.
 - Checkout has multiple entry points (`/checkout`, `/orders/checkOut`, `/ticketForSale/checkOut`) with different side effects.
 - Orders create/update are public in current middleware configuration.
 - Error and success response shapes are not globally normalized.
-- `GET /events/search` now uses cursor pagination fields (`limit`, `returned_count`, `has_more`, `next_cursor`, `total_groups`) and returns one grouped item per normalized event name with an `occurrences` array.
-
-## Related docs
-
-- [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
-- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)
-- [zz-docs/backend-payment-processing.md](zz-docs/backend-payment-processing.md)
-- [zz-docs/backend-account-recovery.md](zz-docs/backend-account-recovery.md)
-- [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)
+- `GET /events/search` uses cursor pagination fields and returns grouped occurrences per normalized event name.
