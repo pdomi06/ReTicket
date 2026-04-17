@@ -24,7 +24,7 @@
 }
 
 .heroSubtext {
-  margin: var(--space-lg) auto 0;
+  margin: 24px auto 0;
   max-width: 680px;
   color: var(--color-text-muted);
   line-height: 1.65;
@@ -46,7 +46,7 @@
 }
 
 .sectionHeader p {
-  margin: var(--space-sm) 0 0;
+  margin: 8px 0 0;
   color: var(--color-text-muted);
   line-height: 1.6;
 }
@@ -56,9 +56,9 @@
 }
 
 .channelCard {
-  background: var(--color-bg-card);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: 14px;
   padding: 2.75rem 2.25rem;
   text-align: center;
 }
@@ -76,18 +76,18 @@
 }
 
 .channelValue {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-size: 1.1rem;
   font-weight: 700;
   text-decoration: none;
-  transition: text-decoration-color var(--transition-fast);
+  transition: text-decoration-color 0.2s ease;
   text-decoration-line: underline;
   text-decoration-color: transparent;
   text-underline-offset: 3px;
 }
 
 .channelValue:hover {
-  text-decoration-color: var(--color-primary);
+  text-decoration-color: var(--color-accent);
 }
 
 .channelNote {
@@ -98,11 +98,11 @@
 }
 
 .support {
-  background: var(--color-bg);
+  background: var(--color-main);
 }
 
 .supportCard {
-  background: var(--color-bg-card);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 14px;
   padding: 2rem;
@@ -115,7 +115,7 @@
 }
 
 .supportCard:hover {
-  border-color: var(--color-primary);
+  border-color: var(--color-accent);
   box-shadow: var(--shadow-accent-outline);
 }
 
@@ -139,7 +139,7 @@
 }
 
 .supportArrow {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-size: 1.1rem;
   margin-top: auto;
 }
@@ -178,19 +178,19 @@
 }
 
 .vendorCtaButton {
-  background: var(--color-primary);
-  color: var(--color-text);
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: var(--radius-md, 0.5rem);
+  border-radius: 0.5rem;
   padding: 0.9rem 2rem;
   min-width: 220px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color var(--transition-fast, 0.2s ease);
+  transition: background-color 0.2s ease;
 }
 
 .vendorCtaButton:hover {
