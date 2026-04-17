@@ -24,7 +24,7 @@
 }
 
 .heroSubtext {
-  margin: var(--space-lg) auto 0;
+  margin: 1.5rem auto 0;
   max-width: 680px;
   color: var(--color-text-muted);
   line-height: 1.65;
@@ -46,7 +46,7 @@
 }
 
 .sectionHeader p {
-  margin: var(--space-sm) 0 0;
+  margin: 0.75rem 0 0;
   color: var(--color-text-muted);
   line-height: 1.6;
 }
