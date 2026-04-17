@@ -27,16 +27,20 @@ const AboutTrust = () => {
 
   return (
     <section className={styles.trust}>
-      <div className={styles.sectionHeader}>
-        <h2>Why Trust Us?</h2>
-      </div>
-      <div className={styles.trustGrid}>
-        {pillars.map((pillar, index) => (
-          <div key={index} className={styles.trustCard}>
-            <h3 className={styles.trustTitle}>{pillar.title}</h3>
-            <p>{pillar.description}</p>
-          </div>
-        ))}
+      <div className="container">
+        <div className={styles.sectionHeader}>
+          <h2>Why Trust Us?</h2>
+        </div>
+        <div className="row g-4">
+          {pillars.map((pillar, index) => (
+            <div key={index} className="col-12 col-md-6 col-xl-3">
+              <div className={`${styles.trustCard} h-100`}>
+                <h3 className={styles.trustTitle}>{pillar.title}</h3>
+                <p>{pillar.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

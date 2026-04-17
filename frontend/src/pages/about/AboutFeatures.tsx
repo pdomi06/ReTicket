@@ -16,17 +16,21 @@ const AboutFeatures = () => {
 
   return (
     <section className={styles.features}>
-      <div className={styles.sectionHeader}>
-        <h2>What We Offer</h2>
-      </div>
-      <div className={styles.featuresGrid}>
-        {features.map((feature, index) => (
-          <div key={index} className={styles.featureCard}>
-            <div className={styles.featureIcon}>{feature.icon}</div>
-            <h3>{feature.title}</h3>
-            <p>{feature.description}</p>
-          </div>
-        ))}
+      <div className="container">
+        <div className={styles.sectionHeader}>
+          <h2>What We Offer</h2>
+        </div>
+        <div className="row g-4">
+          {features.map((feature, index) => (
+            <div key={index} className="col-12 col-md-6">
+              <div className={`${styles.featureCard} h-100`}>
+                <div className={styles.featureIcon}>{feature.icon}</div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
