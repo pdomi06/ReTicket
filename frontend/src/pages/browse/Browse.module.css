@@ -30,5 +30,5 @@
 .loadMoreError {
     margin-top: 0.75rem;
     text-align: center;
-    color: #dc3545;
+    color: var(--color-danger);
 }

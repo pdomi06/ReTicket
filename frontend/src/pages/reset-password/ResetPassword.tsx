@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { LuLock, LuCheck } from "react-icons/lu";
 import styles from "./ResetPassword.module.css";
 import Button from "../../components/ui/button/Button";
@@ -21,6 +21,15 @@ const ResetPassword = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ text: string; variant: "success" | "error" } | null>(null);
     const [isResetSuccessful, setIsResetSuccessful] = useState(false);
+    const redirectTimeoutRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (redirectTimeoutRef.current !== null) {
+                window.clearTimeout(redirectTimeoutRef.current);
+            }
+        };
+    }, []);
 
     if (!token || !email) {
         return (
@@ -115,7 +124,11 @@ const ResetPassword = () => {
             setMessage({ text: responseMessage, variant: "success" });
             setIsResetSuccessful(true);
 
-            setTimeout(() => {
+            if (redirectTimeoutRef.current !== null) {
+                window.clearTimeout(redirectTimeoutRef.current);
+            }
+
+            redirectTimeoutRef.current = window.setTimeout(() => {
                 navigate("/login");
             }, 2000);
         } catch {
@@ -182,9 +195,9 @@ const ResetPassword = () => {
 
                             <p className={styles.footerText}>
                                 Remember your password?{" "}
-                                <a href="/login" className={styles.link}>
+                                <Link to="/login" className={styles.link}>
                                     Back to login
-                                </a>
+                                </Link>
                             </p>
                         </>
                     )}

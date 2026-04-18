@@ -83,7 +83,6 @@ const Browse = () => {
         }
 
         const json = await response.json();
-        console.log("API Response:", json);
         const paginationData = json.pagination;
 
         return {

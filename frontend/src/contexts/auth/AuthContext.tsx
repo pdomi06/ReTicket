@@ -1,5 +1,12 @@
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { clearStoredAuthSession, normalizeAuthUser, persistAuthSession, readStoredAuthSession, type AuthUser } from "../../lib/authSession";
+import {
+    AUTH_SESSION_EXPIRED_EVENT,
+    clearStoredAuthSession,
+    normalizeAuthUser,
+    persistAuthSession,
+    readStoredAuthSession,
+    type AuthUser,
+} from "../../lib/authSession";
 
 type AuthStatus = "bootstrapping" | "ready";
 
@@ -114,10 +121,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             clearSession();
         };
 
-        window.addEventListener("reticket:auth-session-expired", syncExpiredSession);
+        window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, syncExpiredSession);
 
         return () => {
-            window.removeEventListener("reticket:auth-session-expired", syncExpiredSession);
+            window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, syncExpiredSession);
         };
     }, [clearSession]);
 

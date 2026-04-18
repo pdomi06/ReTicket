@@ -43,12 +43,6 @@
     font-weight: 700;
 }
 
-.verifiedIcon {
-    color: var(--color-info);
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
 .email {
     margin: 0.25rem 0 0;
     color: var(--color-text-secondary);
