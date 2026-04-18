@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
 import Select from "../../components/ui/select/Select";
 import Button from "../../components/ui/button/Button";
@@ -8,6 +8,7 @@ import Notification from "../../components/ui/notification/Notification";
 import styles from "./Validate.module.css";
 import { useAuth } from "../../contexts/auth/useAuth";
 import { apiFetch } from "../../lib/apiFetch";
+import { usePageLoading } from "../../contexts/loading/LoadingContext";
 
 const Validate = () => {
     const { user, status } = useAuth();
@@ -16,10 +17,10 @@ const Validate = () => {
     const [selectedEventId, setSelectedEventId] = useState<string>("");
     const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
     const [ticketCode, setTicketCode] = useState<string>("");
-    const [loadingEvents, setLoadingEvents] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [validationResult, setValidationResult] = useState<string | null>(null);
+    const trackPageLoading = usePageLoading();
 
     useEffect(() => {
         if (status !== "ready") {
@@ -34,12 +35,11 @@ const Validate = () => {
         setIsAuthorized(true);
     }, [status, user]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!isAuthorized) return;
 
-        async function fetchEvents() {
+        const fetchEventsPromise = (async () => {
             try {
-                setLoadingEvents(true);
                 setErrorMessage(null);
                 const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
                     method: "GET",
@@ -63,13 +63,11 @@ const Validate = () => {
                     error instanceof Error ? error.message : "Failed to load events"
                 );
                 setEvents([]);
-            } finally {
-                setLoadingEvents(false);
             }
-        }
+        })();
 
-        fetchEvents();
-    }, [isAuthorized]);
+        void trackPageLoading(fetchEventsPromise);
+    }, [isAuthorized, trackPageLoading]);
 
     const handleEventSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedEventId(e.target.value);
@@ -208,8 +206,6 @@ const Validate = () => {
                         />
                     </div>
                 </div>
-            ) : loadingEvents ? (
-                <p className={styles.loadingMessage}>Loading events...</p>
             ) : events.length > 0 ? (
                 <div className={styles.eventSelectorSection}>
                     <label className={styles.eventLabel}>Event</label>

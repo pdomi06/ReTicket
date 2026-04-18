@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useLayoutEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../../utils/defaults";
 import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
@@ -9,17 +9,19 @@ import { toUnixSeconds } from "../../../utils/dateTime";
 import Notification from "../../../components/ui/notification/Notification";
 import style from "./CreateEvent.module.css";
 import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 const CreateEvent = () => {
     const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
-    const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const trackPageLoading = usePageLoading();
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const abortController = new AbortController();
 
-        async function fetchVenues() {
+        const fetchVenuesPromise = (async () => {
             try {
                 const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`, {
                     signal: abortController.signal,
@@ -44,15 +46,15 @@ const CreateEvent = () => {
                     console.error('Error fetching venues:', error);
                 }
             }
-        }
-        fetchVenues();
+        })();
+        void trackPageLoading(fetchVenuesPromise);
 
         return () => abortController.abort();
-    }, []);
+    }, [trackPageLoading]);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
+        setIsSubmitting(true);
         setMessage(null);
 
         try {
@@ -135,7 +137,7 @@ const CreateEvent = () => {
             setMessage({ type: "error", text: errorMessage });
             console.error("Error:", error);
         } finally {
-            setLoading(false);
+            setIsSubmitting(false);
         }
     };
 
@@ -175,7 +177,7 @@ const CreateEvent = () => {
                                 <option key={value} value={value}>{value}</option>
                             ))}
                         </Select>
-                        {loading ? <Button type="button" text="Creating Event..." disabled={true} /> : <Button type="submit" text="Create Event" />}
+                        {isSubmitting ? <Button type="button" text="Creating Event..." disabled={true} /> : <Button type="submit" text="Create Event" />}
                     </div>
                 </div>
             </form>

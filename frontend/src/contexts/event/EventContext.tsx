@@ -6,7 +6,7 @@ import { apiFetch } from "../../lib/apiFetch";
 const EventContextProvider = ({ children }: { children: ReactNode }) => {
     const [event, setEvent] = useState<IEvent>()
 
-    const getEvent = useCallback(async (id: string): Promise<boolean> => {
+    const getEvent = useCallback(async (id: string): Promise<IEvent | undefined> => {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
         const response = await apiFetch(`${apiBaseUrl}/events/${id}`, {
             headers: {},
@@ -15,16 +15,16 @@ const EventContextProvider = ({ children }: { children: ReactNode }) => {
 
         if (!response.ok) {
             setEvent(undefined);
-            return false;
+            return undefined;
         }
         if (!contentType.includes('application/json')) {
             setEvent(undefined);
-            return false;
+            return undefined;
         }
         const json = await response.json();
-        const eventData = (json as { data?: unknown }).data ?? json;
-        setEvent(eventData as IEvent);
-        return true;
+        const eventData = ((json as { data?: unknown }).data ?? json) as IEvent;
+        setEvent(eventData);
+        return eventData;
     }, []);
 
     const value = useMemo(() => ({ event, getEvent }), [event, getEvent]);

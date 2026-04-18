@@ -40,7 +40,9 @@ The frontend is a React 19 + TypeScript SPA built with Vite, using React Router 
 ### Layout and provider boundaries
 
 - All routes render inside `MainLayout` root route in [frontend/src/app/router.tsx](frontend/src/app/router.tsx#L37).
-- `MainLayout` wraps children with `EventContextProvider` and `CartContextProvider` in [frontend/src/components/layout/MainLayout.tsx](frontend/src/components/layout/MainLayout.tsx#L14).
+- `MainLayout` mounts `LoadingProvider` for global page-loading state in [frontend/src/components/layout/MainLayout.tsx](frontend/src/components/layout/MainLayout.tsx#L10).
+- `MainLayout` wraps children with `EventContextProvider` and `CartContextProvider` in [frontend/src/components/layout/MainLayout.tsx](frontend/src/components/layout/MainLayout.tsx#L23).
+- A single global overlay renderer (`PageLoader`) is mounted in [frontend/src/components/layout/MainLayout.tsx](frontend/src/components/layout/MainLayout.tsx#L33).
 - Footer is hidden on dashboard routes using `pathname.startsWith('/dashboard')` in [frontend/src/components/layout/MainLayout.tsx](frontend/src/components/layout/MainLayout.tsx#L10).
 
 ### Route topology (current)
@@ -97,3 +99,4 @@ The frontend is a React 19 + TypeScript SPA built with Vite, using React Router 
 - [zz-docs/frontend-styling-system.md](zz-docs/frontend-styling-system.md)
 - [zz-docs/frontend-user-flows.md](zz-docs/frontend-user-flows.md)
 - [zz-docs/frontend-routing-navigation.md](zz-docs/frontend-routing-navigation.md)
+- [zz-docs/frontend-global-loader.md](zz-docs/frontend-global-loader.md)

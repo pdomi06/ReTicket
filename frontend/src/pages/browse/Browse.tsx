@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
 import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
 import Sidebar from "./sidebar/Sidebar";
 import { useSearchParams } from "react-router";
 import styles from "./Browse.module.css";
+import { usePageLoading } from "../../contexts/loading/LoadingContext";
 
 interface IBrowseEventGroup extends IEvent {
     occurrenceCount: number;
@@ -54,10 +55,10 @@ const Browse = () => {
     const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const trackPageLoading = usePageLoading();
 
-    async function getEvents(q: string, cursor?: string | null, signal?: AbortSignal) {
+    const getEvents = useCallback(async (q: string, cursor?: string | null, signal?: AbortSignal) => {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
         const params = new URLSearchParams(q);
         params.set("limit", "20");
@@ -102,18 +103,17 @@ const Browse = () => {
                     next_cursor: null,
                 },
         } as SearchEventsResponse;
-    }
+    }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const controller = new AbortController();
-        setIsLoading(true);
         setError(null);
         setLoadMoreError(null);
         setEvents([]);
         setHasMore(false);
         setNextCursor(null);
 
-        getEvents(queryWithoutCursor, null, controller.signal)
+        const fetchEventsPromise = getEvents(queryWithoutCursor, null, controller.signal)
             .then((response) => {
                 setEvents(response.data);
                 setHasMore(response.pagination?.has_more ?? false);
@@ -125,13 +125,12 @@ const Browse = () => {
                 setError(message);
                 setHasMore(false);
                 setNextCursor(null);
-            })
-            .finally(() => {
-                setIsLoading(false);
             });
 
+        void trackPageLoading(fetchEventsPromise);
+
         return () => controller.abort();
-    }, [queryWithoutCursor]);
+    }, [getEvents, queryWithoutCursor, trackPageLoading]);
 
     const handleLoadMore = async () => {
         if (!hasMore || !nextCursor || isLoadingMore) {
@@ -161,9 +160,7 @@ const Browse = () => {
             </div>
             <div className="col-lg-9">
                 <div className="container my-5">
-                    {isLoading ? (
-                        <p>Loading...</p>
-                    ) : error ? (
+                    {error ? (
                         <p>{error}</p>
                     ) : events.length > 0 ? (
                         <>

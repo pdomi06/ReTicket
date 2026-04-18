@@ -75,3 +75,8 @@ State management is Context API + local component state, and API communication i
 - Event and cart synchronization depends on explicit page-level callback wiring, not cross-context state orchestration.
 - Missing auth headers are less likely on converted pages, but ad hoc fetch calls can still drift if they bypass `apiFetch`.
 - Cart payment flow persists `orderId` in localStorage and relies on query params after redirect, which increases coupling between browser state and backend flow completion.
+
+## Related docs
+
+- [zz-docs/frontend-global-loader.md](zz-docs/frontend-global-loader.md)
+- [zz-docs/frontend-architecture.md](zz-docs/frontend-architecture.md)
