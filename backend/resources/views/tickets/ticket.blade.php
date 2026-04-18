@@ -182,37 +182,35 @@
 
         <div class="content">
             <table class="info-table">
-                <tr>
-                    <td>
-                        <div class="label">Ticket Holder</div>
-                        <div class="value">{{ $ticket->ticket_holder ?? $ticket->holder_name ?? 'Ticket Holder' }}</div>
-                    </td>
-                    <td>
-                        <div class="label">Event Date</div>
-                        <div class="value">{{ $ticket->event_date }}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="label">Event Time</div>
-                        <div class="value">{{ $ticket->event_time }}</div>
-                    </td>
-                    <td>
-                        <div class="label">Section</div>
-                        <div class="value"> {{ $ticket->sectionLabel }}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="label">Row</div>
-                        <div class="value"> {{ $ticket->rowLabel }}</div>
-                    </td>
-                    <td>
-                        <div class="label">Seat</div>
-                        <div class="value"> {{ $ticket->seatLabel }}</div>
-                    </td>
-                </tr>
-            </table>
+    <tr>
+        <td>
+            <div class="label">Event Date</div>
+            <div class="value">{{ $ticket->event_date }}</div>
+        </td>
+        <td>
+            <div class="label">Event Time</div>
+            <div class="value">{{ $ticket->event_time }}</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="label">Section</div>
+            <div class="value">{{ $ticket->sectionLabel }}</div>
+        </td>
+        <td>
+            <div class="label">Row</div>
+            <div class="value">{{ $ticket->rowLabel }}</div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align: center; padding-top: 16px;">
+            <div class="label">Seat</div>
+            <div class="value" style="font-size: 26px; font-weight: 800; color: #e8a020; letter-spacing: 1px;">
+                {{ $ticket->seatLabel }}
+            </div>
+        </td>
+    </tr>
+</table>
 
             <div class="barcode-box">
                 <div class="barcode-label">Ticket Verification Code</div>
