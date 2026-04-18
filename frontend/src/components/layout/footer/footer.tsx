@@ -25,9 +25,9 @@ const Footer = () => {
             </p>
 
             <div className={styles['footer-links']}>
-                <Link to="/privacy">Privacy Policy</Link> |
-                <Link to="/about">About Us</Link> |
-                <Link to="/contact">Contact</Link> |
+                <Link to="/privacy">Privacy Policy</Link>
+                <Link to="/about">About Us</Link>
+                <Link to="/contact">Contact</Link>
                 <Link to="/terms">Terms of Service</Link>
             </div>
         </div>
