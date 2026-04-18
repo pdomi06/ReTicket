@@ -46,7 +46,7 @@ class OrderObserver
         
         try {
             Mail::to($order->deliveryEmail)
-                ->queue(new TicketMail($activeTickets));
+                ->send(new TicketMail($activeTickets));
         } catch (Throwable $e) {
             Log::error('Failed to send ticket email after order authorization.', [
                 'order_id' => $order->id,
