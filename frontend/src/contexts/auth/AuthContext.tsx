@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
     AUTH_SESSION_EXPIRED_EVENT,
@@ -10,29 +8,6 @@ import {
     type AuthUser,
 } from "../../lib/authSession";
 import { AuthContext, type AuthContextValue, type AuthStatus } from "./auth-context";
-=======
-=======
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { clearStoredAuthSession, normalizeAuthUser, persistAuthSession, readStoredAuthSession, type AuthUser } from "../../lib/authSession";
-
-type AuthStatus = "bootstrapping" | "ready";
-
-type AuthContextValue = {
-    user: AuthUser | null;
-    token: string | null;
-    status: AuthStatus;
-    isAuthenticated: boolean;
-    setSession: (session: { user: unknown; token: string }) => void;
-    refreshSession: () => Promise<boolean>;
-    clearSession: () => void;
-};
-
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-<<<<<<< HEAD
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-=======
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
 
@@ -133,23 +108,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             clearSession();
         };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, syncExpiredSession);
 
         return () => {
             window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, syncExpiredSession);
-=======
-=======
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-        window.addEventListener("reticket:auth-session-expired", syncExpiredSession);
-
-        return () => {
-            window.removeEventListener("reticket:auth-session-expired", syncExpiredSession);
-<<<<<<< HEAD
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-=======
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
         };
     }, [clearSession]);
 
