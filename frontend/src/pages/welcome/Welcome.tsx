@@ -8,16 +8,28 @@ import Carouser from './carouser/Carouser.tsx';
 import Reviews from './reviews/Reviews.tsx';
 import type { IEvent } from '../../utils/interfaces.ts';
 import React from 'react';
+import { useLocation } from 'react-router';
+import { usePageLoading } from '../../contexts/loading/LoadingContext.tsx';
 
 const Welcome = () => {
+    const { pathname } = useLocation();
+    const trackPageLoading = usePageLoading();
+    const isRootPath = pathname === "/";
     const [mostPopularEvents, setMostPopularEvents] = React.useState<IEvent[]>([]);
     const [lastMinuteDeals, setLastMinuteDeals] = React.useState<IEvent[]>([]);
     const [upcomingEvents, setUpcomingEvents] = React.useState<IEvent[]>([]);
     const [featuredEvents, setFeaturedEvents] = React.useState<IEvent[]>([]);
 
     React.useEffect(() => {
-        fetchEvents();
-    }, []);
+        const fetchEventsPromise = fetchEvents();
+
+        if (isRootPath) {
+            void trackPageLoading(fetchEventsPromise);
+            return;
+        }
+
+        void fetchEventsPromise;
+    }, [isRootPath, trackPageLoading]);
 
     async function fetchEvents() {
         console.log('Fetching events for welcome page...');

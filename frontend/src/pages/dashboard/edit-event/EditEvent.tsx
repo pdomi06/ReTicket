@@ -10,18 +10,21 @@ import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import style from "./EditEvent.module.css";
 import { useParams } from "react-router-dom";
 import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 const EditEvent = () => {
     const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
     const { id } = useParams<{ id: string }>();
-    const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const trackPageLoading = usePageLoading();
 
 
     useEffect(() => {
         const abortController = new AbortController();
-        async function fetchEvent() {
+
+        const fetchEvent = async () => {
             try {
                 const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
                     signal: abortController.signal,
@@ -63,15 +66,9 @@ const EditEvent = () => {
                     console.error('Error fetching event:', error);
                 }
             }
-        }
-        fetchEvent();
-        return () => abortController.abort();
-    }, [id]);
+        };
 
-    useEffect(() => {
-        const abortController = new AbortController();
-
-        async function fetchVenues() {
+        const fetchVenues = async () => {
             try {
                 const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
@@ -96,15 +93,17 @@ const EditEvent = () => {
                     console.error('Error fetching venues:', error);
                 }
             }
-        }
-        fetchVenues();
+        };
+
+        const pageLoadPromise = Promise.all([fetchEvent(), fetchVenues()]);
+        void trackPageLoading(pageLoadPromise);
 
         return () => abortController.abort();
-    }, []);
+    }, [id, trackPageLoading]);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
+        setIsSubmitting(true);
         setMessage(null);
 
         try {
@@ -187,7 +186,7 @@ const EditEvent = () => {
             setMessage({ type: "error", text: errorMessage });
             console.error("Error:", error);
         } finally {
-            setLoading(false);
+            setIsSubmitting(false);
         }
     };
 
@@ -237,7 +236,7 @@ const EditEvent = () => {
                                 <option key={value} value={value}>{value}</option>
                             ))}
                         </Select>
-                        {loading ? <Button type="button" text="Updating Event..." disabled={true} /> : <Button type="submit" text="Update Event" />}
+                        {isSubmitting ? <Button type="button" text="Updating Event..." disabled={true} /> : <Button type="submit" text="Update Event" />}
                     </div>
                 </div>
             </form>
