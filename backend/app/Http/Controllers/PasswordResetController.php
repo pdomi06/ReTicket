@@ -35,7 +35,7 @@ class PasswordResetController extends Controller
         }
 
         return response()->json([
-            'message' => 'Reset link was sent out!'
+            'message' => 'If a user with that email address exists, we have sent a password reset link.'
         ], 200);
 
     }
