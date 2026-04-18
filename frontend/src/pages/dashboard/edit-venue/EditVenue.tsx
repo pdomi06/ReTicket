@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import type { IVenueMap, IEvent } from "../../../utils/interfaces";
 import Input from "../../../components/ui/input/Input";
 import style from './EditVenue.module.css'
@@ -16,6 +16,32 @@ const EditVenue = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const trackPageLoading = usePageLoading();
+
+    const fetchAffectedEvents = useCallback(async (venueName: string, signal?: AbortSignal) => {
+        try {
+            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?venue=${encodeURIComponent(venueName)}`, {
+                signal,
+            });
+            if (!response.ok) {
+                console.error('Failed to fetch events:', response.status);
+                return;
+            }
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.toLowerCase().includes('application/json')) {
+                console.error('Unexpected content-type when fetching events:', contentType);
+                return;
+            }
+            const data: unknown = await response.json();
+            const events = (data && typeof data === 'object' && 'data' in data && Array.isArray((data as { data: unknown }).data))
+                ? (data as { data: IEvent[] }).data
+                : Array.isArray(data)
+                    ? (data as IEvent[])
+                    : [];
+            setAffectedEvents(events);
+        } catch (error) {
+            console.error('Error fetching affected events:', error);
+        }
+    }, []);
 
     useLayoutEffect(() => {
         const abortController = new AbortController();
@@ -56,33 +82,7 @@ const EditVenue = () => {
         void trackPageLoading(fetchVenuePromise);
 
         return () => abortController.abort();
-    }, [id, trackPageLoading]);
-
-    async function fetchAffectedEvents(venueName: string, signal?: AbortSignal) {
-        try {
-            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?venue=${encodeURIComponent(venueName)}`, {
-                signal,
-            });
-            if (!response.ok) {
-                console.error('Failed to fetch events:', response.status);
-                return;
-            }
-            const contentType = response.headers.get('content-type') || '';
-            if (!contentType.toLowerCase().includes('application/json')) {
-                console.error('Unexpected content-type when fetching events:', contentType);
-                return;
-            }
-            const data: unknown = await response.json();
-            const events = (data && typeof data === 'object' && 'data' in data && Array.isArray((data as { data: unknown }).data))
-                ? (data as { data: IEvent[] }).data
-                : Array.isArray(data)
-                    ? (data as IEvent[])
-                    : [];
-            setAffectedEvents(events);
-        } catch (error) {
-            console.error('Error fetching affected events:', error);
-        }
-    }
+    }, [fetchAffectedEvents, id, trackPageLoading]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
 import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
@@ -58,7 +58,7 @@ const Browse = () => {
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const trackPageLoading = usePageLoading();
 
-    async function getEvents(q: string, cursor?: string | null, signal?: AbortSignal) {
+    const getEvents = useCallback(async (q: string, cursor?: string | null, signal?: AbortSignal) => {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
         const params = new URLSearchParams(q);
         params.set("limit", "20");
@@ -103,7 +103,7 @@ const Browse = () => {
                     next_cursor: null,
                 },
         } as SearchEventsResponse;
-    }
+    }, []);
 
     useLayoutEffect(() => {
         const controller = new AbortController();
@@ -130,7 +130,7 @@ const Browse = () => {
         void trackPageLoading(fetchEventsPromise);
 
         return () => controller.abort();
-    }, [queryWithoutCursor, trackPageLoading]);
+    }, [getEvents, queryWithoutCursor, trackPageLoading]);
 
     const handleLoadMore = async () => {
         if (!hasMore || !nextCursor || isLoadingMore) {
