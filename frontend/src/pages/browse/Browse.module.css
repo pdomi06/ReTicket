@@ -1,0 +1,34 @@
+.loadMoreContainer {
+    margin-top: 1.75rem;
+    display: flex;
+    justify-content: center;
+}
+
+.loadMoreButton {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    min-width: 180px;
+    font-family: var(--font-main);
+    font-weight: 600;
+    background-color: var(--color-accent);
+    color: var(--color-main);
+    box-shadow: var(--shadow-accent-button);
+    transition: all 0.25s ease;
+}
+
+.loadMoreButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-accent-button-hover);
+}
+
+.loadMoreButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+.loadMoreError {
+    margin-top: 0.75rem;
+    text-align: center;
+    color: var(--color-danger);
+}
