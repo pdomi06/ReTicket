@@ -21,10 +21,10 @@ class TicketController extends Controller
             ], 422);
         }
 
-        Mail::to($recipient)->queue(new TicketMail(Collection::make([$ticket])));
+        Mail::to($recipient)->send(new TicketMail(Collection::make([$ticket])));
 
         return response()->json([
-            'message' => 'Ticket email queued successfully.',
+            'message' => 'Ticket email sent successfully.',
             'ticket' => $ticket->id,
             'recipient' => $recipient,
         ], 202);

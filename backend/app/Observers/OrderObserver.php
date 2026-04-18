@@ -3,8 +3,11 @@
 namespace App\Observers;
 
 use App\Mail\TicketMail;
+use App\Models\ActiveTicket;
 use App\Models\Order;
+use Illuminate\Support\Facades\Log;
 use Mail;
+use Throwable;
 
 class OrderObserver
 {
@@ -21,17 +24,36 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        if(!$order->wasChanged('paymentStatus')) {
+        if (! $order->wasChanged('paymentStatus')) {
             return;
         }
-        if($order->paymentStatus !== 'authorized') {
+
+        if ($order->paymentStatus !== 'authorized') {
             return;
         }
-        if(!$order->deliveryEmail){
+
+        if (! $order->deliveryEmail) {
             return;
         }
-        Mail::to($order->deliveryEmail)
-    ->queue(new TicketMail($order->activeTickets));
+
+        $activeTickets = ActiveTicket::where('orderId', $order->id)
+            ->with('originalTicket.event')
+            ->get();
+
+        if ($activeTickets->isEmpty()) {
+            return;
+        }
+        
+        try {
+            Mail::to($order->deliveryEmail)
+                ->send(new TicketMail($activeTickets));
+        } catch (Throwable $e) {
+            Log::error('Failed to send ticket email after order authorization.', [
+                'order_id' => $order->id,
+                'delivery_email' => $order->deliveryEmail,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

@@ -5,25 +5,60 @@ namespace App\Mail;
 use App\Models\ActiveTicket as Ticket;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Collection;
+use RuntimeException;
 
-class TicketMail extends Mailable implements ShouldQueue
+class TicketMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public Collection $tickets;
+    /**
+     * Queue-safe ticket IDs used to rehydrate models when job is processed.
+     *
+     * @var array<int>
+     */
+    public array $ticketIds = [];
+
+    /**
+     * Fallback context to rehydrate tickets when IDs are unavailable.
+     */
+    public ?int $orderId = null;
+
+    /**
+     * Internal model collection cache for current process only.
+     */
+    protected ?Collection $ticketModels = null;
 
     public function __construct(Collection $tickets)
     {
-        $this->tickets = $tickets;
+        $this->ticketModels = $tickets;
+        $this->ticketIds = $tickets->pluck('id')->all();
+        $this->orderId = $tickets->first()?->orderId;
     }
 
     public function build(): self
     {
-        $ticketsData = $this->tickets->map(fn($t) => $this->buildTicketViewData($t));
+        $tickets = $this->ticketModels;
+
+        if (! $tickets instanceof Collection || $tickets->isEmpty()) {
+            $query = Ticket::query()->with('originalTicket.event');
+
+            if (! empty($this->ticketIds)) {
+                $query->whereIn('id', $this->ticketIds);
+            } elseif ($this->orderId !== null) {
+                $query->where('orderId', $this->orderId);
+            }
+
+            $tickets = $query->get();
+        }
+
+        if ($tickets->isEmpty()) {
+            throw new RuntimeException('TicketMail could not resolve any tickets to attach.');
+        }
+
+        $ticketsData = $tickets->map(fn($t) => $this->buildTicketViewData($t));
         $mail = $this->subject("Your Tickets – ReTicket")
             ->view('emails.ticket', ['tickets' => $ticketsData]);
 
