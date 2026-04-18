@@ -8,59 +8,59 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Database\Eloquent\Collection;
 
 class TicketMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    protected Ticket $ticket;
+    public Collection $tickets;
 
-    public function __construct(Ticket $ticket)
+    public function __construct(Collection $tickets)
     {
-        $this->ticket = $ticket;
+        $this->tickets = $tickets;
     }
 
     public function build(): self
     {
-        $ticketData = $this->buildTicketViewData();
-        $pdf = Pdf::loadView('tickets.ticket', ['ticket' => $ticketData]);
+        $ticketsData = $this->tickets->map(fn($t) => $this->buildTicketViewData($t));
+        $mail = $this->subject("Your Tickets – ReTicket")
+            ->view('emails.ticket', ['tickets' => $ticketsData]);
 
-        return $this->subject("Your Ticket for {$ticketData->event_name} - ReTicket")
-            ->view('emails.ticket', ['ticket' => $ticketData])
-            ->attachData(
+        foreach ($ticketsData as $ticketData) {
+            $pdf = Pdf::loadView('tickets.ticket', ['ticket' => $ticketData]);
+            $mail->attachData(
                 $pdf->output(),
                 'ticket-' . $ticketData->ticket_number . '.pdf',
                 ['mime' => 'application/pdf']
             );
+        }
+
+        return $mail;
     }
 
-    private function buildTicketViewData(): object
+    private function buildTicketViewData(Ticket $ticket): object
     {
-        $originalTicket = $this->ticket->originalTicket;
+        $originalTicket = $ticket->originalTicket;
         $event          = $originalTicket?->event;
-
         $eventTimestamp = is_numeric($event?->eventDate) ? (int) $event->eventDate : null;
 
         $seat = null;
         if ($originalTicket?->seatNumber !== null) {
             $seatParts = [];
-            if (!empty($originalTicket->section)) {
-                $seatParts[] = 'Section ' . $originalTicket->section;
-            }
-            if ($originalTicket->row !== null) {
-                $seatParts[] = 'Row ' . $originalTicket->row;
-            }
+            if (!empty($originalTicket->section)) $seatParts[] = 'Section ' . $originalTicket->section;
+            if ($originalTicket->row !== null)     $seatParts[] = 'Row ' . $originalTicket->row;
             $seatParts[] = 'Seat ' . $originalTicket->seatNumber;
             $seat = implode(' | ', $seatParts);
         }
 
         return (object) [
-            'event_name'  => $event?->name    ?? 'Event',
-            'venue'       => $event?->venue   ?? 'Venue TBA',
-            'event_date'  => $eventTimestamp  ? date('D, M j Y', $eventTimestamp) : 'TBA',
-            'event_time'  => $eventTimestamp  ? date('H:i', $eventTimestamp)      : 'TBA',
-            'seat'        => $seat,
-            'ticket_number' => (string) ($this->ticket->ticketListingId ?? $this->ticket->id),
+            'event_name'    => $event?->name  ?? 'Event',
+            'venue'         => $event?->venue ?? 'Venue TBA',
+            'event_date'    => $eventTimestamp ? date('D, M j Y', $eventTimestamp) : 'TBA',
+            'event_time'    => $eventTimestamp ? date('H:i', $eventTimestamp)      : 'TBA',
+            'seat'          => $seat,
+            'ticket_number' => (string) ($ticket->ticketListingId ?? $ticket->id),
         ];
     }
 }

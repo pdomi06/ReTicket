@@ -24,16 +24,14 @@ class OrderObserver
         if(!$order->wasChanged('paymentStatus')) {
             return;
         }
-        if($order->paymentStatus !== 'captured') {
+        if($order->paymentStatus !== 'authorized') {
             return;
         }
         if(!$order->deliveryEmail){
             return;
         }
-        $order->activeTickets->each(function ($ticket) use ($order) {
-            Mail::to($order->deliveryEmail)
-                ->queue(new TicketMail($ticket));
-        });
+        Mail::to($order->deliveryEmail)
+    ->queue(new TicketMail($order->activeTickets));
     }
 
     /**
