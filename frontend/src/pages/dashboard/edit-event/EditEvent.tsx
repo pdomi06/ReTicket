@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useLayoutEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../../utils/defaults";
 import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
@@ -9,27 +9,25 @@ import { EventCategory } from "../../../utils/enums";
 import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import style from "./EditEvent.module.css";
 import { useParams } from "react-router-dom";
+import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 const EditEvent = () => {
     const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
     const { id } = useParams<{ id: string }>();
-    const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const trackPageLoading = usePageLoading();
 
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const abortController = new AbortController();
-        async function fetchEvent() {
+
+        const fetchEvent = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const headers: HeadersInit = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
                     signal: abortController.signal,
-                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch event:', response.status, response.statusText);
@@ -68,24 +66,12 @@ const EditEvent = () => {
                     console.error('Error fetching event:', error);
                 }
             }
-        }
-        fetchEvent();
-        return () => abortController.abort();
-    }, [id]);
+        };
 
-    useEffect(() => {
-        const abortController = new AbortController();
-
-        async function fetchVenues() {
+        const fetchVenues = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const headers: HeadersInit = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
-                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
@@ -107,15 +93,17 @@ const EditEvent = () => {
                     console.error('Error fetching venues:', error);
                 }
             }
-        }
-        fetchVenues();
+        };
+
+        const pageLoadPromise = Promise.all([fetchEvent(), fetchVenues()]);
+        void trackPageLoading(pageLoadPromise);
 
         return () => abortController.abort();
-    }, []);
+    }, [id, trackPageLoading]);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
+        setIsSubmitting(true);
         setMessage(null);
 
         try {
@@ -126,22 +114,17 @@ const EditEvent = () => {
                 throw new Error("Please provide valid event start and end date/time values.");
             }
 
-            const token = localStorage.getItem('token');
-            const headers: HeadersInit = { "Content-Type": "application/json" };
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
             const payload = {
                 ...eventParams,
                 eventDate: eventDateUnix,
                 eventEndDate: eventEndDateUnix,
             };
 
-            const eventResponse = await fetch(
+            const eventResponse = await apiFetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events/${eventParams.id}`,
                 {
                     method: "PUT",
-                    headers,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 }
             );
@@ -172,11 +155,11 @@ const EditEvent = () => {
                 throw new Error("Failed to update tickets: no matching venue found for the event");
             }
 
-            const ticketsResponse = await fetch(
+            const ticketsResponse = await apiFetch(
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
                     method: "PUT",
-                    headers,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         eventId: createdEventId,
                         eventBasePrice: eventParams.basePrice,
@@ -203,7 +186,7 @@ const EditEvent = () => {
             setMessage({ type: "error", text: errorMessage });
             console.error("Error:", error);
         } finally {
-            setLoading(false);
+            setIsSubmitting(false);
         }
     };
 
@@ -253,7 +236,7 @@ const EditEvent = () => {
                                 <option key={value} value={value}>{value}</option>
                             ))}
                         </Select>
-                        {loading ? <Button type="button" text="Updating Event..." disabled={true} /> : <Button type="submit" text="Update Event" />}
+                        {isSubmitting ? <Button type="button" text="Updating Event..." disabled={true} /> : <Button type="submit" text="Update Event" />}
                     </div>
                 </div>
             </form>

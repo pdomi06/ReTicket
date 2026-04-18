@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import type { IVenueMap, IEvent } from "../../../utils/interfaces";
 import Input from "../../../components/ui/input/Input";
 import style from './EditVenue.module.css'
@@ -6,67 +6,21 @@ import Button from "../../../components/ui/button/Button";
 import Notification from '../../../components/ui/notification/Notification';
 import { defaultIVenueMap } from "../../../utils/defaults";
 import { useParams } from "react-router-dom";
+import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 const EditVenue = () => {
     const { id } = useParams<{ id: string }>();
     const [sceneryParams, setSceneryParams] = useState<IVenueMap>(defaultIVenueMap);
     const [affectedEvents, setAffectedEvents] = useState<IEvent[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const trackPageLoading = usePageLoading();
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchVenue() {
-            try {
-                const token = localStorage.getItem('token');
-                const headers: HeadersInit = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
-                    signal: abortController.signal,
-                    headers
-                });
-                if (!response.ok) {
-                    console.error('Failed to fetch venue:', response.status, response.statusText);
-                    return;
-                }
-                const contentType = response.headers.get('content-type') || '';
-                if (!contentType.toLowerCase().includes('application/json')) {
-                    console.error('Unexpected content-type when fetching venue:', contentType);
-                    return;
-                }
-                const data: unknown = await response.json();
-                if (typeof data !== 'object' || data === null) {
-                    console.error('Expected a venue object but got:', data);
-                    return;
-                }
-                const venueData = data as IVenueMap;
-                setSceneryParams(venueData);
-
-                // Fetch events that use this venue
-                if (venueData.venue) {
-                    fetchAffectedEvents(venueData.venue);
-                }
-            } catch (error) {
-                if (error instanceof Error && error.name !== 'AbortError') {
-                    console.error('Error fetching venue:', error);
-                }
-            }
-        }
-        fetchVenue();
-        return () => abortController.abort();
-    }, [id]);
-
-    async function fetchAffectedEvents(venueName: string) {
+    const fetchAffectedEvents = useCallback(async (venueName: string, signal?: AbortSignal) => {
         try {
-            const token = localStorage.getItem('token');
-            const headers: HeadersInit = {};
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?venue=${encodeURIComponent(venueName)}`, {
-                headers
+            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?venue=${encodeURIComponent(venueName)}`, {
+                signal,
             });
             if (!response.ok) {
                 console.error('Failed to fetch events:', response.status);
@@ -87,11 +41,52 @@ const EditVenue = () => {
         } catch (error) {
             console.error('Error fetching affected events:', error);
         }
-    }
+    }, []);
+
+    useLayoutEffect(() => {
+        const abortController = new AbortController();
+
+        const fetchVenuePromise = (async () => {
+            try {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
+                    signal: abortController.signal,
+                });
+                if (!response.ok) {
+                    console.error('Failed to fetch venue:', response.status, response.statusText);
+                    return;
+                }
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.toLowerCase().includes('application/json')) {
+                    console.error('Unexpected content-type when fetching venue:', contentType);
+                    return;
+                }
+                const data: unknown = await response.json();
+                if (typeof data !== 'object' || data === null) {
+                    console.error('Expected a venue object but got:', data);
+                    return;
+                }
+                const venueData = data as IVenueMap;
+                setSceneryParams(venueData);
+
+                // Fetch events that use this venue
+                if (venueData.venue) {
+                    await fetchAffectedEvents(venueData.venue, abortController.signal);
+                }
+            } catch (error) {
+                if (error instanceof Error && error.name !== 'AbortError') {
+                    console.error('Error fetching venue:', error);
+                }
+            }
+        })();
+
+        void trackPageLoading(fetchVenuePromise);
+
+        return () => abortController.abort();
+    }, [fetchAffectedEvents, id, trackPageLoading]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        setLoading(true);
+        setIsSubmitting(true);
         setMessage(null);
 
         const parsedRows = Number(sceneryParams.rows);
@@ -102,19 +97,14 @@ const EditVenue = () => {
 
         if (!sceneryParams.venue || !sceneryParams.section || !isValidRows || !isValidCols || !isValidRate) {
             setMessage({ type: 'error', text: 'Please fill in all fields with valid values.' });
-            setLoading(false);
+            setIsSubmitting(false);
             return;
         }
 
         try {
-            const token = localStorage.getItem('token');
-            const headers: HeadersInit = { 'Content-Type': 'application/json' };
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
+            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
                 method: 'PUT',
-                headers,
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     venue: sceneryParams.venue,
                     section: sceneryParams.section,
@@ -135,7 +125,7 @@ const EditVenue = () => {
             setMessage({ type: 'error', text: errorMessage });
             console.error('Error updating venue:', error);
         } finally {
-            setLoading(false);
+            setIsSubmitting(false);
         }
     }
 
@@ -162,7 +152,7 @@ const EditVenue = () => {
                         <Input type="number" name="rows" label="Rows" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, rows: Number(e.target.value) })} value={sceneryParams.rows || ''} />
                         <Input type="number" name="cols" label="Columns" min={1} onChange={(e) => setSceneryParams({ ...sceneryParams, cols: Number(e.target.value) })} value={sceneryParams.cols || ''} />
                         <Input type="number" name="rate" label="Rate" min={0.1} step={0.1} onChange={(e) => setSceneryParams({ ...sceneryParams, rate: Number(e.target.value) })} value={sceneryParams.rate || ''} />
-                        {loading ? <Button type="button" text="Updating Venue..." disabled={true} /> : <Button type="submit" text="Update Venue" />}
+                        {isSubmitting ? <Button type="button" text="Updating Venue..." disabled={true} /> : <Button type="submit" text="Update Venue" />}
                     </div>
                 </div>
             </form>

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router";
 import Input from "../../components/ui/input/Input";
 import style from './Register.module.css'
 import Button from "../../components/ui/button/Button";
+import { useAuth } from "../../contexts/auth/useAuth";
+import { normalizeAuthUser } from "../../lib/authSession";
 
 const logo = '/img/logo/logo_transparrent_white.svg';
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
@@ -11,6 +13,7 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/
 
 const Register = () => {
     const [errors, setErrors] = useState<string[]>([]);
+    const { setSession } = useAuth();
 
     const navigate = useNavigate();
 
@@ -65,8 +68,13 @@ const Register = () => {
                 throw new Error(data?.message ?? "Registration failed");
             }
 
-            localStorage.setItem("user", JSON.stringify(data?.data?.user ?? null));
-            localStorage.setItem("token", data?.data?.token ?? "");
+            const user = normalizeAuthUser(data?.data?.user);
+
+            if (!user || !data?.data?.token) {
+                throw new Error("Registration succeeded but the session payload was invalid.");
+            }
+
+            setSession({ user, token: data.data.token });
             navigate("/dashboard");
         } catch (error) {
             console.error("Error during registration:", error);

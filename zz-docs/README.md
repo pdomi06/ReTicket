@@ -38,6 +38,7 @@ This folder contains the project documentation chunks for backend, frontend, and
 | [frontend-routing-navigation.md](./frontend-routing-navigation.md)               | Route definitions, navigation entry points, guards, and route mismatch gaps.      | new      |
 | [frontend-error-boundaries.md](./frontend-error-boundaries.md)                   | Current runtime error handling model and boundary/fallback status.                | new      |
 | [frontend-authentication.md](./frontend-authentication.md)                       | Frontend auth flow, storage strategy, token propagation, and missing features.    | new      |
+| [frontend-global-loader.md](./frontend-global-loader.md)                         | Global page-loading context, overlay behavior, and migration usage patterns.      | new      |
 
 ## Shared Conventions
 

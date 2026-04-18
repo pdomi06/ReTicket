@@ -34,6 +34,59 @@ Payment and checkout related variables used by current code:
 - `FRONTEND_URL`
 - `CASHIER_CURRENCY` (optional; defaults to `huf` in checkout flow)
 
+Mail delivery is configured through the normal Laravel mailer settings instead of the log channel.
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+Multiple SMTP providers are supported:
+
+**Gmail (local development example):**
+=======
+Current local setup uses SMTP with a Gmail account:
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
+=======
+Current local setup uses SMTP with a Gmail account:
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
+
+- `MAIL_MAILER=smtp`
+- `MAIL_HOST=smtp.gmail.com`
+- `MAIL_PORT=465`
+- `MAIL_USERNAME` for the Gmail account
+- `MAIL_PASSWORD` for the Gmail app password
+- `MAIL_ENCRYPTION=tls`
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+**Mailgun (default config fallback):**
+
+- `MAIL_MAILER=smtp`
+- `MAIL_HOST=smtp.mailgun.org`
+- `MAIL_PORT=2525`
+- `MAIL_USERNAME` for Mailgun SMTP credentials
+- `MAIL_PASSWORD` for Mailgun SMTP credentials
+- `MAILGUN_DOMAIN` configured in `config/services.php`
+- `MAILGUN_SECRET` for API access (optional)
+
+**Mailtrap:**
+
+- `MAIL_MAILER=mailtrap`
+- Mailtrap integration configured in `config/mail.php`
+
+For all providers:
+
+- Set `MAIL_FROM_ADDRESS` to the verified sender address
+- Update all `MAIL_*` keys together when switching providers
+=======
+- `MAIL_FROM_ADDRESS` set to the verified sender address
+
+If you change providers later, keep the same `MAIL_*` keys and update the host, port, username, and encryption values together.
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
+=======
+- `MAIL_FROM_ADDRESS` set to the verified sender address
+
+If you change providers later, keep the same `MAIL_*` keys and update the host, port, username, and encryption values together.
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
+
 Keep backend `.env` aligned with database and app URL.
 
 ## Build Commands
@@ -64,3 +117,4 @@ Frontend Vercel config (`frontend/vercel.json`):
 3. Confirm CORS allows frontend origin.
 4. Validate SPA rewrite behavior after deployment.
 5. Smoke-test dashboard routes and event browse paths.
+6. Send a test email through the password reset or email verification flow and confirm it leaves the log channel.

@@ -30,7 +30,8 @@ class SearchEventsRequest extends FormRequest
             'timezone' => ['sometimes', 'nullable', 'string'],
             'maxPrice' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'category' => ['sometimes', 'nullable', 'in:cultural,music,sport'],
-            'page' => ['sometimes', 'nullable', 'integer', 'min:1'],
+            'cursor' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'limit' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:20'],
         ];
     }
 

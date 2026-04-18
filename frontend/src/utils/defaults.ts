@@ -37,7 +37,7 @@ export const defaultIEventContext: IEventContext = {
     created_at: '',
     updated_at: ''
   },
-  getEvent: async () => false
+  getEvent: async () => undefined
 }
 
 export const defaultIVenueMap: IVenueMap = {

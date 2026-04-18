@@ -1,74 +1,48 @@
 
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useLayoutEffect, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
 import Select from "../../components/ui/select/Select";
 import Button from "../../components/ui/button/Button";
 import Input from "../../components/ui/input/Input";
 import Notification from "../../components/ui/notification/Notification";
 import styles from "./Validate.module.css";
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    [key: string]: unknown;
-}
+import { useAuth } from "../../contexts/auth/useAuth";
+import { apiFetch } from "../../lib/apiFetch";
+import { usePageLoading } from "../../contexts/loading/LoadingContext";
 
 const Validate = () => {
-    const navigate = useNavigate();
+    const { user, status } = useAuth();
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-    const [user, setUser] = useState<User | null>(null);
     const [events, setEvents] = useState<IEvent[]>([]);
     const [selectedEventId, setSelectedEventId] = useState<string>("");
     const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
     const [ticketCode, setTicketCode] = useState<string>("");
-    const [loadingEvents, setLoadingEvents] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [validationResult, setValidationResult] = useState<string | null>(null);
+    const trackPageLoading = usePageLoading();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/login");
+        if (status !== "ready") {
             return;
         }
 
-        let userData: User | null = null;
-        try {
-            const userString = localStorage.getItem("user");
-            userData = userString ? JSON.parse(userString) : null;
-        } catch (error) {
-            userData = null;
-            setErrorMessage("Error parsing user data. " + (error instanceof Error ? error.message : ""));
-        }
-
-        if (!userData || (userData.role !== "organizer" && userData.role !== "admin")) {
+        if (!user || (user.role !== "organizer" && user.role !== "admin")) {
             setIsAuthorized(false);
-            setUser(userData);
             return;
         }
 
         setIsAuthorized(true);
-        setUser(userData);
-    }, [navigate]);
+    }, [status, user]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!isAuthorized) return;
 
-        async function fetchEvents() {
+        const fetchEventsPromise = (async () => {
             try {
-                setLoadingEvents(true);
                 setErrorMessage(null);
-                const token = localStorage.getItem("token");
-                const headers: HeadersInit = {
-                    Authorization: `Bearer ${token}`,
-                };
-
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
-                    headers,
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
+                    method: "GET",
                 });
 
                 if (!response.ok) {
@@ -89,13 +63,11 @@ const Validate = () => {
                     error instanceof Error ? error.message : "Failed to load events"
                 );
                 setEvents([]);
-            } finally {
-                setLoadingEvents(false);
             }
-        }
+        })();
 
-        fetchEvents();
-    }, [isAuthorized]);
+        void trackPageLoading(fetchEventsPromise);
+    }, [isAuthorized, trackPageLoading]);
 
     const handleEventSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedEventId(e.target.value);
@@ -133,14 +105,12 @@ const Validate = () => {
             setErrorMessage(null);
             setValidationResult(null);
             setIsValidating(true);
-            const token = localStorage.getItem("token");
             const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-            const response = await fetch(`${apiBaseUrl}/activeTickets/validate`, {
+            const response = await apiFetch(`${apiBaseUrl}/activeTickets/validate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     ticketListingId: ticketCode,
@@ -236,8 +206,6 @@ const Validate = () => {
                         />
                     </div>
                 </div>
-            ) : loadingEvents ? (
-                <p className={styles.loadingMessage}>Loading events...</p>
             ) : events.length > 0 ? (
                 <div className={styles.eventSelectorSection}>
                     <label className={styles.eventLabel}>Event</label>

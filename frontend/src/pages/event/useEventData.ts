@@ -1,7 +1,30 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useLayoutEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
 import { type IVenueMap, type IEvent, type IOriginalTicket } from "../../utils/interfaces"
 import { defaultIVenueMap } from "../../utils/defaults"
+import { usePageLoading } from "../../contexts/loading/LoadingContext"
+
+interface IEventGroupResult extends IEvent {
+    occurrences?: IEvent[]
+}
+
+function normalizeEventSearchResults(results: IEventGroupResult[]): IEvent[] {
+    const expandedEvents = results.flatMap((result) => {
+        if (Array.isArray(result.occurrences) && result.occurrences.length > 0) {
+            return result.occurrences
+        }
+
+        return [result]
+    })
+
+    const dedupedEventsById = new Map<number, IEvent>()
+
+    for (const expandedEvent of expandedEvents) {
+        dedupedEventsById.set(Number(expandedEvent.id), expandedEvent)
+    }
+
+    return Array.from(dedupedEventsById.values()).sort((left, right) => left.eventDate - right.eventDate)
+}
 
 // Deduplicate simultaneous ticket requests for the same eventId
 const inFlightTicketRequests = new Map<string, Promise<IOriginalTicket[]>>()
@@ -52,58 +75,49 @@ export function useEventData(eventId: string) {
     const [events, setEvents] = useState<IEvent[]>([])
     const [venue, setVenue] = useState<IVenueMap>(defaultIVenueMap)
     const [dbTickets, setDbTickets] = useState<IOriginalTicket[]>([])
-    const [loadingEvent, setLoadingEvent] = useState(true)
-    const [loadingEvents, setLoadingEvents] = useState(true)
-    const [loadingVenue, setLoadingVenue] = useState(true)
+    const trackPageLoading = usePageLoading()
+
+    const resetEventData = useCallback(() => {
+        setEvents([])
+        setVenue(defaultIVenueMap)
+        setDbTickets([])
+    }, [])
 
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         let cancelled = false
 
-        async function fetchEvent() {
-            setLoadingEvent(true)
-            try {
-                await getEvent(eventId)
-            } catch (err) {
-                console.error(err)
-            } finally {
-                if (!cancelled) {
-                    setLoadingEvent(false)
-                }
+        if (!eventId) {
+            return () => {
+                cancelled = true
             }
         }
 
-        if (eventId) {
-            void fetchEvent()
-        } else {
-            setLoadingEvent(false)
-            setLoadingEvents(false)
-        }
-        if (eventId) {
-            setDbTickets([])
-            void fetchOriginalTickets(eventId).then(tickets => {
-                if (!cancelled) {
-                    setDbTickets(filterActiveTicketsForEvent(tickets, eventId))
+        const loadPageDataPromise = (async () => {
+            if (!cancelled) {
+                resetEventData()
+            }
+
+            const [eventData, tickets] = await Promise.all([
+                getEvent(eventId),
+                fetchOriginalTickets(eventId),
+            ])
+
+            if (cancelled) {
+                return
+            }
+
+            setDbTickets(filterActiveTicketsForEvent(tickets, eventId))
+
+            const fetchSubEventsPromise = (async () => {
+                if (!eventData?.name) {
+                    if (!cancelled) {
+                        setEvents([])
+                    }
+                    return
                 }
-            })
-        }
 
-        return () => {
-            cancelled = true
-        }
-    }, [eventId, getEvent])
-
-    useEffect(() => {
-        if (!event?.name) {
-            return
-        }
-
-        let cancelled = false
-
-        async function fetchSubEvents() {
-            setLoadingEvents(true)
-            try {
-                const eventNameQuery = encodeURIComponent(event!.name)
+                const eventNameQuery = encodeURIComponent(eventData.name)
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?name=${eventNameQuery}`)
                 const contentType = response.headers.get("content-type") || ""
                 if (!response.ok || !contentType.includes("application/json")) {
@@ -111,40 +125,28 @@ export function useEventData(eventId: string) {
                         status: response.status,
                         contentType,
                     })
+                    if (!cancelled) {
+                        setEvents([])
+                    }
                     return
                 }
+
                 const json = await response.json()
                 if (!cancelled) {
-                    setEvents(json.data)
+                    const groupedResults = Array.isArray(json.data) ? (json.data as IEventGroupResult[]) : []
+                    setEvents(normalizeEventSearchResults(groupedResults))
                 }
-            } catch (err) {
-                console.error(err)
-            } finally {
-                if (!cancelled) {
-                    setLoadingEvents(false)
+            })()
+
+            const fetchVenuePromise = (async () => {
+                if (!eventData?.venue) {
+                    if (!cancelled) {
+                        setVenue(defaultIVenueMap)
+                    }
+                    return
                 }
-            }
-        }
 
-        void fetchSubEvents()
-
-        return () => {
-            cancelled = true
-        }
-    }, [event])
-
-    useEffect(() => {
-        if (!event?.venue) {
-            setLoadingVenue(false)
-            return
-        }
-
-        let cancelled = false
-
-        async function fetchVenue() {
-            setLoadingVenue(true)
-            try {
-                const venueQuery = encodeURIComponent(event!.venue)
+                const venueQuery = encodeURIComponent(eventData.venue)
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venues/search?venue=${venueQuery}`)
                 const contentType = response.headers.get("content-type") || ""
                 if (!response.ok || !contentType.includes("application/json")) {
@@ -152,27 +154,33 @@ export function useEventData(eventId: string) {
                         status: response.status,
                         contentType,
                     })
+                    if (!cancelled) {
+                        setVenue(defaultIVenueMap)
+                    }
                     return
                 }
+
                 const json = await response.json()
                 if (!cancelled) {
-                    setVenue(json.data[0])
+                    const nextVenue = Array.isArray(json.data) ? (json.data[0] as IVenueMap | undefined) : undefined
+                    setVenue(nextVenue ?? defaultIVenueMap)
                 }
-            } catch (err) {
-                console.error(err)
-            } finally {
-                if (!cancelled) {
-                    setLoadingVenue(false)
-                }
-            }
-        }
+            })()
 
-        void fetchVenue()
+            await Promise.all([fetchSubEventsPromise, fetchVenuePromise])
+        })().catch((error) => {
+            console.error(error)
+            if (!cancelled) {
+                resetEventData()
+            }
+        })
+
+        void trackPageLoading(loadPageDataPromise)
 
         return () => {
             cancelled = true
         }
-    }, [event])
+    }, [eventId, getEvent, resetEventData, trackPageLoading])
 
 
     const refreshTickets = useCallback(async () => {
@@ -181,5 +189,5 @@ export function useEventData(eventId: string) {
         setDbTickets(filterActiveTicketsForEvent(tickets, eventId))
     }, [eventId])
 
-    return { event, events, venue, dbTickets, loadingEvent, loadingEvents, loadingVenue, refreshTickets }
+    return { event, events, venue, dbTickets, refreshTickets }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { LuCalendar, LuMapPin, LuTag } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
 import { TicketStatus } from "../../../utils/enums";
@@ -7,28 +7,24 @@ import Select from "../../../components/ui/select/Select";
 import styles from "./Events.module.css";
 import Button from "../../../components/ui/button/Button";
 import { formatUnixDateTime } from "../../../utils/dateTime";
+import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
-  const [loadingStatus, setLoadingStatus] = useState<number | null>(null);
+  const [statusUpdatingEventId, setStatusUpdatingEventId] = useState<number | null>(null);
   const [deletingEventId, setDeletingEventId] = useState<number | null>(null);
+  const trackPageLoading = usePageLoading();
   const [filters, setFilters] = useState({
     name: "",
     venue: "",
     category: "",
   });
 
-  useEffect(() => {
-    async function fetchEvents() {
+  useLayoutEffect(() => {
+    const fetchEventsPromise = (async () => {
       try {
-        const token = localStorage.getItem('token');
-        const headers: HeadersInit = {};
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
-          headers
-        });
+        const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`);
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -45,25 +41,20 @@ export default function Events() {
       } catch (error) {
         console.error("Error fetching events:", error);
       }
-    }
+    })();
 
-    fetchEvents();
-  }, []);
+    void trackPageLoading(fetchEventsPromise);
+  }, [trackPageLoading]);
 
 
   const handleStatusChange = async (eventId: number, newStatus: string) => {
-    setLoadingStatus(eventId);
+    setStatusUpdatingEventId(eventId);
     try {
-      const token = localStorage.getItem('token');
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulkStatusChange`,
         {
           method: "POST",
-          headers,
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ eventId, status: newStatus }),
         }
       );
@@ -81,7 +72,7 @@ export default function Events() {
       console.error("Error changing ticket status:", error);
       alert("Failed to change ticket status");
     } finally {
-      setLoadingStatus(null);
+      setStatusUpdatingEventId(null);
     }
   };
 
@@ -92,16 +83,11 @@ export default function Events() {
 
     setDeletingEventId(eventId);
     try {
-      const token = localStorage.getItem('token');
-      const headers: HeadersInit = { "Content-Type": "application/json" };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_BASE_URL}/events/${eventId}`,
         {
           method: "DELETE",
-          headers,
+          headers: { "Content-Type": "application/json" },
         }
       );
 
@@ -244,7 +230,7 @@ export default function Events() {
                       className={styles.statusSelect}
                       value={eventItem.firstTicketStatus || ""}
                       onChange={(e) => handleStatusChange(eventItem.id, e.target.value)}
-                      disabled={loadingStatus === eventItem.id}
+                      disabled={statusUpdatingEventId === eventItem.id}
                     >
                       {!eventItem.firstTicketStatus && (
                         <option value="" disabled>No tickets</option>

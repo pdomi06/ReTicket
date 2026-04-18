@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login'])->middleware('throttle:3,1');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout']);
+Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::get('events/landing', [EventsController::class, 'landing']);
 Route::get('events/search', [EventsController::class, 'search']);
 Route::apiResource('events', EventsController::class);
