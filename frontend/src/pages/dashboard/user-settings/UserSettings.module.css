@@ -137,6 +137,52 @@
     font-size: 0.9rem;
 }
 
+.securityTextVerified {
+    margin: 0.2rem 0 0;
+    color: var(--color-success, #1f9d55);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.verifiedBadge {
+    color: var(--color-success, #1f9d55);
+    width: 1.25rem;
+    height: 1.25rem;
+    vertical-align: middle;
+}
+
+.formField {
+    margin-top: 0.75rem;
+}
+
+.fieldLabel {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+.fieldInput {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: 0.5rem 0.65rem;
+    font-size: 0.9rem;
+}
+
+.actionsRow {
+    margin-top: 0.65rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.inlineNotice {
+    margin-top: 0.65rem;
+}
+
 @media (max-width: 768px) {
     .page {
         padding: 0 0 1.5rem;
@@ -168,5 +214,9 @@
 
     .securityGrid {
         grid-template-columns: 1fr;
+    }
+
+    .actionsRow {
+        flex-direction: column;
     }
 }
