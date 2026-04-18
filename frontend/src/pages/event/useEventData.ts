@@ -77,6 +77,12 @@ export function useEventData(eventId: string) {
     const [dbTickets, setDbTickets] = useState<IOriginalTicket[]>([])
     const trackPageLoading = usePageLoading()
 
+    const resetEventData = useCallback(() => {
+        setEvents([])
+        setVenue(defaultIVenueMap)
+        setDbTickets([])
+    }, [])
+
 
     useLayoutEffect(() => {
         let cancelled = false
@@ -88,6 +94,10 @@ export function useEventData(eventId: string) {
         }
 
         const loadPageDataPromise = (async () => {
+            if (!cancelled) {
+                resetEventData()
+            }
+
             const [eventData, tickets] = await Promise.all([
                 getEvent(eventId),
                 fetchOriginalTickets(eventId),
@@ -160,6 +170,9 @@ export function useEventData(eventId: string) {
             await Promise.all([fetchSubEventsPromise, fetchVenuePromise])
         })().catch((error) => {
             console.error(error)
+            if (!cancelled) {
+                resetEventData()
+            }
         })
 
         void trackPageLoading(loadPageDataPromise)
@@ -167,7 +180,7 @@ export function useEventData(eventId: string) {
         return () => {
             cancelled = true
         }
-    }, [eventId, getEvent, trackPageLoading])
+    }, [eventId, getEvent, resetEventData, trackPageLoading])
 
 
     const refreshTickets = useCallback(async () => {

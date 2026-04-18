@@ -20,18 +20,7 @@ const Welcome = () => {
     const [upcomingEvents, setUpcomingEvents] = React.useState<IEvent[]>([]);
     const [featuredEvents, setFeaturedEvents] = React.useState<IEvent[]>([]);
 
-    React.useLayoutEffect(() => {
-        const fetchEventsPromise = fetchEvents();
-
-        if (isRootPath) {
-            void trackPageLoading(fetchEventsPromise);
-            return;
-        }
-
-        void fetchEventsPromise;
-    }, [isRootPath, trackPageLoading]);
-
-    async function fetchEvents() {
+    const fetchEvents = React.useCallback(async () => {
         console.log('Fetching events for welcome page...');
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/landing`);
@@ -46,8 +35,18 @@ const Welcome = () => {
         } catch (error) {
             console.error('Error fetching events:', error);
         }
+    }, []);
 
-    }
+    React.useLayoutEffect(() => {
+        const fetchEventsPromise = fetchEvents();
+
+        if (isRootPath) {
+            void trackPageLoading(fetchEventsPromise);
+            return;
+        }
+
+        void fetchEventsPromise;
+    }, [fetchEvents, isRootPath, trackPageLoading]);
 
     return (
         <main className={`${style['welcome-container']}`}>

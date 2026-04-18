@@ -22,7 +22,12 @@ function MainLayoutContent() {
 
   return (
     <>
-      <div className={`${styles.layout} ${isPageLoading ? styles.pageLoading : ""}`}>
+      <div
+        className={`${styles.layout} ${isPageLoading ? styles.pageLoading : ""}`}
+        aria-busy={isPageLoading}
+        aria-hidden={isPageLoading || undefined}
+        inert={isPageLoading || undefined}
+      >
         <EventContextProvider>
           <CartContextProvider>
             <Navbar />
