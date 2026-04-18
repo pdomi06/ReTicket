@@ -12,9 +12,13 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class EventsController extends Controller implements HasMiddleware
 {
+    private const SEARCH_LIMIT = 20;
+
     public static function middleware(): array
     {
         return [
@@ -80,7 +84,11 @@ class EventsController extends Controller implements HasMiddleware
     {
         $events = Event::with('originalTickets')
             ->orderByDesc('created_at')
+<<<<<<< HEAD
             ->paginate(self::SEARCH_LIMIT);
+=======
+            ->paginate(self::PAGINATE);
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 
         $eventsData = $events->getCollection()->map(function ($event) {
             return array_merge(
@@ -104,10 +112,102 @@ class EventsController extends Controller implements HasMiddleware
     public function search(SearchEventsRequest $request)
     {
         $filters = $request->validated();
+        $limit = (int) ($filters['limit'] ?? self::SEARCH_LIMIT);
+        $cursor = isset($filters['cursor']) ? trim((string) $filters['cursor']) : null;
+        $nowTimestamp = now()->timestamp;
+        $normalizedNameExpression = 'LOWER(TRIM(name))';
 
-        $query = Event::query();
+        $baseQuery = Event::query();
+        $this->applySearchFilters($baseQuery, $filters);
 
+        $groupKeys = (clone $baseQuery)
+            ->selectRaw("{$normalizedNameExpression} as group_key")
+            ->when(
+                !empty($cursor),
+                fn (Builder $query) => $query->whereRaw("{$normalizedNameExpression} > ?", [$cursor])
+            )
+            ->groupBy(DB::raw($normalizedNameExpression))
+            ->orderByRaw("{$normalizedNameExpression} asc")
+            ->limit($limit + 1)
+            ->pluck('group_key')
+            ->map(fn ($groupKey) => (string) $groupKey)
+            ->all();
 
+        $hasMore = count($groupKeys) > $limit;
+        $pageGroupKeys = $hasMore ? array_slice($groupKeys, 0, $limit) : $groupKeys;
+        $nextCursor = $hasMore && !empty($pageGroupKeys)
+            ? $pageGroupKeys[count($pageGroupKeys) - 1]
+            : null;
+
+        $groupedData = [];
+
+        if (!empty($pageGroupKeys)) {
+            $occurrences = (clone $baseQuery)
+                ->whereIn(DB::raw($normalizedNameExpression), $pageGroupKeys)
+                ->orderByRaw("{$normalizedNameExpression} asc")
+                ->orderBy('eventDate')
+                ->orderBy('id')
+                ->get();
+
+            $occurrencesByGroup = [];
+
+            foreach ($occurrences as $occurrence) {
+                $groupKey = strtolower(trim($occurrence->name));
+                $occurrencesByGroup[$groupKey][] = $occurrence;
+            }
+
+            foreach ($pageGroupKeys as $groupKey) {
+                $groupOccurrences = $occurrencesByGroup[$groupKey] ?? [];
+
+                if (empty($groupOccurrences)) {
+                    continue;
+                }
+
+                $representative = collect($groupOccurrences)->first(
+                    fn (Event $event) => $event->eventDate >= $nowTimestamp
+                ) ?? $groupOccurrences[0];
+
+                $groupedData[] = array_merge(
+                    $representative->toArray(),
+                    [
+                        'occurrenceCount' => count($groupOccurrences),
+                        'occurrences' => array_map(
+                            fn (Event $event) => $event->toArray(),
+                            $groupOccurrences
+                        ),
+                    ]
+                );
+            }
+        }
+
+        $totalGroups = DB::query()
+            ->fromSub(
+                (clone $baseQuery)
+                    ->selectRaw("{$normalizedNameExpression} as group_key")
+                    ->groupBy(DB::raw($normalizedNameExpression)),
+                'grouped_events'
+            )
+            ->count();
+
+        $filtersForResponse = $filters;
+        unset($filtersForResponse['cursor'], $filtersForResponse['limit']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $groupedData,
+            'filters_applied' => $filtersForResponse,
+            'pagination' => [
+                'limit' => $limit,
+                'returned_count' => count($groupedData),
+                'has_more' => $hasMore,
+                'next_cursor' => $nextCursor,
+                'total_groups' => $totalGroups,
+            ]
+        ], 200);
+    }
+
+    private function applySearchFilters(Builder $query, array $filters): void
+    {
         if (!empty($filters['name'])) {
             $query->where('name', 'like', '%' . $filters['name'] . '%');
         }
@@ -132,29 +232,16 @@ class EventsController extends Controller implements HasMiddleware
             // Parse date in user's timezone, then convert to UTC for database query
             $userTimezone = $filters['timezone'] ?? '+00:00';
             $date = Carbon::createFromFormat('Y-m-d', $filters['eventDate'], $userTimezone);
-            
+
             $startOfDayTimestamp = $date->copy()->startOfDay()->timestamp;
             $endOfDayTimestamp = $date->copy()->endOfDay()->timestamp;
+
             $query->whereBetween('eventDate', [$startOfDayTimestamp, $endOfDayTimestamp]);
         }
 
         if (!empty($filters['maxPrice'])) {
             $query->where('basePrice', '<=', $filters['maxPrice']);
         }
-
-        $events = $query->orderByDesc('created_at')->paginate(20);
-
-        return response()->json([
-            'success' => true,
-            'data' => $events->items(),
-            'filters_applied' => $filters,
-            'pagination' => [
-            'current_page' => $events->currentPage(),
-            'total_results' => $events->total(),
-            'total_pages' => $events->lastPage(),
-            'per_page' => $events->perPage(),
-            ]
-        ], 200);
     }
 
     /**

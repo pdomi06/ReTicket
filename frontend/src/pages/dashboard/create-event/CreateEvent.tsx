@@ -8,6 +8,7 @@ import { EventCategory } from "../../../utils/enums";
 import { toUnixSeconds } from "../../../utils/dateTime";
 import Notification from "../../../components/ui/notification/Notification";
 import style from "./CreateEvent.module.css";
+import { apiFetch } from "../../../lib/apiFetch";
 
 const CreateEvent = () => {
     const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
@@ -20,14 +21,8 @@ const CreateEvent = () => {
 
         async function fetchVenues() {
             try {
-                const token = localStorage.getItem('token');
-                const headers: HeadersInit = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venues`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`, {
                     signal: abortController.signal,
-                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
@@ -68,22 +63,17 @@ const CreateEvent = () => {
                 throw new Error("Please provide valid event start and end date/time values.");
             }
 
-            const token = localStorage.getItem('token');
-            const headers: HeadersInit = { "Content-Type": "application/json" };
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
             const payload = {
                 ...eventParams,
                 eventDate: eventDateUnix,
                 eventEndDate: eventEndDateUnix,
             };
 
-            const eventResponse = await fetch(
+            const eventResponse = await apiFetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events`,
                 {
                     method: "POST",
-                    headers,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 }
             );
@@ -114,15 +104,11 @@ const CreateEvent = () => {
                 throw new Error("Failed to create tickets: no matching venue found for the event");
             }
 
-            const ticketsHeaders: HeadersInit = { "Content-Type": "application/json" };
-            if (token) {
-                ticketsHeaders['Authorization'] = `Bearer ${token}`;
-            }
-            const ticketsResponse = await fetch(
+            const ticketsResponse = await apiFetch(
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
                     method: "POST",
-                    headers: ticketsHeaders,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         eventId: createdEventId,
                         eventBasePrice: eventParams.basePrice,

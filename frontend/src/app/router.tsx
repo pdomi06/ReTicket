@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { type RouteObject } from "react-router";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import RequireAuth from "../components/auth/RequireAuth";
 
 
 const About = lazy(() => import("../pages/about/About.tsx"));
@@ -38,6 +39,7 @@ const DashboardWebsite = lazy(() => import("../pages/dashboard/website/WebsiteMa
 const DashboardHistory = lazy(() => import("../pages/dashboard/history/TicketHistory.tsx"));
 const DashboardUserSettings = lazy(() => import("../pages/dashboard/user-settings/UserSettings.tsx"));
 const DashboardListTicket = lazy(() => import("../pages/dashboard/list-ticket/ListTicket.tsx"));
+const ResetPassword = lazy(() => import("../pages/reset-password/ResetPassword.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -48,19 +50,20 @@ export const routes: RouteObject[] = [
       { path: "/test", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/profile", element: <Profile /> },
+      { path: "/reset-password", element: <ResetPassword /> },
+      { path: "/profile", element: <RequireAuth><Profile /></RequireAuth> },
       { path: "/browse", element: <Browse /> },
       { path: "/event", element: <Event /> },
       { path: "/vendor", element: <Vendor /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/validate", element: <Validate /> },
+      { path: "/validate", element: <RequireAuth><Validate /></RequireAuth> },
       { path: "/about", element: <About /> },
       { path: "/contact", element:<Contact/> },
       { path: "/terms", element: <Terms /> },
       { path: "/privacy", element: <Privacy /> },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: <RequireAuth><Dashboard /></RequireAuth>,
         children: [
           { index: true, element: <DashboardOverview /> },
           { path: "create-venue", element: <DashboardCreateVenue /> },

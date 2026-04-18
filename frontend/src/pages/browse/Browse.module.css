@@ -30,5 +30,9 @@
 .loadMoreError {
     margin-top: 0.75rem;
     text-align: center;
+<<<<<<< HEAD
     color: var(--color-danger);
+=======
+    color: #dc3545;
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 }

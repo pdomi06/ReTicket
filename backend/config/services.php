@@ -39,4 +39,11 @@ return [
         'url' => env('FRONTEND_URL', 'http://localhost:5173'),
     ],
 
+    'mailgun' => [
+    'domain' => env('MAILGUN_DOMAIN'),
+    'secret' => env('MAILGUN_SECRET'),
+    'endpoint' => env('MAILGUN_ENDPOINT', 'api.eu.mailgun.net'),
+    'scheme' => 'https',
+],
+
 ];

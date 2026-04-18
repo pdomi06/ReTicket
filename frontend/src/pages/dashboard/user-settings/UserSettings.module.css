@@ -43,6 +43,15 @@
     font-weight: 700;
 }
 
+<<<<<<< HEAD
+=======
+.verifiedIcon {
+    color: var(--color-info);
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 .email {
     margin: 0.25rem 0 0;
     color: var(--color-text-secondary);

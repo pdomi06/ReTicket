@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuEllipsis, LuUsers, LuShoppingCart, LuStar, LuMonitor, LuHistory } from "react-icons/lu";
 import style from "./Sidebar.module.css";
+import { useAuth } from "../../../contexts/auth/useAuth";
 
 const NAV_ITEMS = [
     { label: "Overview", icon: LuLayoutDashboard, link: "/dashboard" },
@@ -28,15 +29,7 @@ const ADMIN_ITEMS = [
 ];
 
 const Sidebar = () => {
-    const user = localStorage.getItem("user");
-    let userData = null;
-
-    try {
-        userData = user ? JSON.parse(user) : null;
-    } catch (e) {
-        console.error("Failed to parse user from localStorage:", e);
-        userData = null;
-    }
+    const { user: userData } = useAuth();
 
     const role = typeof userData?.role === "string" ? userData.role.toLowerCase() : "";
     const showVendorSection = role === "vendor" || role === "organizer" || role === "admin";

@@ -36,9 +36,13 @@ Payment and checkout related variables used by current code:
 
 Mail delivery is configured through the normal Laravel mailer settings instead of the log channel.
 
+<<<<<<< HEAD
 Multiple SMTP providers are supported:
 
 **Gmail (local development example):**
+=======
+Current local setup uses SMTP with a Gmail account:
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 
 - `MAIL_MAILER=smtp`
 - `MAIL_HOST=smtp.gmail.com`
@@ -46,6 +50,7 @@ Multiple SMTP providers are supported:
 - `MAIL_USERNAME` for the Gmail account
 - `MAIL_PASSWORD` for the Gmail app password
 - `MAIL_ENCRYPTION=tls`
+<<<<<<< HEAD
 
 **Mailgun (default config fallback):**
 
@@ -66,6 +71,11 @@ For all providers:
 
 - Set `MAIL_FROM_ADDRESS` to the verified sender address
 - Update all `MAIL_*` keys together when switching providers
+=======
+- `MAIL_FROM_ADDRESS` set to the verified sender address
+
+If you change providers later, keep the same `MAIL_*` keys and update the host, port, username, and encryption values together.
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 
 Keep backend `.env` aligned with database and app URL.
 

@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
+=======
+import { useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 import { LuLock, LuCheck } from "react-icons/lu";
 import styles from "./ResetPassword.module.css";
 import Button from "../../components/ui/button/Button";
@@ -21,6 +26,7 @@ const ResetPassword = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ text: string; variant: "success" | "error" } | null>(null);
     const [isResetSuccessful, setIsResetSuccessful] = useState(false);
+<<<<<<< HEAD
     const redirectTimeoutRef = useRef<number | null>(null);
 
     useEffect(() => {
@@ -30,6 +36,8 @@ const ResetPassword = () => {
             }
         };
     }, []);
+=======
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 
     if (!token || !email) {
         return (
@@ -124,11 +132,15 @@ const ResetPassword = () => {
             setMessage({ text: responseMessage, variant: "success" });
             setIsResetSuccessful(true);
 
+<<<<<<< HEAD
             if (redirectTimeoutRef.current !== null) {
                 window.clearTimeout(redirectTimeoutRef.current);
             }
 
             redirectTimeoutRef.current = window.setTimeout(() => {
+=======
+            setTimeout(() => {
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
                 navigate("/login");
             }, 2000);
         } catch {
@@ -195,9 +207,15 @@ const ResetPassword = () => {
 
                             <p className={styles.footerText}>
                                 Remember your password?{" "}
+<<<<<<< HEAD
                                 <Link to="/login" className={styles.link}>
                                     Back to login
                                 </Link>
+=======
+                                <a href="/login" className={styles.link}>
+                                    Back to login
+                                </a>
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
                             </p>
                         </>
                     )}

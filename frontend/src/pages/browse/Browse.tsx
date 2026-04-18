@@ -83,6 +83,10 @@ const Browse = () => {
         }
 
         const json = await response.json();
+<<<<<<< HEAD
+=======
+        console.log("API Response:", json);
+>>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
         const paginationData = json.pagination;
 
         return {
