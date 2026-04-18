@@ -35,6 +35,7 @@ const DashboardWebsite = lazy(() => import("../pages/dashboard/website/WebsiteMa
 const DashboardHistory = lazy(() => import("../pages/dashboard/history/TicketHistory.tsx"));
 const DashboardUserSettings = lazy(() => import("../pages/dashboard/user-settings/UserSettings.tsx"));
 const DashboardListTicket = lazy(() => import("../pages/dashboard/list-ticket/ListTicket.tsx"));
+const ResetPassword = lazy(() => import("../pages/reset-password/ResetPassword.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -45,6 +46,7 @@ export const routes: RouteObject[] = [
       { path: "/test", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
+      { path: "/reset-password", element: <ResetPassword /> },
       { path: "/profile", element: <RequireAuth><Profile /></RequireAuth> },
       { path: "/browse", element: <Browse /> },
       { path: "/event", element: <Event /> },
