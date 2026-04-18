@@ -14,10 +14,16 @@ export default function LoadingScreen() {
     const [messageVisible, setMessageVisible] = useState(true);
 
     useEffect(() => {
+        let messageSwapTimeout: number | undefined;
+
         const swapInterval = window.setInterval(() => {
             setMessageVisible(false);
 
-            window.setTimeout(() => {
+            if (messageSwapTimeout !== undefined) {
+                window.clearTimeout(messageSwapTimeout);
+            }
+
+            messageSwapTimeout = window.setTimeout(() => {
                 setMessageIndex((previous) => (previous + 1) % LOADING_MESSAGES.length);
                 setMessageVisible(true);
             }, 260);
@@ -25,6 +31,10 @@ export default function LoadingScreen() {
 
         return () => {
             window.clearInterval(swapInterval);
+
+            if (messageSwapTimeout !== undefined) {
+                window.clearTimeout(messageSwapTimeout);
+            }
         };
     }, []);
 
