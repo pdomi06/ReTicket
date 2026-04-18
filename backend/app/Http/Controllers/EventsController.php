@@ -84,15 +84,7 @@ class EventsController extends Controller implements HasMiddleware
     {
         $events = Event::with('originalTickets')
             ->orderByDesc('created_at')
-<<<<<<< HEAD
-<<<<<<< HEAD
             ->paginate(self::SEARCH_LIMIT);
-=======
-            ->paginate(self::PAGINATE);
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-=======
-            ->paginate(self::PAGINATE);
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
 
         $eventsData = $events->getCollection()->map(function ($event) {
             return array_merge(
