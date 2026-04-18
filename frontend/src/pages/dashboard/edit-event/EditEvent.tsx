@@ -9,6 +9,7 @@ import { EventCategory } from "../../../utils/enums";
 import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import style from "./EditEvent.module.css";
 import { useParams } from "react-router-dom";
+import { apiFetch } from "../../../lib/apiFetch";
 
 const EditEvent = () => {
     const [eventParams, setEventParams] = useState<IEventForm>(defaultIEvent);
@@ -22,14 +23,8 @@ const EditEvent = () => {
         const abortController = new AbortController();
         async function fetchEvent() {
             try {
-                const token = localStorage.getItem('token');
-                const headers: HeadersInit = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
                     signal: abortController.signal,
-                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch event:', response.status, response.statusText);
@@ -78,14 +73,8 @@ const EditEvent = () => {
 
         async function fetchVenues() {
             try {
-                const token = localStorage.getItem('token');
-                const headers: HeadersInit = {};
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
                     signal: abortController.signal,
-                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venues:', response.status, response.statusText);
@@ -126,22 +115,17 @@ const EditEvent = () => {
                 throw new Error("Please provide valid event start and end date/time values.");
             }
 
-            const token = localStorage.getItem('token');
-            const headers: HeadersInit = { "Content-Type": "application/json" };
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
             const payload = {
                 ...eventParams,
                 eventDate: eventDateUnix,
                 eventEndDate: eventEndDateUnix,
             };
 
-            const eventResponse = await fetch(
+            const eventResponse = await apiFetch(
                 `${import.meta.env.VITE_API_BASE_URL}/events/${eventParams.id}`,
                 {
                     method: "PUT",
-                    headers,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 }
             );
@@ -172,11 +156,11 @@ const EditEvent = () => {
                 throw new Error("Failed to update tickets: no matching venue found for the event");
             }
 
-            const ticketsResponse = await fetch(
+            const ticketsResponse = await apiFetch(
                 `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`,
                 {
                     method: "PUT",
-                    headers,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         eventId: createdEventId,
                         eventBasePrice: eventParams.basePrice,

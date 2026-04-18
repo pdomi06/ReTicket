@@ -11,6 +11,8 @@ Account recovery is implemented through dedicated endpoints (not CRUD resources)
 - Email verification send/confirm flow.
 - Password reset request/confirm flow.
 
+Both flows send mail through the active Laravel mailer configuration. The current setup uses SMTP rather than the `log` mail driver, so account recovery messages are actually delivered instead of being written to local logs.
+
 ## Key files
 
 - Routes: [backend/routes/api.php](backend/routes/api.php)
@@ -67,6 +69,7 @@ Failure status patterns:
 1. Uses `Password::sendResetLink(...)`.
 2. Returns generic message regardless of user existence.
 3. Logs warning on non-success/non-invalid-user statuses.
+4. Delivers the reset email through the configured SMTP mailer.
 
 Response pattern:
 
@@ -102,3 +105,4 @@ Status patterns:
 - [zz-docs/backend-authentication.md](zz-docs/backend-authentication.md)
 - [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
 - [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)
+- [zz-docs/environment-and-deployment.md](zz-docs/environment-and-deployment.md)

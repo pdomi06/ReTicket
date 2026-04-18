@@ -114,4 +114,14 @@ class AuthController extends Controller implements HasMiddleware
             'message' => 'Logout successful'
         ], 200);
     }
+
+    public function me(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'user' => $request->user(),
+            ],
+        ]);
+    }
 }
