@@ -6,7 +6,7 @@ use App\Mail\TicketMail;
 use App\Models\ActiveTicket;
 use App\Models\Order;
 use Illuminate\Support\Facades\Log;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class OrderObserver
@@ -46,7 +46,7 @@ class OrderObserver
         
         try {
             Mail::to($order->deliveryEmail)
-                ->send(new TicketMail($activeTickets));
+                ->queue(new TicketMail($activeTickets));
         } catch (Throwable $e) {
             Log::error('Failed to send ticket email after order authorization.', [
                 'order_id' => $order->id,

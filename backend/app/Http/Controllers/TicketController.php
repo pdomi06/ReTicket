@@ -27,6 +27,6 @@ class TicketController extends Controller
             'message' => 'Ticket email sent successfully.',
             'ticket' => $ticket->id,
             'recipient' => $recipient,
-        ], 202);
+        ], 200);
     }
 }
