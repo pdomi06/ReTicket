@@ -13,7 +13,7 @@
         </tr>
         <tr>
             <td style="padding: 20px 22px;">
-                <p style="margin: 0 0 12px;">You have purchased {{ $tickets->count() }} {{ Str::plural('ticket', $tickets->count()) }}:</p>
+                <p style="margin: 0 0 12px;">You have purchased {{ $tickets->count() }} {{ \Illuminate\Support\Str::plural('ticket', $tickets->count()) }}:</p>
                 <ul style="margin: 0 0 16px; padding-left: 20px;">
                     @foreach($tickets as $ticket)
                         <li style="margin-bottom: 8px;">
