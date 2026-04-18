@@ -4,7 +4,6 @@ import { LuMapPin, LuTrendingUp } from "react-icons/lu";
 import Input from "../../../components/ui/input/Input";
 import styles from "./Venues.module.css";
 import Button from "../../../components/ui/button/Button";
-import { apiFetch } from "../../../lib/apiFetch";
 
 export default function Venues() {
   const [venues, setVenues] = useState<IVenueMap[]>([]);
@@ -15,8 +14,21 @@ export default function Venues() {
 
   useEffect(() => {
     async function fetchVenues() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        return;
+      }
+
       try {
-        const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/venues`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        );
         const data = await response.json();
         setVenues(data);
       } catch (error) {

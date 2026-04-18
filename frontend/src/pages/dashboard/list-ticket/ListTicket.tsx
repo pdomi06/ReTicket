@@ -5,7 +5,6 @@ import Notification from "../../../components/ui/notification/Notification";
 import type { IDashboardTicket } from "../../../utils/interfaces";
 import { toDateFromUnix } from "../../../utils/dateTime";
 import styles from "./ListTicket.module.css";
-import { apiFetch } from "../../../lib/apiFetch";
 
 const ListTicket = () => {
     const [ticketCode, setTicketCode] = useState("");
@@ -29,7 +28,7 @@ const ListTicket = () => {
 
     async function handleCheckTicket() {
         try {
-            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/checkTicket`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/checkTicket`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -84,10 +83,11 @@ const ListTicket = () => {
         }
 
         try {
-            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/resell`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/resell`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({
                     ticketListingId: ticketCode,

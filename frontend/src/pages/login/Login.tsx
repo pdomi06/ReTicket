@@ -3,8 +3,6 @@ import Input from "../../components/ui/input/Input";
 import style from './Login.module.css'
 import Button from "../../components/ui/button/Button";
 import { useState, type FormEvent } from "react";
-import { useAuth } from "../../contexts/auth/useAuth";
-import { normalizeAuthUser } from "../../lib/authSession";
 
 const logo = '/img/logo/logo_transparrent_white.svg';
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
@@ -14,7 +12,6 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/
 
 const Login = () => {
   const [errors, setErrors] = useState<string[]>([]);
-  const { setSession } = useAuth();
 
 
   const navigate = useNavigate();
@@ -54,13 +51,8 @@ const Login = () => {
         throw new Error(data?.message ?? "Login failed");
       }
 
-      const user = normalizeAuthUser(data?.data?.user);
-
-      if (!user || !data?.data?.token) {
-        throw new Error("Login succeeded but the session payload was invalid.");
-      }
-
-      setSession({ user, token: data.data.token });
+      localStorage.setItem("user", JSON.stringify(data?.data?.user ?? null));
+      localStorage.setItem("token", data?.data?.token ?? "");
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login:", error);
