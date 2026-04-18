@@ -1,5 +1,6 @@
 import { useIsPageLoading } from "../../contexts/loading/LoadingContext";
 import styles from "./PageLoader.module.css";
+import LoadingScreen from "./LoadingScreen";
 
 type PageLoaderProps = {
     isEnabled?: boolean;
@@ -14,9 +15,7 @@ export default function PageLoader({ isEnabled = true }: PageLoaderProps) {
             className={`${styles.overlay} ${shouldShowLoader ? styles.overlayVisible : styles.overlayHidden}`}
             aria-hidden={!shouldShowLoader}
         >
-            <div className={styles.loaderShell} role="status" aria-live="polite" aria-label="Page loading">
-                <span className={styles.spinner} />
-            </div>
+            <LoadingScreen />
         </div>
     );
 }

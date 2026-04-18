@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
 import Select from "../../components/ui/select/Select";
 import Button from "../../components/ui/button/Button";
@@ -35,7 +35,7 @@ const Validate = () => {
         setIsAuthorized(true);
     }, [status, user]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!isAuthorized) return;
 
         const fetchEventsPromise = (async () => {

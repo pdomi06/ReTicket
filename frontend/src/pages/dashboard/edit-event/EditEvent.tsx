@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useLayoutEffect, type FormEvent } from "react";
 import { defaultIEvent } from "../../../utils/defaults";
 import type { IEvent, IEventForm, IVenueMap } from "../../../utils/interfaces";
 import Button from "../../../components/ui/button/Button";
@@ -21,7 +21,7 @@ const EditEvent = () => {
     const trackPageLoading = usePageLoading();
 
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const abortController = new AbortController();
 
         const fetchEvent = async () => {

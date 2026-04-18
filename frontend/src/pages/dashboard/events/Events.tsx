@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { LuCalendar, LuMapPin, LuTag } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
 import { TicketStatus } from "../../../utils/enums";
@@ -21,7 +21,7 @@ export default function Events() {
     category: "",
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchEventsPromise = (async () => {
       try {
         const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`);

@@ -20,7 +20,7 @@ const Welcome = () => {
     const [upcomingEvents, setUpcomingEvents] = React.useState<IEvent[]>([]);
     const [featuredEvents, setFeaturedEvents] = React.useState<IEvent[]>([]);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         const fetchEventsPromise = fetchEvents();
 
         if (isRootPath) {

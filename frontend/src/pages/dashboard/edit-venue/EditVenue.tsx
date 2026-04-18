@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import type { IVenueMap, IEvent } from "../../../utils/interfaces";
 import Input from "../../../components/ui/input/Input";
 import style from './EditVenue.module.css'
@@ -17,7 +17,7 @@ const EditVenue = () => {
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const trackPageLoading = usePageLoading();
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const abortController = new AbortController();
 
         const fetchVenuePromise = (async () => {

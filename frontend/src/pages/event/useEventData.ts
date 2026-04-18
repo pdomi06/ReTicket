@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useLayoutEffect, useState } from "react"
 import { EventContext } from "../../contexts/event/EventContextDef"
 import { type IVenueMap, type IEvent, type IOriginalTicket } from "../../utils/interfaces"
 import { defaultIVenueMap } from "../../utils/defaults"
@@ -78,7 +78,7 @@ export function useEventData(eventId: string) {
     const trackPageLoading = usePageLoading()
 
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         let cancelled = false
 
         if (!eventId) {

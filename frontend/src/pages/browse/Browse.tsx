@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
 import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
@@ -105,7 +105,7 @@ const Browse = () => {
         } as SearchEventsResponse;
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const controller = new AbortController();
         setError(null);
         setLoadMoreError(null);
