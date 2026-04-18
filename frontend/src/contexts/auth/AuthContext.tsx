@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
     AUTH_SESSION_EXPIRED_EVENT,
     clearStoredAuthSession,
@@ -7,20 +7,7 @@ import {
     readStoredAuthSession,
     type AuthUser,
 } from "../../lib/authSession";
-
-type AuthStatus = "bootstrapping" | "ready";
-
-type AuthContextValue = {
-    user: AuthUser | null;
-    token: string | null;
-    status: AuthStatus;
-    isAuthenticated: boolean;
-    setSession: (session: { user: unknown; token: string }) => void;
-    refreshSession: () => Promise<boolean>;
-    clearSession: () => void;
-};
-
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+import { AuthContext, type AuthContextValue, type AuthStatus } from "./auth-context";
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
 
