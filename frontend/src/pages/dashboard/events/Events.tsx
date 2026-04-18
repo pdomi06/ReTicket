@@ -7,7 +7,6 @@ import Select from "../../../components/ui/select/Select";
 import styles from "./Events.module.css";
 import Button from "../../../components/ui/button/Button";
 import { formatUnixDateTime } from "../../../utils/dateTime";
-import { apiFetch } from "../../../lib/apiFetch";
 
 export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
@@ -22,7 +21,14 @@ export default function Events() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`);
+        const token = localStorage.getItem('token');
+        const headers: HeadersInit = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`, {
+          headers
+        });
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -48,11 +54,16 @@ export default function Events() {
   const handleStatusChange = async (eventId: number, newStatus: string) => {
     setLoadingStatus(eventId);
     try {
-      const response = await apiFetch(
+      const token = localStorage.getItem('token');
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulkStatusChange`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify({ eventId, status: newStatus }),
         }
       );
@@ -81,11 +92,16 @@ export default function Events() {
 
     setDeletingEventId(eventId);
     try {
-      const response = await apiFetch(
+      const token = localStorage.getItem('token');
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/events/${eventId}`,
         {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers,
         }
       );
 

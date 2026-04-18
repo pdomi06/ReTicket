@@ -99,7 +99,7 @@ Reference: [backend/app/Http/Requests/SearchTicketForSaleRequest.php](backend/ap
 
 ### Query behavior
 
-- Events search applies filters, groups rows by normalized event name (`LOWER(TRIM(name))`), returns one representative event per group, includes all linked occurrences, and uses cursor pagination metadata (`limit`, `returned_count`, `has_more`, `next_cursor`, `total_groups`) in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L81).
+- Events search performs manual conditional query building and paginates (`paginate(20)`) in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L81).
 - Events index also paginates (`paginate(20)`) and includes `firstTicketStatus` derived from loaded ticket relation in [backend/app/Http/Controllers/EventsController.php](backend/app/Http/Controllers/EventsController.php#L23).
 - Venue maps search uses model scope `VenueMap::search(...)` in [backend/app/Http/Controllers/VenueMapController.php](backend/app/Http/Controllers/VenueMapController.php#L32).
 - Original tickets search uses manual conditional clauses (not the model scope) in [backend/app/Http/Controllers/OriginalTicketsController.php](backend/app/Http/Controllers/OriginalTicketsController.php#L36).
@@ -137,7 +137,7 @@ Bulk request shape for `bulk`/`bulk update` is validated by [backend/app/Http/Re
 ## Gotchas and known issues
 
 - Not all controllers use model `scopeSearch` methods even when scopes exist; search logic is partly duplicated in controllers.
-- `GET /events/search` now paginates grouped results with cursor metadata, while the other search endpoints return full arrays without pagination metadata.
+- Events endpoints return paginated payload shape, while the other search endpoints return full arrays without pagination metadata.
 - `bulkUpdate` is destructive for event ticket/listing state before reinsertion.
 - `bulkStore` and `bulkUpdate` set `ticketPdfUrl` to an empty string in generated tickets; this differs from single-ticket create validation requiring a URL.
 - Search and list response envelopes are inconsistent across resources.

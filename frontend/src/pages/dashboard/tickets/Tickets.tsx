@@ -6,7 +6,6 @@ import Select from "../../../components/ui/select/Select";
 import styles from "./Tickets.module.css";
 import Button from "../../../components/ui/button/Button";
 import { formatUnixDateTime, toDateInputValue } from "../../../utils/dateTime";
-import { apiFetch } from "../../../lib/apiFetch";
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<IDashboardTicket[]>([]);
@@ -20,8 +19,18 @@ export default function Tickets() {
 
   useEffect(() => {
     async function fetchTickets() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        return;
+      }
+
       try {
-        const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/dashboard`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/dashboard`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const data = await response.json();
 
         if (Array.isArray(data)) {

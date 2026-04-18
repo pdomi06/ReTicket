@@ -3,7 +3,6 @@ import styles from "./SalesHistory.module.css";
 import Button from "../../../components/ui/button/Button";
 import { useEffect, useState } from "react";
 import { formatUnixDateTime } from "../../../utils/dateTime";
-import { apiFetch } from "../../../lib/apiFetch";
 
 interface ISalesHistory {
     balance: number;
@@ -28,11 +27,12 @@ const SalesHistory = () => {
 
     async function fetchSalesHistory() {
         try {
-            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/ticketHistory/myHistory`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ticketHistory/myHistory`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
                 }
             });
             if (!response.ok) {

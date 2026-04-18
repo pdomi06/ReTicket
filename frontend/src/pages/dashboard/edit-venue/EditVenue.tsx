@@ -6,7 +6,6 @@ import Button from "../../../components/ui/button/Button";
 import Notification from '../../../components/ui/notification/Notification';
 import { defaultIVenueMap } from "../../../utils/defaults";
 import { useParams } from "react-router-dom";
-import { apiFetch } from "../../../lib/apiFetch";
 
 const EditVenue = () => {
     const { id } = useParams<{ id: string }>();
@@ -19,8 +18,14 @@ const EditVenue = () => {
         const abortController = new AbortController();
         async function fetchVenue() {
             try {
-                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
+                const token = localStorage.getItem('token');
+                const headers: HeadersInit = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
                     signal: abortController.signal,
+                    headers
                 });
                 if (!response.ok) {
                     console.error('Failed to fetch venue:', response.status, response.statusText);
@@ -55,7 +60,14 @@ const EditVenue = () => {
 
     async function fetchAffectedEvents(venueName: string) {
         try {
-            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?venue=${encodeURIComponent(venueName)}`);
+            const token = localStorage.getItem('token');
+            const headers: HeadersInit = {};
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/search?venue=${encodeURIComponent(venueName)}`, {
+                headers
+            });
             if (!response.ok) {
                 console.error('Failed to fetch events:', response.status);
                 return;
@@ -95,9 +107,14 @@ const EditVenue = () => {
         }
 
         try {
-            const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
+            const token = localStorage.getItem('token');
+            const headers: HeadersInit = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/venue/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({
                     venue: sceneryParams.venue,
                     section: sceneryParams.section,
