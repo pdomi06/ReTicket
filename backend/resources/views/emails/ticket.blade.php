@@ -16,10 +16,11 @@
                 <p style="margin: 0 0 12px;">You have purchased {{ $tickets->count() }} {{ \Illuminate\Support\Str::plural('ticket', $tickets->count()) }}:</p>
                 <ul style="margin: 0 0 16px; padding-left: 20px;">
                     @foreach($tickets as $ticket)
+                        @php($seat = data_get($ticket, 'seat', data_get($ticket, 'seatLabel', 'General Admission')))
                         <li style="margin-bottom: 8px;">
                             <strong>{{ $ticket->event_name }}</strong> - {{ $ticket->event_date }} at {{ $ticket->venue }}
-                            @if($ticket->seat && $ticket->seat !== 'General Admission')
-                                <br><span style="font-size: 12px; color: #6b7280;">Seat: {{ $ticket->seat }}</span>
+                            @if($seat && $seat !== 'General Admission')
+                                <br><span style="font-size: 12px; color: #6b7280;">Seat: {{ $seat }}</span>
                             @endif
                         </li>
                     @endforeach

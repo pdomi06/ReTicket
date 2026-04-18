@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
-    // Example route: POST /tickets/{ticket}/send
     public function send(Ticket $ticket): JsonResponse
     {
         $recipient = $ticket->order?->deliveryEmail ?? request()->user()?->email;

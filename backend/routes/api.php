@@ -126,3 +126,4 @@ Route::post('ticketHistory', [TicketHistoryController::class, 'store']);
 Route::get('ticketHistory', [TicketHistoryController::class, 'index']);
 Route::get('ticketHistory/myHistory', [TicketHistoryController::class, 'myHistory']);
 Route::get('ticketHistory/{ticketHistory}', [TicketHistoryController::class, 'show'])->whereNumber('ticketHistory');
+Route::post('tickets/{ticket}/send', [TicketController::class, 'send']);

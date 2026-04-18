@@ -72,10 +72,14 @@ class StripeController extends Controller
 
         $checkoutSession = \Stripe\Checkout\Session::retrieve($validated['session_id']);
 
+        $customerEmail = $checkoutSession->customer_details->email
+            ?? $checkoutSession->customer_email
+            ?? null;
+
         return response()->json([
             'session_id' => $checkoutSession->id,
             'payment_id' => $checkoutSession->payment_intent,
-            'email' => $checkoutSession->customer_details->email ?? null,
+            'email' => $customerEmail,
         ], 200);
     }
 
