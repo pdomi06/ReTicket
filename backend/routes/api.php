@@ -11,6 +11,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PayoutsController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketForSaleController;
 use App\Http\Controllers\TicketHistoryController;
 use App\Http\Controllers\UserController;

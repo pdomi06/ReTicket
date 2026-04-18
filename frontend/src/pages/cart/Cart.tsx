@@ -71,7 +71,7 @@ const Cart = () => {
                     }),
                 });
                 if (!updatedOrder.ok) {
-                    console.error("Failed to update order with payment details.");
+                    throw new Error("Failed to update order with payment details.");
                 }
                 if (checkoutSuccessful) {
                     await finalizeTickets();
@@ -79,6 +79,7 @@ const Cart = () => {
                 }
             } catch (error) {
                 console.error("Error loading payment details:", error);
+                setCheckoutError(error instanceof Error ? error.message : "Failed to finalize payment details.");
             }
 
         };
