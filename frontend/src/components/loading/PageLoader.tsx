@@ -15,7 +15,7 @@ export default function PageLoader({ isEnabled = true }: PageLoaderProps) {
             className={`${styles.overlay} ${shouldShowLoader ? styles.overlayVisible : styles.overlayHidden}`}
             aria-hidden={!shouldShowLoader}
         >
-            <LoadingScreen />
+            {shouldShowLoader ? <LoadingScreen /> : null}
         </div>
     );
 }
