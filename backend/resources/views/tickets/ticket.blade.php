@@ -198,38 +198,22 @@
                         <div class="value">{{ $ticket->event_time }}</div>
                     </td>
                     <td>
-                        <div class="label">Seat / General Admission</div>
-                        <div class="value seat-details-wrapper">
-                            @php
-                                $rawSeat = $ticket->seat ?? null;
-                                $seatInfo = (!empty($rawSeat) || $rawSeat === '0') ? $rawSeat : 'General Admission';
-                                
-                                $seatParts = [];
-                                if (is_string($seatInfo) && strpos($seatInfo, '|') !== false) {
-                                    $rawParts = explode('|', $seatInfo);
-                                    $seatParts = array_map('trim', $rawParts);
-                                    $seatParts = array_filter($seatParts, function($part) {
-                                        return $part !== '';
-                                    });
-                                    $seatParts = array_values($seatParts);
-                                } else {
-                                    $seatParts = [$seatInfo];
-                                }
-                            @endphp
-
-                            @forelse($seatParts as $index => $segment)
-                                <span class="seat-part {{ count($seatParts) === 1 ? 'single-chip' : '' }}">
-                                    {{ $segment }}
-                                </span>
-                            @empty
-                                <span class="seat-part single-chip">General Admission</span>
-                            @endforelse
-                        </div>
+                        <div class="label">Section</div>
+                        <div class="value"> {{ $ticket->sectionLabel }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">Row</div>
+                        <div class="value"> {{ $ticket->rowLabel }}</div>
+                    </td>
+                    <td>
+                        <div class="label">Seat</div>
+                        <div class="value"> {{ $ticket->seatLabel }}</div>
                     </td>
                 </tr>
             </table>
 
-            <!-- barcode section with ticket verification code -->
             <div class="barcode-box">
                 <div class="barcode-label">Ticket Verification Code</div>
                 <div class="barcode-value">{{ $ticket->ticket_number }}</div>
@@ -237,7 +221,7 @@
         </div>
 
         <div class="ticket-footer">
-            ✦ Present this ticket at the entrance. Non-transferable. ✦
+            Present this ticket at the entrance. Non-transferable.
         </div>
     </div>
 </body>

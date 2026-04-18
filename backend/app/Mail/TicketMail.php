@@ -59,7 +59,7 @@ class TicketMail extends Mailable
         }
 
         $ticketsData = $tickets->map(fn($t) => $this->buildTicketViewData($t));
-        $mail = $this->subject("Your Tickets – ReTicket")
+        $mail = $this->subject("Your Tickets - ReTicket")
             ->view('emails.ticket', ['tickets' => $ticketsData]);
 
         foreach ($ticketsData as $ticketData) {
@@ -75,27 +75,36 @@ class TicketMail extends Mailable
     }
 
     private function buildTicketViewData(Ticket $ticket): object
-    {
-        $originalTicket = $ticket->originalTicket;
-        $event          = $originalTicket?->event;
-        $eventTimestamp = is_numeric($event?->eventDate) ? (int) $event->eventDate : null;
+{
+    $originalTicket = $ticket->originalTicket;
+    $event          = $originalTicket?->event;
+    $eventTimestamp = is_numeric($event?->eventDate) ? (int) $event->eventDate : null;
 
-        $seat = null;
-        if ($originalTicket?->seatNumber !== null) {
-            $seatParts = [];
-            if (!empty($originalTicket->section)) $seatParts[] = 'Section ' . $originalTicket->section;
-            if ($originalTicket->row !== null)     $seatParts[] = 'Row ' . $originalTicket->row;
-            $seatParts[] = 'Seat ' . $originalTicket->seatNumber;
-            $seat = implode(' | ', $seatParts);
+    $sectionLabel = null;
+    $rowLabel     = null;
+    $seatLabel    = null;
+    $hasSeat      = $originalTicket?->seatNumber !== null;
+
+    if ($hasSeat) {
+        if (!empty($originalTicket->section)) {
+            $sectionLabel = 'Section: ' . $originalTicket->section;
         }
-
-        return (object) [
-            'event_name'    => $event?->name  ?? 'Event',
-            'venue'         => $event?->venue ?? 'Venue TBA',
-            'event_date'    => $eventTimestamp ? date('D, M j Y', $eventTimestamp) : 'TBA',
-            'event_time'    => $eventTimestamp ? date('H:i', $eventTimestamp)      : 'TBA',
-            'seat'          => $seat,
-            'ticket_number' => (string) ($ticket->ticketListingId ?? $ticket->id),
-        ];
+        if ($originalTicket->row !== null) {
+            $rowLabel = 'Row: ' . $originalTicket->row;
+        }
+        $seatLabel = 'Seat: ' . $originalTicket->seatNumber;
     }
+
+    return (object) [
+        'event_name'    => $event?->name  ?? 'Event',
+        'venue'         => $event?->venue ?? 'Venue TBA',
+        'event_date'    => $eventTimestamp ? date('D, M j Y', $eventTimestamp) : 'TBA',
+        'event_time'    => $eventTimestamp ? date('H:i', $eventTimestamp)      : 'TBA',
+        'sectionLabel'  => $sectionLabel,
+        'rowLabel'      => $rowLabel,
+        'seatLabel'     => $seatLabel,
+        'hasSeat'       => $hasSeat,
+        'ticket_number' => (string) ($ticket->ticketListingId ?? $ticket->id),
+    ];
+}
 }
