@@ -87,19 +87,23 @@ class TicketMail extends Mailable
 
     if ($hasSeat) {
         if (!empty($originalTicket->section)) {
-            $sectionLabel = 'Section: ' . $originalTicket->section;
+            $sectionLabel = $originalTicket->section;
         }
         if ($originalTicket->row !== null) {
-            $rowLabel = 'Row: ' . $originalTicket->row;
+            $rowLabel = $originalTicket->row;
         }
-        $seatLabel = 'Seat: ' . $originalTicket->seatNumber;
+        $seatLabel = $originalTicket->seatNumber;
     }
+
+    $seatParts = array_values(array_filter([$sectionLabel, $rowLabel, $seatLabel]));
+    $seat = $hasSeat ? implode(' | ', $seatParts) : 'General Admission';
 
     return (object) [
         'event_name'    => $event?->name  ?? 'Event',
         'venue'         => $event?->venue ?? 'Venue TBA',
         'event_date'    => $eventTimestamp ? date('D, M j Y', $eventTimestamp) : 'TBA',
         'event_time'    => $eventTimestamp ? date('H:i', $eventTimestamp)      : 'TBA',
+        'seat'          => $seat,
         'sectionLabel'  => $sectionLabel,
         'rowLabel'      => $rowLabel,
         'seatLabel'     => $seatLabel,
