@@ -34,6 +34,20 @@ Payment and checkout related variables used by current code:
 - `FRONTEND_URL`
 - `CASHIER_CURRENCY` (optional; defaults to `huf` in checkout flow)
 
+Mail delivery is configured through the normal Laravel mailer settings instead of the log channel.
+
+Current local setup uses SMTP with a Gmail account:
+
+- `MAIL_MAILER=smtp`
+- `MAIL_HOST=smtp.gmail.com`
+- `MAIL_PORT=465`
+- `MAIL_USERNAME` for the Gmail account
+- `MAIL_PASSWORD` for the Gmail app password
+- `MAIL_ENCRYPTION=tls`
+- `MAIL_FROM_ADDRESS` set to the verified sender address
+
+If you change providers later, keep the same `MAIL_*` keys and update the host, port, username, and encryption values together.
+
 Keep backend `.env` aligned with database and app URL.
 
 ## Build Commands
@@ -64,3 +78,4 @@ Frontend Vercel config (`frontend/vercel.json`):
 3. Confirm CORS allows frontend origin.
 4. Validate SPA rewrite behavior after deployment.
 5. Smoke-test dashboard routes and event browse paths.
+6. Send a test email through the password reset or email verification flow and confirm it leaves the log channel.

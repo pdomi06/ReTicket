@@ -3,6 +3,28 @@ import { EventContext } from "../../contexts/event/EventContextDef"
 import { type IVenueMap, type IEvent, type IOriginalTicket } from "../../utils/interfaces"
 import { defaultIVenueMap } from "../../utils/defaults"
 
+interface IEventGroupResult extends IEvent {
+    occurrences?: IEvent[]
+}
+
+function normalizeEventSearchResults(results: IEventGroupResult[]): IEvent[] {
+    const expandedEvents = results.flatMap((result) => {
+        if (Array.isArray(result.occurrences) && result.occurrences.length > 0) {
+            return result.occurrences
+        }
+
+        return [result]
+    })
+
+    const dedupedEventsById = new Map<number, IEvent>()
+
+    for (const expandedEvent of expandedEvents) {
+        dedupedEventsById.set(Number(expandedEvent.id), expandedEvent)
+    }
+
+    return Array.from(dedupedEventsById.values()).sort((left, right) => left.eventDate - right.eventDate)
+}
+
 // Deduplicate simultaneous ticket requests for the same eventId
 const inFlightTicketRequests = new Map<string, Promise<IOriginalTicket[]>>()
 
@@ -115,7 +137,8 @@ export function useEventData(eventId: string) {
                 }
                 const json = await response.json()
                 if (!cancelled) {
-                    setEvents(json.data)
+                    const groupedResults = Array.isArray(json.data) ? (json.data as IEventGroupResult[]) : []
+                    setEvents(normalizeEventSearchResults(groupedResults))
                 }
             } catch (err) {
                 console.error(err)

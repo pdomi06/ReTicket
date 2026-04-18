@@ -4,24 +4,15 @@ import type { IMyDashboardTicket } from "../../../utils/interfaces";
 import styles from "./MyTickets.module.css";
 import { formatUnixDateTime } from "../../../utils/dateTime";
 import Button from "../../../components/ui/button/Button";
+import { apiFetch } from "../../../lib/apiFetch";
 
 const MyTickets = () => {
     const [tickets, setTickets] = useState<IMyDashboardTicket[]>([]);
 
     useEffect(() => {
         async function fetchTickets() {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                return;
-            }
-
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ticketForSale/dashboard`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/ticketForSale/dashboard`);
                 const data = await response.json();
 
                 if (Array.isArray(data)) {

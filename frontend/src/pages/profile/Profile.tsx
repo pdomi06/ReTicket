@@ -1,22 +1,8 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useAuth } from "../../contexts/auth/useAuth";
 
 const Profile = () => {
-  const navigate = useNavigate();
-  let user = null;
+  const { user } = useAuth();
 
-  try {
-    user = JSON.parse(localStorage.getItem("user") ?? "null");
-  } catch (e) {
-    console.error("Failed to parse user from localStorage:", e);
-    user = null;
-  }
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [navigate, user]);
   return (
     <div>
       <h1>Profile Page</h1>
