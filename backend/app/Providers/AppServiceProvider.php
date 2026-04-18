@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
                 ->symbols()
                 ->uncompromised();
         });
+        Order::observe(OrderObserver::class);
     }
 
 
