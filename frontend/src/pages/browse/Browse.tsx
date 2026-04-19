@@ -3,7 +3,7 @@ import type { IEvent } from "../../utils/interfaces";
 import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
 import Sidebar from "./sidebar/Sidebar";
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 import styles from "./Browse.module.css";
 import { usePageLoading } from "../../contexts/loading/LoadingContext";
 
@@ -43,6 +43,7 @@ interface SearchEventsResponse {
 
 const Browse = () => {
     const [searchParams] = useSearchParams();
+    const location = useLocation();
     const queryWithoutCursor = useMemo(() => {
         const params = new URLSearchParams(searchParams);
         params.delete("page");
@@ -50,12 +51,19 @@ const Browse = () => {
         return params.toString();
     }, [searchParams]);
 
+    const suppressGlobalLoader = Boolean(
+        location.state && typeof location.state === "object" && "suppressGlobalLoader" in location.state
+            ? (location.state as { suppressGlobalLoader?: boolean }).suppressGlobalLoader
+            : false,
+    );
+
     const [events, setEvents] = useState<IBrowseEventGroup[]>([]);
     const [hasMore, setHasMore] = useState(false);
     const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [isLocalLoading, setIsLocalLoading] = useState(false);
     const trackPageLoading = usePageLoading();
 
     const getEvents = useCallback(async (q: string, cursor?: string | null, signal?: AbortSignal) => {
@@ -107,11 +115,13 @@ const Browse = () => {
 
     useLayoutEffect(() => {
         const controller = new AbortController();
+        let isActive = true;
         setError(null);
         setLoadMoreError(null);
         setEvents([]);
         setHasMore(false);
         setNextCursor(null);
+        setIsLocalLoading(suppressGlobalLoader);
 
         const fetchEventsPromise = getEvents(queryWithoutCursor, null, controller.signal)
             .then((response) => {
@@ -125,12 +135,24 @@ const Browse = () => {
                 setError(message);
                 setHasMore(false);
                 setNextCursor(null);
+            })
+            .finally(() => {
+                if (isActive) {
+                    setIsLocalLoading(false);
+                }
             });
 
-        void trackPageLoading(fetchEventsPromise);
+        if (suppressGlobalLoader) {
+            void fetchEventsPromise;
+        } else {
+            void trackPageLoading(fetchEventsPromise);
+        }
 
-        return () => controller.abort();
-    }, [getEvents, queryWithoutCursor, trackPageLoading]);
+        return () => {
+            isActive = false;
+            controller.abort();
+        };
+    }, [getEvents, queryWithoutCursor, suppressGlobalLoader, trackPageLoading]);
 
     const handleLoadMore = async () => {
         if (!hasMore || !nextCursor || isLoadingMore) {
@@ -156,12 +178,14 @@ const Browse = () => {
     return (
         <main className="row container m-0 p-0">
             <div className="sidebar col-lg-3">
-                <Sidebar />
+                <Sidebar isLoading={isLocalLoading} />
             </div>
             <div className="col-lg-9">
                 <div className="container my-5">
                     {error ? (
                         <p>{error}</p>
+                    ) : isLocalLoading ? (
+                        <p>Loading events...</p>
                     ) : events.length > 0 ? (
                         <>
                             <Cards maximumcols={3}>

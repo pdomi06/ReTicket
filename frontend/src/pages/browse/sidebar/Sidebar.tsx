@@ -6,7 +6,11 @@ import Button from '../../../components/ui/button/Button';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 import Select from '../../../components/ui/select/Select';
 
-const Sidebar = () => {
+type SidebarProps = {
+    isLoading?: boolean;
+};
+
+const Sidebar = ({ isLoading = false }: SidebarProps) => {
     const [searchForm, setForm] = useState({
         name: '',
         venue: '',
@@ -47,6 +51,8 @@ const Sidebar = () => {
         navigate({
             pathname: '/browse',
             search: `?${createSearchParams(params)}`
+        }, {
+            state: { suppressGlobalLoader: true }
         });
     };
 
@@ -65,7 +71,11 @@ const Sidebar = () => {
                     <option value="music">Music</option>
                     <option value="sport">Sport</option>
                 </Select>
-                <Button type="submit" text="Search Events" />
+                <Button
+                    type="submit"
+                    text={isLoading ? 'Searching...' : 'Search Events'}
+                    disabled={isLoading}
+                />
             </form>
         </div>
     );
