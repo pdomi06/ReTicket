@@ -113,6 +113,9 @@ export interface ITicketForsale {
   isResell: boolean;
   inBasket: boolean;
   eventId: number;
+  eventName?: string;
+  eventDate?: number | string;
+  section?: string;
   row?: number;
   col?: number;
 }

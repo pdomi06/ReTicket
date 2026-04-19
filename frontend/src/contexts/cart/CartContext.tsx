@@ -73,19 +73,22 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     const addToCart = async (eventId: number, row: number, seat: number): Promise<boolean> => {
         try {
             const response = await apiFetch(`${apiBaseUrl}/originalTickets/search?eventId=${eventId}&row=${row}&seatNumber=${seat}`, {
+                includeAuth: false,
                 headers: {},
             });
             if (!response.ok) {
                 throw new Error(`Failed to fetch ticket: ${response.statusText}`);
             }
             const jsonData = await response.json();
-            const originalTicketId = jsonData.data?.[0]?.id;
+            const originalTicket = jsonData.data?.[0];
+            const originalTicketId = originalTicket?.id;
             if (!originalTicketId) {
                 console.error("Ticket not found for the given seat.");
                 return false;
             }
 
             const ticket = await apiFetch(`${apiBaseUrl}/ticketForSale/search?originalTicketId=${originalTicketId}`, {
+                includeAuth: false,
                 headers: {},
             });
             if (!ticket.ok) {
@@ -98,7 +101,38 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
                 return false;
             }
 
-            const newTicket = { ...ticketForSale, eventId: eventId, row, col: seat } as ITicketForsale;
+            let eventName: string | undefined;
+            let eventDate: number | string | undefined;
+
+            try {
+                const eventResponse = await apiFetch(`${apiBaseUrl}/events/${eventId}`, {
+                    includeAuth: false,
+                    headers: {},
+                });
+                const contentType = eventResponse.headers.get("content-type") || "";
+
+                if (eventResponse.ok && contentType.includes("application/json")) {
+                    const eventJson = await eventResponse.json();
+                    const eventData = ((eventJson as { data?: unknown }).data ?? eventJson) as {
+                        name?: string;
+                        eventDate?: number | string;
+                    };
+                    eventName = eventData.name;
+                    eventDate = eventData.eventDate;
+                }
+            } catch {
+                // Non-fatal: cart item can still be added with baseline metadata.
+            }
+
+            const newTicket = {
+                ...ticketForSale,
+                eventId,
+                eventName,
+                eventDate,
+                row,
+                col: seat,
+                section: originalTicket?.section,
+            } as ITicketForsale;
 
             setCart(prevCart => [...prevCart, newTicket]);
 
