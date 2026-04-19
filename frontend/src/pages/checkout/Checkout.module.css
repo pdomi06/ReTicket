@@ -1,0 +1,33 @@
+.checkoutWrap {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.checkoutCard {
+    background: linear-gradient(165deg, rgba(20, 20, 20, 0.94), rgba(34, 34, 34, 0.9));
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+}
+
+.title {
+    margin: 0 0 0.75rem;
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.modalMessage {
+    margin: 0;
+    color: var(--color-text-secondary);
+}

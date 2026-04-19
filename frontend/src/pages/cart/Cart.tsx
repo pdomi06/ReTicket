@@ -1,9 +1,8 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { CartContext } from "../../contexts/cart/CartContextDef";
 import Button from "../../components/ui/button/Button";
 import Notification from "../../components/ui/notification/Notification";
 import styles from "./Cart.module.css";
-import { useSearchParams } from "react-router-dom";
 import { apiFetch } from "../../lib/apiFetch";
 import { formatUnixDateTime } from "../../utils/dateTime";
 import type { IEvent } from "../../utils/interfaces";
@@ -29,9 +28,7 @@ const Cart = () => {
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [eventsById, setEventsById] = useState<Record<number, IEvent>>({});
     const [sectionsByTicketId, setSectionsByTicketId] = useState<Record<number, string>>({});
-    const [searchParams] = useSearchParams();
     const [checkoutText, setCheckoutText] = useState("Checkout");
-    const handledSessionIdRef = useRef<string | null>(null);
 
     const subtotal = useMemo(
         () => tickets.reduce((sum, ticket) => sum + Number(ticket.price || 0), 0),
@@ -188,75 +185,6 @@ const Cart = () => {
             cancelled = true;
         };
     }, [tickets, trackPageLoading]);
-
-    useEffect(() => {
-        const sessionId = searchParams.get("session_id");
-
-        if (!sessionId || handledSessionIdRef.current === sessionId) {
-            return;
-        }
-
-        handledSessionIdRef.current = sessionId;
-
-        const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL);
-
-        const finalizeTickets = async () => {
-            await fetch(`${apiBaseUrl}/ticketForSale/finalize`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    orderId: localStorage.getItem('orderId'),
-                }),
-            });
-        };
-
-        const handlePaymentDetails = async () => {
-            const checkoutSuccessful = searchParams.get("state") === "succesful";
-            try {
-                const response = await fetch(`${apiBaseUrl}/checkout/session?session_id=${encodeURIComponent(sessionId)}`, {
-                    headers: {
-                        Accept: "application/json",
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to load payment details.");
-                }
-
-                const data = await response.json();
-
-                const updatedOrder = await fetch(`${apiBaseUrl}/orders/${localStorage.getItem('orderId')}`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        paymentIntentId: data.payment_id,
-                        paymentStatus: checkoutSuccessful ? "authorized" : "failed",
-                        deliveryEmail: data.email ? data.email : "",
-                        deliveryStatus: checkoutSuccessful ? "pending" : null,
-                    }),
-                });
-                if (!updatedOrder.ok) {
-                    throw new Error("Failed to update order with payment details.");
-                }
-                if (checkoutSuccessful) {
-                    await finalizeTickets();
-                    clearCart();
-                }
-            } catch (error) {
-                console.error("Error loading payment details:", error);
-                setCheckoutError(error instanceof Error ? error.message : "Failed to finalize payment details.");
-            }
-
-        };
-
-        void handlePaymentDetails();
-
-
-    }, [searchParams, clearCart, tickets]);
 
     const handleClearCart = async () => {
         await Promise.all(tickets.map((ticket) => removeFromCart(ticket)));

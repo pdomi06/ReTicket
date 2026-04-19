@@ -18,6 +18,7 @@ const Browse = lazy(() => import("../pages/browse/Browse.tsx"));
 const Event = lazy(() => import("../pages/event/Event.tsx"));
 const Vendor = lazy(() => import("../pages/vendor/Vendor.tsx"));
 const Cart = lazy(() => import("../pages/cart/Cart.tsx"));
+const Checkout = lazy(() => import("../pages/checkout/Checkout.tsx"));
 const Validate = lazy(() => import("../pages/validate/Validate.tsx"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
 const DashboardOverview = lazy(() => import("../pages/dashboard/overview/Overview.tsx"));
@@ -56,9 +57,10 @@ export const routes: RouteObject[] = [
       { path: "/event", element: <Event /> },
       { path: "/vendor", element: <Vendor /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/checkout", element: <Checkout /> },
       { path: "/validate", element: <RequireAuth><Validate /></RequireAuth> },
       { path: "/about", element: <About /> },
-      { path: "/contact", element:<Contact/> },
+      { path: "/contact", element: <Contact /> },
       { path: "/terms", element: <Terms /> },
       { path: "/privacy", element: <Privacy /> },
       {

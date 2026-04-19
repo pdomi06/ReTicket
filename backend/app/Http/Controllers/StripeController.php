@@ -43,8 +43,8 @@ class StripeController extends Controller
                 ],
                 'quantity' => 1,
             ]],
-            'success_url' => $frontendUrl . '/cart?state=succesful&session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => $frontendUrl . '/cart?state=failed',
+            'success_url' => $frontendUrl . '/checkout?state=successful&session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => $frontendUrl . '/checkout?state=failed',
             'automatic_tax' => [
                 'enabled' => true,
             ],
