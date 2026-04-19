@@ -105,6 +105,25 @@ class EventsController extends Controller implements HasMiddleware
         ], 200);
     }
 
+    public function myEvents(Request $request)
+    {
+        $events = Event::with('originalTickets')
+            ->where('createdBy', $request->user()->id)
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($event) {
+                return array_merge(
+                    $event->toArray(),
+                    ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
+                );
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $events,
+        ], 200);
+    }
+
     public function search(SearchEventsRequest $request)
     {
         $filters = $request->validated();
