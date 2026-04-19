@@ -18,6 +18,7 @@ const EditEvent = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [venues, setVenues] = useState<IVenueMap[]>([]);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [accessMessage, setAccessMessage] = useState<string | null>(null);
     const trackPageLoading = usePageLoading();
 
 
@@ -26,10 +27,21 @@ const EditEvent = () => {
 
         const fetchEvent = async () => {
             try {
-                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${id}/edit`, {
                     signal: abortController.signal,
                 });
                 if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        setAccessMessage('Access denied. You can only edit your own events.');
+                        return;
+                    }
+
+                    if (response.status === 404) {
+                        setAccessMessage('Event not found.');
+                        return;
+                    }
+
+                    setAccessMessage('Unable to load this event for editing.');
                     console.error('Failed to fetch event:', response.status, response.statusText);
                     return;
                 }
@@ -107,6 +119,11 @@ const EditEvent = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (accessMessage) {
+            return;
+        }
+
         setIsSubmitting(true);
         setMessage(null);
 
@@ -196,44 +213,55 @@ const EditEvent = () => {
 
     return (
         <div className="container my-5">
-            <form onSubmit={handleSubmit} className={`container w-50`}>
-                <div className={`rounded p-4 ${style['event-form']}`}>
-                    <h1>Edit Event</h1>
-                    <hr />
-                    {message && (
-                        <Notification text={message.text} variant={message.type === "success" ? "success" : "error"} />
-                    )}
-                    <div className="d-grid gap-3">
-                        <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />
-                        <Input type="text" name="description" label="Description" onChange={(e) => setEventParams({ ...eventParams, description: e.target.value })} value={eventParams.description || ''} />
-                        <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEventParams({ ...eventParams, venue: e.target.value })} value={eventParams.venue || ''} >
-                            <option value="" disabled aria-hidden="true">
-                                Select Venue
-                            </option>
-                            {venues.map((venue) => (
-                                <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
-                            ))}
-                        </Select>
-                        <Input type="text" name="address" label="Address" onChange={(e) => setEventParams({ ...eventParams, address: e.target.value })} value={eventParams.address || ''} />
-                        <Input type="text" name="city" label="City" onChange={(e) => setEventParams({ ...eventParams, city: e.target.value })} value={eventParams.city || ''} />
-                        <Input type="text" name="state" label="State" onChange={(e) => setEventParams({ ...eventParams, state: e.target.value })} value={eventParams.state || ''} />
-                        <Input type="text" name="country" label="Country" onChange={(e) => setEventParams({ ...eventParams, country: e.target.value })} value={eventParams.country || ''} />
-                        <Input type="datetime-local" name="eventDate" label="Event Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventDate: e.target.value })} value={typeof eventParams.eventDate === "string" ? eventParams.eventDate : ''} />
-                        <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={typeof eventParams.eventEndDate === "string" ? eventParams.eventEndDate : ''} />
-                        <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
-                        <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
-                        <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
-                            <option value="" disabled aria-hidden="true">
-                                Select Category
-                            </option>
-                            {Object.entries(EventCategory).map(([, value]) => (
-                                <option key={value} value={value}>{value}</option>
-                            ))}
-                        </Select>
-                        {isSubmitting ? <Button type="button" text="Updating Event..." disabled={true} /> : <Button type="submit" text="Update Event" />}
+            {accessMessage && (
+                <div className="container w-50">
+                    <div className={`rounded p-4 ${style['event-form']}`}>
+                        <h1>Edit Event</h1>
+                        <hr />
+                        <Notification text={accessMessage} variant="error" />
                     </div>
                 </div>
-            </form>
+            )}
+            {!accessMessage && (
+                <form onSubmit={handleSubmit} className={`container w-50`}>
+                    <div className={`rounded p-4 ${style['event-form']}`}>
+                        <h1>Edit Event</h1>
+                        <hr />
+                        {message && (
+                            <Notification text={message.text} variant={message.type === "success" ? "success" : "error"} />
+                        )}
+                        <div className="d-grid gap-3">
+                            <Input type="text" name="name" label="Event Name" onChange={(e) => setEventParams({ ...eventParams, name: e.target.value })} value={eventParams.name || ''} />
+                            <Input type="text" name="description" label="Description" onChange={(e) => setEventParams({ ...eventParams, description: e.target.value })} value={eventParams.description || ''} />
+                            <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEventParams({ ...eventParams, venue: e.target.value })} value={eventParams.venue || ''} >
+                                <option value="" disabled aria-hidden="true">
+                                    Select Venue
+                                </option>
+                                {venues.map((venue) => (
+                                    <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
+                                ))}
+                            </Select>
+                            <Input type="text" name="address" label="Address" onChange={(e) => setEventParams({ ...eventParams, address: e.target.value })} value={eventParams.address || ''} />
+                            <Input type="text" name="city" label="City" onChange={(e) => setEventParams({ ...eventParams, city: e.target.value })} value={eventParams.city || ''} />
+                            <Input type="text" name="state" label="State" onChange={(e) => setEventParams({ ...eventParams, state: e.target.value })} value={eventParams.state || ''} />
+                            <Input type="text" name="country" label="Country" onChange={(e) => setEventParams({ ...eventParams, country: e.target.value })} value={eventParams.country || ''} />
+                            <Input type="datetime-local" name="eventDate" label="Event Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventDate: e.target.value })} value={typeof eventParams.eventDate === "string" ? eventParams.eventDate : ''} />
+                            <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={typeof eventParams.eventEndDate === "string" ? eventParams.eventEndDate : ''} />
+                            <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
+                            <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
+                            <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
+                                <option value="" disabled aria-hidden="true">
+                                    Select Category
+                                </option>
+                                {Object.entries(EventCategory).map(([, value]) => (
+                                    <option key={value} value={value}>{value}</option>
+                                ))}
+                            </Select>
+                            {isSubmitting ? <Button type="button" text="Updating Event..." disabled={true} /> : <Button type="submit" text="Update Event" />}
+                        </div>
+                    </div>
+                </form>
+            )}
         </div>
     );
 }

@@ -290,6 +290,13 @@ class EventsController extends Controller implements HasMiddleware
         return response()->json(['success' => true, 'data' => $event], 200);
     }
 
+    public function edit(Event $event)
+    {
+        $this->authorize('update', $event);
+
+        return response()->json(['success' => true, 'data' => $event], 200);
+    }
+
     /**
      * Update the specified resource in storage.
      */

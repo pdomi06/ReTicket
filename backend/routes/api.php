@@ -30,6 +30,7 @@ Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::get('events/landing', [EventsController::class, 'landing']);
 Route::get('events/search', [EventsController::class, 'search']);
 Route::get('events/my', [EventsController::class, 'myEvents'])->middleware('auth:sanctum');
+Route::get('events/{event}/edit', [EventsController::class, 'edit'])->middleware('auth:sanctum');
 Route::apiResource('events', EventsController::class);
 Route::get('venues/search', [VenueMapController::class, 'search']);
 Route::apiResource('venues', VenueMapController::class);
