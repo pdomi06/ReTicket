@@ -14,6 +14,7 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/
 
 const Login = () => {
   const [errors, setErrors] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { setSession } = useAuth();
 
 
@@ -22,12 +23,14 @@ const Login = () => {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrors([]);  // Clear errors on new submit attempt
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
 
     if (typeof email !== "string" || typeof password !== "string") {
       alert("Please provide a valid email and password.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -65,6 +68,8 @@ const Login = () => {
     } catch (error) {
       console.error("Error during login:", error);
       setErrors([error instanceof Error ? error.message : "Login failed. Please check your credentials and try again."]);
+    } finally {
+      setIsSubmitting(false);
     }
   }
   return (
@@ -88,7 +93,7 @@ const Login = () => {
 
           <Input type="password" name="password" label="Password" theme="dark" />
 
-          <Button type="submit" text="Login" variant="primary" />
+          <Button type="submit" text={isSubmitting ? "Logging in..." : "Login"} variant="primary" disabled={isSubmitting} />
         </form>
       </div>
     </main>

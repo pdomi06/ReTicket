@@ -13,6 +13,7 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/
 
 const Register = () => {
     const [errors, setErrors] = useState<string[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { setSession } = useAuth();
 
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Register = () => {
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setErrors([]);
+        setIsSubmitting(true);
         const formData = new FormData(e.currentTarget);
 
         const name = formData.get("name");
@@ -36,6 +38,7 @@ const Register = () => {
             typeof passwordConfirmation !== "string"
         ) {
             setErrors(["Please fill in all required fields."]);
+            setIsSubmitting(false);
             return;
         }
 
@@ -79,6 +82,8 @@ const Register = () => {
         } catch (error) {
             console.error("Error during registration:", error);
             setErrors([error instanceof Error ? error.message : "Registration failed. Please try again."]);
+        } finally {
+            setIsSubmitting(false);
         }
     }
     return (
@@ -115,7 +120,7 @@ const Register = () => {
                             <Link to="/terms">Terms and Conditions</Link> and
                             <Link to="/privacy">privacy policy</Link>.</label>
                     </div>
-                    <Button type="submit" text="Register" />
+                    <Button type="submit" text={isSubmitting ? "Registering..." : "Register"} disabled={isSubmitting} />
                 </form>
             </div>
         </main>
