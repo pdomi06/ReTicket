@@ -1,224 +1,317 @@
 .container {
-    max-width: 440px;
     width: 100%;
+    max-width: 780px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 1.5rem;
 }
 
-.heading {
-    font-family: var(--font-secondary);
-    font-size: 30px;
-    font-weight: 400;
-    color: var(--color-text);
+
+.verificationCard {
+    max-width: 480px;
+    margin: 3rem auto 0;
+    padding: 2rem;
+    background: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    transition: all 400ms ease;
+}
+
+.verificationLabel {
+    margin: 0 0 1.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
     text-align: center;
-    margin-bottom: 24px;
 }
 
-.ticketCodeSection {
-    background-color: var(--color-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    padding: 24px;
+.verificationCard :global(> div:first-of-type) {
+    margin-bottom: 1rem;
 }
 
-.ticketCodeInputWrapper {
-    margin-bottom: 16px;
+.verificationCard.collapsed {
+    max-width: 480px;
+    margin: 0 auto 1.5rem;
+    padding: 1rem 1.5rem;
+    border-color: var(--color-border);
 }
 
-.buttonWrapper {
-    width: 100%;
+.verificationCard.collapsed .verificationLabel {
+    display: none;
 }
 
-.ticketCard {
-    margin-top: 20px;
-    border: 1px solid var(--color-border-strong);
-    border-radius: 22px;
-    overflow: hidden;
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-lg);
-}
-
-.resellCard {
-    margin-top: 16px;
-    background-color: var(--color-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    padding: 20px;
-}
-
-.resellInputWrapper {
-    margin-bottom: 16px;
-}
-
-.averageCard {
-    margin-top: 16px;
-    background-color: var(--color-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    padding: 20px;
-}
-
-.averageTitle {
-    margin: 0 0 10px;
-    color: var(--color-text);
-    font-family: var(--font-secondary);
-    font-size: 20px;
+.statusBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0 0;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 0.85rem;
     font-weight: 500;
 }
 
-.averageText,
-.averageHint {
-    margin: 0;
-    color: var(--color-text);
-    font-family: var(--font-main);
-    font-size: 14px;
-    line-height: 1.5;
+.statusSuccess {
+    background: var(--color-success-surface);
+    border-color: var(--color-success-border);
+    color: var(--color-success);
 }
 
-.averageHint {
-    margin-top: 8px;
-    color: var(--color-text-muted);
+.badgeSymbol {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.statusError {
+    background: var(--color-danger-surface);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger);
+}
+
+.ticketHero {
+    max-width: 580px;
+    margin: 0 auto;
+    background: var(--color-secondary);
+    border: 1px solid var(--color-accent-border);
+    border-radius: 16px;
+    box-shadow:
+        var(--shadow-lg),
+        var(--shadow-accent-outline);
+    overflow: hidden;
+    animation: revealHero 350ms ease-out;
+
+    @starting-style {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+@keyframes revealHero {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ticketVisual {
+    padding: 2rem;
+    background: var(--color-surface);
 }
 
 .ticketHeader {
-    background-color: var(--color-secondary);
-    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.eventTitle {
+.eventName {
     margin: 0;
     color: var(--color-text);
     font-family: var(--font-secondary);
-    font-size: 34px;
-    font-weight: 500;
-    line-height: 1.1;
-}
-
-.ticketBody {
-    background-color: var(--color-surface);
-    padding: 20px 22px 18px;
-}
-
-.ticketGrid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px 22px;
-}
-
-.ticketField {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.fieldLabel {
-    color: var(--color-text-muted);
-    font-family: var(--font-main);
-    font-size: 11px;
+    font-size: 1.6rem;
     line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-.fieldValue {
-    color: var(--color-text);
-    font-family: var(--font-main);
-    font-size: 15px;
-    line-height: 1.25;
-}
-
-.tearDivider {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 22px;
-}
-
-.tearCutoutLeft,
-.tearCutoutRight {
-    width: 20px;
-    height: 20px;
-    border-radius: 999px;
-    background-color: var(--color-main);
-    border: 1px solid var(--color-border-strong);
-    display: inline-block;
-    flex: 0 0 auto;
-}
-
-.tearLine {
     flex: 1;
-    border-top: 1px dashed var(--color-border-strong);
-    height: 1px;
-}
-
-.ticketFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 22px 20px;
-    background-color: var(--color-surface);
-}
-
-.pillGroup {
-    display: flex;
-    gap: 10px;
-}
-
-.metaPill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid var(--color-accent-border);
-    background-color: var(--color-surface-raised);
-    border-radius: 10px;
-    padding: 7px 12px;
-}
-
-.pillLabel {
-    color: var(--color-text-muted);
-    font-family: var(--font-main);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.pillValue {
-    color: var(--color-accent);
-    font-family: var(--font-main);
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1;
 }
 
 .ticketId {
     color: var(--color-text-muted);
-    font-family: var(--font-main);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: right;
+    white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+.metadataGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
 
-    .ticketHeader,
-    .ticketBody,
-    .ticketFooter {
-        padding-left: 16px;
-        padding-right: 16px;
+.metaItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.metaLabel {
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.metaValue {
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+
+.pillContainer {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text);
+}
+
+.pillLabel {
+    color: var(--color-text-muted);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 0.2rem;
+}
+
+.tearDivider {
+    position: relative;
+    height: 20px;
+    background: linear-gradient(to bottom,
+            var(--color-surface),
+            var(--color-secondary));
+    border-top: 2px dashed var(--color-border-strong);
+}
+
+.tearLeft,
+.tearRight {
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-main);
+    transform: translateY(-50%);
+}
+
+.tearLeft {
+    left: -10px;
+}
+
+.tearRight {
+    right: -10px;
+}
+
+.pricingSection {
+    padding: 1.5rem 2rem;
+    background: var(--color-secondary);
+}
+
+.pricingInsight {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1.5rem;
+}
+
+.pricingLabel {
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.averagePrice {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.suggestedRange {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.resellRow {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1rem;
+}
+
+.resellRow :global(> div:first-child) {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.resellRow :global(> div:first-child .input-group) {
+    border-radius: 8px 0 0 8px !important;
+}
+
+.resellRow :global(> div:first-child input) {
+    border-radius: 8px 0 0 8px !important;
+}
+
+.resellRow :global(> button),
+.resellRow :global(button) {
+    border-radius: 0 8px 8px 0 !important;
+    margin: 0 !important;
+}
+
+.resellRow :global(> *) {
+    margin-bottom: 0;
+}
+
+.pricingSection .statusBadge {
+    margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 1rem;
     }
 
-    .eventTitle {
-        font-size: 28px;
+    .verificationCard {
+        max-width: 100%;
+        margin: 2rem 0 0;
+        padding: 1.5rem;
     }
 
-    .ticketGrid {
-        gap: 12px 14px;
+    .ticketHero {
+        max-width: 100%;
+        border-radius: 12px;
     }
 
-    .ticketFooter {
+    .ticketVisual {
+        padding: 1.5rem;
+    }
+
+    .eventName {
+        font-size: 1.3rem;
+    }
+
+    .metadataGrid {
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .pricingSection {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .resellRow {
         flex-direction: column;
-        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .resellRow :global(> div:first-child input),
+    .resellRow :global(> button) {
+        border-radius: 8px !important;
     }
 }

@@ -120,7 +120,7 @@ const Register = () => {
                             <Link to="/terms">Terms and Conditions</Link> and
                             <Link to="/privacy">privacy policy</Link>.</label>
                     </div>
-                    <Button type="submit" text={isSubmitting ? "Registering..." : "Register"} disabled={isSubmitting} />
+                    <Button type="submit" text={isSubmitting ? "Registering..." : "Register"} variant="primary" disabled={isSubmitting} />
                 </form>
             </div>
         </main>

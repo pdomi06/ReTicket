@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Button from "../../../components/ui/button/Button";
 import Input from "../../../components/ui/input/Input";
-import Notification from "../../../components/ui/notification/Notification";
 import type { IDashboardTicket } from "../../../utils/interfaces";
 import { toDateFromUnix } from "../../../utils/dateTime";
 import styles from "./ListTicket.module.css";
@@ -14,6 +13,8 @@ const ListTicket = () => {
     const [notificationVariant, setNotificationVariant] = useState<"success" | "error">("success");
     const [resellPrice, setResellPrice] = useState("");
     const [averagePrice, setAveragePrice] = useState<number | null>(null);
+    const [isCheckingTicket, setIsCheckingTicket] = useState(false);
+    const [isReselling, setIsReselling] = useState(false);
 
     async function readResponseMessage(response: Response, fallbackMessage: string) {
         const contentType = response.headers.get("content-type") ?? "";
@@ -29,6 +30,7 @@ const ListTicket = () => {
 
     async function handleCheckTicket() {
         try {
+            setIsCheckingTicket(true);
             const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/checkTicket`, {
                 method: "POST",
                 headers: {
@@ -71,8 +73,11 @@ const ListTicket = () => {
             setTicketMessage("Failed to check ticket.");
             setNotificationVariant("error");
             console.error("Error checking ticket:", error);
+        } finally {
+            setIsCheckingTicket(false);
         }
     }
+
     async function handleResell() {
         if (!ticketInfo) return;
 
@@ -84,6 +89,7 @@ const ListTicket = () => {
         }
 
         try {
+            setIsReselling(true);
             const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/activeTickets/resell`, {
                 method: "POST",
                 headers: {
@@ -119,130 +125,141 @@ const ListTicket = () => {
             setTicketMessage("Failed to resell ticket.");
             setNotificationVariant("error");
             console.error("Error reselling ticket:", error);
+        } finally {
+            setIsReselling(false);
         }
     }
-
+    const eventDate = toDateFromUnix(ticketInfo?.eventDate ?? null);
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.heading}>List Ticket</h1>
+            {/* Phase 1: Verification Card */}
+            <section className={`${styles.verificationCard} ${ticketInfo ? styles.collapsed : ""}`}>
+                {!ticketInfo && (
+                    <>
+                        <p className={styles.verificationLabel}>
+                            Enter your ticket code to list for resale
+                        </p>
+                        <Input
+                            type="text"
+                            name="ticketCode"
+                            label="Ticket Code"
+                            value={ticketCode}
+                            onChange={(e) => setTicketCode(e.target.value)}
+                            theme="dark"
+                            size="medium"
+                        />
+                        <Button
+                            type="button"
+                            text={isCheckingTicket ? "Checking..." : "Check Ticket"}
+                            disabled={!ticketCode.trim() || isCheckingTicket}
+                            onClick={handleCheckTicket}
+                            variant="primary"
+                        />
+                    </>
+                )}
 
-            {ticketMessage && (
-                <Notification
-                    text={ticketMessage}
-                    variant={notificationVariant}
-                />
-            )}
+                {ticketMessage && (
+                    <div
+                        className={`${styles.statusBadge} ${notificationVariant === "success"
+                            ? styles.statusSuccess
+                            : styles.statusError
+                            }`}
+                    >
+                        {notificationVariant === "success" ? (
+                            <>
+                                <span className={styles.badgeSymbol}>✓</span>
+                                <span>{ticketCode}</span>
+                            </>
+                        ) : (
+                            ticketMessage
+                        )}
+                    </div>
+                )}
+            </section>
 
-            <div className={styles.ticketCodeSection}>
-                <div className={styles.ticketCodeInputWrapper}>
-                    <Input
-                        type="text"
-                        name="ticketCode"
-                        label="Ticket Code"
-                        value={ticketCode}
-                        onChange={(e) => setTicketCode(e.target.value)}
-                        theme="dark"
-                        size="medium"
-                    />
-                </div>
-
-                <div className={styles.buttonWrapper}>
-                    <Button
-                        type="button"
-                        text="Check Ticket"
-                        disabled={!ticketCode.trim()}
-                        onClick={handleCheckTicket}
-                    />
-                </div>
-            </div>
+            {/* Phase 2: Ticket as Hero */}
             {ticketInfo && (
-                <>
-                    <article className={styles.ticketCard}>
-                        <header className={styles.ticketHeader}>
-                            <h2 className={styles.eventTitle}>{ticketInfo.eventName}</h2>
-                        </header>
+                <article className={styles.ticketHero}>
+                    {/* Top Section: Ticket Visual */}
+                    <div className={styles.ticketVisual}>
+                        <div className={styles.ticketHeader}>
+                            <h2 className={styles.eventName}>{ticketInfo.eventName}</h2>
+                            <span className={styles.ticketId}>
+                                #TKT-{String(ticketInfo.id).padStart(3, "0")}
+                            </span>
+                        </div>
 
-                        <div className={styles.ticketBody}>
-                            <div className={styles.ticketGrid}>
-                                <div className={styles.ticketField}>
-                                    <span className={styles.fieldLabel}>Date</span>
-                                    <span className={styles.fieldValue}>
-                                        {toDateFromUnix(ticketInfo.eventDate)?.toLocaleDateString("en-US", {
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "numeric",
-                                        }) || "-"}
-                                    </span>
-                                </div>
-                                <div className={styles.ticketField}>
-                                    <span className={styles.fieldLabel}>Time</span>
-                                    <span className={styles.fieldValue}>
-                                        {toDateFromUnix(ticketInfo.eventDate)?.toLocaleTimeString("en-US", {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            hour12: false,
-                                        }) || "-"}
-                                    </span>
-                                </div>
-                                <div className={styles.ticketField}>
-                                    <span className={styles.fieldLabel}>Venue</span>
-                                    <span className={styles.fieldValue}>{ticketInfo.venue}</span>
-                                </div>
-                                <div className={styles.ticketField}>
-                                    <span className={styles.fieldLabel}>Section</span>
-                                    <span className={styles.fieldValue}>{ticketInfo.section}</span>
-                                </div>
-                                <div className={styles.ticketField}>
-                                    <span className={styles.fieldLabel}>Row</span>
-                                    <span className={styles.fieldValue}>{ticketInfo.row}</span>
-                                </div>
-                                <div className={styles.ticketField}>
-                                    <span className={styles.fieldLabel}>Seat</span>
-                                    <span className={styles.fieldValue}>{ticketInfo.seatNumber}</span>
-                                </div>
+                        {/* Metadata Grid */}
+                        <div className={styles.metadataGrid}>
+                            <div className={styles.metaItem}>
+                                <span className={styles.metaLabel}>Date</span>
+                                <span className={styles.metaValue}>
+                                    {eventDate?.toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    }) || "-"}
+                                </span>
+                            </div>
+                            <div className={styles.metaItem}>
+                                <span className={styles.metaLabel}>Time</span>
+                                <span className={styles.metaValue}>
+                                    {eventDate?.toLocaleTimeString("en-US", {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: false,
+                                    }) || "-"}
+                                </span>
+                            </div>
+                            <div className={styles.metaItem}>
+                                <span className={styles.metaLabel}>Venue</span>
+                                <span className={styles.metaValue}>{ticketInfo.venue}</span>
+                            </div>
+                            <div className={styles.metaItem}>
+                                <span className={styles.metaLabel}>Section</span>
+                                <span className={styles.metaValue}>{ticketInfo.section}</span>
                             </div>
                         </div>
 
-                        <div className={styles.tearDivider}>
-                            <span className={styles.tearCutoutLeft}></span>
-                            <span className={styles.tearLine}></span>
-                            <span className={styles.tearCutoutRight}></span>
+                        {/* Row & Seat Pills */}
+                        <div className={styles.pillContainer}>
+                            <span className={styles.pill}>
+                                <span className={styles.pillLabel}>Row</span>
+                                {ticketInfo.row}
+                            </span>
+                            <span className={styles.pill}>
+                                <span className={styles.pillLabel}>Seat</span>
+                                {ticketInfo.seatNumber}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Tear Divider */}
+                    <div className={styles.tearDivider}>
+                        <div className={styles.tearLeft} />
+                        <div className={styles.tearRight} />
+                    </div>
+
+                    {/* Bottom Section: Pricing + Resell */}
+                    <div className={styles.pricingSection}>
+                        <div className={styles.pricingInsight}>
+                            <span className={styles.pricingLabel}>Pricing Insight</span>
+                            <span className={styles.averagePrice}>
+                                {typeof averagePrice === "number"
+                                    ? `${averagePrice.toFixed(2)} Ft`
+                                    : "Not available yet"}
+                            </span>
+                            <span className={styles.suggestedRange}>
+                                Suggested range:{" "}
+                                {typeof averagePrice === "number"
+                                    ? `${(averagePrice * 0.9).toFixed(2)} Ft - ${(averagePrice * 1.05).toFixed(2)} Ft`
+                                    : "Set a competitive price close to recent market values."}
+                            </span>
                         </div>
 
-                        <footer className={styles.ticketFooter}>
-                            <div className={styles.pillGroup}>
-                                <div className={styles.metaPill}>
-                                    <span className={styles.pillLabel}>Row</span>
-                                    <span className={styles.pillValue}>{ticketInfo.row}</span>
-                                </div>
-                                <div className={styles.metaPill}>
-                                    <span className={styles.pillLabel}>Seat</span>
-                                    <span className={styles.pillValue}>{ticketInfo.seatNumber}</span>
-                                </div>
-                            </div>
-                            <div className={styles.ticketId}>#TKT-{String(ticketInfo.id).padStart(3, "0")}</div>
-                        </footer>
-                    </article>
-
-                    <section className={styles.averageCard}>
-                        <h3 className={styles.averageTitle}>Pricing Insight</h3>
-                        <p className={styles.averageText}>
-                            Average resale price for similar tickets: {" "}
-                            <strong>
-                                {typeof averagePrice === "number" ? `${averagePrice.toFixed(2)} Ft` : "Not available yet"}
-                            </strong>
-                        </p>
-                        <p className={styles.averageHint}>
-                            Suggested listing range: {" "}
-                            {typeof averagePrice === "number"
-                                ? `${(averagePrice * 0.9).toFixed(2)} Ft - ${(averagePrice * 1.05).toFixed(2)} Ft`
-                                : "Set a competitive price close to recent market values."}
-                        </p>
-                    </section>
-
-                    <section className={styles.resellCard}>
-                        <div className={styles.resellInputWrapper}>
+                        {/* Input + Button Joined Row */}
+                        <div className={styles.resellRow}>
                             <Input
                                 type="number"
                                 name="resellPrice"
@@ -254,20 +271,30 @@ const ListTicket = () => {
                                 theme="dark"
                                 size="medium"
                             />
-                        </div>
-                        <div className={styles.buttonWrapper}>
                             <Button
                                 type="button"
-                                text="Resell"
-                                disabled={!resellPrice.trim()}
+                                text={isReselling ? "Reselling..." : "Resell"}
+                                disabled={!resellPrice.trim() || isReselling}
                                 onClick={handleResell}
+                                variant="primary"
                             />
                         </div>
-                    </section>
-                </>
+
+                        {ticketMessage && (
+                            <div
+                                className={`${styles.statusBadge} ${notificationVariant === "success"
+                                    ? styles.statusSuccess
+                                    : styles.statusError
+                                    }`}
+                            >
+                                {ticketMessage}
+                            </div>
+                        )}
+                    </div>
+                </article>
             )}
         </div>
     );
-};
+};;
 
 export default ListTicket;
