@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\TicketHistory;
+use App\Models\TicketForSale;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventsRequest;
 use App\Http\Requests\UpdateEventsRequest;
@@ -127,9 +129,35 @@ class EventsController extends Controller implements HasMiddleware
     public function myStatistics(Request $request)
     {
         $events = Event::with(['originalTickets:id,eventId,status'])
-            ->select(['id', 'name', 'views', 'createdBy', 'created_at'])
+            ->select(['id', 'name', 'views', 'eventDate', 'eventEndDate', 'createdBy', 'created_at'])
             ->where('createdBy', $request->user()->id)
             ->get();
+
+        $eventIds = $events->pluck('id')->all();
+        $availableTicketsByEventId = collect();
+        $salesByEventId = collect();
+
+        if (!empty($eventIds)) {
+            $availableTicketsByEventId = TicketForSale::query()
+                ->select('eventId')
+                ->selectRaw('COUNT(*) as available_tickets')
+                ->whereIn('eventId', $eventIds)
+                ->where('isResell', false)
+                ->groupBy('eventId')
+                ->get()
+                ->keyBy('eventId');
+
+            $salesByEventId = TicketHistory::query()
+                ->join('original_tickets', 'ticket_history.originalTicketId', '=', 'original_tickets.id')
+                ->select('original_tickets.eventId as event_id')
+                ->selectRaw('COUNT(*) as sold_tickets')
+                ->selectRaw('COALESCE(SUM(ticket_history.price), 0) as revenue')
+                ->whereIn('original_tickets.eventId', $eventIds)
+                ->where('ticket_history.isResell', false)
+                ->groupBy('original_tickets.eventId')
+                ->get()
+                ->keyBy('event_id');
+        }
 
         $statusCounts = [
             'pre-release' => 0,
@@ -147,6 +175,55 @@ class EventsController extends Controller implements HasMiddleware
         }
 
         $totalViews = (int) $events->sum('views');
+
+        $activeEvents = $events
+            ->filter(fn (Event $event) => $event->originalTickets->first()?->status === 'active')
+            ->sortBy('eventDate')
+            ->values()
+            ->map(function (Event $event) use ($availableTicketsByEventId) {
+                $totalTickets = $event->originalTickets->count();
+                $availableTickets = (int) ($availableTicketsByEventId->get($event->id)?->available_tickets ?? 0);
+                $soldTickets = max($totalTickets - $availableTickets, 0);
+                $soldPercentage = $totalTickets > 0
+                    ? round(($soldTickets / $totalTickets) * 100, 2)
+                    : 0;
+
+                return [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'eventDate' => $event->eventDate,
+                    'eventEndDate' => $event->eventEndDate,
+                    'views' => (int) $event->views,
+                    'totalTickets' => $totalTickets,
+                    'availableTickets' => $availableTickets,
+                    'soldTickets' => $soldTickets,
+                    'soldPercentage' => $soldPercentage,
+                ];
+            });
+
+        $expiredEvents = $events
+            ->filter(fn (Event $event) => $event->originalTickets->first()?->status === 'expired')
+            ->sortBy('eventDate')
+            ->values()
+            ->map(function (Event $event) use ($salesByEventId) {
+                $totalTickets = $event->originalTickets->count();
+                $soldTickets = (int) ($salesByEventId->get($event->id)?->sold_tickets ?? 0);
+                $soldPercentage = $totalTickets > 0
+                    ? round(($soldTickets / $totalTickets) * 100, 2)
+                    : 0;
+                $revenue = (float) ($salesByEventId->get($event->id)?->revenue ?? 0);
+
+                return [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'eventDate' => $event->eventDate,
+                    'eventEndDate' => $event->eventEndDate,
+                    'views' => (int) $event->views,
+                    'soldTickets' => $soldTickets,
+                    'soldPercentage' => $soldPercentage,
+                    'revenue' => $revenue,
+                ];
+            });
 
         $topViewedEvents = $events
             ->groupBy(fn (Event $event) => strtolower(trim($event->name)))
@@ -171,6 +248,8 @@ class EventsController extends Controller implements HasMiddleware
                 'totalViews' => $totalViews,
                 'eventStatusCounts' => $statusCounts,
                 'topViewedEvents' => $topViewedEvents,
+                'activeEvents' => $activeEvents,
+                'expiredEvents' => $expiredEvents,
             ],
         ], 200);
     }
