@@ -14,15 +14,18 @@ export default function MainLayout() {
 function MainLayoutContent() {
   const { pathname } = useLocation();
   const isPageLoading = useIsPageLoading();
+  const isDashboardRoute = pathname.startsWith('/dashboard');
   const hideFooter = pathname.startsWith('/dashboard');
+  const shouldShowGlobalLoader = !isDashboardRoute;
+  const shouldBlockMainLayout = isPageLoading && shouldShowGlobalLoader;
 
   return (
     <>
       <div
-        className={`${styles.layout} ${isPageLoading ? styles.pageLoading : ""}`}
-        aria-busy={isPageLoading}
-        aria-hidden={isPageLoading || undefined}
-        inert={isPageLoading || undefined}
+        className={`${styles.layout} ${shouldBlockMainLayout ? styles.pageLoading : ""}`}
+        aria-busy={shouldBlockMainLayout}
+        aria-hidden={shouldBlockMainLayout || undefined}
+        inert={shouldBlockMainLayout || undefined}
       >
         <EventContextProvider>
           <CartContextProvider>
@@ -34,7 +37,7 @@ function MainLayoutContent() {
           </CartContextProvider>
         </EventContextProvider>
       </div>
-      <PageLoader />
+      <PageLoader isEnabled={shouldShowGlobalLoader} />
     </>
   );
 }

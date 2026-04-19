@@ -5,9 +5,11 @@ import styles from "./MyTickets.module.css";
 import { formatUnixDateTime } from "../../../utils/dateTime";
 import Button from "../../../components/ui/button/Button";
 import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 const MyTickets = () => {
     const [tickets, setTickets] = useState<IMyDashboardTicket[]>([]);
+    const trackPageLoading = usePageLoading();
 
     useEffect(() => {
         async function fetchTickets() {
@@ -31,8 +33,9 @@ const MyTickets = () => {
             }
         }
 
-        fetchTickets();
-    }, []);
+        const fetchTicketsPromise = fetchTickets();
+        void trackPageLoading(fetchTicketsPromise);
+    }, [trackPageLoading]);
 
     return (
         <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>

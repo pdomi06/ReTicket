@@ -7,6 +7,12 @@
     background: var(--color-main);
 }
 
+.overlayContained {
+    position: absolute;
+    z-index: 20;
+    border-radius: 12px;
+}
+
 .overlayVisible {
     opacity: 1;
     visibility: visible;

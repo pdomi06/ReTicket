@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./sidebar/Sidebar";
 import styles from "./Dashboard.module.css";
+import PageLoader from "../../components/loading/PageLoader";
 
 const Dashboard = () => {
     return (
@@ -10,6 +11,7 @@ const Dashboard = () => {
             </div>
             <div className={styles.contentWrapper}>
                 <Outlet />
+                <PageLoader isContained className={styles.pageLoader} />
             </div>
         </div>
     );

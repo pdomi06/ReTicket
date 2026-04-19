@@ -9,8 +9,14 @@
 }
 
 .contentWrapper {
+    position: relative;
     flex: 1;
+    min-height: calc(100vh - 4rem);
     padding: 2rem;
     overflow-y: auto;
     margin-left: 220px;
+}
+
+.pageLoader {
+    background: var(--color-secondary);
 }

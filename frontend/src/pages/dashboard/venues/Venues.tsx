@@ -5,9 +5,11 @@ import Input from "../../../components/ui/input/Input";
 import styles from "./Venues.module.css";
 import Button from "../../../components/ui/button/Button";
 import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 export default function Venues() {
   const [venues, setVenues] = useState<IVenueMap[]>([]);
+  const trackPageLoading = usePageLoading();
   const [filters, setFilters] = useState({
     venue: "",
     section: "",
@@ -24,8 +26,9 @@ export default function Venues() {
       }
     }
 
-    fetchVenues();
-  }, []);
+    const fetchVenuesPromise = fetchVenues();
+    void trackPageLoading(fetchVenuesPromise);
+  }, [trackPageLoading]);
 
   const filteredVenues = venues.filter((venue) => {
     const venueMatch = venue.venue

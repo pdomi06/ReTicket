@@ -7,9 +7,11 @@ import styles from "./Tickets.module.css";
 import Button from "../../../components/ui/button/Button";
 import { formatUnixDateTime, toDateInputValue } from "../../../utils/dateTime";
 import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 export default function Tickets() {
   const [tickets, setTickets] = useState<IDashboardTicket[]>([]);
+  const trackPageLoading = usePageLoading();
   const [filters, setFilters] = useState({
     event: "",
     venue: "",
@@ -40,8 +42,9 @@ export default function Tickets() {
       }
     }
 
-    fetchTickets();
-  }, []);
+    const fetchTicketsPromise = fetchTickets();
+    void trackPageLoading(fetchTicketsPromise);
+  }, [trackPageLoading]);
 
   const filteredTickets = tickets.filter((ticket) => {
     const eventMatch = ticket.eventName.toLowerCase().includes(filters.event.toLowerCase());

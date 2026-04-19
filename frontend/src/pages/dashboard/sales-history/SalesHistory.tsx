@@ -4,6 +4,7 @@ import Button from "../../../components/ui/button/Button";
 import { useEffect, useState } from "react";
 import { formatUnixDateTime } from "../../../utils/dateTime";
 import { apiFetch } from "../../../lib/apiFetch";
+import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
 interface ISalesHistory {
     balance: number;
@@ -25,6 +26,7 @@ interface ISalesSummary {
 const SalesHistory = () => {
     const [history, setHistory] = useState<ISalesHistory[]>([]);
     const [salesSummary, setSalesSummary] = useState<ISalesSummary>({ balance: 0, totalEarned: 0 });
+    const trackPageLoading = usePageLoading();
 
     async function fetchSalesHistory() {
         try {
@@ -53,8 +55,9 @@ const SalesHistory = () => {
         }
     }
     useEffect(() => {
-        fetchSalesHistory();
-    }, []);
+        const fetchSalesHistoryPromise = fetchSalesHistory();
+        void trackPageLoading(fetchSalesHistoryPromise);
+    }, [trackPageLoading]);
 
     return (
         <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
