@@ -7,7 +7,7 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
     const { status, isAuthenticated } = useAuth();
 
     if (status !== "ready") {
-        return <div>Loading...</div>;
+        return null;
     }
 
     if (!isAuthenticated) {

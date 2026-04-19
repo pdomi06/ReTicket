@@ -4,15 +4,11 @@ import Footer from './footer/footer.tsx';
 import styles from './MainLayout.module.css';
 import EventContextProvider from '../../contexts/event/EventContext.tsx';
 import CartContextProvider from '../../contexts/cart/CartContext.tsx';
-import { LoadingProvider, useIsPageLoading } from '../../contexts/loading/LoadingContext.tsx';
+import { useIsPageLoading } from '../../contexts/loading/LoadingContext.tsx';
 import PageLoader from '../loading/PageLoader.tsx';
 
 export default function MainLayout() {
-  return (
-    <LoadingProvider>
-      <MainLayoutContent />
-    </LoadingProvider>
-  );
+  return <MainLayoutContent />;
 }
 
 function MainLayoutContent() {

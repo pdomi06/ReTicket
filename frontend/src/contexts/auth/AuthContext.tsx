@@ -8,6 +8,7 @@ import {
     type AuthUser,
 } from "../../lib/authSession";
 import { AuthContext, type AuthContextValue, type AuthStatus } from "./auth-context";
+import { usePageLoading } from "../loading/LoadingContext";
 
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
 
@@ -32,6 +33,7 @@ function resolveResponseUser(payload: unknown): unknown {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+    const trackPageLoading = usePageLoading();
     const initialSession = readStoredAuthSession();
     const [user, setUser] = useState<AuthUser | null>(initialSession.user);
     const [token, setToken] = useState<string | null>(initialSession.token);
@@ -125,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const bootstrap = async () => {
             setStatus("bootstrapping");
-            await refreshSession();
+            await trackPageLoading(refreshSession());
 
             if (cancelled) {
                 return;
@@ -139,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return () => {
             cancelled = true;
         };
-    }, [refreshSession, token]);
+    }, [refreshSession, token, trackPageLoading]);
 
     useEffect(() => {
         if (!token) {
