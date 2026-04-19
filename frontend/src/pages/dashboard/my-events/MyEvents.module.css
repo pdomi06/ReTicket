@@ -1,0 +1,176 @@
+.eventsContainer {
+    background-color: transparent;
+}
+
+.tableWrapper {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.table {
+    --bs-table-bg: var(--color-main);
+    --bs-table-color: var(--color-text);
+    --bs-table-border-color: var(--color-border-subtle);
+    --bs-table-hover-bg: var(--color-accent-surface-soft);
+    --bs-table-hover-color: var(--color-text);
+    --bs-table-striped-bg: var(--color-accent-surface-subtle);
+    --bs-table-striped-color: var(--color-text);
+
+    border-color: var(--color-border-subtle);
+    margin-bottom: 0;
+}
+
+.table thead {
+    background-color: var(--color-secondary);
+    border-bottom: 2px solid var(--color-accent);
+}
+
+.table thead th {
+    background-color: var(--color-secondary) !important;
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--color-accent-surface-soft);
+}
+
+.table tbody td {
+    background-color: transparent !important;
+    color: var(--color-text);
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.headerSection h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.actionButtons button {
+    margin: 0;
+    font-size: 0.85rem;
+    padding: 8px 12px !important;
+    white-space: nowrap;
+    width: auto !important;
+}
+
+.actionButtons>div {
+    width: auto;
+}
+
+.actionButtons a {
+    width: auto !important;
+}
+
+.statusSelect {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.5rem;
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-family: var(--font-main);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.statusSelect:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-accent-focus);
+}
+
+.statusSelect:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.filtersSection {
+    margin-bottom: 1.5rem;
+    background-color: var(--color-accent-surface-subtle);
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-accent-border-soft);
+}
+
+.filterGroup {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filterGroup .form-select {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-accent);
+    color: var(--color-main);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: var(--shadow-accent-button);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filterGroup .form-select:focus,
+.filterGroup .form-select:hover {
+    outline: none;
+    box-shadow: var(--shadow-accent-button-hover) !important;
+    transform: translateY(-2px) !important;
+}
+
+.resultCount {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: 0.75rem 0 0 0;
+}
+
+@media (max-width: 768px) {
+    .headerSection {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .actionButtons {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .actionButtons button {
+        margin: 0;
+    }
+}

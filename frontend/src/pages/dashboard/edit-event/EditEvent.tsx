@@ -70,7 +70,7 @@ const EditEvent = () => {
 
         const fetchVenues = async () => {
             try {
-                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venue`, {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`, {
                     signal: abortController.signal,
                 });
                 if (!response.ok) {
@@ -83,11 +83,15 @@ const EditEvent = () => {
                     return;
                 }
                 const data: unknown = await response.json();
-                if (!Array.isArray(data)) {
+                const normalizedVenues = Array.isArray(data)
+                    ? data
+                    : (Array.isArray((data as { data?: unknown[] })?.data) ? (data as { data: unknown[] }).data : null);
+
+                if (!normalizedVenues) {
                     console.error('Expected an array of venues but got:', data);
                     return;
                 }
-                setVenues(data as IVenueMap[]);
+                setVenues(normalizedVenues as IVenueMap[]);
             } catch (error) {
                 if (error instanceof Error && error.name !== 'AbortError') {
                     console.error('Error fetching venues:', error);
@@ -218,16 +222,6 @@ const EditEvent = () => {
                         <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEventParams({ ...eventParams, eventEndDate: e.target.value })} value={typeof eventParams.eventEndDate === "string" ? eventParams.eventEndDate : ''} />
                         <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEventParams({ ...eventParams, basePrice: Number(e.target.value) })} value={eventParams.basePrice || ''} />
                         <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEventParams({ ...eventParams, imageUrl: e.target.value })} value={eventParams.imageUrl || ''} />
-                        <Select
-                            name="isFeatured"
-                            label="Featured Event"
-                            theme="dark"
-                            onChange={(e) => setEventParams({ ...eventParams, isFeatured: e.target.value === 'true' })}
-                            value={String(eventParams.isFeatured)}
-                        >
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                        </Select>
                         <Select name="category" label="Category" theme="dark" onChange={(e) => setEventParams({ ...eventParams, category: e.target.value as IEvent['category'] })} value={eventParams.category || ''}>
                             <option value="" disabled aria-hidden="true">
                                 Select Category
