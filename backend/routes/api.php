@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActiveTicketsController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmailChangeController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrderItemsController;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login'])->middleware('throttle:3,1');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout']);
+Route::post('contact/messages', [ContactController::class, 'store'])->middleware('throttle:5,1');
 Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::get('events/landing', [EventsController::class, 'landing']);
 Route::get('events/search', [EventsController::class, 'search']);

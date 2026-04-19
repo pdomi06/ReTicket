@@ -12,8 +12,8 @@ const channels: Channel[] = [
   {
     icon: '✉️',
     label: 'Email',
-    value: 'support@reticket.com',
-    href: 'mailto:support@reticket.com',
+    value: 'reticket3@gmail.com',
+    href: 'mailto:reticket3@gmail.com',
     note: 'We typically respond within 24 hours'
   },
   {

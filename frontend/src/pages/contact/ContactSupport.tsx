@@ -46,7 +46,7 @@ const ContactSupport = () => {
           {categories.map((cat, index) => (
             <div key={index} className="col-12 col-md-6">
               <a
-                href={`mailto:support@reticket.com?subject=${encodeURIComponent(cat.emailSubject)}`}
+                href={`mailto:reticket3@gmail.com?subject=${encodeURIComponent(cat.emailSubject)}`}
                 className={`${styles.supportCard} h-100`}
               >
                 <div className={styles.supportIcon}>{cat.icon}</div>
