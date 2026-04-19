@@ -124,6 +124,57 @@ class EventsController extends Controller implements HasMiddleware
         ], 200);
     }
 
+    public function myStatistics(Request $request)
+    {
+        $events = Event::with(['originalTickets:id,eventId,status'])
+            ->select(['id', 'name', 'views', 'createdBy', 'created_at'])
+            ->where('createdBy', $request->user()->id)
+            ->get();
+
+        $statusCounts = [
+            'pre-release' => 0,
+            'active' => 0,
+            'expired' => 0,
+            'cancelled' => 0,
+        ];
+
+        foreach ($events as $event) {
+            $firstTicketStatus = $event->originalTickets->first()?->status;
+
+            if (is_string($firstTicketStatus) && array_key_exists($firstTicketStatus, $statusCounts)) {
+                $statusCounts[$firstTicketStatus]++;
+            }
+        }
+
+        $totalViews = (int) $events->sum('views');
+
+        $topViewedEvents = $events
+            ->groupBy(fn (Event $event) => strtolower(trim($event->name)))
+            ->map(function ($groupedEvents, string $groupKey) {
+                $groupedEventCollection = collect($groupedEvents);
+
+                return [
+                    'name' => (string) ($groupedEventCollection->first()->name ?? ''),
+                    'groupKey' => $groupKey,
+                    'views' => (int) $groupedEventCollection->sum('views'),
+                    'eventCount' => $groupedEventCollection->count(),
+                ];
+            })
+            ->sortByDesc('views')
+            ->take(3)
+            ->values();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'totalEvents' => $events->count(),
+                'totalViews' => $totalViews,
+                'eventStatusCounts' => $statusCounts,
+                'topViewedEvents' => $topViewedEvents,
+            ],
+        ], 200);
+    }
+
     public function search(SearchEventsRequest $request)
     {
         $filters = $request->validated();

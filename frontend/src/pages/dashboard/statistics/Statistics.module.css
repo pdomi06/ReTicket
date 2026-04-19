@@ -1,0 +1,232 @@
+.statisticsContainer {
+    color: var(--color-text);
+}
+
+.headerSection {
+    margin-bottom: 1.5rem;
+}
+
+.headerSection h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.headerSection p {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-secondary);
+}
+
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.statusCard {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.9rem;
+    background: linear-gradient(160deg, var(--color-main), var(--color-accent-surface-subtle));
+    box-shadow: var(--shadow-md);
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.label {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.iconWrap {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-accent-surface-soft);
+    color: var(--color-accent);
+}
+
+.value {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-text);
+}
+
+.meta {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+.summaryCard {
+    margin-top: 1rem;
+    border: 1px solid var(--color-accent-border-soft);
+    border-radius: 0.9rem;
+    background-color: var(--color-accent-surface-subtle);
+    padding: 0.85rem 1rem;
+}
+
+.summaryTitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summaryValue {
+    margin: 0.35rem 0 0;
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.summaryHeaderRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.summaryIconWrap {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-main);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent-border-soft);
+}
+
+.topEventsCard {
+    margin-top: 1rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.9rem;
+    background: linear-gradient(160deg, var(--color-main), var(--color-accent-surface-subtle));
+    box-shadow: var(--shadow-md);
+    padding: 1rem 1.1rem;
+}
+
+.topEventsHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+}
+
+.topEventsTitle {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.topEventsSubtitle {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.topEventsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.topEventItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.8rem;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border-subtle);
+}
+
+.topEventName {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.topEventMeta {
+    margin: 0.2rem 0 0;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+.topEventViewsWrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.topEventRank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    background-color: var(--color-accent-surface-soft);
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.topEventViews {
+    font-size: 1.15rem;
+    color: var(--color-text);
+}
+
+.emptyState {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+@media (min-width: 768px) {
+    .cardsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1200px) {
+    .cardsGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .topEventItem {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topEventViewsWrap {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
