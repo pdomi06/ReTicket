@@ -14,12 +14,19 @@ interface SeatSelectorProps {
 
 const seatKey = (eventId: number, row: number, col: number) => `${eventId}-${row}-${col}`
 
+type SeatFeedback = {
+    type: "loading" | "success"
+    message: string
+}
+
 const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSelectorProps) => {
     const { addToCart, removeFromCart, tickets: cartTickets } = useContext(CartContext)
     const [busySeat, setBusySeat] = useState<string | null>(null)
     const [zoom, setZoom] = useState(1)
     const [isReloading, setIsReloading] = useState(false)
     const [statusMessage, setStatusMessage] = useState<string | null>(null)
+    const [seatFeedback, setSeatFeedback] = useState<SeatFeedback | null>(null)
+    const isSeatActionLoading = isReloading || busySeat !== null
 
     useEffect(() => {
         let isActive = true
@@ -77,28 +84,68 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
     }
 
     const handleSeatToggle = async (row: number, col: number, checked: boolean) => {
+        if (busySeat !== null) {
+            return
+        }
+
         const key = seatKey(eventId, row, col)
+        const selectedSeatCount = cartTickets.filter((ticket) => ticket.eventId === eventId).length
+        const nextSelectedSeatCount = checked && !cartSeatMap.has(key)
+            ? selectedSeatCount + 1
+            : selectedSeatCount
+
         setBusySeat(key)
         setStatusMessage(null)
+        setSeatFeedback({
+            type: "loading",
+            message: checked
+                ? `Securing ${nextSelectedSeatCount} ${nextSelectedSeatCount === 1 ? "seat" : "seats"}... (Seat ${row}-${col})`
+                : `Releasing seat ${row}-${col}...`,
+        })
 
         try {
             if (checked) {
                 const success = await addToCart(eventId, row, col)
                 if (!success) {
                     setStatusMessage(`Seat ${row}-${col} is no longer available.`)
+                    setSeatFeedback(null)
+                    return
                 }
                 await onReload()
+                const reservedCount = nextSelectedSeatCount
+                setSeatFeedback({
+                    type: "success",
+                    message: `✓ ${reservedCount === 1 ? "Seat reserved" : `${reservedCount} seats reserved`}!`,
+                })
             } else {
                 const cartTicket = cartSeatMap.get(key)
                 if (cartTicket) {
                     await removeFromCart(cartTicket)
                     await onReload()
+                    setSeatFeedback({
+                        type: "success",
+                        message: `✓ Seat ${row}-${col} released.`,
+                    })
                 }
             }
         } finally {
             setBusySeat(null)
         }
     }
+
+    useEffect(() => {
+        if (!seatFeedback || seatFeedback.type !== "success") {
+            return
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setSeatFeedback((current) => (current?.type === "success" ? null : current))
+        }, 1400)
+
+        return () => {
+            window.clearTimeout(timeoutId)
+        }
+    }, [seatFeedback])
 
     return (
         <div className={`${style.backgroundColorSecondary} p-4 mt-3`}>
@@ -127,42 +174,62 @@ const SeatSelector = ({ venue, eventId, loading, dbTickets, onReload }: SeatSele
                             <Button text={<><span className={`${style.reloadIcon} ${isReloading ? style.spinning : ''}`}>↻</span> Reload</>} variant="outline" onClick={handleReload} disabled={isReloading} />
                         </div>
                     </div>
-                    <div
-                        className={`${style.seatGridContainer}`}
-                        style={{ '--seat-zoom': zoom } as React.CSSProperties}
-                    >
-                        {Array.from({ length: venue.rows }, (_, i) => (
-                            <div className={style.seatRow} key={`row-${i}`}>
-                                {Array.from({ length: venue.cols }, (_, j) => {
-                                    const row = i + 1
-                                    const col = j + 1
-                                    const key = seatKey(eventId, row, col)
-                                    const inCart = cartSeatMap.has(key)
-                                    const available = availableSeats.has(key) || inCart
-                                    const isBusy = busySeat === key
+                    <div className={style.seatGridShell}>
+                        <div
+                            className={`${style.seatGridContainer} ${isSeatActionLoading ? style.seatGridLocked : ""}`}
+                            style={{ '--seat-zoom': zoom } as React.CSSProperties}
+                        >
+                            {Array.from({ length: venue.rows }, (_, i) => (
+                                <div className={style.seatRow} key={`row-${i}`}>
+                                    {Array.from({ length: venue.cols }, (_, j) => {
+                                        const row = i + 1
+                                        const col = j + 1
+                                        const key = seatKey(eventId, row, col)
+                                        const inCart = cartSeatMap.has(key)
+                                        const available = availableSeats.has(key) || inCart
+                                        const isBusy = busySeat === key
 
-                                    return (
-                                        <div
-                                            key={key}
-                                            className={`${style.seatSelector} ${!available ? style.seatUnavailable : ""}`}
-                                            title={available ? "Click to select" : "Seat not available"}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                name={`seat-${key}`}
-                                                id={`seat-${key}`}
-                                                checked={inCart}
-                                                disabled={!available || isBusy}
-                                                onChange={(e) => {
-                                                    handleSeatToggle(row, col, e.target.checked)
-                                                }}
-                                            />
-                                            <label htmlFor={`seat-${key}`}>{row}-{col}</label>
-                                        </div>
-                                    )
-                                })}
+                                        return (
+                                            <div
+                                                key={key}
+                                                className={`${style.seatSelector} ${!available ? style.seatUnavailable : ""} ${(inCart || isBusy) ? style.seatPriority : ""}`}
+                                                title={available ? "Click to select" : "Seat not available"}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    name={`seat-${key}`}
+                                                    id={`seat-${key}`}
+                                                    checked={inCart}
+                                                    disabled={!available || isBusy || isSeatActionLoading}
+                                                    onChange={(e) => {
+                                                        handleSeatToggle(row, col, e.target.checked)
+                                                    }}
+                                                />
+                                                <label htmlFor={`seat-${key}`}>{row}-{col}</label>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            ))}
+                        </div>
+
+                        {isSeatActionLoading ? (
+                            <div className={style.seatGridOverlay} aria-live="polite" aria-busy="true">
                             </div>
-                        ))}
+                        ) : null}
+
+                        {seatFeedback ? (
+                            <div className={`${style.seatStatusToast} ${seatFeedback.type === "success" ? style.seatStatusToastSuccess : ""}`} aria-live="polite">
+                                {seatFeedback.type === "loading" ? (
+                                    <div className={style.seatStatusDots} aria-hidden="true">
+                                        <span />
+                                        <span />
+                                        <span />
+                                    </div>
+                                ) : null}
+                                <p>{seatFeedback.message}</p>
+                            </div>
+                        ) : null}
                     </div>
                 </div>
             ) : (
