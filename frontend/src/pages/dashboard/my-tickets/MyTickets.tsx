@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { LuCalendar, LuMapPin, LuTag, LuTicket } from "react-icons/lu";
 import type { IMyDashboardTicket } from "../../../utils/interfaces";
 import styles from "./MyTickets.module.css";
 import { formatUnixDateTime } from "../../../utils/dateTime";
@@ -38,7 +37,7 @@ const MyTickets = () => {
     }, [trackPageLoading]);
 
     return (
-        <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
+        <div className={styles.ticketsContainer}>
             <div className={styles.headerSection}>
                 <h1>My Tickets</h1>
                 <div>
@@ -46,44 +45,23 @@ const MyTickets = () => {
                 </div>
             </div>
 
-            <div className={`table-responsive ${styles.tableWrapper}`}>
-                <table className={`table ${styles.table}`}>
+            <div className={styles.tableWrapper}>
+                <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th>
-                                <LuTag size={16} className="me-2" />
-                                Event
-                            </th>
-                            <th>
-                                <LuCalendar size={16} className="me-2" />
-                                Date
-                            </th>
-                            <th>
-                                <LuMapPin size={16} className="me-2" />
-                                Venue
-                            </th>
-                            <th>
-                                <LuTicket size={16} className="me-2" />
-                                Section
-                            </th>
-                            <th className="text-center">
-                                <LuTicket size={16} className="me-2" />
-                                Row
-                            </th>
-                            <th className="text-center">
-                                <LuTicket size={16} className="me-2" />
-                                Seat
-                            </th>
-                            <th className="text-center">
-                                <LuTag size={16} className="me-2" />
-                                Price
-                            </th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Section</th>
+                            <th>Row</th>
+                            <th>Seat</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         {tickets.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="text-center py-4">
+                                <td colSpan={7} className={styles.emptyState}>
                                     No tickets found
                                 </td>
                             </tr>
@@ -93,10 +71,10 @@ const MyTickets = () => {
                                     <td>{ticket.eventName}</td>
                                     <td>{formatUnixDateTime(ticket.eventDate)}</td>
                                     <td>{ticket.venue}</td>
-                                    <td >{ticket.section}</td>
-                                    <td className="text-center">{ticket.row}</td>
-                                    <td className="text-center">{ticket.seatNumber}</td>
-                                    <td className="text-center">{ticket.price} Ft</td>
+                                    <td>{ticket.section}</td>
+                                    <td>{ticket.row}</td>
+                                    <td>{ticket.seatNumber}</td>
+                                    <td>{ticket.price} Ft</td>
                                 </tr>
                             ))
                         )}

@@ -1,12 +1,16 @@
 import { useLayoutEffect, useState } from "react";
-import { LuCalendar, LuMapPin, LuTag } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
 import { TicketStatus } from "../../../utils/enums";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import styles from "./MyEvents.module.css";
 import Button from "../../../components/ui/button/Button";
+import Modal from "../../../components/ui/modal/Modal";
 import { formatUnixDateTime } from "../../../utils/dateTime";
+import { defaultIEvent } from "../../../utils/defaults";
+import type { IEventForm, IVenueMap } from "../../../utils/interfaces";
+import { EventCategory } from "../../../utils/enums";
+import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import { apiFetch } from "../../../lib/apiFetch";
 import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
@@ -14,6 +18,11 @@ export default function MyEvents() {
     const [events, setEvents] = useState<IEvent[]>([]);
     const [statusUpdatingEventId, setStatusUpdatingEventId] = useState<number | null>(null);
     const [deletingEventId, setDeletingEventId] = useState<number | null>(null);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
+    const [editFormData, setEditFormData] = useState<IEventForm>(defaultIEvent);
+    const [venues, setVenues] = useState<IVenueMap[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const trackPageLoading = usePageLoading();
     const [filters, setFilters] = useState({
         name: "",
@@ -25,9 +34,19 @@ export default function MyEvents() {
         const fetchEventsPromise = (async () => {
             try {
                 const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/my`);
-                const payload = await response.json();
-                const responseData = Array.isArray(payload) ? payload : (Array.isArray(payload?.data) ? payload.data : []);
-                setEvents(responseData as IEvent[]);
+                const data = await response.json();
+
+                if (Array.isArray(data)) {
+                    setEvents(data);
+                    return;
+                }
+
+                if (Array.isArray(data?.data)) {
+                    setEvents(data.data);
+                    return;
+                }
+
+                setEvents([]);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
@@ -35,6 +54,23 @@ export default function MyEvents() {
 
         void trackPageLoading(fetchEventsPromise);
     }, [trackPageLoading]);
+
+    useLayoutEffect(() => {
+        const fetchVenues = async () => {
+            try {
+                const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`);
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const venueList = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+                setVenues(venueList);
+            } catch (error) {
+                console.error("Error fetching venues:", error);
+            }
+        };
+
+        void fetchVenues();
+    }, []);
 
     const handleStatusChange = async (eventId: number, newStatus: string) => {
         setStatusUpdatingEventId(eventId);
@@ -81,14 +117,8 @@ export default function MyEvents() {
             );
 
             if (!response.ok) {
-                const contentType = response.headers.get("content-type") || "";
-                if (contentType.toLowerCase().includes("application/json")) {
-                    const error = await response.json();
-                    alert(error.message || "Failed to delete event");
-                } else {
-                    const errorText = await response.text();
-                    alert(errorText || "Failed to delete event");
-                }
+                const error = await response.json();
+                alert(error.message || "Failed to delete event");
                 return;
             }
 
@@ -98,6 +128,117 @@ export default function MyEvents() {
             alert("Failed to delete event");
         } finally {
             setDeletingEventId(null);
+        }
+    };
+
+    const handleOpenEdit = (eventItem: IEvent) => {
+        setSelectedEvent(eventItem);
+        setEditFormData({
+            id: eventItem.id,
+            name: eventItem.name,
+            description: eventItem.description,
+            venue: eventItem.venue,
+            address: eventItem.address,
+            city: eventItem.city,
+            state: eventItem.state,
+            country: eventItem.country,
+            eventDate: toDateTimeLocalValue(eventItem.eventDate),
+            eventEndDate: toDateTimeLocalValue(eventItem.eventEndDate),
+            category: eventItem.category,
+            basePrice: eventItem.basePrice,
+            imageUrl: eventItem.imageUrl,
+            isFeatured: eventItem.isFeatured,
+        });
+        setEditModalOpen(true);
+    };
+
+    const handleCloseEdit = () => {
+        setEditModalOpen(false);
+        setSelectedEvent(null);
+        setEditFormData(defaultIEvent);
+    };
+
+    const handleSaveEdit = async () => {
+        if (!selectedEvent) return;
+
+        setIsSubmitting(true);
+        try {
+            const eventDateUnix = toUnixSeconds(editFormData.eventDate);
+            const eventEndDateUnix = toUnixSeconds(editFormData.eventEndDate);
+
+            if (eventDateUnix === null || eventEndDateUnix === null) {
+                throw new Error("Please provide valid event start and end date/time values.");
+            }
+
+            const payload = {
+                ...editFormData,
+                eventDate: eventDateUnix,
+                eventEndDate: eventEndDateUnix,
+            };
+
+            const eventResponse = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${selectedEvent.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (!eventResponse.ok) {
+                const errorText = await eventResponse.text();
+                throw new Error(`Failed to update event: ${eventResponse.status} ${eventResponse.statusText} - ${errorText}`);
+            }
+
+            const updatedEvent = await eventResponse.json();
+            const updatedEventId = updatedEvent?.data?.id ?? updatedEvent?.id;
+
+            if (!updatedEventId) {
+                throw new Error("Event updated but no id returned by API");
+            }
+
+            const selectedVenue = venues
+                .filter((venue) => venue.venue === editFormData.venue)
+                .map((venue) => ({
+                    section: venue.section,
+                    row: venue.rows,
+                    col: venue.cols,
+                    rate: venue.rate,
+                }));
+
+            if (selectedVenue.length === 0) {
+                throw new Error("Failed to update tickets: no matching venue found for the event");
+            }
+
+            const ticketsResponse = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    eventId: updatedEventId,
+                    eventBasePrice: editFormData.basePrice,
+                    venue: selectedVenue,
+                }),
+            });
+
+            if (!ticketsResponse.ok) {
+                const errorText = await ticketsResponse.text();
+                throw new Error(`Failed to update tickets: ${ticketsResponse.status} ${ticketsResponse.statusText} - ${errorText}`);
+            }
+
+            setEvents((prev) => prev.map((event) => (
+                event.id === selectedEvent.id
+                    ? {
+                        ...event,
+                        ...editFormData,
+                        eventDate: eventDateUnix,
+                        eventEndDate: eventEndDateUnix,
+                    }
+                    : event
+            )));
+
+            handleCloseEdit();
+        } catch (error) {
+            console.error("Error updating event:", error);
+            alert(error instanceof Error ? error.message : "Failed to update event");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -121,7 +262,7 @@ export default function MyEvents() {
     const uniqueCategories = [...new Set(events.map((event) => event.category))];
 
     return (
-        <div className={`container-fluid mt-4 ${styles.eventsContainer}`}>
+        <div className={styles.eventsContainer}>
             <div className={styles.headerSection}>
                 <h1>My Events</h1>
                 <div>
@@ -130,8 +271,8 @@ export default function MyEvents() {
             </div>
 
             <div className={styles.filtersSection}>
-                <div className={`row ${styles.filterGroup}`}>
-                    <div className="col-2">
+                <div className={styles.filterGroup}>
+                    <div style={{ minWidth: '200px' }}>
                         <Input
                             type="text"
                             label="Filter by event name"
@@ -142,7 +283,7 @@ export default function MyEvents() {
                             size="medium"
                         />
                     </div>
-                    <div className="col-2">
+                    <div style={{ minWidth: '200px' }}>
                         <Input
                             type="text"
                             label="Filter by venue"
@@ -153,7 +294,7 @@ export default function MyEvents() {
                             size="medium"
                         />
                     </div>
-                    <div className="col-2">
+                    <div style={{ minWidth: '200px' }}>
                         <Select
                             label="All Categories"
                             name="category"
@@ -171,7 +312,7 @@ export default function MyEvents() {
                         </Select>
                     </div>
                     {(filters.name || filters.venue || filters.category) && (
-                        <div className="col-2">
+                        <div>
                             <Button text="Clear" onClick={handleClearFilters} variant="outline" />
                         </div>
                     )}
@@ -181,32 +322,23 @@ export default function MyEvents() {
                 </p>
             </div>
 
-            <div className={`table-responsive ${styles.tableWrapper}`}>
-                <table className={`table ${styles.table}`}>
+            <div className={styles.tableWrapper}>
+                <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th>
-                                <LuCalendar size={16} className="me-2" />
-                                Event
-                            </th>
-                            <th>
-                                <LuMapPin size={16} className="me-2" />
-                                Venue
-                            </th>
+                            <th>Event</th>
+                            <th>Venue</th>
                             <th>Date</th>
-                            <th className="text-center">Category</th>
-                            <th>
-                                <LuTag size={16} className="me-2" />
-                                Base Price
-                            </th>
-                            <th className="text-center">Ticket Status</th>
-                            <th className="text-center"></th>
+                            <th>Category</th>
+                            <th>Base Price</th>
+                            <th>Ticket Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredEvents.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="text-center py-4">
+                                <td colSpan={7} className={styles.emptyState}>
                                     {events.length === 0 ? "No events found" : "No events match your filters"}
                                 </td>
                             </tr>
@@ -216,9 +348,9 @@ export default function MyEvents() {
                                     <td>{eventItem.name}</td>
                                     <td>{eventItem.venue}</td>
                                     <td>{formatUnixDateTime(eventItem.eventDate)}</td>
-                                    <td className="text-center">{eventItem.category}</td>
+                                    <td>{eventItem.category}</td>
                                     <td>{eventItem.basePrice} Ft</td>
-                                    <td className="text-center">
+                                    <td>
                                         <select
                                             className={styles.statusSelect}
                                             value={eventItem.firstTicketStatus || ""}
@@ -235,14 +367,24 @@ export default function MyEvents() {
                                             ))}
                                         </select>
                                     </td>
-                                    <td className={`text-center ${styles.actionButtons}`}>
-                                        <Button text="Edit" link={`/dashboard/edit-event/${eventItem.id}`} variant="outline" />
-                                        <Button
-                                            text={deletingEventId === eventItem.id ? "Deleting..." : "Delete"}
-                                            variant="outline"
-                                            onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)}
-                                            disabled={deletingEventId === eventItem.id}
-                                        />
+                                    <td>
+                                        <div className={styles.actionButtons}>
+                                            <button
+                                                className={styles.iconButton}
+                                                onClick={() => handleOpenEdit(eventItem)}
+                                                title="Edit event"
+                                            >
+                                                ✏️
+                                            </button>
+                                            <button
+                                                className={styles.iconButton}
+                                                onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)}
+                                                disabled={deletingEventId === eventItem.id}
+                                                title="Delete event"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -250,6 +392,39 @@ export default function MyEvents() {
                     </tbody>
                 </table>
             </div>
+
+            <Modal
+                isOpen={editModalOpen}
+                onClose={handleCloseEdit}
+                title="Edit Event"
+                confirmText={isSubmitting ? "Updating Event..." : "Update Event"}
+                onConfirm={handleSaveEdit}
+            >
+                <div className={styles.editModal}>
+                    <Input type="text" name="name" label="Event Name" onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })} value={editFormData.name || ''} />
+                    <Input type="text" name="description" label="Description" onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })} value={editFormData.description || ''} />
+                    <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEditFormData({ ...editFormData, venue: e.target.value })} value={editFormData.venue || ''}>
+                        <option value="" disabled aria-hidden="true">Select Venue</option>
+                        {venues.map((venue) => (
+                            <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
+                        ))}
+                    </Select>
+                    <Input type="text" name="address" label="Address" onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })} value={editFormData.address || ''} />
+                    <Input type="text" name="city" label="City" onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })} value={editFormData.city || ''} />
+                    <Input type="text" name="state" label="State" onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })} value={editFormData.state || ''} />
+                    <Input type="text" name="country" label="Country" onChange={(e) => setEditFormData({ ...editFormData, country: e.target.value })} value={editFormData.country || ''} />
+                    <Input type="datetime-local" name="eventDate" label="Event Date & Time" onChange={(e) => setEditFormData({ ...editFormData, eventDate: e.target.value })} value={typeof editFormData.eventDate === "string" ? editFormData.eventDate : ''} />
+                    <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEditFormData({ ...editFormData, eventEndDate: e.target.value })} value={typeof editFormData.eventEndDate === "string" ? editFormData.eventEndDate : ''} />
+                    <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEditFormData({ ...editFormData, basePrice: Number(e.target.value) })} value={editFormData.basePrice || ''} />
+                    <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEditFormData({ ...editFormData, imageUrl: e.target.value })} value={editFormData.imageUrl || ''} />
+                    <Select name="category" label="Category" theme="dark" onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value as IEvent['category'] })} value={editFormData.category || ''}>
+                        <option value="" disabled aria-hidden="true">Select Category</option>
+                        {Object.entries(EventCategory).map(([, value]) => (
+                            <option key={value} value={value}>{value}</option>
+                        ))}
+                    </Select>
+                </div>
+            </Modal>
         </div>
     );
 }

@@ -5,7 +5,12 @@ import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
 import styles from "./Events.module.css";
 import Button from "../../../components/ui/button/Button";
+import Modal from "../../../components/ui/modal/Modal";
 import { formatUnixDateTime } from "../../../utils/dateTime";
+import { defaultIEvent } from "../../../utils/defaults";
+import type { IEventForm, IVenueMap } from "../../../utils/interfaces";
+import { EventCategory } from "../../../utils/enums";
+import { toDateTimeLocalValue, toUnixSeconds } from "../../../utils/dateTime";
 import { apiFetch } from "../../../lib/apiFetch";
 import { usePageLoading } from "../../../contexts/loading/LoadingContext";
 
@@ -13,6 +18,11 @@ export default function Events() {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [statusUpdatingEventId, setStatusUpdatingEventId] = useState<number | null>(null);
   const [deletingEventId, setDeletingEventId] = useState<number | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
+  const [editFormData, setEditFormData] = useState<IEventForm>(defaultIEvent);
+  const [venues, setVenues] = useState<IVenueMap[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const trackPageLoading = usePageLoading();
   const [filters, setFilters] = useState({
     name: "",
@@ -44,6 +54,23 @@ export default function Events() {
 
     void trackPageLoading(fetchEventsPromise);
   }, [trackPageLoading]);
+
+  useLayoutEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const venueList = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+        setVenues(venueList);
+      } catch (error) {
+        console.error("Error fetching venues:", error);
+      }
+    };
+
+    void fetchVenues();
+  }, []);
 
 
   const handleStatusChange = async (eventId: number, newStatus: string) => {
@@ -102,6 +129,117 @@ export default function Events() {
       alert("Failed to delete event");
     } finally {
       setDeletingEventId(null);
+    }
+  };
+
+  const handleOpenEdit = (eventItem: IEvent) => {
+    setSelectedEvent(eventItem);
+    setEditFormData({
+      id: eventItem.id,
+      name: eventItem.name,
+      description: eventItem.description,
+      venue: eventItem.venue,
+      address: eventItem.address,
+      city: eventItem.city,
+      state: eventItem.state,
+      country: eventItem.country,
+      eventDate: toDateTimeLocalValue(eventItem.eventDate),
+      eventEndDate: toDateTimeLocalValue(eventItem.eventEndDate),
+      category: eventItem.category,
+      basePrice: eventItem.basePrice,
+      imageUrl: eventItem.imageUrl,
+      isFeatured: eventItem.isFeatured,
+    });
+    setEditModalOpen(true);
+  };
+
+  const handleCloseEdit = () => {
+    setEditModalOpen(false);
+    setSelectedEvent(null);
+    setEditFormData(defaultIEvent);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedEvent) return;
+
+    setIsSubmitting(true);
+    try {
+      const eventDateUnix = toUnixSeconds(editFormData.eventDate);
+      const eventEndDateUnix = toUnixSeconds(editFormData.eventEndDate);
+
+      if (eventDateUnix === null || eventEndDateUnix === null) {
+        throw new Error("Please provide valid event start and end date/time values.");
+      }
+
+      const payload = {
+        ...editFormData,
+        eventDate: eventDateUnix,
+        eventEndDate: eventEndDateUnix,
+      };
+
+      const eventResponse = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events/${selectedEvent.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!eventResponse.ok) {
+        const errorText = await eventResponse.text();
+        throw new Error(`Failed to update event: ${eventResponse.status} ${eventResponse.statusText} - ${errorText}`);
+      }
+
+      const updatedEvent = await eventResponse.json();
+      const updatedEventId = updatedEvent?.data?.id ?? updatedEvent?.id;
+
+      if (!updatedEventId) {
+        throw new Error("Event updated but no id returned by API");
+      }
+
+      const selectedVenue = venues
+        .filter((venue) => venue.venue === editFormData.venue)
+        .map((venue) => ({
+          section: venue.section,
+          row: venue.rows,
+          col: venue.cols,
+          rate: venue.rate,
+        }));
+
+      if (selectedVenue.length === 0) {
+        throw new Error("Failed to update tickets: no matching venue found for the event");
+      }
+
+      const ticketsResponse = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/originalTickets/bulk`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventId: updatedEventId,
+          eventBasePrice: editFormData.basePrice,
+          venue: selectedVenue,
+        }),
+      });
+
+      if (!ticketsResponse.ok) {
+        const errorText = await ticketsResponse.text();
+        throw new Error(`Failed to update tickets: ${ticketsResponse.status} ${ticketsResponse.statusText} - ${errorText}`);
+      }
+
+      setEvents((prev) => prev.map((event) => (
+        event.id === selectedEvent.id
+          ? {
+            ...event,
+            ...editFormData,
+            eventDate: eventDateUnix,
+            eventEndDate: eventEndDateUnix,
+          }
+          : event
+      )));
+
+      handleCloseEdit();
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert(error instanceof Error ? error.message : "Failed to update event");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -232,7 +370,13 @@ export default function Events() {
                   </td>
                   <td>
                     <div className={styles.actionButtons}>
-                      <a href={`/dashboard/edit-event/${eventItem.id}`} className={styles.iconButton} title="Edit event">✏️</a>
+                      <button
+                        className={styles.iconButton}
+                        onClick={() => handleOpenEdit(eventItem)}
+                        title="Edit event"
+                      >
+                        ✏️
+                      </button>
                       <button
                         className={styles.iconButton}
                         onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)}
@@ -249,6 +393,39 @@ export default function Events() {
           </tbody>
         </table>
       </div>
+
+      <Modal
+        isOpen={editModalOpen}
+        onClose={handleCloseEdit}
+        title="Edit Event"
+        confirmText={isSubmitting ? "Updating Event..." : "Update Event"}
+        onConfirm={handleSaveEdit}
+      >
+        <div className={styles.editModal}>
+          <Input type="text" name="name" label="Event Name" onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })} value={editFormData.name || ''} />
+          <Input type="text" name="description" label="Description" onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })} value={editFormData.description || ''} />
+          <Select name="venue" label="Venue" theme="dark" onChange={(e) => setEditFormData({ ...editFormData, venue: e.target.value })} value={editFormData.venue || ''}>
+            <option value="" disabled aria-hidden="true">Select Venue</option>
+            {venues.map((venue) => (
+              <option key={venue.venue} value={venue.venue}>{venue.venue} - {venue.rows * venue.cols} seats</option>
+            ))}
+          </Select>
+          <Input type="text" name="address" label="Address" onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })} value={editFormData.address || ''} />
+          <Input type="text" name="city" label="City" onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })} value={editFormData.city || ''} />
+          <Input type="text" name="state" label="State" onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })} value={editFormData.state || ''} />
+          <Input type="text" name="country" label="Country" onChange={(e) => setEditFormData({ ...editFormData, country: e.target.value })} value={editFormData.country || ''} />
+          <Input type="datetime-local" name="eventDate" label="Event Date & Time" onChange={(e) => setEditFormData({ ...editFormData, eventDate: e.target.value })} value={typeof editFormData.eventDate === "string" ? editFormData.eventDate : ''} />
+          <Input type="datetime-local" name="eventEndDate" label="Event End Date & Time" onChange={(e) => setEditFormData({ ...editFormData, eventEndDate: e.target.value })} value={typeof editFormData.eventEndDate === "string" ? editFormData.eventEndDate : ''} />
+          <Input type="number" name="basePrice" label="Base Price" min={0} step={0.01} onChange={(e) => setEditFormData({ ...editFormData, basePrice: Number(e.target.value) })} value={editFormData.basePrice || ''} />
+          <Input type="text" name="imageUrl" label="Image URL" onChange={(e) => setEditFormData({ ...editFormData, imageUrl: e.target.value })} value={editFormData.imageUrl || ''} />
+          <Select name="category" label="Category" theme="dark" onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value as IEvent['category'] })} value={editFormData.category || ''}>
+            <option value="" disabled aria-hidden="true">Select Category</option>
+            {Object.entries(EventCategory).map(([, value]) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </Select>
+        </div>
+      </Modal>
     </div>
   );
 }

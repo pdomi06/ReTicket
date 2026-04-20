@@ -1,4 +1,3 @@
-import { LuCalendar, LuMapPin, LuTag, LuTicket, LuBadgePercent, LuBanknote } from "react-icons/lu";
 import styles from "./SalesHistory.module.css";
 import Button from "../../../components/ui/button/Button";
 import { useEffect, useState } from "react";
@@ -60,7 +59,7 @@ const SalesHistory = () => {
     }, [trackPageLoading]);
 
     return (
-        <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
+        <div className={styles.ticketsContainer}>
             <div className={styles.headerSection}>
                 <h1>Sales History</h1>
                 <div>
@@ -101,44 +100,23 @@ const SalesHistory = () => {
                 </div>
             </section>
 
-            <div className={`table-responsive ${styles.tableWrapper}`}>
-                <table className={`table ${styles.table}`}>
+            <div className={styles.tableWrapper}>
+                <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th>
-                                <LuTag size={16} className="me-2" />
-                                Event
-                            </th>
-                            <th>
-                                <LuCalendar size={16} className="me-2" />
-                                Date
-                            </th>
-                            <th>
-                                <LuMapPin size={16} className="me-2" />
-                                Venue
-                            </th>
-                            <th>
-                                <LuTicket size={16} className="me-2" />
-                                Seat
-                            </th>
-                            <th className="text-center">
-                                <LuTag size={16} className="me-2" />
-                                Sale Price
-                            </th>
-                            <th className="text-center">
-                                <LuBadgePercent size={16} className="me-2" />
-                                Platform Fee
-                            </th>
-                            <th className="text-center">
-                                <LuBanknote size={16} className="me-2" />
-                                Net Earnings
-                            </th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Seat</th>
+                            <th>Sale Price</th>
+                            <th>Platform Fee</th>
+                            <th>Net Earnings</th>
                         </tr>
                     </thead>
                     <tbody>
                         {history.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="text-center py-4">
+                                <td colSpan={7} className={styles.emptyState}>
                                     No tickets found
                                 </td>
                             </tr>
@@ -149,9 +127,9 @@ const SalesHistory = () => {
                                     <td>{formatUnixDateTime(sale.eventDate)}</td>
                                     <td>{sale.venue}</td>
                                     <td>{`${sale.section} - Row ${sale.row} Seat ${sale.seat}`}</td>
-                                    <td className="text-center">{sale.salePrice} Ft</td>
-                                    <td className="text-center">{sale.platformFee} Ft</td>
-                                    <td className="text-center">{sale.salePrice - sale.platformFee} Ft</td>
+                                    <td>{sale.salePrice} Ft</td>
+                                    <td>{sale.platformFee} Ft</td>
+                                    <td>{sale.salePrice - sale.platformFee} Ft</td>
                                 </tr>
                             ))
                         )}
