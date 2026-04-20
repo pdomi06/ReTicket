@@ -1,5 +1,4 @@
 import { useLayoutEffect, useState } from "react";
-import { LuCalendar, LuMapPin, LuTag } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
 import { TicketStatus } from "../../../utils/enums";
 import Input from "../../../components/ui/input/Input";
@@ -126,7 +125,7 @@ export default function Events() {
   const uniqueCategories = [...new Set(events.map((e) => e.category))];
 
   return (
-    <div className={`container-fluid mt-4 ${styles.eventsContainer}`}>
+    <div className={styles.eventsContainer}>
       <div className={styles.headerSection}>
         <h1>Events</h1>
         <div>
@@ -135,8 +134,8 @@ export default function Events() {
       </div>
 
       <div className={styles.filtersSection}>
-        <div className={`row ${styles.filterGroup}`}>
-          <div className="col-2">
+        <div className={styles.filterGroup}>
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by event name"
@@ -147,7 +146,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by venue"
@@ -158,7 +157,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div className="col-2">
+          <div style={{ minWidth: '200px' }}>
             <Select
               label="All Categories"
               name="category"
@@ -176,7 +175,7 @@ export default function Events() {
             </Select>
           </div>
           {(filters.name || filters.venue || filters.category) && (
-            <div className="col-2">
+            <div>
               <Button text="Clear" onClick={handleClearFilters} variant="outline" />
             </div>
           )}
@@ -186,32 +185,23 @@ export default function Events() {
         </p>
       </div>
 
-      <div className={`table-responsive ${styles.tableWrapper}`}>
-        <table className={`table ${styles.table}`}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th>
-                <LuCalendar size={16} className="me-2" />
-                Event
-              </th>
-              <th>
-                <LuMapPin size={16} className="me-2" />
-                Venue
-              </th>
+              <th>Event</th>
+              <th>Venue</th>
               <th>Date</th>
-              <th className="text-center">Category</th>
-              <th>
-                <LuTag size={16} className="me-2" />
-                Base Price
-              </th>
-              <th className="text-center">Ticket Status</th>
-              <th className="text-center"></th>
+              <th>Category</th>
+              <th>Base Price</th>
+              <th>Ticket Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredEvents.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-4">
+                <td colSpan={7} className={styles.emptyState}>
                   {events.length === 0 ? "No events found" : "No events match your filters"}
                 </td>
               </tr>
@@ -221,11 +211,9 @@ export default function Events() {
                   <td>{eventItem.name}</td>
                   <td>{eventItem.venue}</td>
                   <td>{formatUnixDateTime(eventItem.eventDate)}</td>
-                  <td className="text-center">
-                    {eventItem.category}
-                  </td>
+                  <td>{eventItem.category}</td>
                   <td>{eventItem.basePrice} Ft</td>
-                  <td className="text-center">
+                  <td>
                     <select
                       className={styles.statusSelect}
                       value={eventItem.firstTicketStatus || ""}
@@ -242,9 +230,18 @@ export default function Events() {
                       ))}
                     </select>
                   </td>
-                  <td className={`text-center ${styles.actionButtons}`}>
-                    <Button text="Edit" link={`/dashboard/edit-event/${eventItem.id}`} variant="outline" />
-                    <Button text={deletingEventId === eventItem.id ? "Deleting..." : "Delete"} variant="outline" onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)} disabled={deletingEventId === eventItem.id} />
+                  <td>
+                    <div className={styles.actionButtons}>
+                      <a href={`/dashboard/edit-event/${eventItem.id}`} className={styles.iconButton} title="Edit event">✏️</a>
+                      <button
+                        className={styles.iconButton}
+                        onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)}
+                        disabled={deletingEventId === eventItem.id}
+                        title="Delete event"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
