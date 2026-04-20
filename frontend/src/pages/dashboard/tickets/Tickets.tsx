@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { LuCalendar, LuMapPin, LuTag, LuTicket } from "react-icons/lu";
 import type { IDashboardTicket } from "../../../utils/interfaces";
 import Input from "../../../components/ui/input/Input";
 import Select from "../../../components/ui/select/Select";
@@ -69,14 +68,14 @@ export default function Tickets() {
   const uniqueStatuses = [...new Set(tickets.map((t) => t.status))];
 
   return (
-    <div className={`container-fluid mt-4 ${styles.ticketsContainer}`}>
+    <div className={styles.ticketsContainer}>
       <div className={styles.headerSection}>
         <h1>Tickets</h1>
       </div>
 
       <div className={styles.filtersSection}>
         <div className={styles.filterGroup}>
-          <div>
+          <div style={{ minWidth: '150px' }}>
             <Input
               type="text"
               label="Filter by event"
@@ -87,7 +86,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div>
+          <div style={{ minWidth: '150px' }}>
             <Input
               type="date"
               label="Filter by date"
@@ -148,48 +147,24 @@ export default function Tickets() {
         </p>
       </div>
 
-      <div className={`table-responsive ${styles.tableWrapper}`}>
-        <table className={`table ${styles.table}`}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th>
-                <LuTag size={16} className="me-2" />
-                Event
-              </th>
-              <th>
-                <LuCalendar size={16} className="me-2" />
-                Date
-              </th>
-              <th>
-                <LuMapPin size={16} className="me-2" />
-                Venue
-              </th>
-              <th>
-                <LuTicket size={16} className="me-2" />
-                Section
-              </th>
-              <th className="text-center">
-                <LuTicket size={16} className="me-2" />
-                Rows
-              </th>
-              <th className="text-center">
-                <LuTicket size={16} className="me-2" />
-                Columns
-              </th>
-              <th className="text-center">
-                <LuTag size={16} className="me-2" />
-                Price
-              </th>
-              <th>
-                <LuCalendar size={16} className="me-2" />
-                Status
-              </th>
+              <th>Event</th>
+              <th>Date</th>
+              <th>Venue</th>
+              <th>Section</th>
+              <th>Row</th>
+              <th>Column</th>
+              <th>Price</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {filteredTickets.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-4">
+                <td colSpan={8} className={styles.emptyState}>
                   {tickets.length === 0 ? "No tickets found" : "No tickets match your filters"}
                 </td>
               </tr>
@@ -200,12 +175,8 @@ export default function Tickets() {
                   <td>{formatUnixDateTime(ticket.eventDate)}</td>
                   <td>{ticket.venue}</td>
                   <td>{ticket.section}</td>
-                  <td className="text-center">
-                    {ticket.row}
-                  </td>
-                  <td className="text-center">
-                    {ticket.seatNumber}
-                  </td>
+                  <td>{ticket.row}</td>
+                  <td>{ticket.seatNumber}</td>
                   <td>{ticket.price} Ft</td>
                   <td>
                     {String(ticket.status)}
