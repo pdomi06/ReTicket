@@ -86,9 +86,9 @@ class EventsController extends Controller implements HasMiddleware
     {
         $events = Event::with('originalTickets')
             ->orderByDesc('created_at')
-            ->paginate(self::SEARCH_LIMIT);
+            ->get();
 
-        $eventsData = $events->getCollection()->map(function ($event) {
+        $eventsData = $events->map(function ($event) {
             return array_merge(
                 $event->toArray(),
                 ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
@@ -98,12 +98,6 @@ class EventsController extends Controller implements HasMiddleware
         return response()->json([
             'success' => true,
             'data' => $eventsData,
-            'pagination' => [
-                'current_page' => $events->currentPage(),
-                'total_results' => $events->total(),
-                'total_pages' => $events->lastPage(),
-                'per_page' => $events->perPage(),
-            ]
         ], 200);
     }
 

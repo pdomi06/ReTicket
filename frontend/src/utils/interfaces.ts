@@ -202,6 +202,7 @@ export interface InputProps {
     theme?: 'light' | 'dark';
     size?: 'small' | 'medium' | 'large';
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 export interface TextareaProps {
