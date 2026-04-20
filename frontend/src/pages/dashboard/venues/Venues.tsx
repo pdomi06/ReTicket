@@ -1,141 +1,273 @@
-import { useEffect, useState } from "react";
-import type { IVenueMap } from "../../../utils/interfaces";
-import { LuMapPin, LuTrendingUp } from "react-icons/lu";
-import Input from "../../../components/ui/input/Input";
-import styles from "./Venues.module.css";
-import Button from "../../../components/ui/button/Button";
-import { apiFetch } from "../../../lib/apiFetch";
-import { usePageLoading } from "../../../contexts/loading/LoadingContext";
+import { useEffect, useState } from 'react';
+import { apiFetch } from '../../../lib/apiFetch';
+import { usePageLoading } from '../../../contexts/loading/LoadingContext';
+import Input from '../../../components/ui/input/Input';
+import Button from '../../../components/ui/button/Button';
+import Modal from '../../../components/ui/modal/Modal';
+import styles from './Venues.module.css';
 
-export default function Venues() {
-  const [venues, setVenues] = useState<IVenueMap[]>([]);
+interface Venue {
+  id: number;
+  venue: string;
+  section: string;
+  rows: number;
+  cols: number;
+  rate: number;
+}
+
+const Venues = () => {
   const trackPageLoading = usePageLoading();
+  const [allVenues, setAllVenues] = useState<Venue[]>([]);
+  const [filteredVenues, setFilteredVenues] = useState<Venue[]>([]);
+
   const [filters, setFilters] = useState({
-    venue: "",
-    section: "",
+    venue: '',
+    section: '',
+    minRate: '',
+    maxRate: '',
   });
+
+  const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState<Partial<Venue>>({});
+
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const fetchAllVenues = async () => {
+    trackPageLoading(
+      (async () => {
+        try {
+          const response = await apiFetch(`${VITE_API_BASE_URL}/venues`);
+          if (!response.ok) throw new Error('Failed to fetch venues');
+
+          const payload = (await response.json()) as Venue[];
+          setAllVenues(payload);
+        } catch (error) {
+          console.error('Error fetching venues:', error);
+        }
+      })()
+    );
+  };
 
   useEffect(() => {
-    async function fetchVenues() {
-      try {
-        const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`);
-        const data = await response.json();
-        setVenues(data);
-      } catch (error) {
-        console.error("Error fetching venues:", error);
-      }
+    fetchAllVenues();
+  }, []);
+
+  useEffect(() => {
+    let filtered = allVenues;
+
+    if (filters.venue) {
+      const query = filters.venue.toLowerCase();
+      filtered = filtered.filter((v) => v.venue.toLowerCase().includes(query));
     }
 
-    const fetchVenuesPromise = fetchVenues();
-    void trackPageLoading(fetchVenuesPromise);
-  }, [trackPageLoading]);
+    if (filters.section) {
+      const query = filters.section.toLowerCase();
+      filtered = filtered.filter((v) => v.section.toLowerCase().includes(query));
+    }
 
-  const filteredVenues = venues.filter((venue) => {
-    const venueMatch = venue.venue
-      .toLowerCase()
-      .includes(filters.venue.toLowerCase());
-    const sectionMatch = venue.section
-      .toLowerCase()
-      .includes(filters.section.toLowerCase());
+    if (filters.minRate) {
+      const min = parseFloat(filters.minRate);
+      filtered = filtered.filter((v) => v.rate >= min);
+    }
 
-    return venueMatch && sectionMatch;
-  });
+    if (filters.maxRate) {
+      const max = parseFloat(filters.maxRate);
+      filtered = filtered.filter((v) => v.rate <= max);
+    }
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
+    setFilteredVenues(filtered);
+  }, [allVenues, filters]);
 
   const handleClearFilters = () => {
-    setFilters({ venue: "", section: "" });
+    setFilters({
+      venue: '',
+      section: '',
+      minRate: '',
+      maxRate: '',
+    });
   };
 
+  const handleOpenEdit = (venue: Venue) => {
+    setSelectedVenue(venue);
+    setEditFormData({ ...venue });
+    setEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedVenue) return;
+
+    try {
+      const response = await apiFetch(`${VITE_API_BASE_URL}/venues/${selectedVenue.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (!response.ok) throw new Error('Failed to update venue');
+
+      const updatedVenues = allVenues.map((v) =>
+        v.id === selectedVenue.id ? { ...v, ...editFormData } : v
+      );
+      setAllVenues(updatedVenues);
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error('Error updating venue:', error);
+    }
+  };
+
+  const handleDeleteVenue = async () => {
+    if (!selectedVenue) return;
+
+    try {
+      const response = await apiFetch(`${VITE_API_BASE_URL}/venues/${selectedVenue.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete venue');
+
+      const updatedVenues = allVenues.filter((v) => v.id !== selectedVenue.id);
+      setAllVenues(updatedVenues);
+    } catch (error) {
+      console.error('Error deleting venue:', error);
+    }
+  };
+
+  const isFiltered = filters.venue || filters.section || filters.minRate || filters.maxRate;
+
   return (
-    <div className={`container-fluid mt-4 ${styles.venuesContainer}`}>
+    <div className={styles.venuesContainer}>
       <div className={styles.headerSection}>
         <h1>Venues</h1>
-        <div>
-          <Button text="+ Add Venue" link="/dashboard/create-venue" />
-        </div>
+        <div><Button text="+ Add Venue" link="/dashboard/create-venue" /></div>
       </div>
 
       <div className={styles.filtersSection}>
         <div className={styles.filterGroup}>
-          <div>
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by venue"
               name="venue"
               value={filters.venue}
-              onChange={handleFilterChange}
+              onChange={(e) => setFilters({ ...filters, venue: e.target.value })}
               theme="dark"
-              size="medium" />
+              size="medium"
+            />
           </div>
-          <div>
+
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by section"
               name="section"
               value={filters.section}
-              onChange={handleFilterChange}
+              onChange={(e) => setFilters({ ...filters, section: e.target.value })}
               theme="dark"
               size="medium"
             />
           </div>
-          {(filters.venue || filters.section) && (
+
+          <div style={{ minWidth: '150px' }}>
+            <Input
+              type="number"
+              label="Min Rate"
+              name="minRate"
+              value={filters.minRate}
+              onChange={(e) => setFilters({ ...filters, minRate: e.target.value })}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+
+          <div style={{ minWidth: '150px' }}>
+            <Input
+              type="number"
+              label="Max Rate"
+              name="maxRate"
+              value={filters.maxRate}
+              onChange={(e) => setFilters({ ...filters, maxRate: e.target.value })}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+
+          {isFiltered && (
             <div>
-              <Button text="Clear" onClick={handleClearFilters} variant="outline" />
+              <Button
+                text="Clear"
+                variant="outline"
+                onClick={handleClearFilters}
+              />
             </div>
           )}
         </div>
         <p className={styles.resultCount}>
-          Showing {filteredVenues.length} of {venues.length} venues
+          Showing {filteredVenues.length} of {allVenues.length} venues
         </p>
       </div>
 
-      <div className={`table-responsive ${styles.tableWrapper}`}>
-        <table className={`table ${styles.table}`}>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
           <thead>
             <tr>
-              <th>
-                <LuMapPin size={16} className="me-2" />
-                Venue
-              </th>
+              <th>Venue</th>
               <th>Section</th>
-              <th className="text-center">Rows</th>
-              <th className="text-center">Cols</th>
-              <th>
-                <LuTrendingUp size={16} className="me-2" />
-                Rate
-              </th>
-              <th></th>
+              <th>Capacity</th>
+              <th>Rate</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredVenues.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-4">
-                  {venues.length === 0
-                    ? "No venues found"
-                    : "No venues match your filters"}
+                <td colSpan={5} className={styles.emptyState}>
+                  {allVenues.length === 0 ? 'No venues found' : 'No venues match your filters'}
                 </td>
               </tr>
             ) : (
               filteredVenues.map((venue) => (
                 <tr key={venue.id}>
-                  <td>{venue.venue}</td>
-                  <td>{venue.section}</td>
-                  <td className="text-center">{venue.rows}</td>
-                  <td className="text-center">{venue.cols}</td>
-                  <td>{venue.rate}x</td>
-                  <td className={`text-center ${styles.actionButtons}`}>
-                    <div className="row">
-                      <div className="col-2">
-                        <Button text="Edit" link={`/dashboard/edit-venue/${venue.id}`} variant="outline" />
+                  <td>
+                    <div className={styles.venueCell}>
+                      <div>
+                        <div className={styles.venueName}>{venue.venue}</div>
+                        <div className={styles.venueId}>#{venue.id}</div>
                       </div>
-                      <div className="col-2">
-                        <Button text="Delete" link={`/dashboard/delete-venue/${venue.id}`} variant="outline" />
-                      </div>
+                    </div>
+                  </td>
+                  <td className={styles.sectionCell}>
+                    {venue.section}
+                  </td>
+                  <td className={styles.capacityCell}>
+                    <div className={styles.capacityValue}>
+                      {venue.rows} × {venue.cols}
+                    </div>
+                    <div className={styles.capacityTotal}>
+                      = {venue.rows * venue.cols} seats
+                    </div>
+                  </td>
+                  <td className={styles.rateCell} style={{
+                    color: venue.rate > 1 ? 'var(--color-accent)' : 'var(--color-text-muted)'
+                  }}>
+                    {venue.rate}x
+                  </td>
+                  <td>
+                    <div className={styles.actionButtons}>
+                      <button
+                        className={styles.iconButton}
+                        onClick={() => handleOpenEdit(venue)}
+                        title="Edit venue"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        className={styles.iconButton}
+                        onClick={() => { setSelectedVenue(venue); handleDeleteVenue(); }}
+                        title="Delete venue"
+                      >
+                        ✕
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -144,6 +276,68 @@ export default function Venues() {
           </tbody>
         </table>
       </div>
+
+      <Modal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        title="Edit Venue"
+        size="md"
+        confirmText="Save Changes"
+        cancelText="Cancel"
+        onConfirm={handleSaveEdit}
+      >
+        {selectedVenue && (
+          <div className={styles.editModal}>
+            <Input
+              type="text"
+              label="Venue Name"
+              name="venue"
+              value={editFormData.venue || ''}
+              onChange={(e) => setEditFormData({ ...editFormData, venue: e.target.value })}
+              theme="dark"
+              size="medium"
+            />
+            <Input
+              type="text"
+              label="Section"
+              name="section"
+              value={editFormData.section || ''}
+              onChange={(e) => setEditFormData({ ...editFormData, section: e.target.value })}
+              theme="dark"
+              size="medium"
+            />
+            <Input
+              type="number"
+              label="Rows"
+              name="rows"
+              value={editFormData.rows || ''}
+              onChange={(e) => setEditFormData({ ...editFormData, rows: parseInt(e.target.value) })}
+              theme="dark"
+              size="medium"
+            />
+            <Input
+              type="number"
+              label="Cols"
+              name="cols"
+              value={editFormData.cols || ''}
+              onChange={(e) => setEditFormData({ ...editFormData, cols: parseInt(e.target.value) })}
+              theme="dark"
+              size="medium"
+            />
+            <Input
+              type="number"
+              label="Rate Multiplier"
+              name="rate"
+              value={editFormData.rate || ''}
+              onChange={(e) => setEditFormData({ ...editFormData, rate: parseFloat(e.target.value) })}
+              theme="dark"
+              size="medium"
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
-}
+};
+
+export default Venues;
