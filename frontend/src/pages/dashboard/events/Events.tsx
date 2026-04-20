@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState, type ChangeEvent, type MouseEvent } from "react";
 import type { IEvent } from "../../../utils/interfaces";
 import { TicketStatus } from "../../../utils/enums";
 import Input from "../../../components/ui/input/Input";
@@ -30,8 +30,8 @@ export default function Events() {
     category: "",
   });
 
-  useLayoutEffect(() => {
-    const fetchEventsPromise = (async () => {
+  const fetchInitialData = useCallback(async () => {
+    const fetchEvents = async () => {
       try {
         const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/events`);
         const data = await response.json();
@@ -50,12 +50,8 @@ export default function Events() {
       } catch (error) {
         console.error("Error fetching events:", error);
       }
-    })();
+    };
 
-    void trackPageLoading(fetchEventsPromise);
-  }, [trackPageLoading]);
-
-  useLayoutEffect(() => {
     const fetchVenues = async () => {
       try {
         const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/venues`);
@@ -69,11 +65,15 @@ export default function Events() {
       }
     };
 
-    void fetchVenues();
+    await Promise.all([fetchEvents(), fetchVenues()]);
   }, []);
 
+  useLayoutEffect(() => {
+    const initialDataPromise = fetchInitialData();
+    void trackPageLoading(initialDataPromise);
+  }, [fetchInitialData, trackPageLoading]);
 
-  const handleStatusChange = async (eventId: number, newStatus: string) => {
+  const handleStatusChange = useCallback(async (eventId: number, newStatus: string) => {
     setStatusUpdatingEventId(eventId);
     try {
       const response = await apiFetch(
@@ -100,9 +100,9 @@ export default function Events() {
     } finally {
       setStatusUpdatingEventId(null);
     }
-  };
+  }, []);
 
-  const handleDeleteEvent = async (eventId: number, eventName: string) => {
+  const handleDeleteEvent = useCallback(async (eventId: number, eventName: string) => {
     if (!confirm(`Are you sure you want to delete the event "${eventName}"?`)) {
       return;
     }
@@ -130,9 +130,9 @@ export default function Events() {
     } finally {
       setDeletingEventId(null);
     }
-  };
+  }, []);
 
-  const handleOpenEdit = (eventItem: IEvent) => {
+  const handleOpenEdit = useCallback((eventItem: IEvent) => {
     setSelectedEvent(eventItem);
     setEditFormData({
       id: eventItem.id,
@@ -151,13 +151,13 @@ export default function Events() {
       isFeatured: eventItem.isFeatured,
     });
     setEditModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseEdit = () => {
+  const handleCloseEdit = useCallback(() => {
     setEditModalOpen(false);
     setSelectedEvent(null);
     setEditFormData(defaultIEvent);
-  };
+  }, []);
 
   const handleSaveEdit = async () => {
     if (!selectedEvent) return;
@@ -260,6 +260,55 @@ export default function Events() {
     setFilters({ name: "", venue: "", category: "" });
   };
 
+  const eventsById = useMemo(() => {
+    const eventsMap = new Map<number, IEvent>();
+    filteredEvents.forEach((eventItem) => {
+      eventsMap.set(eventItem.id, eventItem);
+    });
+    return eventsMap;
+  }, [filteredEvents]);
+
+  const getEventIdFromControl = useCallback((control: HTMLButtonElement | HTMLSelectElement) => {
+    const eventId = Number(control.dataset.eventId);
+    return Number.isFinite(eventId) ? eventId : null;
+  }, []);
+
+  const getEventFromControl = useCallback((control: HTMLButtonElement | HTMLSelectElement) => {
+    const eventId = getEventIdFromControl(control);
+    if (eventId === null) {
+      return null;
+    }
+
+    return eventsById.get(eventId) ?? null;
+  }, [eventsById, getEventIdFromControl]);
+
+  const handleStatusSelectChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    const eventId = getEventIdFromControl(event.currentTarget);
+    if (eventId === null) {
+      return;
+    }
+
+    void handleStatusChange(eventId, event.currentTarget.value);
+  }, [getEventIdFromControl, handleStatusChange]);
+
+  const handleOpenEditButtonClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const eventItem = getEventFromControl(event.currentTarget);
+    if (!eventItem) {
+      return;
+    }
+
+    handleOpenEdit(eventItem);
+  }, [getEventFromControl, handleOpenEdit]);
+
+  const handleDeleteButtonClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const eventItem = getEventFromControl(event.currentTarget);
+    if (!eventItem) {
+      return;
+    }
+
+    void handleDeleteEvent(eventItem.id, eventItem.name);
+  }, [getEventFromControl, handleDeleteEvent]);
+
   const uniqueCategories = [...new Set(events.map((e) => e.category))];
 
   return (
@@ -354,8 +403,9 @@ export default function Events() {
                   <td>
                     <select
                       className={styles.statusSelect}
+                      data-event-id={eventItem.id}
                       value={eventItem.firstTicketStatus || ""}
-                      onChange={(e) => handleStatusChange(eventItem.id, e.target.value)}
+                      onChange={handleStatusSelectChange}
                       disabled={statusUpdatingEventId === eventItem.id}
                     >
                       {!eventItem.firstTicketStatus && (
@@ -372,14 +422,16 @@ export default function Events() {
                     <div className={styles.actionButtons}>
                       <button
                         className={styles.iconButton}
-                        onClick={() => handleOpenEdit(eventItem)}
+                        data-event-id={eventItem.id}
+                        onClick={handleOpenEditButtonClick}
                         title="Edit event"
                       >
                         ✏️
                       </button>
                       <button
                         className={styles.iconButton}
-                        onClick={() => handleDeleteEvent(eventItem.id, eventItem.name)}
+                        data-event-id={eventItem.id}
+                        onClick={handleDeleteButtonClick}
                         disabled={deletingEventId === eventItem.id}
                         title="Delete event"
                       >

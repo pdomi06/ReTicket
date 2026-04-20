@@ -21,7 +21,6 @@ const Cart = lazy(() => import("../pages/cart/Cart.tsx"));
 const Checkout = lazy(() => import("../pages/checkout/Checkout.tsx"));
 const Validate = lazy(() => import("../pages/validate/Validate.tsx"));
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard.tsx"));
-const DashboardOverview = lazy(() => import("../pages/dashboard/overview/Overview.tsx"));
 const DashboardCreateVenue = lazy(() => import("../pages/dashboard/create-venue/CreateVenue.tsx"));
 const DashboardCreateEvent = lazy(() => import("../pages/dashboard/create-event/CreateEvent.tsx"));
 const DashboardEditVenue = lazy(() => import("../pages/dashboard/edit-venue/EditVenue.tsx"));
@@ -67,7 +66,7 @@ export const routes: RouteObject[] = [
         path: "/dashboard",
         element: <RequireAuth><Dashboard /></RequireAuth>,
         children: [
-          { index: true, element: <DashboardOverview /> },
+          { index: true, element: <DashboardMyTickets /> },
           { path: "create-venue", element: <DashboardCreateVenue /> },
           { path: "create-event", element: <DashboardCreateEvent /> },
           { path: "edit-venue/:id", element: <DashboardEditVenue /> },

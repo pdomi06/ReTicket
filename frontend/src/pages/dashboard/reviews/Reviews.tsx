@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type MouseEvent } from "react";
 import type { IReview } from "../../../utils/interfaces";
 import styles from "./Reviews.module.css";
 import { apiFetch } from "../../../lib/apiFetch";
@@ -74,7 +74,7 @@ const Reviews = () => {
         setFilters({ query: "", visibility: "", rating: "" });
     };
 
-    const handleVisibilityUpdate = async (reviewId: number, isVisible: boolean) => {
+    const handleVisibilityUpdate = useCallback(async (reviewId: number, isVisible: boolean) => {
         setUpdatingId(reviewId);
         try {
             const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}`, {
@@ -99,7 +99,33 @@ const Reviews = () => {
         } finally {
             setUpdatingId(null);
         }
-    };
+    }, []);
+
+    const reviewsById = useMemo(() => {
+        const reviewsMap = new Map<number, IReview>();
+        filteredReviews.forEach((review) => {
+            reviewsMap.set(review.id, review);
+        });
+        return reviewsMap;
+    }, [filteredReviews]);
+
+    const handleVisibilityToggleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const reviewId = Number(event.currentTarget.dataset.reviewId);
+        if (!Number.isFinite(reviewId)) {
+            return;
+        }
+
+        void handleVisibilityUpdate(reviewId, event.currentTarget.checked);
+    }, [handleVisibilityUpdate]);
+
+    const handleViewReviewClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const reviewId = Number(event.currentTarget.dataset.reviewId);
+        if (!Number.isFinite(reviewId)) {
+            return;
+        }
+
+        setSelectedReview(reviewsById.get(reviewId) ?? null);
+    }, [reviewsById]);
 
     return (
         <div className={styles.reviewsContainer}>
@@ -195,8 +221,9 @@ const Reviews = () => {
                                             <input
                                                 type="checkbox"
                                                 className={styles.toggle}
+                                                data-review-id={review.id}
                                                 checked={review.isVisible}
-                                                onChange={(e) => handleVisibilityUpdate(review.id, e.target.checked)}
+                                                onChange={handleVisibilityToggleChange}
                                                 aria-label={`Set visibility for review ${review.id}`}
                                                 disabled={updatingId === review.id}
                                             />
@@ -210,7 +237,8 @@ const Reviews = () => {
                                         <div className={styles.actionButtons}>
                                             <button
                                                 className={styles.iconButton}
-                                                onClick={() => setSelectedReview(review)}
+                                                data-review-id={review.id}
+                                                onClick={handleViewReviewClick}
                                                 title="View message"
                                             >
                                                 👁

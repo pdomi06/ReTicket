@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { LuChevronDown, LuSearch, LuStar, LuX } from "react-icons/lu";
 import type { IEvent } from "../../../utils/interfaces";
 import styles from "./WebsiteManagement.module.css";
@@ -117,7 +117,7 @@ const WebsiteManagement = () => {
         [selectorEvents, selectedEventId],
     );
 
-    const handleFeaturedToggle = async (eventId: number, isFeatured: boolean) => {
+    const handleFeaturedToggle = useCallback(async (eventId: number, isFeatured: boolean) => {
         setUpdatingEventId(eventId);
 
         try {
@@ -149,13 +149,13 @@ const WebsiteManagement = () => {
         } finally {
             setUpdatingEventId(null);
         }
-    };
+    }, [selectedEvent]);
 
-    const handleSelectEvent = (event: IEvent) => {
+    const handleSelectEvent = useCallback((event: IEvent) => {
         setSelectedEventId(event.id);
         setSearchQuery(event.name);
         setIsSelectorOpen(false);
-    };
+    }, []);
 
     const handleAddFeaturedEvent = async () => {
         if (!selectedEvent || selectedEvent.isFeatured) return;
@@ -170,6 +170,37 @@ const WebsiteManagement = () => {
         setSelectedEventId(null);
         setIsSelectorOpen(false);
     };
+
+    const selectorEventsById = useMemo(() => {
+        const eventsMap = new Map<number, IEvent>();
+        selectorEvents.forEach((event) => {
+            eventsMap.set(event.id, event);
+        });
+        return eventsMap;
+    }, [selectorEvents]);
+
+    const handleRemoveFeaturedClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const eventId = Number(event.currentTarget.dataset.eventId);
+        if (!Number.isFinite(eventId)) {
+            return;
+        }
+
+        void handleFeaturedToggle(eventId, false);
+    }, [handleFeaturedToggle]);
+
+    const handleSelectorItemClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const eventId = Number(event.currentTarget.dataset.eventId);
+        if (!Number.isFinite(eventId)) {
+            return;
+        }
+
+        const selectedSelectorEvent = selectorEventsById.get(eventId);
+        if (!selectedSelectorEvent) {
+            return;
+        }
+
+        handleSelectEvent(selectedSelectorEvent);
+    }, [handleSelectEvent, selectorEventsById]);
 
     const renderEventThumb = (event: IEvent): ReactNode => {
         if (event.imageUrl) {
@@ -260,7 +291,8 @@ const WebsiteManagement = () => {
                                                 <button
                                                     type="button"
                                                     className={styles.removeButton}
-                                                    onClick={() => handleFeaturedToggle(event.id, false)}
+                                                    data-event-id={event.id}
+                                                    onClick={handleRemoveFeaturedClick}
                                                     disabled={updatingEventId === event.id}
                                                     aria-label={`Remove ${event.name} from featured events`}
                                                     title="Remove"
@@ -327,7 +359,8 @@ const WebsiteManagement = () => {
                                         key={event.id}
                                         type="button"
                                         className={`${styles.selectorItem} ${selectedEventId === event.id ? styles.selectorItemSelected : ""}`}
-                                        onClick={() => handleSelectEvent(event)}
+                                        data-event-id={event.id}
+                                        onClick={handleSelectorItemClick}
                                     >
                                         {renderEventThumb(event)}
                                         <div className={styles.selectorCopy}>

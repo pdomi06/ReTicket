@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from "react";
 import styles from "./Orders.module.css";
 import { apiFetch } from "../../../lib/apiFetch";
 import { usePageLoading } from "../../../contexts/loading/LoadingContext";
@@ -136,6 +136,14 @@ const Orders = () => {
         [orders]
     );
 
+    const ordersById = useMemo(() => {
+        const ordersMap = new Map<number, Order>();
+        filteredOrders.forEach((order) => {
+            ordersMap.set(order.id, order);
+        });
+        return ordersMap;
+    }, [filteredOrders]);
+
     const isFiltered = filters.query || filters.status || filters.paymentStatus || filters.deliveryStatus;
 
     const handleClearFilters = () => {
@@ -146,6 +154,15 @@ const Orders = () => {
             deliveryStatus: "",
         });
     };
+
+    const handleOrderRowClick = useCallback((event: MouseEvent<HTMLTableRowElement>) => {
+        const orderId = Number(event.currentTarget.dataset.orderId);
+        if (!Number.isFinite(orderId)) {
+            return;
+        }
+
+        setSelectedOrder(ordersById.get(orderId) ?? null);
+    }, [ordersById]);
 
     return (
         <div className={styles.ordersContainer}>
@@ -257,7 +274,8 @@ const Orders = () => {
                                 <tr
                                     key={order.id}
                                     className={styles.clickableRow}
-                                    onClick={() => setSelectedOrder(order)}
+                                    data-order-id={order.id}
+                                    onClick={handleOrderRowClick}
                                     title="Click to view order items"
                                 >
                                     <td className={styles.mono}>#{order.orderNumber}</td>

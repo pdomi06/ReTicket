@@ -7,7 +7,7 @@ import SearchBar from './searchbar/Searchbar.tsx';
 import Carouser from './carouser/Carouser.tsx';
 import Reviews from './reviews/Reviews.tsx';
 import type { IEvent } from '../../utils/interfaces.ts';
-import React from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { usePageLoading } from '../../contexts/loading/LoadingContext.tsx';
 
@@ -15,12 +15,12 @@ const Welcome = () => {
     const { pathname } = useLocation();
     const trackPageLoading = usePageLoading();
     const isRootPath = pathname === "/";
-    const [mostPopularEvents, setMostPopularEvents] = React.useState<IEvent[]>([]);
-    const [lastMinuteDeals, setLastMinuteDeals] = React.useState<IEvent[]>([]);
-    const [upcomingEvents, setUpcomingEvents] = React.useState<IEvent[]>([]);
-    const [featuredEvents, setFeaturedEvents] = React.useState<IEvent[]>([]);
+    const [mostPopularEvents, setMostPopularEvents] = useState<IEvent[]>([]);
+    const [lastMinuteDeals, setLastMinuteDeals] = useState<IEvent[]>([]);
+    const [upcomingEvents, setUpcomingEvents] = useState<IEvent[]>([]);
+    const [featuredEvents, setFeaturedEvents] = useState<IEvent[]>([]);
 
-    const fetchEvents = React.useCallback(async () => {
+    const fetchEvents = useCallback(async () => {
         console.log('Fetching events for welcome page...');
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events/landing`);
@@ -37,7 +37,7 @@ const Welcome = () => {
         }
     }, []);
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         const fetchEventsPromise = fetchEvents();
 
         if (isRootPath) {

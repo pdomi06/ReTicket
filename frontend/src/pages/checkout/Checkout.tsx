@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../components/ui/button/Button";
 import Notification from "../../components/ui/notification/Notification";
@@ -13,24 +13,34 @@ const Checkout = () => {
     const navigate = useNavigate();
     const { clearCart } = useContext(CartContext);
     const handledSessionRef = useRef<string | null>(null);
+    const sessionId = searchParams.get("session_id");
+    const stateParam = (searchParams.get("state") || "").toLowerCase();
+    const isSuccessful = stateParam === "succesful" || stateParam === "successful";
 
-    const [status, setStatus] = useState<CheckoutState>("idle");
+    const cachedProcessedSession = useMemo(() => {
+        if (!sessionId) {
+            return null;
+        }
+
+        const alreadyProcessed = sessionStorage.getItem(`checkout_processed_${sessionId}`) === "1";
+        if (!alreadyProcessed) {
+            return null;
+        }
+
+        return {
+            email: sessionStorage.getItem(`checkout_email_${sessionId}`) || "",
+            status: isSuccessful ? "success" as const : "error" as const,
+            showSuccessModal: isSuccessful,
+        };
+    }, [isSuccessful, sessionId]);
+
+    const [status, setStatus] = useState<CheckoutState>(() => cachedProcessedSession?.status ?? "idle");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [deliveryEmail, setDeliveryEmail] = useState<string>("");
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [deliveryEmail, setDeliveryEmail] = useState<string>(() => cachedProcessedSession?.email ?? "");
+    const [showSuccessModal, setShowSuccessModal] = useState(() => cachedProcessedSession?.showSuccessModal ?? false);
 
     useEffect(() => {
-        const sessionId = searchParams.get("session_id");
-        const stateParam = (searchParams.get("state") || "").toLowerCase();
-        const isSuccessful = stateParam === "succesful" || stateParam === "successful";
-
         if (!sessionId) {
-            if (stateParam && !isSuccessful) {
-                setStatus("error");
-                setErrorMessage("Payment was not successful. Please try checkout again.");
-            } else {
-                setStatus("idle");
-            }
             return;
         }
 
@@ -42,10 +52,6 @@ const Checkout = () => {
 
         const alreadyProcessed = sessionStorage.getItem(`checkout_processed_${sessionId}`);
         if (alreadyProcessed === "1") {
-            const cachedEmail = sessionStorage.getItem(`checkout_email_${sessionId}`) || "";
-            setDeliveryEmail(cachedEmail);
-            setStatus(isSuccessful ? "success" : "error");
-            setShowSuccessModal(isSuccessful);
             return;
         }
 
@@ -133,7 +139,14 @@ const Checkout = () => {
                 error instanceof Error ? error.message : "Failed to finalize payment details."
             );
         });
-    }, [searchParams, clearCart]);
+    }, [clearCart, isSuccessful, sessionId]);
+
+    const fallbackStatus: CheckoutState = stateParam && !isSuccessful ? "error" : "idle";
+    const fallbackErrorMessage = stateParam && !isSuccessful
+        ? "Payment was not successful. Please try checkout again."
+        : null;
+    const effectiveStatus = sessionId ? status : fallbackStatus;
+    const effectiveErrorMessage = sessionId ? errorMessage : fallbackErrorMessage;
 
     const successMessage = deliveryEmail
         ? `Your order has been paid successfully. Tickets were sent via email to ${deliveryEmail}.`
@@ -145,22 +158,22 @@ const Checkout = () => {
                 <div className={`card p-4 p-md-5 ${styles.checkoutCard}`}>
                     <h1 className={styles.title}>Checkout</h1>
 
-                    {status === "processing" && (
+                    {effectiveStatus === "processing" && (
                         <p className={styles.subtitle}>Finalizing your payment and order details...</p>
                     )}
 
-                    {status === "success" && (
+                    {effectiveStatus === "success" && (
                         <Notification
                             text="Payment confirmed. Your order has been finalized."
                             variant="success"
                         />
                     )}
 
-                    {status === "error" && errorMessage && (
-                        <Notification text={errorMessage} variant="error" />
+                    {effectiveStatus === "error" && effectiveErrorMessage && (
+                        <Notification text={effectiveErrorMessage} variant="error" />
                     )}
 
-                    {status === "idle" && (
+                    {effectiveStatus === "idle" && (
                         <p className={styles.subtitle}>
                             Complete your purchase from cart to continue checkout.
                         </p>

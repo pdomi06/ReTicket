@@ -1,13 +1,13 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Cards from '../../../components/ui/cards/Cards';
 import type { IReview } from '../../../utils/interfaces';
 import style from './Reviews.module.css';
 
 
 const Reviews = () => {
-	const [reviews, setReviews] = React.useState<IReview[]>([]);
+	const [reviews, setReviews] = useState<IReview[]>([]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		fetchReviews().then(setReviews);
 	}, []);
 	async function fetchReviews() {

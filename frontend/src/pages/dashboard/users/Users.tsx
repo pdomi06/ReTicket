@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { apiFetch } from '../../../lib/apiFetch';
 import { usePageLoading } from '../../../contexts/loading/LoadingContext';
 import Input from '../../../components/ui/input/Input';
@@ -59,7 +59,7 @@ const Users = () => {
 
     const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-    const fetchAllUsers = async () => {
+    const fetchAllUsers = useCallback(async () => {
         trackPageLoading(
             (async () => {
                 try {
@@ -73,11 +73,11 @@ const Users = () => {
                 }
             })()
         );
-    };
+    }, [VITE_API_BASE_URL, trackPageLoading]);
 
     useEffect(() => {
-        fetchAllUsers();
-    }, []);
+        void fetchAllUsers();
+    }, [fetchAllUsers]);
 
     useEffect(() => {
         let filtered = allUsers;
@@ -125,18 +125,18 @@ const Users = () => {
         setSearchQuery('');
     };
 
-    const handleOpenDetail = (user: User) => {
+    const handleOpenDetail = useCallback((user: User) => {
         setSelectedUser(user);
         setDetailModalOpen(true);
         setActionMenuUser(null);
-    };
+    }, []);
 
-    const handleOpenEdit = (user: User) => {
+    const handleOpenEdit = useCallback((user: User) => {
         setSelectedUser(user);
         setEditFormData({ ...user });
         setEditModalOpen(true);
         setActionMenuUser(null);
-    };
+    }, []);
 
     const handleSaveEdit = async () => {
         if (!selectedUser) return;
@@ -161,12 +161,12 @@ const Users = () => {
         }
     };
 
-    const handleToggleActive = async () => {
-        if (!selectedUser) return;
+    const handleToggleActive = useCallback(async (targetUser: User | null = selectedUser) => {
+        if (!targetUser) return;
 
         try {
-            const newActiveStatus = !selectedUser.isActive;
-            const response = await apiFetch(`${VITE_API_BASE_URL}/users/${selectedUser.id}`, {
+            const newActiveStatus = !targetUser.isActive;
+            const response = await apiFetch(`${VITE_API_BASE_URL}/users/${targetUser.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ isActive: newActiveStatus }),
@@ -174,33 +174,110 @@ const Users = () => {
 
             if (!response.ok) throw new Error('Failed to toggle user status');
 
-            const updatedUsers = allUsers.map((u) =>
-                u.id === selectedUser.id ? { ...u, isActive: newActiveStatus } : u
-            );
-            setAllUsers(updatedUsers);
+            setAllUsers((previousUsers) => previousUsers.map((user) =>
+                user.id === targetUser.id ? { ...user, isActive: newActiveStatus } : user
+            ));
             setActionMenuUser(null);
         } catch (error) {
             console.error('Error toggling user status:', error);
         }
-    };
+    }, [VITE_API_BASE_URL, selectedUser]);
 
-    const handleDeleteUser = async () => {
-        if (!selectedUser) return;
+    const handleDeleteUser = useCallback(async (targetUser: User | null = selectedUser) => {
+        if (!targetUser) return;
 
         try {
-            const response = await apiFetch(`${VITE_API_BASE_URL}/users/${selectedUser.id}`, {
+            const response = await apiFetch(`${VITE_API_BASE_URL}/users/${targetUser.id}`, {
                 method: 'DELETE',
             });
 
             if (!response.ok) throw new Error('Failed to delete user');
 
-            const updatedUsers = allUsers.filter((u) => u.id !== selectedUser.id);
-            setAllUsers(updatedUsers);
+            setAllUsers((previousUsers) => previousUsers.filter((user) => user.id !== targetUser.id));
             setActionMenuUser(null);
         } catch (error) {
             console.error('Error deleting user:', error);
         }
-    };
+    }, [VITE_API_BASE_URL, selectedUser]);
+
+    const usersById = useMemo(() => {
+        const usersMap = new Map<number, User>();
+        filteredUsers.forEach((user) => {
+            usersMap.set(user.id, user);
+        });
+        return usersMap;
+    }, [filteredUsers]);
+
+    const getUserIdFromButton = useCallback((button: HTMLButtonElement) => {
+        const userId = Number(button.dataset.userId);
+        return Number.isFinite(userId) ? userId : null;
+    }, []);
+
+    const getUserFromButton = useCallback((button: HTMLButtonElement) => {
+        const userId = getUserIdFromButton(button);
+        if (userId === null) {
+            return null;
+        }
+
+        return usersById.get(userId) ?? null;
+    }, [getUserIdFromButton, usersById]);
+
+    const handleOpenDetailClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const user = getUserFromButton(event.currentTarget);
+        if (!user) {
+            return;
+        }
+
+        handleOpenDetail(user);
+    }, [getUserFromButton, handleOpenDetail]);
+
+    const handleOpenEditClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const user = getUserFromButton(event.currentTarget);
+        if (!user) {
+            return;
+        }
+
+        handleOpenEdit(user);
+    }, [getUserFromButton, handleOpenEdit]);
+
+    const handleActionMenuToggleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const userId = getUserIdFromButton(event.currentTarget);
+        if (userId === null) {
+            return;
+        }
+
+        setActionMenuUser((currentUserId) => (currentUserId === userId ? null : userId));
+    }, [getUserIdFromButton]);
+
+    const handleToggleActiveMenuClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const user = getUserFromButton(event.currentTarget);
+        if (!user) {
+            return;
+        }
+
+        setSelectedUser(user);
+        void handleToggleActive(user);
+    }, [getUserFromButton, handleToggleActive]);
+
+    const handleChangeRoleMenuClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const user = getUserFromButton(event.currentTarget);
+        if (!user) {
+            return;
+        }
+
+        setSelectedUser(user);
+        handleOpenEdit(user);
+    }, [getUserFromButton, handleOpenEdit]);
+
+    const handleDeleteUserMenuClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        const user = getUserFromButton(event.currentTarget);
+        if (!user) {
+            return;
+        }
+
+        setSelectedUser(user);
+        void handleDeleteUser(user);
+    }, [getUserFromButton, handleDeleteUser]);
 
     return (
         <div className={styles.usersContainer}>
@@ -380,14 +457,16 @@ const Users = () => {
                                     <div className={styles.actionButtons}>
                                         <button
                                             className={styles.iconButton}
-                                            onClick={() => handleOpenDetail(user)}
+                                            data-user-id={user.id}
+                                            onClick={handleOpenDetailClick}
                                             title="View user details"
                                         >
                                             👁️
                                         </button>
                                         <button
                                             className={styles.iconButton}
-                                            onClick={() => handleOpenEdit(user)}
+                                            data-user-id={user.id}
+                                            onClick={handleOpenEditClick}
                                             title="Edit user"
                                         >
                                             ✏️
@@ -395,22 +474,24 @@ const Users = () => {
                                         <div className={styles.dropdownContainer}>
                                             <button
                                                 className={styles.iconButton}
-                                                onClick={() => setActionMenuUser(actionMenuUser === user.id ? null : user.id)}
+                                                data-user-id={user.id}
+                                                onClick={handleActionMenuToggleClick}
                                                 title="More actions"
                                             >
                                                 ⋯
                                             </button>
                                             {actionMenuUser === user.id && (
                                                 <div className={styles.dropdown}>
-                                                    <button onClick={() => { setSelectedUser(user); handleToggleActive(); }}>
+                                                    <button data-user-id={user.id} onClick={handleToggleActiveMenuClick}>
                                                         {user.isActive ? 'Suspend' : 'Activate'}
                                                     </button>
-                                                    <button onClick={() => { setSelectedUser(user); handleOpenEdit(user); }}>
+                                                    <button data-user-id={user.id} onClick={handleChangeRoleMenuClick}>
                                                         Change Role
                                                     </button>
                                                     <button
                                                         className={styles.danger}
-                                                        onClick={() => { setSelectedUser(user); handleDeleteUser(); }}
+                                                        data-user-id={user.id}
+                                                        onClick={handleDeleteUserMenuClick}
                                                     >
                                                         Delete User
                                                     </button>

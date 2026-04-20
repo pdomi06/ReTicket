@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { apiFetch } from '../../../lib/apiFetch';
 import { usePageLoading } from '../../../contexts/loading/LoadingContext';
 import Input from '../../../components/ui/input/Input';
@@ -33,7 +33,7 @@ const Venues = () => {
 
   const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const fetchAllVenues = async () => {
+  const fetchAllVenues = useCallback(async () => {
     trackPageLoading(
       (async () => {
         try {
@@ -47,11 +47,11 @@ const Venues = () => {
         }
       })()
     );
-  };
+  }, [VITE_API_BASE_URL, trackPageLoading]);
 
   useEffect(() => {
-    fetchAllVenues();
-  }, []);
+    void fetchAllVenues();
+  }, [fetchAllVenues]);
 
   useEffect(() => {
     let filtered = allVenues;
@@ -88,11 +88,11 @@ const Venues = () => {
     });
   };
 
-  const handleOpenEdit = (venue: Venue) => {
+  const handleOpenEdit = useCallback((venue: Venue) => {
     setSelectedVenue(venue);
     setEditFormData({ ...venue });
     setEditModalOpen(true);
-  };
+  }, []);
 
   const handleSaveEdit = async () => {
     if (!selectedVenue) return;
@@ -116,22 +116,62 @@ const Venues = () => {
     }
   };
 
-  const handleDeleteVenue = async () => {
-    if (!selectedVenue) return;
+  const handleDeleteVenue = useCallback(async (targetVenue: Venue | null = selectedVenue) => {
+    if (!targetVenue) return;
 
     try {
-      const response = await apiFetch(`${VITE_API_BASE_URL}/venues/${selectedVenue.id}`, {
+      const response = await apiFetch(`${VITE_API_BASE_URL}/venues/${targetVenue.id}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) throw new Error('Failed to delete venue');
 
-      const updatedVenues = allVenues.filter((v) => v.id !== selectedVenue.id);
-      setAllVenues(updatedVenues);
+      setAllVenues((previousVenues) => previousVenues.filter((venue) => venue.id !== targetVenue.id));
     } catch (error) {
       console.error('Error deleting venue:', error);
     }
-  };
+  }, [VITE_API_BASE_URL, selectedVenue]);
+
+  const venuesById = useMemo(() => {
+    const venuesMap = new Map<number, Venue>();
+    filteredVenues.forEach((venue) => {
+      venuesMap.set(venue.id, venue);
+    });
+    return venuesMap;
+  }, [filteredVenues]);
+
+  const getVenueIdFromButton = useCallback((button: HTMLButtonElement) => {
+    const venueId = Number(button.dataset.venueId);
+    return Number.isFinite(venueId) ? venueId : null;
+  }, []);
+
+  const getVenueFromButton = useCallback((button: HTMLButtonElement) => {
+    const venueId = getVenueIdFromButton(button);
+    if (venueId === null) {
+      return null;
+    }
+
+    return venuesById.get(venueId) ?? null;
+  }, [getVenueIdFromButton, venuesById]);
+
+  const handleOpenEditClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const venue = getVenueFromButton(event.currentTarget);
+    if (!venue) {
+      return;
+    }
+
+    handleOpenEdit(venue);
+  }, [getVenueFromButton, handleOpenEdit]);
+
+  const handleDeleteVenueClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const venue = getVenueFromButton(event.currentTarget);
+    if (!venue) {
+      return;
+    }
+
+    setSelectedVenue(venue);
+    void handleDeleteVenue(venue);
+  }, [getVenueFromButton, handleDeleteVenue]);
 
   const isFiltered = filters.venue || filters.section || filters.minRate || filters.maxRate;
 
@@ -256,14 +296,16 @@ const Venues = () => {
                     <div className={styles.actionButtons}>
                       <button
                         className={styles.iconButton}
-                        onClick={() => handleOpenEdit(venue)}
+                        data-venue-id={venue.id}
+                        onClick={handleOpenEditClick}
                         title="Edit venue"
                       >
                         ✏️
                       </button>
                       <button
                         className={styles.iconButton}
-                        onClick={() => { setSelectedVenue(venue); handleDeleteVenue(); }}
+                        data-venue-id={venue.id}
+                        onClick={handleDeleteVenueClick}
                         title="Delete venue"
                       >
                         ✕

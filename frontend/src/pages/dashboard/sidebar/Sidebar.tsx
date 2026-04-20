@@ -1,11 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { LuLayoutDashboard, LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuEllipsis, LuUsers, LuShoppingCart, LuStar, LuMonitor, LuHistory } from "react-icons/lu";
+import { LuTicket, LuCalendar, LuTrendingUp, LuMapPin, LuEllipsis, LuUsers, LuShoppingCart, LuStar, LuMonitor, LuHistory } from "react-icons/lu";
 import style from "./Sidebar.module.css";
 import { useAuth } from "../../../contexts/auth/useAuth";
 
-const NAV_ITEMS = [
-    { label: "Overview", icon: LuLayoutDashboard, link: "/dashboard" },
-];
 
 const VENDOR_ITEMS = [
     { label: "My Tickets", icon: LuTicket, link: "/dashboard/list-tickets" },
@@ -50,12 +47,6 @@ const Sidebar = () => {
                 <span className={style.brandName}>ReTicket</span>
             </div>
             <nav className={style.nav}>
-                {NAV_ITEMS.map(({ label, icon: Icon, link }) => (
-                    <NavLink key={link} to={link} end className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`}>
-                        <Icon className={style.icon} />
-                        <span>{label}</span>
-                    </NavLink>
-                ))}
                 {showVendorSection && (
                     <>
                         <div className={style.sectionLabel}>VENDOR</div>
