@@ -30,7 +30,12 @@ class ReviewsController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $reviews = Review::where('isVisible', true)->get();
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            $reviews = Review::orderByDesc('created_at')->get();
+            return response()->json($reviews, 200);
+        }
+
+        $reviews = Review::where('isVisible', true)->orderByDesc('created_at')->get();
         return response()->json($reviews, 200);
     }
 
