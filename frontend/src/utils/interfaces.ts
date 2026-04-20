@@ -6,7 +6,6 @@ import {
   type PaymentStatus,
   type DeliveryStatus,
   type PayoutStatus,
-  type ProfileVisibility,
 } from "./enums";
 
 // Database Table Interfaces
@@ -24,35 +23,6 @@ export interface IUser {
   created_at: string;
   updated_at: string;
   lastLogin: string | null;
-}
-
-export interface IEmailVerify {
-  id: number;
-  userId: number;
-  token: string;
-  expiresAt: string;
-  verifiedAt: string;
-  created_at: string;
-  updated_at: string | null;
-}
-
-export interface IPasswordReset {
-  id: number;
-  userId: number;
-  token: string;
-  expiresAt: string;
-  verifiedAt: string;
-  created_at: string;
-  updated_at: string | null;
-}
-
-export interface IUserSettings {
-  userId: number;
-  emailNotification: boolean;
-  smsNotification: boolean;
-  profileVisibility: typeof ProfileVisibility[keyof typeof ProfileVisibility];
-  created_at: string;
-  updated_at: string;
 }
 
 export interface IEvent {

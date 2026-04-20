@@ -18,6 +18,9 @@
     --color-accent-border-soft: rgba(232, 160, 32, 0.15);
     --color-accent-border: rgba(232, 160, 32, 0.25);
     --color-accent-border-strong: rgba(232, 160, 32, 0.45);
+    --color-accent-warm: #f5a800;
+    --color-accent-warm-border: rgba(221, 152, 0, 0.55);
+    --color-accent-warm-surface: rgba(245, 168, 0, 0.12);
     --color-accent-gradient: linear-gradient(135deg, #e8a020, #f5c96a);
 
     /* ── Text ── */
@@ -26,6 +29,8 @@
     --color-text-muted: #666666;
     --color-text-disabled: #444444;
     --color-text-on-accent: #0f0f0f;
+    --color-text-high-emphasis: rgba(255, 255, 255, 0.95);
+    --color-toggle-thumb: #ffffff;
 
     /* ── Semantic: Success ── */
     --color-success: #22c55e;
@@ -57,6 +62,12 @@
     --color-dark-overlay: rgba(0, 0, 0, 0.9);
     --color-modal-overlay: rgba(0, 0, 0, 0.7);
     --color-tooltip-bg: #2a2a2a;
+    --color-carousel-caption-bg: rgba(15, 18, 24, 0.42);
+    --color-checkout-card-start: rgba(20, 20, 20, 0.94);
+    --color-checkout-card-end: rgba(34, 34, 34, 0.9);
+    --color-balance-card-start: rgba(24, 24, 24, 0.98);
+    --color-balance-card-end: rgba(17, 17, 17, 0.98);
+    --color-balance-stat-surface: rgba(10, 10, 10, 0.45);
 
     /* ── Highlighter ── */
     --color-highlighter: #ff6b35;
@@ -71,6 +82,8 @@
 
     /* ── Shadows ── */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-xs: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.15);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
     --shadow-accent-focus: 0 0 0 2px rgba(232, 160, 32, 0.25);

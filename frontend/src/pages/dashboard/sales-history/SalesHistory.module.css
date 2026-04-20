@@ -3,7 +3,7 @@
 }
 
 .balanceCard {
-    background: linear-gradient(180deg, rgba(24, 24, 24, 0.98) 0%, rgba(17, 17, 17, 0.98) 100%);
+    background: linear-gradient(180deg, var(--color-balance-card-start) 0%, var(--color-balance-card-end) 100%);
     border: 1px solid var(--color-border-strong);
     border-radius: 1rem;
     box-shadow: var(--shadow-md);
@@ -45,10 +45,10 @@
 .balanceBadge {
     display: inline-flex;
     align-items: center;
-    border: 1px solid rgba(221, 152, 0, 0.55);
+    border: 1px solid var(--color-accent-warm-border);
     border-radius: 999px;
-    color: #f5a800;
-    background-color: rgba(245, 168, 0, 0.12);
+    color: var(--color-accent-warm);
+    background-color: var(--color-accent-warm-surface);
     font-size: 0.9rem;
     font-weight: 700;
     padding: 0.35rem 0.7rem;
@@ -74,7 +74,7 @@
 }
 
 .balanceStat {
-    background-color: rgba(10, 10, 10, 0.45);
+    background-color: var(--color-balance-stat-surface);
     border-radius: 0.85rem;
     border: 1px solid var(--color-border-subtle);
     padding: 0.9rem 1rem;

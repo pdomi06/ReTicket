@@ -217,14 +217,7 @@ class TicketForSaleController extends Controller implements HasMiddleware
         $email = $request->validated()['email'];
         $orderId = $request->validated()['orderId'];
         $ticketIds = $request->validated()['tickets'];
-        $paymentIntentId = $request->input('paymentIntentId');
-
-        if (!is_string($paymentIntentId) || $paymentIntentId === '') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Payment reference is required.',
-            ], 422);
-        }
+        $paymentIntentId = $request->validated()['paymentIntentId'];
 
         foreach ($ticketIds as $ticketId) {
             $ticketForSale = TicketForSale::find($ticketId);

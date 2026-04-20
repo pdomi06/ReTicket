@@ -27,10 +27,12 @@ return new class extends Migration
             $table->enum('category', ["cultural", "music", "sport"]);
             $table->decimal('basePrice', 10, 2);
             $table->text('imageUrl');
-            $table->boolean('isFeatured')->default(false);
+            $table->boolean('isFeatured')->default(false)->index();
             $table->unsignedBigInteger('views')->default(0);
-            $table->foreignId('createdBy')->constrained('users');
+            $table->foreignId('createdBy')->constrained('users')->index();
             $table->timestamps();
+
+            $table->index('created_at');
         });
 
         Schema::enableForeignKeyConstraints();

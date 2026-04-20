@@ -17,7 +17,7 @@
 }
 
 .carousel-caption {
-    background: rgba(15, 18, 24, 0.42);
+    background: var(--color-carousel-caption-bg);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-radius: 0.75rem;

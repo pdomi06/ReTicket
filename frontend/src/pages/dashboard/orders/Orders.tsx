@@ -172,7 +172,7 @@ const Orders = () => {
 
             <div className={styles.filtersSection}>
                 <div className={styles.filterGroup}>
-                    <div style={{ minWidth: "220px" }}>
+                    <div className={styles.searchField}>
                         <Input
                             type="text"
                             label="Search order/email/intent"
@@ -184,7 +184,7 @@ const Orders = () => {
                         />
                     </div>
 
-                    <div style={{ minWidth: "180px" }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="All Status"
                             name="status"
@@ -200,7 +200,7 @@ const Orders = () => {
                         </Select>
                     </div>
 
-                    <div style={{ minWidth: "180px" }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="All Payment"
                             name="paymentStatus"
@@ -216,7 +216,7 @@ const Orders = () => {
                         </Select>
                     </div>
 
-                    <div style={{ minWidth: "180px" }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="All Delivery"
                             name="deliveryStatus"

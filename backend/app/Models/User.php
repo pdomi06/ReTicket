@@ -30,14 +30,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'email',
-        'role',
         'passwordHash',
         'name',
         'phone',
         'isVerified',
-        'isActive',
         'isOnline',
-        'kycStatus',
         'created_at',
         'updated_at',
         'lastLogin',
@@ -52,6 +49,10 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'passwordHash',
         'remember_token',
+        'balance',
+        'phone',
+        'kycStatus',
+        'isActive'
     ];
 
     /**

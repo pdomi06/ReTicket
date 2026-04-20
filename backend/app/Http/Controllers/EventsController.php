@@ -47,23 +47,15 @@ class EventsController extends Controller implements HasMiddleware
             ->limit(4)
             ->get();
 
-        $events = Event::query()
+        $upcomingEvents = Event::query()
             ->where('eventDate', '>=', $nowTimestamp)
+            ->whereHas('originalTickets', function($query) {
+                $query->where('status', 'pre-release');
+            })
             ->orderBy('eventDate')
+            ->limit(6)
             ->get();
 
-        $upcomingEvents = [];
-
-        foreach ($events as $event) {
-            if ($event->originalTickets()->where('status', 'pre-release')->exists()) {
-                $upcomingEvents[] = $event;
-            }
-        }
-
-        $upcomingEvents = collect($upcomingEvents)
-            ->sortBy('eventDate')
-            ->take(6)
-            ->values();
         $featuredEvents = Event::query()
             ->where('isFeatured', true)
             ->where('eventDate', '>=', $nowTimestamp)
@@ -103,20 +95,21 @@ class EventsController extends Controller implements HasMiddleware
 
     public function myEvents(Request $request)
     {
-        $events = Event::with('originalTickets')
+        $paginator = Event::with('originalTickets')
             ->where('createdBy', $request->user()->id)
             ->orderByDesc('created_at')
-            ->get()
-            ->map(function ($event) {
-                return array_merge(
-                    $event->toArray(),
-                    ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
-                );
-            });
+            ->paginate(15);
+
+        $paginator->getCollection()->transform(function ($event) {
+            return array_merge(
+                $event->toArray(),
+                ['firstTicketStatus' => $event->originalTickets->first()?->status ?? null]
+            );
+        });
 
         return response()->json([
             'success' => true,
-            'data' => $events,
+            'data' => $paginator,
         ], 200);
     }
 

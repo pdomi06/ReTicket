@@ -15,9 +15,9 @@ return new class extends Migration
 
         Schema::create('active_tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
+            $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade')->index();
             $table->string('ticketListingId')->unique();
-            $table->foreignId('orderId')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('orderId')->constrained('orders')->onDelete('cascade')->index();
             $table->boolean('isValidated')->default(false);
             $table->dateTime('validatedAt')->nullable();
         });

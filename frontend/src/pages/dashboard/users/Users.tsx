@@ -287,7 +287,7 @@ const Users = () => {
 
             <div className={styles.filtersSection}>
                 <div className={styles.filterGroup}>
-                    <div style={{ minWidth: '250px' }}>
+                    <div className={styles.searchField}>
                         <Input
                             type="text"
                             label="Search by name or email..."
@@ -299,7 +299,7 @@ const Users = () => {
                         />
                     </div>
 
-                    <div style={{ minWidth: '200px' }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="Role"
                             name="role"
@@ -316,7 +316,7 @@ const Users = () => {
                         </Select>
                     </div>
 
-                    <div style={{ minWidth: '200px' }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="KYC Status"
                             name="kycStatus"
@@ -333,7 +333,7 @@ const Users = () => {
                         </Select>
                     </div>
 
-                    <div style={{ minWidth: '200px' }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="Account Status"
                             name="accountStatus"
@@ -349,7 +349,7 @@ const Users = () => {
                         </Select>
                     </div>
 
-                    <div style={{ minWidth: '200px' }}>
+                    <div className={styles.filterField}>
                         <Select
                             label="Verification"
                             name="verification"
@@ -514,8 +514,11 @@ const Users = () => {
                 confirmText="Edit User"
                 cancelText="Close"
                 onConfirm={() => {
+                    if (!selectedUser) {
+                        return;
+                    }
                     setDetailModalOpen(false);
-                    handleOpenEdit(selectedUser!);
+                    handleOpenEdit(selectedUser);
                 }}
             >
                 {selectedUser && (

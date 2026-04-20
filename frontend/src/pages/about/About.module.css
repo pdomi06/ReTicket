@@ -33,7 +33,7 @@
   font-weight: 900;
   color: var(--color-text);
   line-height: 1.1;
-  background: linear-gradient(135deg, var(--color-accent) 0%, #f5c96a 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-scrollbar-hover-start) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -281,7 +281,7 @@
 
 .missionBody {
   font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-high-emphasis);
   line-height: 1.8;
   margin: 0;
 }
@@ -370,7 +370,7 @@
 .ctaTagline {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--color-accent) 0%, #f5c96a 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-scrollbar-hover-start) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -399,7 +399,7 @@
 }
 
 .ctaPrimary {
-  background: linear-gradient(135deg, var(--color-accent) 0%, #f0b030 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
   color: var(--color-text-on-accent);
   box-shadow: var(--shadow-accent-button);
 }

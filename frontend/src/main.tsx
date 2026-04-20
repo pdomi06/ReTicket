@@ -3,9 +3,15 @@ import { BrowserRouter } from 'react-router';
 import App from './app/App';
 import './styles/global.css';
 import { AuthProvider } from './contexts/auth/AuthContext';
-import { LoadingProvider } from './contexts/loading/LoadingContext';
+import { LoadingProvider } from './contexts/loading/LoadingProvider';
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  throw new Error('Root element not found');
+}
+
+createRoot(rootElement).render(
   <LoadingProvider>
     <AuthProvider>
       <BrowserRouter>

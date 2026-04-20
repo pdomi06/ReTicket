@@ -147,7 +147,7 @@ const Reviews = () => {
                         />
                     </div>
 
-                    <div style={{ minWidth: "170px" }}>
+                    <div className={styles.visibilityField}>
                         <Select
                             label="All Visibility"
                             name="visibility"
@@ -162,7 +162,7 @@ const Reviews = () => {
                         </Select>
                     </div>
 
-                    <div style={{ minWidth: "140px" }}>
+                    <div className={styles.ratingField}>
                         <Select
                             label="All Ratings"
                             name="rating"

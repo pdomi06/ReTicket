@@ -20,12 +20,14 @@ return new class extends Migration
             $table->text('phone');
             $table->integer('balance')->default(0);
             $table->boolean('isVerified')->default(false);
-            $table->boolean('isActive')->default(true);
+            $table->boolean('isActive')->default(true)->index();
             $table->boolean('isOnline')->default(false);
-            $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending");
+            $table->enum('kycStatus', ["pending", "rejected", "approved"])->default("pending")->index();
             $table->timestamps();
             $table->dateTime('lastLogin')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+
+            $table->index('created_at');
         });
     }
 

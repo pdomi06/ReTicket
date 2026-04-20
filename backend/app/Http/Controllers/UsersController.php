@@ -137,7 +137,7 @@ class UsersController extends Controller implements HasMiddleware
             'isVerified' => 'sometimes|boolean',
         ]);
 
-        $user->update($validated);
+        $user->forceFill($validated)->save();
 
         return response()->json([
             'success' => true,

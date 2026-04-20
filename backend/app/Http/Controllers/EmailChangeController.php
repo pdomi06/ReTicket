@@ -67,16 +67,19 @@ class EmailChangeController extends Controller implements HasMiddleware
 
         $oldEmail = $user->email;
 
-        DB::transaction(function () use ($user, $newEmail, $oldEmail): void {
-            $user->email = $newEmail;
-            if (!$user->markEmailAsVerified()) {
-                throw new \RuntimeException('Failed to update user verification state.');
-            }
+        try {
+            DB::transaction(function () use ($user, $newEmail, $oldEmail): void {
+                $user->email = $newEmail;
+                if (!$user->markEmailAsVerified()) {
+                    throw new \RuntimeException('Failed to update email verification.');
+                }
 
-            Order::where('buyerEmail', $oldEmail)->update(['buyerEmail' => $newEmail]);
-            Order::where('deliveryEmail', $oldEmail)->update(['deliveryEmail' => $newEmail]);
-        });
-
-        return response()->json(['message' => 'Email successfully changed.'], 200);
+                Order::where('buyerEmail', $oldEmail)->update(['buyerEmail' => $newEmail]);
+                Order::where('deliveryEmail', $oldEmail)->update(['deliveryEmail' => $newEmail]);
+            });
+            return response()->json(['message' => 'Email successfully changed.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while changing your email address.'], 500);
+        }
     }
 }

@@ -32,6 +32,10 @@
     margin-bottom: 0.5rem;
 }
 
+.compactField {
+    min-width: 150px;
+}
+
 .resultCount {
     margin: 0.75rem 0 0 0;
     color: var(--color-text-muted);
