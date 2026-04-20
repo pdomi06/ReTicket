@@ -61,25 +61,60 @@ const WebsiteManagement = () => {
         [events],
     );
 
+    const selectorEvents = useMemo(() => {
+        const groupedByName = new Map<string, IEvent>();
+
+        const sortedEvents = [...allEvents].sort((left, right) => {
+            const nameComparison = left.name.localeCompare(right.name);
+            if (nameComparison !== 0) return nameComparison;
+
+            const featuredComparison = Number(left.isFeatured) - Number(right.isFeatured);
+            if (featuredComparison !== 0) return featuredComparison;
+
+            return left.eventDate - right.eventDate || left.id - right.id;
+        });
+
+        sortedEvents.forEach((event) => {
+            const nameKey = event.name.trim().toLowerCase();
+            const currentEvent = groupedByName.get(nameKey);
+
+            if (!currentEvent) {
+                groupedByName.set(nameKey, event);
+                return;
+            }
+
+            if (currentEvent.isFeatured && !event.isFeatured) {
+                groupedByName.set(nameKey, event);
+                return;
+            }
+
+            if (currentEvent.isFeatured === event.isFeatured && event.eventDate < currentEvent.eventDate) {
+                groupedByName.set(nameKey, event);
+            }
+        });
+
+        return Array.from(groupedByName.values());
+    }, [allEvents]);
+
     const availableToFeature = useMemo(
-        () => allEvents.filter((event) => !event.isFeatured),
-        [allEvents],
+        () => selectorEvents.filter((event) => !event.isFeatured),
+        [selectorEvents],
     );
 
     const filteredAvailableEvents = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
 
-        return allEvents.filter((event) => {
+        return selectorEvents.filter((event) => {
             if (!query) return true;
 
             return [event.name, event.venue, event.city, event.country, event.category]
                 .some((value) => String(value ?? "").toLowerCase().includes(query));
         });
-    }, [allEvents, searchQuery]);
+    }, [selectorEvents, searchQuery]);
 
     const selectedEvent = useMemo(
-        () => allEvents.find((event) => event.id === selectedEventId) ?? null,
-        [allEvents, selectedEventId],
+        () => selectorEvents.find((event) => event.id === selectedEventId) ?? null,
+        [selectorEvents, selectedEventId],
     );
 
     const handleFeaturedToggle = async (eventId: number, isFeatured: boolean) => {
