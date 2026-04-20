@@ -16,6 +16,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketForSaleController;
 use App\Http\Controllers\TicketHistoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\UserSettingsController;
 use App\Http\Controllers\VenueMapController;
 use App\Models\User;
@@ -60,6 +61,11 @@ Route::post('orders/checkOut', [StripeController::class, 'checkOut']);
 Route::apiResource('ticketForSale', TicketForSaleController::class);
 Route::apiResource('user', UserController::class);
 
+// Admin users endpoints
+Route::get('users/all', [UsersController::class, 'allUsers'])->middleware('auth:sanctum');
+Route::get('users/{user}', [UsersController::class, 'show'])->middleware('auth:sanctum');
+Route::put('users/{user}', [UsersController::class, 'update'])->middleware('auth:sanctum');
+Route::delete('users/{user}', [UsersController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
     $user = User::find($id);
