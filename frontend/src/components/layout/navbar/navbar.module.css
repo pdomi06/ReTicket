@@ -70,3 +70,21 @@
     box-shadow: var(--shadow-accent-button);
     transform: translateY(-1px);
 }
+
+@media (max-width: 768px) {
+    .brand span {
+        display: none;
+    }
+
+    .links {
+        gap: 4px;
+    }
+
+    .navbar-about,
+    .navbar-vendor {
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+}
