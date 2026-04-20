@@ -26,7 +26,7 @@ class TicketHistoryController extends Controller implements HasMiddleware
     public function index()
     {
         $this->authorize('viewAny', TicketHistory::class);
-        $ticket_histories = TicketHistory::all();
+        $ticket_histories = TicketHistory::orderByDesc('id')->get();
         return response()->json($ticket_histories, 200);
     }
 
