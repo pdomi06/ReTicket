@@ -21,11 +21,11 @@ const ADMIN_ITEMS = [
     { label: "Venues", icon: LuMapPin, link: "/dashboard/venues" },
     { label: "Events", icon: LuCalendar, link: "/dashboard/events" },
     { label: "Tickets", icon: LuTicket, link: "/dashboard/tickets" },
+    { label: "Ticket History", icon: LuHistory, link: "/dashboard/history" },
     { label: "Users", icon: LuUsers, link: "/dashboard/users" },
     { label: "Orders", icon: LuShoppingCart, link: "/dashboard/orders" },
     { label: "Reviews", icon: LuStar, link: "/dashboard/reviews" },
     { label: "Website Management", icon: LuMonitor, link: "/dashboard/website" },
-    { label: "Ticket History", icon: LuHistory, link: "/dashboard/history" },
 ];
 
 const Sidebar = () => {
