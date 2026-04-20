@@ -1,3 +1,24 @@
+.browsePage {
+    padding: 1.5rem 0.75rem;
+}
+
+.pageHeader {
+    margin-bottom: 1.5rem;
+}
+
+.pageHeader h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-secondary);
+    font-size: 1.8rem;
+}
+
+.pageHeader p {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
 .loadMoreContainer {
     margin-top: 1.75rem;
     display: flex;
@@ -31,4 +52,10 @@
     margin-top: 0.75rem;
     text-align: center;
     color: var(--color-danger);
+}
+
+@media (max-width: 767px) {
+    .browsePage {
+        padding: 1rem 0.5rem;
+    }
 }

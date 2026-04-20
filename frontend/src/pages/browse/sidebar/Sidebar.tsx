@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Button from '../../../components/ui/button/Button';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 import Select from '../../../components/ui/select/Select';
+import styles from './Sidebar.module.css';
 
 type SidebarProps = {
     isLoading?: boolean;
@@ -57,7 +58,7 @@ const Sidebar = ({ isLoading = false }: SidebarProps) => {
     };
 
     return (
-        <div className="container-fluid mt-4">
+        <div className={styles.sidebarSticky}>
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <Input label="Event name" name="name" theme="light" size="large" value={searchForm.name} onChange={handleChange} />
                 <Input label="Venue" name="venue" theme="light" size="large" value={searchForm.venue} onChange={handleChange} />

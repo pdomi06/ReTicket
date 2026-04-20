@@ -5,7 +5,7 @@ import style from './Card.module.css';
 const Card = ({ title, description, imageUrl, buttonText, link, onClick }: CardProps) => {
     return (
         <div className="col">
-            <div className={`card ${style['card']}`} onClick={onClick}>
+            <div className={`card h-100 ${style['card']}`} onClick={onClick}>
                 {imageUrl && <img src={imageUrl} className={style['card-image']} alt={title} />}
                 <div className="card-body">
                     <h5 className="card-title">{title}</h5>

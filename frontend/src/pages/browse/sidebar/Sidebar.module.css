@@ -1,0 +1,10 @@
+.sidebarSticky {
+    position: sticky;
+    top: 1.5rem;
+}
+
+@media (max-width: 767px) {
+    .sidebarSticky {
+        position: static;
+    }
+}

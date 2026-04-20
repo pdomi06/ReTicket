@@ -1,6 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import type { IEvent } from "../../utils/interfaces";
-import Cards from "../../components/ui/cards/Cards";
 import Card from "../../components/ui/card/Card";
 import Sidebar from "./sidebar/Sidebar";
 import { useLocation, useSearchParams } from "react-router";
@@ -176,19 +175,25 @@ const Browse = () => {
     };
 
     return (
-        <main className="row container m-0 p-0">
-            <div className="sidebar col-lg-3">
-                <Sidebar isLoading={isLocalLoading} />
-            </div>
-            <div className="col-lg-9">
-                <div className="container my-5">
+        <main className={`container-fluid ${styles.browsePage}`}>
+            <header className={styles.pageHeader}>
+                <h1>Browse Events</h1>
+                <p>Showing {events.length} events</p>
+            </header>
+
+            <div className="row g-3">
+                <div className="col-12 col-md-3">
+                    <Sidebar isLoading={isLocalLoading} />
+                </div>
+
+                <div className="col-12 col-md-9">
                     {error ? (
                         <p>{error}</p>
                     ) : isLocalLoading ? (
                         <p>Loading events...</p>
                     ) : events.length > 0 ? (
                         <>
-                            <Cards maximumcols={3}>
+                            <div className="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3">
                                 {events.map((event) => (
                                     <Card
                                         key={event.id}
@@ -199,7 +204,7 @@ const Browse = () => {
                                         imageUrl={event.imageUrl}
                                     />
                                 ))}
-                            </Cards>
+                            </div>
 
                             {hasMore ? (
                                 <div className={styles.loadMoreContainer}>
