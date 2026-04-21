@@ -2,91 +2,65 @@
 
 ## Purpose
 
-Document how asynchronous processing is configured in the backend and what is currently implemented in application code.
+Document current async infrastructure and scheduler behavior in the backend.
 
-## Overview
+## Current status
 
-Queue infrastructure is configured, but application-level usage is minimal at this time.
+Queue and scheduling are active in code:
 
-- Default queue connection is `database` in [backend/config/queue.php](backend/config/queue.php#L16).
-- Example environment sets `QUEUE_CONNECTION=database` in [backend/.env.example](backend/.env.example#L39).
-- Queue tables (`jobs`, `job_batches`, `failed_jobs`) are present via migration in [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L14).
-- Local dev script runs a queue listener in [backend/composer.json](backend/composer.json#L50).
-- No custom job classes were found under `app/Jobs`, and no `dispatch(...)` usage was found under `backend/app/**`.
-- No scheduled tasks were found in app code; `routes/console.php` currently contains only the default `inspire` command.
+- Default queue connection: `database`
+- Queue worker is part of local `composer dev`
+- One scheduled command exists: `tickets:release-expired` every 10 minutes
+- Dedicated command class exists in `app/Console/Commands`
 
-## Key files and locations
+## Key files
 
-- Queue connection config: [backend/config/queue.php](backend/config/queue.php#L16)
-- Queue env default: [backend/.env.example](backend/.env.example#L39)
-- Queue tables migration: [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L14)
-- Dev process includes queue listener: [backend/composer.json](backend/composer.json#L50)
-- Console command file (no scheduler definitions): [backend/routes/console.php](backend/routes/console.php#L1)
+- Queue config: [backend/config/queue.php](backend/config/queue.php)
+- Queue tables migration: [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php)
+- Console scheduling: [backend/routes/console.php](backend/routes/console.php)
+- Reservation cleanup command: [backend/app/Console/Commands/ReleaseExpiredReservations.php](backend/app/Console/Commands/ReleaseExpiredReservations.php)
+- Dev runner script: [backend/composer.json](backend/composer.json)
 
-## Patterns and conventions
+## Real code examples
 
-### Queue driver and connections
+### Queue default
 
-- App default queue driver is environment-driven with fallback `database`: [backend/config/queue.php](backend/config/queue.php#L16).
-- Configured connection options include:
-  - `sync`: [backend/config/queue.php](backend/config/queue.php#L30)
-  - `database`: [backend/config/queue.php](backend/config/queue.php#L34)
-  - `beanstalkd`: [backend/config/queue.php](backend/config/queue.php#L43)
-  - `sqs`: [backend/config/queue.php](backend/config/queue.php#L51)
-  - `redis`: [backend/config/queue.php](backend/config/queue.php#L62)
-  - `deferred`, `background`, `failover`: [backend/config/queue.php](backend/config/queue.php#L70)
+```php
+'default' => env('QUEUE_CONNECTION', 'database'),
+```
 
-### Failed jobs and batches
+### Scheduler registration
 
-- Batch metadata table is configured as `job_batches`: [backend/config/queue.php](backend/config/queue.php#L93).
-- Failed jobs use `database-uuids` driver by default: [backend/config/queue.php](backend/config/queue.php#L110).
-- Migration creates:
-  - `jobs`: [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L14)
-  - `job_batches`: [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L24)
-  - `failed_jobs`: [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L37)
+```php
+app(ConsoleKernel::class)->addCommands([
+    ReleaseExpiredReservations::class,
+]);
 
-### Runtime pattern in this repository
+Schedule::command('tickets:release-expired')
+    ->everyTenMinutes()
+    ->withoutOverlapping();
+```
 
-- Queue worker is expected during local development via `php artisan queue:listen --tries=1` in the `composer dev` script: [backend/composer.json](backend/composer.json#L50).
-- No in-repo application jobs, queued listeners, or explicit dispatch calls were found in `backend/app/**` during documentation scan.
-- This means queue infrastructure is present but currently lightly used by project code.
+### Expired reservation release command
 
-### Scheduling status
+```php
+$count = TicketForSale::query()->expired()->update([
+    'inBasket' => false,
+    'reservationStartedAt' => null,
+]);
 
-- No scheduled tasks were found (no `Schedule::...` definitions in app code).
-- `routes/console.php` contains only the default `inspire` command in [backend/routes/console.php](backend/routes/console.php#L6).
-- Scheduler operation strategy for production is therefore TBD.
+$this->info("Released {$count} expired reservations.");
+```
 
-## Examples (real code)
+## Operational notes
 
-### Example 1: Default queue backend
-
-- Queue default: `env('QUEUE_CONNECTION', 'database')` in [backend/config/queue.php](backend/config/queue.php#L16).
-- Example env value: `QUEUE_CONNECTION=database` in [backend/.env.example](backend/.env.example#L39).
-
-### Example 2: Database queue schema
-
-- `jobs` table schema starts in [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L14).
-- `failed_jobs` table schema starts in [backend/database/migrations/0001_01_01_000002_create_jobs_table.php](backend/database/migrations/0001_01_01_000002_create_jobs_table.php#L37).
-
-### Example 3: Dev runner process
-
-- Dev script includes queue listener process in [backend/composer.json](backend/composer.json#L50).
-
-### Example 4: Scheduler currently absent
-
-- Console routes file defines only `inspire` command, no scheduled task definitions: [backend/routes/console.php](backend/routes/console.php#L6).
-
-## Gotchas and known issues
-
-- Queue is configured and worker command is part of local dev scripts, but no confirmed app-level job dispatches were found.
-- `queue:listen --tries=1` retries failed jobs only once in local dev script; this may differ from future production worker settings.
-- Because no scheduler tasks are defined, cron-driven automation is currently absent in repository code.
-- Production queue worker orchestration (Supervisor/systemd/container process model) is not documented in repo and remains TBD.
+- `composer dev` runs `php artisan queue:listen --tries=1`.
+- Queue tables are database-backed (`jobs`, `job_batches`, `failed_jobs`).
+- The command is scheduler-driven, not a queued job class.
+- No additional custom queued jobs are currently present under `app/Jobs`.
 
 ## Related docs
 
-- [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
+- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)
 - [zz-docs/environment-and-deployment.md](zz-docs/environment-and-deployment.md)
 - [zz-docs/local-development-setup.md](zz-docs/local-development-setup.md)
-- [zz-docs/troubleshooting.md](zz-docs/troubleshooting.md)

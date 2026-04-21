@@ -1,20 +1,22 @@
-# Local Development Setup
+# Local development setup
+
+## Purpose
+
+Set up and run backend and frontend locally with the same behavior assumptions used by the docs.
 
 ## Prerequisites
 
 - PHP 8.2+
 - Composer 2+
 - Node.js 20+ and npm
-- A relational database supported by Laravel config
+- A database supported by Laravel
 
-## Workspace Structure
+## Workspace layout
 
-Run backend and frontend as separate apps:
+- Backend app: `backend/`
+- Frontend app: `frontend/`
 
-- Backend app root: `backend/`
-- Frontend app root: `frontend/`
-
-## Backend Setup
+## Backend setup
 
 From `backend/`:
 
@@ -26,25 +28,35 @@ php artisan migrate
 npm install
 ```
 
-Run backend services:
+Optional one-shot setup script:
+
+```bash
+composer run setup
+```
+
+Run backend dev stack:
 
 ```bash
 composer run dev
 ```
 
-What it starts:
+This starts:
 
-- Laravel API server (`php artisan serve`)
-- Queue listener (`php artisan queue:listen --tries=1`)
-- Vite dev server for backend assets (`npm run dev`)
+- `php artisan serve`
+- `php artisan queue:listen --tries=1`
+- `npm run dev`
 
-Alternative minimal backend run:
+## Scheduler note (important)
+
+Reservation release automation (`tickets:release-expired`) is scheduled in app code, but `composer run dev` does not start the scheduler worker.
+
+If you want local behavior to match production scheduling, run a second backend terminal:
 
 ```bash
-php artisan serve
+php artisan schedule:work
 ```
 
-## Frontend Setup
+## Frontend setup
 
 From `frontend/`:
 
@@ -60,32 +72,63 @@ npm run build
 npm run preview
 ```
 
-## Required Frontend Environment Variables
+## Environment variables
 
-Create `frontend/.env` (or `.env.local`) with at least:
+### Frontend
+
+Create `frontend/.env` (or `.env.local`):
 
 ```bash
 VITE_API_BASE_URL=http://127.0.0.1:8000/api
 ```
 
-## First Boot Validation Checklist
+### Backend (minimum practical set)
 
-1. Backend is reachable at Laravel serve URL.
-2. Frontend dev server loads without TypeScript errors.
-3. Login/register flow can call API endpoints.
-4. Event browse page can fetch events from API.
+Keep backend `.env` aligned with your local runtime:
 
-If you want to validate payment flow locally, also configure backend Stripe env values (`STRIPE_SECRET`, `STRIPE_KEY`, `FRONTEND_URL`).
+```bash
+APP_URL=http://127.0.0.1:8000
+FRONTEND_URL=http://127.0.0.1:5173
+QUEUE_CONNECTION=database
+```
 
-## Testing
+For checkout testing, also set:
+
+```bash
+STRIPE_SECRET=...
+STRIPE_KEY=...
+```
+
+For email flows (`/password/forgot`, verification notifications, contact form), configure `MAIL_*` values.
+
+## First boot checklist
+
+1. Backend server responds and frontend can load pages.
+2. Frontend uses the expected API base URL.
+3. Login/register calls reach backend successfully.
+4. Browse page can load events.
+5. If testing reservation expiry, `php artisan schedule:work` is running.
+
+## Useful verification commands
 
 From `backend/`:
 
 ```bash
+php artisan route:list
+php artisan route:list --path=checkout
+php artisan route:list --path=venues
 composer test
 ```
 
-## Common Setup Pitfalls
+## Common pitfalls
 
-- Missing `VITE_API_BASE_URL` causes frontend fetch failures.
-- Backend route naming mismatch can produce 404 errors (see troubleshooting doc).
+- Missing `VITE_API_BASE_URL` causes frontend request failures.
+- Updating `.env` without clearing config can leave stale backend settings.
+- Running only `composer run dev` will not execute scheduled reservation cleanup.
+- Some frontend paths still call singular `/venue/*`; backend exposes plural `/venues/*`.
+
+## Related docs
+
+- [environment-and-deployment.md](./environment-and-deployment.md)
+- [backend-queue-jobs-scheduling.md](./backend-queue-jobs-scheduling.md)
+- [troubleshooting.md](./troubleshooting.md)

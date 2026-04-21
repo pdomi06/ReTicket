@@ -2,107 +2,105 @@
 
 ## Purpose
 
-Document the currently implemented payment flow and Stripe integration points in the backend API.
+Document the live Stripe checkout implementation and how order/payment/finalization responsibilities are split across controllers.
 
-## Overview
+## Current payment stack
 
-Payment is handled by Stripe Checkout and split across multiple backend endpoints:
-
-1. Order creation (`POST /orders`).
-2. Stripe checkout session creation (`POST /checkout` or `POST /orders/checkOut`).
-3. Stripe session lookup after redirect (`GET /checkout/session`).
-4. Order payment field update (`PATCH /orders/{order}`).
-5. Ticket finalization (`POST /ticketForSale/finalize`).
-
-This is an orchestrated flow, not a single endpoint transaction.
+- Stripe SDK: `stripe/stripe-php`
+- Session creation endpoint: `POST /checkout` (plus alias `POST /orders/checkOut`)
+- Session retrieval endpoint: `GET /checkout/session`
+- Order lifecycle: `OrdersController`
+- Finalization lifecycle: `TicketForSaleController::finalize`
 
 ## Key files
 
-- Routes: [backend/routes/api.php](backend/routes/api.php)
-- Stripe controller: [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php)
-- Orders controller: [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php)
-- Finalization logic: [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
-- Stripe config: [backend/config/stripe.php](backend/config/stripe.php)
+- [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php)
+- [backend/app/Http/Controllers/OrdersController.php](backend/app/Http/Controllers/OrdersController.php)
+- [backend/app/Http/Controllers/TicketForSaleController.php](backend/app/Http/Controllers/TicketForSaleController.php)
+- [backend/config/stripe.php](backend/config/stripe.php)
 
-## Endpoint map
+## Main payment sequence
 
-| Method | Path                    | Access | Purpose                                                 |
-| ------ | ----------------------- | ------ | ------------------------------------------------------- |
-| POST   | /orders                 | Public | Create order, order items, and active ticket rows       |
-| POST   | /checkout               | Public | Create Stripe Checkout session and return redirect URL  |
-| POST   | /orders/checkOut        | Public | Alias endpoint to same Stripe checkout method           |
-| GET    | /checkout/session       | Public | Retrieve Stripe session/payment details by `session_id` |
-| PATCH  | /orders/{order}         | Public | Update payment fields on order                          |
-| POST   | /ticketForSale/finalize | Public | Finalize listings and write ticket history entries      |
+1. Create order: `POST /orders`
+2. Start Stripe checkout: `POST /checkout`
+3. Read Stripe session on return: `GET /checkout/session?session_id=...`
+4. Update order payment fields: `PATCH /orders/{order}`
+5. Finalize ticket ownership/listings: `POST /ticketForSale/finalize`
 
-## Current flow details
+## Endpoint behavior
 
-### Step 1: Create order
+| Method | Path                    | Access       | Result                                       |
+| ------ | ----------------------- | ------------ | -------------------------------------------- |
+| POST   | /orders                 | Public route | Creates order + order items + active tickets |
+| POST   | /checkout               | Public       | Returns Stripe redirect URL                  |
+| POST   | /orders/checkOut        | Public       | Alias to `StripeController::checkOut`        |
+| GET    | /checkout/session       | Public       | Returns `session_id`, `payment_id`, `email`  |
+| PATCH  | /orders/{order}         | Public route | Stores payment metadata/status               |
+| POST   | /ticketForSale/finalize | Public       | Inserts history and removes live listings    |
 
-`POST /orders` persists an order and creates:
+## Real code examples
 
-- one `order_item` row per selected ticket,
-- one `active_tickets` row per selected ticket,
-- generated `orderNumber` and generated `ticketListingId` values.
+### Stripe session creation
 
-### Step 2: Create Stripe session
+```php
+$checkoutSession = \Stripe\Checkout\Session::create([
+    'mode' => 'payment',
+    'line_items' => [[
+        'price_data' => [
+            'currency' => $currency,
+            'unit_amount' => $unitAmount,
+            'product_data' => [
+                'name' => 'Custom Payment',
+            ],
+        ],
+        'quantity' => 1,
+    ]],
+    'success_url' => $frontendUrl . '/checkout?state=successful&session_id={CHECKOUT_SESSION_ID}',
+    'cancel_url' => $frontendUrl . '/checkout?state=failed',
+]);
+```
 
-`POST /checkout`:
+### Order staging creates active tickets before payment completion
 
-- sets Stripe secret key from `config('stripe.sk')`,
-- computes session amount from request `total`,
-- marks order status/payment status to processing/pending,
-- creates Stripe Checkout session,
-- returns JSON with `url` if request expects JSON.
+```php
+OrderItem::create([
+    'orderId' => $order->id,
+    'ticketListingId' => $ticketListingId,
+    'price' => $ticketForSale->price,
+]);
 
-### Step 3: Handle redirect callback
+ActiveTicket::create([
+    'ticketListingId' => $ticketListingId,
+    'originalTicketId' => $ticketForSale->originalTicketId,
+    'orderId' => $order->id,
+]);
+```
 
-After successful redirect back to frontend, client calls:
+### Finalization removes live listing after history write
 
-- `GET /checkout/session?session_id=...` to obtain `payment_id` and customer email,
-- `PATCH /orders/{order}` to store payment metadata.
+```php
+DB::table('ticket_history')->insert([...]);
 
-### Step 4: Finalize
-
-`POST /ticketForSale/finalize` with `orderId`:
-
-- loads active tickets for the order,
-- checks for existing history entries by `ticketListingId` (idempotency guard),
-- inserts missing `ticket_history` rows,
-- deletes matching `ticket_forsale` listings.
+$deleted = DB::table('ticket_forsale')
+    ->where('id', $ticketForSale->id)
+    ->delete();
+```
 
 ## Configuration
 
-Required environment values:
+- `STRIPE_SECRET` and `STRIPE_KEY` are read by [backend/config/stripe.php](backend/config/stripe.php).
+- `FRONTEND_URL` determines Stripe success/cancel redirect targets.
+- `CASHIER_CURRENCY` (default `huf`) controls checkout currency.
 
-- `STRIPE_SECRET`
-- `STRIPE_KEY`
-- `FRONTEND_URL`
+## Risks and notes
 
-Optional behavior values:
-
-- `CASHIER_CURRENCY` (defaults to `huf`)
-
-Current config reads these in:
-
-- [backend/config/stripe.php](backend/config/stripe.php)
-- [backend/app/Http/Controllers/StripeController.php](backend/app/Http/Controllers/StripeController.php)
-
-## Response shape notes
-
-- `POST /checkout` success (JSON): `{ "url": "..." }`
-- `GET /checkout/session` success: `{ "session_id", "payment_id", "email" }`
-- Order and finalize responses use different envelopes and should be consumed per endpoint.
-
-## Known gaps and risks
-
-- Endpoints in this flow are public in current middleware configuration.
-- There is no webhook-based reconciliation in this code path.
-- A legacy checkout endpoint (`POST /ticketForSale/checkOut`) still exists and performs overlapping responsibilities.
-- Response payload conventions are inconsistent across endpoints.
+- Checkout endpoints are public by current route/controller setup.
+- No webhook-based reconciliation path is implemented in this flow.
+- There is a legacy checkout endpoint (`/ticketForSale/checkOut`) with overlapping responsibilities.
+- Finalization uses DB-level checks to avoid duplicate history rows per `ticketListingId`.
 
 ## Related docs
 
-- [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
 - [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)
+- [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
 - [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)

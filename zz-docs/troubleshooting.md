@@ -1,92 +1,132 @@
 # Troubleshooting
 
-## Setup and Runtime
+## Purpose
+
+Fast diagnostics for common local runtime and integration failures.
+
+## Setup and runtime issues
 
 ### Backend does not start
 
-Checks:
+From `backend/`, run:
 
-1. Confirm you are in `backend/`.
-2. Ensure `.env` exists and app key is generated.
-3. Run `composer install` and `php artisan key:generate`.
-4. Run migrations before first API usage.
+```bash
+composer install
+php artisan key:generate
+php artisan migrate
+composer run dev
+```
+
+If env values changed recently:
+
+```bash
+php artisan config:clear
+```
 
 ### Frontend cannot reach API
 
-Symptoms:
+Check `frontend/.env`:
 
-- `fetch` errors or network failures in console.
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+```
 
-Checks:
+Confirm backend is actually reachable at that origin and path.
 
-1. Verify `VITE_API_BASE_URL` points to backend `/api` base.
+### Auth calls fail (`/login`, `/register`, `/me`)
+
+1. Confirm API base URL points to `/api`.
 2. Confirm backend server is running.
-3. Validate CORS/backend origin compatibility.
+3. Check browser network tab for status and response shape.
+4. If token state is stale, sign out or clear local auth storage and re-login.
 
-### Login or register calls fail
+## Route and contract mismatches
 
-Checks:
+### 404 on venue update in dashboard edit venue
 
-1. Verify frontend requests target `VITE_API_BASE_URL`.
-2. Confirm backend is running and `/api/login` and `/api/register` are reachable.
-3. Validate payload shape against backend Form Request rules.
+Current known mismatch:
 
-## API Contract Mismatch
+- Backend routes are plural (`/venues/*`).
+- `EditVenue.tsx` currently calls singular `/venue/${id}`.
 
-### 404 on venue endpoints from frontend
+Quick validation command:
 
-Observed risk:
+```bash
+php artisan route:list --path=venue
+php artisan route:list --path=venues
+```
 
-- Backend routes expose `/venues` and `/venues/search`.
-- Some frontend calls may use `/venue` variants.
+### Basket reserve/remove returns `409`
 
-Resolution:
+This is expected conflict behavior when reservation state changed concurrently.
 
-1. Standardize frontend calls to backend route names.
-2. Re-test dashboard create/edit venue workflows.
+Typical causes:
 
-### Basket actions feel inconsistent
+- Another user tab/user already reserved the seat.
+- Reservation already expired/released.
 
-Possible causes:
+Recommended handling:
 
-- Seat already taken by another user between fetch and reserve.
-- Add/remove race from multiple tabs or users.
+1. Keep optimistic rollback logic.
+2. Re-fetch seat availability after conflict.
 
-Resolution:
+## Checkout and payment issues
 
-1. Keep optimistic UI rollback paths in place.
-2. Re-fetch seat availability after failed basket update.
+### Stripe checkout fails
 
-### Checkout fails with Stripe key errors
+Verify backend env:
 
-Observed risk:
+```bash
+STRIPE_SECRET=...
+STRIPE_KEY=...
+FRONTEND_URL=http://127.0.0.1:5173
+```
 
-- Missing or stale `STRIPE_SECRET`/`STRIPE_KEY` values.
-- Cached backend config after env changes.
+Then clear cached config:
 
-Resolution:
+```bash
+php artisan config:clear
+```
 
-1. Verify backend env values for Stripe and `FRONTEND_URL`.
-2. Run `php artisan config:clear` in backend after env changes.
-3. Re-test `POST /checkout` and check backend logs.
+Re-test `POST /checkout` and inspect backend logs for Stripe SDK errors.
 
-## Data Consistency
+### Reservation release is not happening locally
 
-### Wrong seat availability across events
+Cause: scheduler is not started by `composer run dev`.
 
-Cause:
+Run in a second backend terminal:
 
-- Missing event-specific filtering while mapping seat state.
+```bash
+php artisan schedule:work
+```
 
-Resolution:
+## Email and contact issues
 
-1. Always filter by current `eventId` in data hooks and mapping logic.
-2. Guard invalid event params before deriving availability keys.
+### Password reset / verification / contact form emails are not sent
 
-## Documentation Maintenance
+Check `MAIL_*` values and sender identity in backend `.env`.
 
-When behavior changes:
+Useful checks:
 
-1. Update the relevant chunk in `zz-docs/`.
-2. Update cross-links in `zz-docs/README.md`.
-3. If authorization changed, update `permissions.md` first.
+```bash
+php artisan config:clear
+php artisan tinker
+```
+
+Then send a test notification/mail in Tinker or exercise `POST /contact/messages` from the frontend footer form.
+
+## Data consistency and UI symptoms
+
+### Seat availability appears wrong
+
+1. Ensure event page is using the current `eventId` query param.
+2. Confirm original tickets and listing data were loaded for the same event.
+3. Refresh after basket conflicts to avoid stale local view state.
+
+## Documentation hygiene
+
+When code behavior changes:
+
+1. Update the relevant file in `zz-docs/`.
+2. Update links/index in `zz-docs/README.md`.
+3. If access changed, update `permissions.md` and `backend-api-reference.md` together.

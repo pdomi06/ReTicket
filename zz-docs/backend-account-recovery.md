@@ -2,107 +2,103 @@
 
 ## Purpose
 
-Document the current account recovery implementation for email verification and password reset.
+Document the real account recovery and email-change implementation currently shipped in the backend.
 
-## Overview
+## Current surface
 
-Account recovery is implemented through dedicated endpoints (not CRUD resources):
+Recovery and account-email flows are split across route closures and controllers:
 
-- Email verification send/confirm flow.
-- Password reset request/confirm flow.
-
-Both flows send mail through the active Laravel mailer configuration. The current setup uses SMTP rather than the `log` mail driver, so account recovery messages are actually delivered instead of being written to local logs.
+- Email verification link handling: `GET /email/verify/{id}/{hash}`
+- Verification resend: `POST /email/verification-notification`
+- Email change request: `POST /user/email/change`
+- Email change confirmation: `GET /user/email/confirm/{id}` with signed query params
+- Password reset request: `POST /password/forgot`
+- Password reset apply: `POST /password/reset`
 
 ## Key files
 
 - Routes: [backend/routes/api.php](backend/routes/api.php)
-- Email verification controller: [backend/app/Http/Controllers/EmailVerificationController.php](backend/app/Http/Controllers/EmailVerificationController.php)
 - Password reset controller: [backend/app/Http/Controllers/PasswordResetController.php](backend/app/Http/Controllers/PasswordResetController.php)
-- Email verification model: [backend/app/Models/EmailVerification.php](backend/app/Models/EmailVerification.php)
-- Password reset token model: [backend/app/Models/PasswordResetToken.php](backend/app/Models/PasswordResetToken.php)
+- Email change controller: [backend/app/Http/Controllers/EmailChangeController.php](backend/app/Http/Controllers/EmailChangeController.php)
+- Verification notification: [backend/app/Notifications/VerifyEmailNotification.php](backend/app/Notifications/VerifyEmailNotification.php)
+- New-email confirmation notification: [backend/app/Notifications/VerifyNewEmail.php](backend/app/Notifications/VerifyNewEmail.php)
+- Password reset model: [backend/app/Models/PasswordResetToken.php](backend/app/Models/PasswordResetToken.php)
 
 ## Endpoint map
 
-| Method | Path               | Access | Purpose                                                          |
-| ------ | ------------------ | ------ | ---------------------------------------------------------------- |
-| POST   | /email/verify/send | Public | Generate and store email verification token for unverified users |
-| POST   | /email/verify      | Public | Verify token and mark user as verified                           |
-| POST   | /password/forgot   | Public | Request password reset link via Laravel password broker          |
-| POST   | /password/reset    | Public | Reset password with token and revoke user API tokens             |
+| Method | Path                             | Access        | Notes                                                      |
+| ------ | -------------------------------- | ------------- | ---------------------------------------------------------- |
+| GET    | /email/verify/{id}/{hash}        | Signed link   | Throttled (`6/min`), marks user verified                   |
+| POST   | /email/verification-notification | Auth required | Sends verification email when not yet verified             |
+| POST   | /user/email/change               | Auth required | Validates password, sends signed confirm link to new email |
+| GET    | /user/email/confirm/{id}         | Signed link   | Applies email change and updates order emails              |
+| POST   | /password/forgot                 | Public        | Always returns generic success text                        |
+| POST   | /password/reset                  | Public        | Applies new password and revokes existing tokens           |
 
-## Email verification flow
+## Real code examples
 
-### Send verification link
+### Verification route closure in `api.php`
 
-`POST /email/verify/send`:
+```php
+Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    $user = User::find($id);
 
-1. Looks up user by email.
-2. Returns generic success message even if user does not exist or is already verified.
-3. Deletes previous verification records for the user.
-4. Creates new `email_verify` token with 1-day expiry.
+    if (!$user) {
+        return response()->json(['message' => 'User not found.'], 404);
+    }
 
-Response pattern:
+    if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Invalid verification link.'], 403);
+    }
 
-- Always HTTP 200 with generic message to avoid account enumeration.
+    if (!$user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
 
-### Verify token
+    return response()->json(['message' => 'Email verified successfully.'], 200);
+})->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+```
 
-`POST /email/verify`:
+### Email change uses a temporary signed route
 
-1. Finds `email_verify` row by token.
-2. Rejects invalid token.
-3. Rejects expired or previously-used token.
-4. Marks user `isVerified = true`.
-5. Sets `verifiedAt` on token record.
+```php
+$confirmationUrl = URL::temporarySignedRoute(
+    'email.change.confirm',
+    Carbon::now()->addMinutes(60),
+    [
+        'id' => $user->id,
+        'new_email' => $request->new_email,
+    ]
+);
+```
 
-Failure status patterns:
+### Password reset is anti-enumeration friendly
 
-- `400` for invalid/expired/already-used token.
-- `404` if linked user record no longer exists.
+```php
+$status = Password::sendResetLink($request->only('email'));
 
-## Password reset flow
+if ($status !== Password::RESET_LINK_SENT && $status !== Password::INVALID_USER) {
+    Log::warning('Password reset link request non-success status', [
+        'status' => $status,
+        'ip' => $request->ip(),
+    ]);
+}
 
-### Request reset link
+return response()->json([
+    'message' => 'If a user with that email address exists, we have sent a password reset link.'
+], 200);
+```
 
-`POST /password/forgot`:
+## Behavior notes
 
-1. Uses `Password::sendResetLink(...)`.
-2. Returns generic message regardless of user existence.
-3. Logs warning on non-success/non-invalid-user statuses.
-4. Delivers the reset email through the configured SMTP mailer.
-
-Response pattern:
-
-- Always HTTP 200 with generic message.
-
-### Apply reset
-
-`POST /password/reset`:
-
-1. Uses `Password::reset(...)` with token/email/password payload.
-2. Updates `passwordHash` on the user.
-3. Deletes all existing sanctum tokens for that user.
-4. Emits `PasswordReset` event.
-
-Status patterns:
-
-- `200` on successful reset.
-- `400` on invalid token or failed reset.
-
-## Data model notes
-
-- Verification records are stored in `email_verify`.
-- Password reset tokens are represented by `PasswordResetToken` mapped to `password_reset`.
-- Password reset does not require an authenticated session.
-
-## Known behavior notes
-
-- Both recovery flows intentionally return generic messages for anti-enumeration behavior.
-- There is no frontend route/page implementation for these flows in current frontend source.
+- Email verification is not handled by a dedicated `EmailVerificationController`; it is route-closure based plus notifications.
+- Email change confirmation updates both `users.email` and historical `orders.buyerEmail` / `orders.deliveryEmail` inside a DB transaction.
+- Password reset writes to `passwordHash` and revokes all Sanctum tokens.
+- Reset and forgot endpoints intentionally avoid leaking user existence.
 
 ## Related docs
 
 - [zz-docs/backend-authentication.md](zz-docs/backend-authentication.md)
 - [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
-- [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)
+- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)
 - [zz-docs/environment-and-deployment.md](zz-docs/environment-and-deployment.md)

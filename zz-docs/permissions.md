@@ -1,56 +1,75 @@
-# ReTicket Authorization and Access Matrix
+# ReTicket authorization and access matrix
 
-This document reflects authorization behavior currently implemented in controllers, routes, and policies.
+## Purpose
 
-## Current Enforcement Model
+Document effective access control based on route middleware, controller middleware, and policy checks.
 
-1. Route exposure is defined in `backend/routes/api.php`.
-2. Authentication is enforced in controllers via `auth:sanctum` middleware.
-3. Role and ownership policy enforcement is implemented in policy classes, but strictness varies significantly by resource.
+## Enforcement layers
 
-## Public vs Authenticated Endpoints
+1. Route declarations in [backend/routes/api.php](backend/routes/api.php)
+2. Controller middleware (`HasMiddleware`) in each controller
+3. Policy checks (`$this->authorize(...)`) in controller actions
 
-| Area                     | Public Access                                                                                                                                                                                                                     | Auth Required                                                |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Auth                     | `POST /login`, `POST /register`                                                                                                                                                                                                   | `POST /logout`                                               |
-| Events                   | `GET /events`, `GET /events/{event}`, `GET /events/landing`, `GET /events/search`                                                                                                                                                 | `POST/PUT/DELETE /events...`                                 |
-| Venue Maps               | `GET /venues`, `GET /venues/{venue}`, `GET /venues/search`                                                                                                                                                                        | write operations under `/venues`                             |
-| Active Tickets           | `GET /activeTickets`, `GET /activeTickets/{id}`                                                                                                                                                                                   | create/update/delete                                         |
-| Original Tickets         | `GET /originalTickets`, `GET /originalTickets/{id}`, `GET /originalTickets/search`, `GET /originalTickets/forSale/{eventId}`                                                                                                      | dashboard and write operations                               |
-| Ticket For Sale          | `GET /ticketForSale`, `GET /ticketForSale/{id}`, `GET /ticketForSale/search`, `POST /ticketForSale/checkOut`, `POST /ticketForSale/finalize`, `POST /ticketForSale/addToBasket/{id}`, `POST /ticketForSale/removeFromBasket/{id}` | `POST /ticketForSale/basketChange/{id}` and write operations |
-| Orders and Checkout      | `POST /orders`, `PATCH/PUT /orders/{id}`, `POST /checkout`, `POST /orders/checkOut`, `GET /checkout/session`                                                                                                                      | `GET /orders`, `GET /orders/{id}`, `DELETE /orders/{id}`     |
-| Account Recovery         | `POST /email/verify/send`, `POST /email/verify`, `POST /password/forgot`, `POST /password/reset`                                                                                                                                  | none                                                         |
-| Reviews                  | `GET /reviews`, `GET /reviews/{id}`                                                                                                                                                                                               | create/update/delete reviews                                 |
-| Most remaining resources | none                                                                                                                                                                                                                              | full resource access requires `auth:sanctum`                 |
+## Effective access summary
 
-## Policy Status
+| Resource area         | Public reads                                                               | Auth-required actions                                         | Role/ownership constraints                                               |
+| --------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Auth/session          | `POST /login`, `POST /register`                                            | `POST /logout`, `GET /me`                                     | Verification routes are signed/throttled                                 |
+| Events                | `GET /events`, `GET /events/{id}`, `/events/search`, `/events/landing`     | Create/update/delete + `/events/my` + `/events/statistics/my` | Organizer can mutate own events; admin override                          |
+| Venues                | `GET /venues*`                                                             | Create/update/delete                                          | `VenueMapPolicy` allows create for admin only                            |
+| Original tickets      | `GET /originalTickets*`, `/forSale/{eventId}`                              | Create/update/delete + bulk + dashboard                       | Organizer for own event or admin                                         |
+| Ticket for sale       | `GET /ticketForSale*` + `addToBasket/removeFromBasket/checkOut/finalize`   | Create/update/delete + `basketChange` + dashboard             | Vendor/admin create, owner update/delete                                 |
+| Active tickets        | `GET /activeTickets*`, `checkTicket`                                       | create/update/delete, validate, resell                        | Validate requires organizer ownership (or admin override)                |
+| Orders                | `POST /orders`, `GET/PUT/PATCH /orders/{id}` (explicit public routes)      | `GET /orders`, `DELETE /orders/{id}`                          | Policy uses buyer/delivery email ownership when authenticated            |
+| Order items           | `POST /orderItems`, `PUT/PATCH /orderItems/{id}` (explicit public routes)  | `GET/DELETE` resource routes require auth+verified            | Policy denies non-admin for protected actions                            |
+| Payouts               | none                                                                       | all payouts endpoints                                         | Admin broad access; vendor can view own payout rows                      |
+| Reviews               | `GET /reviews`, `GET /reviews/visible`, `GET /reviews/{id}` (policy-aware) | create/update/delete                                          | Create for any authenticated user, update/delete effectively admin paths |
+| User resource         | none                                                                       | all `/user` resource routes                                   | Self access + admin overrides from policy                                |
+| Admin users endpoints | none                                                                       | `/users/all`, `/users/{user}` (GET/PUT/DELETE)                | Manual `role === admin` checks in controller                             |
+| User settings         | none                                                                       | `/userSettings` resource routes                               | Auth + verified middleware; owner/admin policy                           |
+| Ticket history        | none                                                                       | `/ticketHistory*` endpoints                                   | Auth + verified; policy restricts view scopes                            |
 
-Policy files exist under `backend/app/Policies/` and are actively used through controller `authorize(...)` calls.
+## Real code examples
 
-Current behavior is mixed:
+### Policy admin override pattern
 
-- Some resources expose broad read access (`viewAny`/`view` true or guest-tolerant).
-- Some resources are intentionally strict for mutating actions (for example update/delete often admin-only or denied).
+```php
+public function before(?User $user, string $ability): ?bool
+{
+    if ($user && $user->role === 'admin') {
+        return true;
+    }
+    return null;
+}
+```
 
-Do not infer effective access from middleware alone; always check policy methods for the exact action.
+### Route-level middleware override example
 
-## Ownership Keys Present in Data Model
+```php
+Route::post('orders', [OrdersController::class, 'store'])
+    ->withoutMiddleware(['auth:sanctum', 'verified'])
+    ->name('orders.store');
+```
 
-These keys exist and can be used for ownership checks where implemented:
+### Controller-level admin guard for `/users/*`
 
-- Event creator: `events.createdBy`
-- Ticket listing owner: `ticket_for_sale.fromUserId`
-- Buyer linkage: `orders.buyerEmail` (matched to `users.email`)
-- Payout owner: `payouts.vendorId`
+```php
+if ($request->user()->role !== 'admin') {
+    return response()->json([
+        'success' => false,
+        'message' => 'Unauthorized. Admin access required.',
+    ], 403);
+}
+```
 
-## Role Notes
+## Important caveats
 
-The codebase and docs reference roles such as `admin`, `organizer`, `vendor`, and `guest`, but role enforcement should be treated as partial until policy methods are implemented with explicit allow/deny logic.
+- Route file alone is not enough; controller middleware exceptions and policy checks change effective behavior.
+- Some explicit routes intentionally bypass controller middleware defaults.
+- `my/payouts` is declared twice in routes; review route list output to confirm final registration order in your environment.
 
-## Practical Guidance
+## Related docs
 
-When changing authorization behavior:
-
-1. Update controller middleware exceptions first.
-2. Implement or update relevant policy methods.
-3. Keep this file and `backend/routes/api.php` in sync.
+- [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
+- [zz-docs/backend-authentication.md](zz-docs/backend-authentication.md)
+- [zz-docs/backend-workflows.md](zz-docs/backend-workflows.md)

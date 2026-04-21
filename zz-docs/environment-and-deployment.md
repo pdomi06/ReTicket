@@ -1,120 +1,119 @@
-# Environment and Deployment
+# Environment and deployment
 
-## Runtime Boundaries
+## Purpose
 
-- Backend runtime: Laravel application in `backend/`
-- Frontend runtime: Vite-built SPA in `frontend/`
+Document runtime configuration and deployment requirements for both backend and frontend.
 
-The frontend should call backend API endpoints through `VITE_API_BASE_URL`.
+## Runtime boundaries
 
-## Frontend Environment Variables
+- Backend app: `backend/` (Laravel API)
+- Frontend app: `frontend/` (React + Vite SPA)
 
-Observed runtime variables in code:
+Frontend talks to backend through `VITE_API_BASE_URL`.
+
+## Frontend environment variables
+
+Required:
 
 - `VITE_API_BASE_URL`
 
-Used by:
+Used by contexts/pages and API helpers under `frontend/src`.
 
-- `frontend/src/contexts/cart/CartContext.tsx`
-- `frontend/src/contexts/event/EventContext.tsx`
-- Multiple dashboard and event page data hooks
+## Backend environment variables
 
-## Backend Environment Variables
+Core app/runtime:
 
-Laravel backend follows standard `.env` setup for:
+- `APP_URL`, `APP_ENV`, `APP_DEBUG`
+- `DB_*`
+- `QUEUE_CONNECTION`
+- `FILESYSTEM_DISK`
 
-- `APP_*` settings
-- `DB_*` settings
-- CORS/session/security defaults from Laravel config
+Auth/session/recovery:
 
-Payment and checkout related variables used by current code:
+- Sanctum + auth config uses `auth.php` defaults and guards
+- Password reset table is `password_reset`
+- `FRONTEND_URL` is used in Stripe redirects and frontend service config
+
+Payment:
 
 - `STRIPE_SECRET`
 - `STRIPE_KEY`
-- `FRONTEND_URL`
-- `CASHIER_CURRENCY` (optional; defaults to `huf` in checkout flow)
+- `CASHIER_CURRENCY` (default `huf`)
 
-Mail delivery is configured through the normal Laravel mailer settings instead of the log channel.
+Mail:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Multiple SMTP providers are supported:
+- `MAIL_MAILER`
+- `MAIL_HOST`
+- `MAIL_PORT`
+- `MAIL_USERNAME`
+- `MAIL_PASSWORD`
+- `MAIL_ENCRYPTION`
+- `MAIL_FROM_ADDRESS`
 
-**Gmail (local development example):**
-=======
-Current local setup uses SMTP with a Gmail account:
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-=======
-Current local setup uses SMTP with a Gmail account:
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
+## Real code examples
 
-- `MAIL_MAILER=smtp`
-- `MAIL_HOST=smtp.gmail.com`
-- `MAIL_PORT=465`
-- `MAIL_USERNAME` for the Gmail account
-- `MAIL_PASSWORD` for the Gmail app password
-- `MAIL_ENCRYPTION=tls`
-<<<<<<< HEAD
-<<<<<<< HEAD
+### Stripe config mapping
 
-**Mailgun (default config fallback):**
+```php
+// backend/config/stripe.php
+return [
+    'sk' => env('STRIPE_SECRET'),
+    'pk' => env('STRIPE_KEY'),
+];
+```
 
-- `MAIL_MAILER=smtp`
-- `MAIL_HOST=smtp.mailgun.org`
-- `MAIL_PORT=2525`
-- `MAIL_USERNAME` for Mailgun SMTP credentials
-- `MAIL_PASSWORD` for Mailgun SMTP credentials
-- `MAILGUN_DOMAIN` configured in `config/services.php`
-- `MAILGUN_SECRET` for API access (optional)
+### Queue default
 
-**Mailtrap:**
+```php
+// backend/config/queue.php
+'default' => env('QUEUE_CONNECTION', 'database'),
+```
 
-- `MAIL_MAILER=mailtrap`
-- Mailtrap integration configured in `config/mail.php`
+### Frontend auth/API base normalization
 
-For all providers:
+```ts
+const apiBaseUrl = (
+  import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api"
+).replace(/\/+$/, "");
+```
 
-- Set `MAIL_FROM_ADDRESS` to the verified sender address
-- Update all `MAIL_*` keys together when switching providers
-=======
-- `MAIL_FROM_ADDRESS` set to the verified sender address
+## Deployment notes
 
-If you change providers later, keep the same `MAIL_*` keys and update the host, port, username, and encryption values together.
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
-=======
-- `MAIL_FROM_ADDRESS` set to the verified sender address
+### Backend (Vercel)
 
-If you change providers later, keep the same `MAIL_*` keys and update the host, port, username, and encryption values together.
->>>>>>> parent of 6c5e844 (Revert "Implement grouped cursor pagination for events and user settings UI")
+`backend/vercel.json`:
 
-Keep backend `.env` aligned with database and app URL.
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "public/build"
+}
+```
 
-## Build Commands
+### Frontend (Vercel)
 
-Backend:
+`frontend/vercel.json` rewrites all paths to `/` for SPA navigation:
 
-- `npm run build` (from `backend/`) builds frontend assets to `public/build`
+```json
+{ "rewrites": [{ "source": "/(.*)", "destination": "/" }] }
+```
 
-Frontend:
+## Security note
 
-- `npm run build` (from `frontend/`) runs `tsc -b && vite build`
+The checked-in [backend/.env.example](backend/.env.example) currently contains concrete-looking credentials/keys. Treat this as sensitive and rotate or sanitize values before sharing publicly.
 
-## Vercel Notes
+## Release checklist
 
-Backend Vercel config (`backend/vercel.json`):
+1. Set `VITE_API_BASE_URL` to deployed backend `/api` URL.
+2. Set backend `FRONTEND_URL` to deployed frontend origin.
+3. Configure Stripe secrets in backend environment.
+4. Configure mail provider credentials and sender address.
+5. Verify CORS for frontend origin.
+6. Run a smoke flow: login -> browse -> cart -> checkout -> finalize.
 
-- `buildCommand`: `npm run build`
-- `outputDirectory`: `public/build`
+## Related docs
 
-Frontend Vercel config (`frontend/vercel.json`):
-
-- Rewrites all paths to `/` for SPA routing
-
-## Deployment Checklist
-
-1. Provide frontend `VITE_*` variables in deployment environment.
-2. Ensure backend API URL is reachable from deployed frontend origin.
-3. Confirm CORS allows frontend origin.
-4. Validate SPA rewrite behavior after deployment.
-5. Smoke-test dashboard routes and event browse paths.
-6. Send a test email through the password reset or email verification flow and confirm it leaves the log channel.
+- [zz-docs/local-development-setup.md](zz-docs/local-development-setup.md)
+- [zz-docs/backend-payment-processing.md](zz-docs/backend-payment-processing.md)
+- [zz-docs/backend-account-recovery.md](zz-docs/backend-account-recovery.md)

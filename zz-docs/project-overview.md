@@ -1,55 +1,66 @@
-# Project Overview
+# Project overview
 
 ## Purpose
 
-ReTicket is a ticket resale platform focused on reducing second-hand ticket scams by controlling listing, ordering, and payout flows.
+High-level map of the ReTicket platform and where core logic lives.
 
-The project is split into:
+## What ReTicket does
 
-- `backend/`: Laravel API and domain logic.
-- `frontend/`: React + TypeScript single-page application.
-- `zz-docs/`: project documentation chunks.
+ReTicket is a ticket resale platform designed to reduce fraud by controlling listing ownership, checkout, and ticket state transitions.
 
-## High-Level Architecture
+## Repository structure
 
-1. Frontend calls backend REST endpoints using `fetch` and `VITE_API_BASE_URL`.
-2. Backend validates input with Form Request classes.
-3. Controller middleware enforces authentication boundaries.
-4. Laravel policies provide resource authorization where implemented.
-5. Eloquent models represent domain entities and relations.
-6. Responses return resource data for frontend rendering and action feedback.
+- `backend/`: Laravel API (auth, ticketing, checkout, policies, scheduler)
+- `frontend/`: React + TypeScript SPA (routing, auth context, cart flow, dashboard)
+- `zz-docs/`: implementation-aligned documentation chunks
 
-## Domain Terms
+## Core domain entities
 
-- Event: A managed show/concert/sports listing owned by an organizer.
-- Original Ticket: The canonical seat ticket attached to an event.
-- Ticket For Sale: A resale listing tied to an original ticket and vendor.
-- Order and Order Item: Purchase records used in checkout and Stripe payment flow.
-- Payout: Vendor settlement record linked to sold order items.
+- Event
+- OriginalTicket
+- TicketForSale
+- ActiveTicket
+- TicketHistory
+- Order / OrderItem
+- Payout
+- Review
+- User / UserSetting
 
-## Roles
+## Real code examples
 
-See [Permissions and Role Matrix](./permissions.md) for full details.
+### Backend route registration shape
 
-- Admin: platform-wide override access.
-- Organizer: manages own events and related tickets.
-- Vendor: manages own sale listings and views own payouts.
-- Guest: public read-only usage with limited actions.
+```php
+Route::apiResource('events', EventsController::class);
+Route::apiResource('ticketForSale', TicketForSaleController::class);
+Route::post('checkout', [StripeController::class, 'checkOut']);
+```
 
-Role references exist in project documentation and policy design, but enforcement is currently mixed because policy strictness differs by resource and action.
+### Frontend route tree uses lazy modules + guarded routes
 
-## Repository Landmarks
+```tsx
+{ path: "/profile", element: <RequireAuth><Profile /></RequireAuth> },
+{
+  path: "/dashboard",
+  element: <RequireAuth><Dashboard /></RequireAuth>,
+  children: [
+    { index: true, element: <DashboardMyTickets /> },
+    { path: "orders", element: <DashboardOrders /> },
+  ],
+},
+```
 
-- Backend routes: `backend/routes/api.php`
-- Backend policies: `backend/app/Policies/`
-- Backend models: `backend/app/Models/`
-- Frontend router: `frontend/src/app/router.tsx`
-- Frontend state contexts: `frontend/src/contexts/`
+## End-to-end flow summary
 
-## Documentation Reading Order for New Contributors
+1. User discovers events from `/events/search`.
+2. Seats are reserved through basket endpoints in `ticketForSale`.
+3. Checkout creates order and Stripe session.
+4. Finalization moves sold listings into ticket history and active ownership.
+5. Organizer workflows include ticket validation and event statistics.
 
-1. [Local Development Setup](./local-development-setup.md)
-2. [Environment and Deployment](./environment-and-deployment.md)
-3. [Backend Architecture](./backend-architecture.md)
-4. [Frontend Architecture](./frontend-architecture.md)
-5. [Backend API Reference](./backend-api-reference.md)
+## Related docs
+
+- [zz-docs/backend-architecture.md](zz-docs/backend-architecture.md)
+- [zz-docs/frontend-architecture.md](zz-docs/frontend-architecture.md)
+- [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
+- [zz-docs/permissions.md](zz-docs/permissions.md)

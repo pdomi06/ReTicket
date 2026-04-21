@@ -2,69 +2,93 @@
 
 ## Purpose
 
-Document the backend authentication implementation exactly as it exists today: route exposure, Sanctum token behavior, response shapes, middleware boundaries, and the current session probe used by the frontend.
+Document the current backend auth/session implementation exactly as it runs: Sanctum token auth, email verification, and authenticated session probing.
 
-## Overview
+## Current auth model
 
-Authentication is implemented with Laravel Sanctum personal access tokens.
+- Token auth: Laravel Sanctum personal access tokens
+- User model: custom password column (`passwordHash`) via `getAuthPassword()`
+- Verification model: `MustVerifyEmail` on `User`, with custom verification notification
+- Session probe endpoint: `GET /api/me`
 
-- `AuthController` issues bearer tokens on register/login and revokes only the current token on logout.
-- `AuthController` also exposes `GET /api/me` for frontend session bootstrap and token validation.
-- API guests are not redirected; unauthenticated API requests receive a JSON payload from global exception handling.
+## Key files
 
-## Key files and locations
+- Auth controller: [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php)
+- API routes: [backend/routes/api.php](backend/routes/api.php)
+- Global unauthenticated JSON response: [backend/bootstrap/app.php](backend/bootstrap/app.php)
+- User auth model: [backend/app/Models/User.php](backend/app/Models/User.php)
+- Verification notification: [backend/app/Notifications/VerifyEmailNotification.php](backend/app/Notifications/VerifyEmailNotification.php)
 
-- Routes for auth endpoints: [backend/routes/api.php](backend/routes/api.php)
-- Auth controller logic: [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php)
-- Auth middleware registration in controller: [backend/app/Http/Controllers/AuthController.php](backend/app/Http/Controllers/AuthController.php)
-- Guard config (`sanctum` guard): [backend/config/auth.php](backend/config/auth.php)
-- User auth model behavior (`HasApiTokens`, password field mapping): [backend/app/Models/User.php](backend/app/Models/User.php)
-- Global unauthenticated JSON handling: [backend/bootstrap/app.php](backend/bootstrap/app.php)
+## Endpoint surface
 
-## Patterns and conventions
+| Method | Path                             | Access        | Notes                                  |
+| ------ | -------------------------------- | ------------- | -------------------------------------- |
+| POST   | /login                           | Public        | Throttled (`throttle:3,1`)             |
+| POST   | /register                        | Public        | Creates user + returns token           |
+| POST   | /logout                          | Auth required | Deletes current access token           |
+| GET    | /me                              | Auth required | Returns `data.user`                    |
+| GET    | /email/verify/{id}/{hash}        | Signed link   | Verifies email and marks user verified |
+| POST   | /email/verification-notification | Auth required | Re-sends verification notification     |
 
-### Endpoint surface
+## Real code examples
 
-- `POST /login` (throttled)
-- `POST /register`
-- `POST /logout`
-- `GET /me`
+### Auth middleware boundary on controller
 
-### Protection model
+```php
+public static function middleware(): array
+{
+    return [
+        new Middleware('auth:sanctum', except: ['login', 'register']),
+    ];
+}
+```
 
-- `AuthController` applies `auth:sanctum` to all actions except `login` and `register`.
-- `GET /me` is protected and returns the current authenticated user.
+### Login token lifecycle
 
-### Validation model
+```php
+if (method_exists($user,'tokens')) {
+    $user->tokens()->delete();
+}
 
-- `register` validates `name`, `email`, `phone`, `password`, and `password_confirmation` (`confirmed` rule).
-- `login` validates `email` and `password`.
+$token = $user->createToken('api-token')->plainTextToken;
+```
 
-### Password handling
+### Custom unauthenticated API payload
 
-- User password is stored in `passwordHash` (not `password`).
-- `passwordHash` is cast as `hashed`, and `getAuthPassword()` returns `passwordHash`.
+```php
+$exceptions->render(function (AuthenticationException $e, Request $request) {
+    if ($request->expectsJson() || $request->is('api/*')) {
+        return response()->json(
+            ['message' => 'Unauthenticated', 'error' => 'Token missing or invalid'],
+            401
+        );
+    }
+});
+```
 
-### Token lifecycle
+### Verification URL is signed and temporary
 
-- On login, all existing user tokens are deleted before issuing a new token (`single-session-like` behavior).
-- On logout, only `currentAccessToken()` is deleted.
-- Token persistence uses `personal_access_tokens` with optional `expires_at` column.
+```php
+return URL::temporarySignedRoute(
+    'verification.verify',
+    Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+    [
+        'id' => $notifiable->getKey(),
+        'hash' => sha1($notifiable->getEmailForVerification()),
+    ]
+);
+```
 
-### Response shape conventions for auth
+## Behavior notes
 
-- `register` success: wrapped `{ success, message, data: { user, token, token_type } }`.
-- `login` success: same wrapped shape.
-- `login` error (`401`/`403`): wrapped `{ success, message, data: null }`.
-- `logout` success returns `{ success, message }` without `data`.
-- `GET /me` returns `{ success: true, data: { user } }`.
-- Unauthenticated global error payload uses `{ message, error }`.
+- Login updates `lastLogin` and `isOnline`.
+- Logout marks user offline and revokes only the current token.
+- Register emits `Registered` event and immediately issues a Sanctum token.
+- `User::booted()` keeps `isVerified` and `email_verified_at` synchronized.
+- There is no refresh-token flow; expired/invalid sessions are expected to re-authenticate.
 
-## Gotchas and known issues
+## Related docs
 
-- Response envelope is not globally consistent across all backend endpoints; auth uses wrapped responses, but global unauthenticated responses use a different shape.
-- `logout` route may appear public in route file, but controller middleware secures it.
-- `GET /me` is the frontend's canonical authenticated session probe and returns the current user under `data.user`.
-- Login is throttled, register is not throttled by route middleware.
-- `passwordHash` naming is non-default for Laravel auth and must be preserved when extending auth behavior.
-- No refresh-token flow was found; clients appear to rely on re-login to obtain a new token.
+- [zz-docs/backend-account-recovery.md](zz-docs/backend-account-recovery.md)
+- [zz-docs/backend-api-reference.md](zz-docs/backend-api-reference.md)
+- [zz-docs/backend-error-handling.md](zz-docs/backend-error-handling.md)

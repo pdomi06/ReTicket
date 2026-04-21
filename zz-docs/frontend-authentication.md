@@ -1,89 +1,89 @@
 # Frontend authentication
 
-## Scope
+## Purpose
 
-This document describes the current React frontend authentication flow, including login/register entry points, shared session state, background validation, protected routes, and request authentication.
+Document the current frontend auth/session lifecycle, including login/register flows, route guarding, token propagation, and auto-refresh behavior.
 
-## Auth entry routes
+## Auth architecture
 
-Frontend auth pages are routed in [frontend/src/app/router.tsx](frontend/src/app/router.tsx#L45):
+- Shared auth state: `AuthProvider` + `useAuth()`
+- Storage cache: localStorage (`token`, `user`) via `authSession.ts`
+- Backend source-of-truth: `GET /api/me` refresh
+- Request token injection: `apiFetch()`
+- Guard component: `RequireAuth`
 
-- `/login`
-- `/register`
+## Key files
 
-Both routes are lazy-loaded as part of the shared route tree in [frontend/src/app/router.tsx](frontend/src/app/router.tsx#L6).
+- [frontend/src/contexts/auth/AuthContext.tsx](frontend/src/contexts/auth/AuthContext.tsx)
+- [frontend/src/contexts/auth/useAuth.ts](frontend/src/contexts/auth/useAuth.ts)
+- [frontend/src/lib/authSession.ts](frontend/src/lib/authSession.ts)
+- [frontend/src/lib/apiFetch.ts](frontend/src/lib/apiFetch.ts)
+- [frontend/src/components/auth/RequireAuth.tsx](frontend/src/components/auth/RequireAuth.tsx)
+- [frontend/src/pages/login/Login.tsx](frontend/src/pages/login/Login.tsx)
+- [frontend/src/pages/register/Register.tsx](frontend/src/pages/register/Register.tsx)
 
-## Session model
+## Real code examples
 
-The frontend now treats the authenticated server session as the source of truth and localStorage as a persistence cache.
+### Route guard behavior
 
-Session state lives in [frontend/src/contexts/auth/AuthContext.tsx](frontend/src/contexts/auth/AuthContext.tsx#L1) and is exposed through `useAuth()`.
+```tsx
+if (status !== "ready") {
+  return null;
+}
 
-Session behavior:
+if (!isAuthenticated) {
+  return <Navigate to="/login" replace state={{ from: location }} />;
+}
+```
 
-1. Login/register write the normalized user and token through the shared auth store.
-2. Startup reads cached session data from localStorage.
-3. If a token exists, the app validates it against `GET /api/me` and refreshes the user payload.
-4. Focus, visibility changes, and a conservative interval re-run session validation.
-5. Any `401` from the shared fetch helper clears the session and allows protected routes to redirect to `/login`.
+### Shared token injection and 401 session-expired signal
 
-## Login flow
+```ts
+if (includeAuth && !mergedHeaders.has("Authorization")) {
+  const { token } = readStoredAuthSession();
+  if (token) {
+    mergedHeaders.set("Authorization", `Bearer ${token}`);
+  }
+}
 
-Implementation: [frontend/src/pages/login/Login.tsx](frontend/src/pages/login/Login.tsx#L1)
+if (response.status === 401) {
+  dispatchAuthSessionExpired();
+}
+```
 
-Current behavior:
+### Session bootstrap and refresh
 
-1. Submits credentials to `${VITE_API_BASE_URL}/login` via JSON POST.
-2. Parses the response text, then decodes JSON.
-3. Normalizes the returned user and writes the session through `setSession()`.
-4. Persists the canonical snapshot to localStorage through the auth store.
-5. Redirects to `/dashboard` on success.
+```tsx
+const response = await fetch(`${apiBaseUrl}/me`, {
+  headers: {
+    Accept: "application/json",
+    Authorization: `Bearer ${currentToken}`,
+  },
+});
+```
 
-## Register flow
+### Login/register session write
 
-Implementation: [frontend/src/pages/register/Register.tsx](frontend/src/pages/register/Register.tsx#L1)
+```tsx
+const user = normalizeAuthUser(data?.data?.user);
 
-Current behavior:
+if (!user || !data?.data?.token) {
+  throw new Error("Login succeeded but the session payload was invalid.");
+}
 
-1. Submits the registration payload to `${VITE_API_BASE_URL}/register` via JSON POST.
-2. Parses the response text, then decodes JSON.
-3. Normalizes the returned user and writes the session through `setSession()`.
-4. Persists the canonical snapshot to localStorage through the auth store.
-5. Redirects to `/dashboard` on success.
+setSession({ user, token: data.data.token });
+navigate("/dashboard");
+```
 
-## Guard behavior
+## Runtime behavior
 
-Route protection is centralized through [frontend/src/components/auth/RequireAuth.tsx](frontend/src/components/auth/RequireAuth.tsx#L1).
+- If cached token exists, provider bootstraps and validates via `/me`.
+- Session refresh runs on visibility/focus and periodic interval.
+- Any `401` through `apiFetch` clears auth state.
+- Guarded routes redirect to `/login` when auth is invalid.
 
-Protected routes in the router include:
+## Related docs
 
-- `/dashboard`
-- `/profile`
-- `/validate`
-
-If the shared auth state is not authenticated, `RequireAuth` redirects to `/login`.
-
-## Token usage in API requests
-
-Bearer token injection is handled by [frontend/src/lib/apiFetch.ts](frontend/src/lib/apiFetch.ts#L1).
-
-Behavior:
-
-1. Adds `Authorization: Bearer <token>` when a cached token exists.
-2. Sets `Accept: application/json` by default.
-3. Dispatches an auth-expired event on `401` so the shared auth state can clear itself.
-
-Converted call sites now use the shared helper instead of reading localStorage directly.
-
-## User refresh behavior
-
-The shared session refresh flow keeps profile-driven UI current without a full reload.
-
-- `GET /api/me` is used as the canonical validation and refresh endpoint.
-- `UserSettings` and `Sidebar` now render from the shared auth user.
-- Email verification changes can appear after the next refresh cycle instead of waiting for a fresh login.
-
-## Remaining notes
-
-- `cart` and `orderId` still use localStorage, but they are not treated as auth identity.
-- There is no refresh-token flow; expired sessions are cleared and the user is redirected to login on protected navigation.
+- [zz-docs/frontend-routing-navigation.md](zz-docs/frontend-routing-navigation.md)
+- [zz-docs/frontend-state-and-api-integration.md](zz-docs/frontend-state-and-api-integration.md)
+- [zz-docs/backend-authentication.md](zz-docs/backend-authentication.md)
