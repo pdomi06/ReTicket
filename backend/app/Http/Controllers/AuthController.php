@@ -26,7 +26,8 @@ class AuthController extends Controller implements HasMiddleware
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::create([
+        $user = new User();
+        $user->forceFill([
             'name' => $data['name'],
             'email' => $data['email'],
             'passwordHash' => Hash::make($data['password']),
@@ -37,6 +38,7 @@ class AuthController extends Controller implements HasMiddleware
             'kycStatus' => 'pending',
             'phone' => $data['phone'],
         ]);
+        $user->save();
 
         event(new Registered($user));
 
