@@ -4,7 +4,7 @@
 }
 
 .checkoutCard {
-    background: linear-gradient(165deg, var(--color-checkout-card-start), var(--color-checkout-card-end));
+    background: linear-gradient(165deg, rgba(20, 20, 20, 0.94), rgba(34, 34, 34, 0.9));
     border: 1px solid var(--color-border);
     border-radius: 16px;
 }

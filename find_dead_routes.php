@@ -1,1 +1,0 @@
-<?php require 'backend/vendor/autoload.php'; \ = require_once 'backend/bootstrap/app.php'; \->make('Illuminate\Contracts\Console\Kernel')->bootstrap(); foreach(Illuminate\Support\Facades\Route::getRoutes() as \) { \ = \->getAction('uses'); if (is_string(\) && strpos(\, '@') !== false) { list(\, \) = explode('@', \); if (!method_exists(\, \)) { echo \ . PHP_EOL; } } }

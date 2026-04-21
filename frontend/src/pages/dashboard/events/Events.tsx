@@ -322,7 +322,7 @@ export default function Events() {
 
       <div className={styles.filtersSection}>
         <div className={styles.filterGroup}>
-          <div className={styles.filterField}>
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by event name"
@@ -333,7 +333,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div className={styles.filterField}>
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by venue"
@@ -344,7 +344,7 @@ export default function Events() {
               size="medium"
             />
           </div>
-          <div className={styles.filterField}>
+          <div style={{ minWidth: '200px' }}>
             <Select
               label="All Categories"
               name="category"

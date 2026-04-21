@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('platformFee', 10, 2);
             $table->decimal('tax', 10, 2)->nullable();
-            $table->enum('status', ["created", "processing", "completed", "failed", "cancelled", "refunded"])->default("created")->index();
+            $table->enum('status', ["created", "processing", "completed", "failed", "cancelled", "refunded"])->default("created");
             $table->text('paymentIntentId')->nullable();
             $table->enum('paymentStatus', ["pending", "authorized", "captured", "failed"])->nullable();
             $table->text('deliveryEmail')->nullable();
@@ -28,8 +28,6 @@ return new class extends Migration
             $table->timestamps();
             $table->dateTime('completedAt')->nullable();
             $table->dateTime('cancelledAt')->nullable();
-
-            $table->index('created_at');
         });
 
         Schema::enableForeignKeyConstraints();

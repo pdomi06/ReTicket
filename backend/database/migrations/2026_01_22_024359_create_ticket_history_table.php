@@ -15,13 +15,13 @@ return new class extends Migration
 
         Schema::create('ticket_history', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade')->index();
+            $table->foreignId('originalTicketId')->constrained('original_tickets')->onDelete('cascade');
             $table->string('ticketListingId');
-            $table->foreignId('fromUserId')->nullable()->constrained('users')->onDelete('cascade')->index();
+            $table->foreignId('fromUserId')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('toUser');
             $table->decimal('price', 10, 2);
             $table->decimal('platformFee', 10, 2);
-            $table->boolean('isResell')->default(false)->index();
+            $table->boolean('isResell')->default(false);
         });
 
         Schema::enableForeignKeyConstraints();

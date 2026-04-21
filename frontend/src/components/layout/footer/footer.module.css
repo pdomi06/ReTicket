@@ -121,11 +121,11 @@
 }
 
 .form-success {
-  color: var(--color-success);
+  color: #9ff3b0;
 }
 
 .form-error {
-  color: var(--color-danger);
+  color: #ffb3b3;
 }
 
 @media (max-width: 865px) {

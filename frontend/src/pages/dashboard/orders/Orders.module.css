@@ -32,14 +32,6 @@
     margin-bottom: 0.5rem;
 }
 
-.searchField {
-    min-width: 220px;
-}
-
-.filterField {
-    min-width: 180px;
-}
-
 .resultCount {
     margin: 0.75rem 0 0 0;
     color: var(--color-text-muted);

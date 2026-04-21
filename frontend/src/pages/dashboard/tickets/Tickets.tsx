@@ -75,7 +75,7 @@ export default function Tickets() {
 
       <div className={styles.filtersSection}>
         <div className={styles.filterGroup}>
-          <div className={styles.compactField}>
+          <div style={{ minWidth: '150px' }}>
             <Input
               type="text"
               label="Filter by event"
@@ -86,7 +86,7 @@ export default function Tickets() {
               size="medium"
             />
           </div>
-          <div className={styles.compactField}>
+          <div style={{ minWidth: '150px' }}>
             <Input
               type="date"
               label="Filter by date"

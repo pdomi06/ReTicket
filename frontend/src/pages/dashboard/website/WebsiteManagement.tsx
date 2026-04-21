@@ -407,6 +407,12 @@ const WebsiteManagement = () => {
                     )}
                 </div>
             </section>
+
+            {/* 
+              TODO: Additional Website Management sections go here.
+              Each section follows the same collapsible pattern as Featured Events.
+              Example: Hero Banner, Announcements, Homepage Categories, etc.
+            */}
         </div>
     );
 };

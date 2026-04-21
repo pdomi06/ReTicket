@@ -243,7 +243,7 @@ const Statistics = () => {
                     {activeEvents.length === 0 ? (
                         <p className={styles.emptyState}>No active events found.</p>
                     ) : (
-                        <div className={styles.salesOverviewRows}>
+                        <div>
                             {activeEvents.map((event) => {
                                 const total = event.totalTickets ?? 0;
                                 const sold = event.soldTickets ?? 0;
@@ -253,10 +253,19 @@ const Statistics = () => {
                                 const offset = circ * (1 - pct / 100);
 
                                 return (
-                                    <div key={event.id} className={styles.salesOverviewCard}>
+                                    <div key={event.id} style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "1rem",
+                                        padding: "1rem",
+                                        background: "#1a1a1a",
+                                        border: "1px solid rgba(255,255,255,0.08)",
+                                        borderRadius: "8px",
+                                        marginBottom: "0.5rem"
+                                    }}>
                                         {/* Arc */}
-                                        <div className={styles.salesOverviewArcWrap}>
-                                            <svg width="48" height="48" viewBox="0 0 48 48" className={styles.salesOverviewArcSvg}>
+                                        <div style={{ position: "relative", width: 48, height: 48, flexShrink: 0 }}>
+                                            <svg width="48" height="48" viewBox="0 0 48 48" style={{ display: "block" }}>
                                                 <circle cx="24" cy="24" r={R} fill="none" stroke="#2a2a2a" strokeWidth="4" />
                                                 <circle
                                                     cx="24" cy="24" r={R}
@@ -266,32 +275,36 @@ const Statistics = () => {
                                                     strokeLinecap="round"
                                                     strokeDasharray={circ}
                                                     strokeDashoffset={offset}
-                                                    className={styles.salesOverviewArcFill}
+                                                    style={{ transform: "rotate(-90deg)", transformOrigin: "24px 24px" }}
                                                 />
                                             </svg>
-                                            <div className={styles.salesOverviewArcLabel}>
+                                            <div style={{
+                                                position: "absolute", inset: 0,
+                                                display: "flex", alignItems: "center", justifyContent: "center",
+                                                fontSize: "0.6rem", fontFamily: "monospace", color: "#e8a020"
+                                            }}>
                                                 {pct}%
                                             </div>
                                         </div>
 
                                         {/* Info */}
-                                        <div className={styles.salesOverviewInfo}>
-                                            <div className={styles.salesOverviewInfoName}>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ color: "#ffffff", fontSize: "0.875rem", fontWeight: 600 }}>
                                                 {event.name}
                                             </div>
-                                            <div className={styles.salesOverviewInfoDate}>
+                                            <div style={{ color: "#a0a0a0", fontSize: "0.75rem", marginTop: 2 }}>
                                                 {formatShortDate(event.eventDate)}
                                             </div>
                                         </div>
 
                                         {/* Stats */}
-                                        <div className={styles.salesOverviewStats}>
+                                        <div style={{ display: "flex", gap: "1.5rem" }}>
                                             {[["Total", total], ["Available", total - sold], ["Sold", sold]].map(([label, val]) => (
-                                                <div key={label} className={styles.salesOverviewStat}>
-                                                    <div className={styles.salesOverviewStatLabel}>
+                                                <div key={label} style={{ textAlign: "center" }}>
+                                                    <div style={{ color: "#666", fontSize: "0.65rem", textTransform: "uppercase" }}>
                                                         {label}
                                                     </div>
-                                                    <div className={styles.salesOverviewStatValue}>
+                                                    <div style={{ color: "#fff", fontSize: "0.85rem", fontFamily: "monospace" }}>
                                                         {val}
                                                     </div>
                                                 </div>
@@ -331,19 +344,37 @@ const Statistics = () => {
                     activeEvents.length === 0 ? (
                         <p className={styles.emptyState}>No active events found.</p>
                     ) : (
-                        <div className={styles.eventRows}>
+                        <div>
                             {activeEvents.map((event) => (
-                                <div key={event.id} className={styles.eventRowCard}>
-                                    <div className={styles.eventRowCardLeft}>
-                                        <div className={styles.eventRowCardName}>
+                                <div key={event.id} style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    padding: "1rem 1.25rem",
+                                    background: "#1a1a1a",
+                                    border: "1px solid rgba(255,255,255,0.08)",
+                                    borderRadius: "8px",
+                                    marginBottom: "0.5rem"
+                                }}>
+                                    <div style={{ minWidth: 0 }}>
+                                        <div style={{ display: "block", color: "#ffffff", fontSize: "0.95rem", fontWeight: 600 }}>
                                             {event.name}
                                         </div>
-                                        <div className={styles.eventRowCardMeta}>
+                                        <div style={{ display: "block", color: "#a0a0a0", fontSize: "0.8rem", marginTop: "0.25rem" }}>
                                             {formatShortDate(event.eventDate)} · Total {event.totalTickets} · Available {event.availableTickets} · Sold {event.soldTickets}
                                         </div>
                                     </div>
 
-                                    <div className={styles.eventRowCardSoldBadge}>
+                                    <div style={{
+                                        background: "#2a3a2a",
+                                        border: "1px solid rgba(232, 160, 32, 0.3)",
+                                        color: "#e8a020",
+                                        borderRadius: "999px",
+                                        padding: "3px 10px",
+                                        fontSize: "0.75rem",
+                                        fontFamily: "monospace",
+                                        flexShrink: 0
+                                    }}>
                                         {Number(event.soldPercentage ?? 0).toFixed(1)}% sold
                                     </div>
                                 </div>
@@ -354,23 +385,32 @@ const Statistics = () => {
                     expiredEvents.length === 0 ? (
                         <p className={styles.emptyState}>No expired events found.</p>
                     ) : (
-                        <div className={styles.eventRows}>
+                        <div>
                             {expiredEvents.map((event) => (
-                                <div key={event.id} className={styles.eventRowCard}>
-                                    <div className={styles.eventRowCardLeft}>
-                                        <div className={styles.eventRowCardName}>
+                                <div key={event.id} style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    padding: "1rem 1.25rem",
+                                    background: "#1a1a1a",
+                                    border: "1px solid rgba(255,255,255,0.08)",
+                                    borderRadius: "8px",
+                                    marginBottom: "0.5rem"
+                                }}>
+                                    <div style={{ minWidth: 0 }}>
+                                        <div style={{ display: "block", color: "#ffffff", fontSize: "0.95rem", fontWeight: 600 }}>
                                             {event.name}
                                         </div>
-                                        <div className={styles.eventRowCardMeta}>
+                                        <div style={{ display: "block", color: "#a0a0a0", fontSize: "0.8rem", marginTop: "0.25rem" }}>
                                             {formatShortDate(event.eventDate)} · {Number(event.soldPercentage ?? 0).toFixed(1)}% sold
                                         </div>
                                     </div>
 
-                                    <div className={styles.eventRowCardRight}>
-                                        <div className={styles.eventRowCardRevenue}>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.2rem", flexShrink: 0 }}>
+                                        <div style={{ color: "#5cc97c", fontFamily: "monospace", fontSize: "0.9rem", fontWeight: 700 }}>
                                             {Number(event.revenue ?? 0).toFixed(2)} Ft
                                         </div>
-                                        <div className={styles.eventRowCardSoldCount}>
+                                        <div style={{ color: "#a0a0a0", fontSize: "0.75rem" }}>
                                             {event.soldTickets} sold
                                         </div>
                                     </div>

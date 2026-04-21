@@ -184,7 +184,7 @@ const Venues = () => {
 
       <div className={styles.filtersSection}>
         <div className={styles.filterGroup}>
-          <div className={styles.filterField}>
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by venue"
@@ -196,7 +196,7 @@ const Venues = () => {
             />
           </div>
 
-          <div className={styles.filterField}>
+          <div style={{ minWidth: '200px' }}>
             <Input
               type="text"
               label="Filter by section"
@@ -208,7 +208,7 @@ const Venues = () => {
             />
           </div>
 
-          <div className={styles.filterFieldNarrow}>
+          <div style={{ minWidth: '150px' }}>
             <Input
               type="number"
               label="Min Rate"
@@ -220,7 +220,7 @@ const Venues = () => {
             />
           </div>
 
-          <div className={styles.filterFieldNarrow}>
+          <div style={{ minWidth: '150px' }}>
             <Input
               type="number"
               label="Max Rate"

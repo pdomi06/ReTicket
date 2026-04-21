@@ -14,18 +14,13 @@ class StripeController extends Controller
 
     public function checkOut(Request $request)
     {
-        $validated = $request->validate([
-            'total' => 'required|numeric|min:0',
-            'orderId' => 'required|integer',
-        ]);
-
         \Stripe\Stripe::setApiKey(config('stripe.sk'));
         $frontendUrl = rtrim((string) env('FRONTEND_URL', 'http://localhost:5173'), '/');
-        $total = (float) $validated['total'];
+        $total = (float) $request->input('total', 5000);
         $currency = strtolower((string) env('CASHIER_CURRENCY', 'huf'));
         $unitAmount = (int) round($total * 100);
 
-        $order = Order::where('id', $validated['orderId'])->first();
+        $order = Order::where('id', $request->input('orderId'))->first();
         if (! $order) {
             return response()->json([
                 'message' => 'Order not found.',
