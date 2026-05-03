@@ -134,7 +134,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-accent);
-  margin: 0;
+  margin: var(--spacing-2xl) 0 0;
 }
 
 .solution {
@@ -202,7 +202,7 @@
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--color-text);
-  margin-bottom: var(--spacing-md);
+  margin: var(--spacing-2xl) 0 var(--spacing-md);
   line-height: 1.6;
 }
 
