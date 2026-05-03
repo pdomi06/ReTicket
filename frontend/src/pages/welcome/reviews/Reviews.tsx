@@ -47,7 +47,6 @@ const Reviews = () => {
 									</span>
 								))}
 							</div>
-							{review.title && <h5 className={style['review-title']}>{review.title}</h5>}
 							<p className={style['review-comment']}>"{review.comment}"</p>
 							<div className={style['review-footer']}>
 								<div className={style['review-avatar']}>
