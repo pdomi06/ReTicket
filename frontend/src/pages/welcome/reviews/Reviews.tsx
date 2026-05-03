@@ -47,15 +47,13 @@ const Reviews = () => {
 									</span>
 								))}
 							</div>
+							{review.title && <h5 className={style['review-title']}>{review.title}</h5>}
 							<p className={style['review-comment']}>"{review.comment}"</p>
 							<div className={style['review-footer']}>
 								<div className={style['review-avatar']}>
 									{review.reviewerName.charAt(0).toUpperCase()}
 								</div>
-								<div>
-									<h5 className={style['review-name']}>{review.reviewerName}</h5>
-									<p className={style['review-meta']}>{review.title}</p>
-								</div>
+								<h5 className={style['review-name']}>{review.reviewerName}</h5>
 							</div>
 						</article>
 					</div>

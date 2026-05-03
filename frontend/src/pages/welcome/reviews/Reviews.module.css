@@ -51,6 +51,13 @@
 	color: var(--color-text-disabled);
 }
 
+.review-title {
+	margin: 0 0 0.5rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--color-text);
+}
+
 .review-comment {
 	color: var(--color-text-secondary);
 	margin-bottom: 1rem;
