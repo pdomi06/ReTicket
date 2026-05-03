@@ -17,7 +17,7 @@ function getInitials(name: string) {
 }
 
 const UserSettings = () => {
-    const { user: userData, refreshSession } = useAuth();
+    const { user: userData, refreshSession, clearSession } = useAuth();
     const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api").replace(/\/+$/, "");
     const [resetEmail, setResetEmail] = useState(userData?.email ?? "");
     const [verificationMessage, setVerificationMessage] = useState<{ text: string; variant: "success" | "error" } | null>(null);
@@ -150,6 +150,15 @@ const UserSettings = () => {
             setIsSendingReset(false);
         }
     };
+    const handleLogOut = async () => {
+        try {
+            await apiFetch(`${apiBaseUrl}/logout`, {
+                method: "POST",
+            });
+        } finally {
+            clearSession();
+        }
+    };
 
     return (
         <section className={styles.page}>
@@ -178,9 +187,12 @@ const UserSettings = () => {
                         </div>
                     ))}
                 </dl>
+                <div>
+                    <Button text="Log out" onClick={handleLogOut}/>
+                </div>
             </div>
 
-            <div className={styles.card}>
+            <div className={styles.card}    >
                 <h2 className={styles.cardTitle}>Security Settings</h2>
                 <div className={styles.securityGrid}>
                     <div className={styles.securityItem}>
