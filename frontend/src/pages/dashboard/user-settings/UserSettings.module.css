@@ -19,6 +19,10 @@
     margin-bottom: 1.5rem;
 }
 
+.profileHeaderActions {
+    margin-left: auto;
+}
+
 .avatar {
     width: 92px;
     height: 92px;

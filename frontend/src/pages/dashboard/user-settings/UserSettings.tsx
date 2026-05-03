@@ -175,7 +175,7 @@ const UserSettings = () => {
                     </h1>
                     <p className={styles.email}>{email}</p>
                 </div>
-                <div>
+                <div className={styles.profileHeaderActions}>
                     <Button text="Log out" onClick={handleLogOut}/>
                 </div>
             </div>
