@@ -175,6 +175,9 @@ const UserSettings = () => {
                     </h1>
                     <p className={styles.email}>{email}</p>
                 </div>
+                <div>
+                    <Button text="Log out" onClick={handleLogOut}/>
+                </div>
             </div>
 
             <div className={styles.card}>
@@ -187,9 +190,6 @@ const UserSettings = () => {
                         </div>
                     ))}
                 </dl>
-                <div>
-                    <Button text="Log out" onClick={handleLogOut}/>
-                </div>
             </div>
 
             <div className={styles.card}    >
