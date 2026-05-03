@@ -9,19 +9,19 @@ const AboutTrust = () => {
   const pillars: TrustPillar[] = [
     {
       title: 'Technical Foundation',
-      description: 'Built with Laravel, PostgreSQL, and Stripe for enterprise-grade reliability'
+      description: 'Built with Laravel, PostgreSQL, and Stripe for enterprise-grade reliability and scale'
     },
     {
       title: 'User-First Design',
-      description: 'Simple, intuitive, and fast (thanks to React and TypeScript)'
+      description: 'Simple, intuitive, and fast — powered by React and TypeScript for a seamless experience'
     },
     {
       title: 'Full Transparency',
-      description: 'Every ticket transfer is logged and irreversible'
+      description: 'Every ticket transfer is logged, timestamped, and irreversible for complete accountability'
     },
     {
       title: 'Powered by AWS Infrastructure',
-      description: 'Our Laravel backend, Neon database services, and Vercel-hosted frontend all rely on AWS for scalability, security, and uptime'
+      description: 'Our backend and frontend rely on AWS for rock-solid scalability, security, and uptime'
     }
   ];
 
