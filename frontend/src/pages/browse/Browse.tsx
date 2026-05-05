@@ -176,19 +176,18 @@ const Browse = () => {
 
     return (
         <main className={`container-fluid ${styles.browsePage}`}>
-            <header className={styles.pageHeader}>
-                <h1>Browse Events</h1>
-                <p>Showing {events.length} events</p>
-            </header>
-
             <div className="row g-3">
                 <div className={`col-12 col-md-3 ${styles.sidebarColumn}`}>
+                    <header className={styles.pageHeader}>
+                        <h1>Browse Event(s)</h1>
+                        <p>Showing {events.length} events</p>
+                    </header>
                     <Sidebar isLoading={isLocalLoading} />
                 </div>
 
                 <div className="col-12 col-md-9">
                     {error ? (
-                        <p>{error}</p>
+                        <p>{error}</p>  
                     ) : isLocalLoading ? (
                         <p>Loading events...</p>
                     ) : events.length > 0 ? (
