@@ -39,7 +39,7 @@ const formatCardPrice = (value?: number | string) => {
         return '';
     }
 
-    return numericValue === 0 ? 'Free' : `From $${numericValue.toFixed(2)}`;
+    return numericValue === 0 ? 'Free' : `From ${numericValue.toFixed(0) } Ft`;
 };
 
 const Card = ({category, basePrice, title, description, imageUrl, buttonText, link, onClick, eventDate, city, country, isFeatured}: CardProps) => {
