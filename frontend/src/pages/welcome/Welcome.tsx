@@ -57,7 +57,7 @@ const Welcome = () => {
                 <h6 className={style['events-subtitle']}>Don't miss out on the hottest events</h6>
                 <Cards>
                     {mostPopularEvents.map((event) => (
-                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} category={event.category} basePrice={event.basePrice} eventDate={event.eventDate} city={event.city} country={event.country} isFeatured={event.isFeatured} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
                 </Cards>
             </div>
@@ -66,7 +66,7 @@ const Welcome = () => {
                 <h6 className={style['events-subtitle']}>Hurry! These deals are expiring soon</h6>
                 <Cards maximumcols={2}>
                     {lastMinuteDeals.map((event) => (
-                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} category={event.category} basePrice={event.basePrice} eventDate={event.eventDate} city={event.city} country={event.country} isFeatured={event.isFeatured} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
                 </Cards>
             </div>
@@ -75,8 +75,10 @@ const Welcome = () => {
                 <h6 className={style['events-subtitle']}>Stay tuned for exciting events coming soon</h6>
                 <Cards maximumcols={3}>
                     {upcomingEvents.map((event) => (
-                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
+                        <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} category={event.category} basePrice={event.basePrice} eventDate={event.eventDate} city={event.city} country={event.country} isFeatured={event.isFeatured} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
+                    <Card key={1} category={"music"} basePrice={5000} title={"Test event"} description={"Test description"} imageUrl={"https://picsum.photos/200/300"} eventDate={1749913200} city={"Budapest"} country={"Hungary"} isFeatured={true} buttonText="View Details" />
+                    <Card key={2} category={"cultural"} basePrice={0} title={"Test event"} description={"Test descriptionTest descriptionTest descriptionTest descriptionTest descriptionTest descriptionTest description"} imageUrl={"https://picsum.photos/200/300"} eventDate={1749999600} city={"Szeged"} country={"Hungary"} isFeatured={false} buttonText="View Details" />
                 </Cards>
             </div>
 
