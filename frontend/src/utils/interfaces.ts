@@ -234,6 +234,8 @@ export interface SelectProps {
 }
 
 export interface CardProps {
+    category?: string;
+    price?: number;
     title: string;
     description: string;
     imageUrl?: string;

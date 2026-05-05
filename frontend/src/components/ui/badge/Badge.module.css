@@ -1,0 +1,12 @@
+.componentBadge {
+    background-color: var(--color-accent) !important;
+    color: var(--color-main) !important;
+    font-size: 0.9rem;
+    font-weight: 900 !important;
+    letter-spacing: 0.05em;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 20px !important;
+    border: none;
+    box-shadow: var(--shadow-accent-button);
+    white-space: nowrap;
+}

@@ -77,6 +77,8 @@ const Welcome = () => {
                     {upcomingEvents.map((event) => (
                         <Card key={event.id} title={event.name} description={event.description} imageUrl={event.imageUrl} buttonText="View Details" link={`/event?event=${event.id}`} />
                     ))}
+                    <Card key={1} category={"test"} price={5000} title={"Test event"} description={"Test description"} imageUrl={"https://picsum.photos/200/300"} buttonText="View Details" />
+                    <Card key={2} title={"Test event"} description={"Test descriptionTest descriptionTest descriptionTest descriptionTest descriptionTest descriptionTest description"} imageUrl={"https://picsum.photos/200/300"} buttonText="View Details" />
                 </Cards>
             </div>
 

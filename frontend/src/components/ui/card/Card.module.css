@@ -1,6 +1,7 @@
 .card-footer {
     min-width: 180px;
     width: 40%;
+    margin-top: auto;
 }
 .card-image {
     width: 100%;
@@ -11,4 +12,10 @@
     cursor: pointer;
     background-color: var(--color-secondary);
     color: var(--color-text);
+}
+.card-price {
+    color: var(--color-text-muted);
+}
+.card-description {
+    color: var(--color-text-secondary);
 }
