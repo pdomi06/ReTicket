@@ -13,7 +13,7 @@
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </DataSourceFromHistory>
-  <DataSourceFromHistory isRemovedFromProject="false">
+  <DataSourceFromHistory isRemovedFromProject="true">
     <data-source source="LOCAL" name="ReTicket Laravel Cloud" uuid="ccc73854-1e48-4f2b-9f16-1b61abb37565">
       <database-info product="PostgreSQL" version="18.2 (15e7ab8)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="18.2" exact-driver-version="42.7">
         <identifier-quote-string>&quot;</identifier-quote-string>

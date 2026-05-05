@@ -235,10 +235,14 @@ export interface SelectProps {
 
 export interface CardProps {
     category?: string;
-    price?: number;
+    basePrice?: number;
     title: string;
     description: string;
     imageUrl?: string;
+    eventDate?: number;
+    city?: string;
+    country?: string;
+    isFeatured?: boolean;
     buttonText?: string;
     link?: string;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
