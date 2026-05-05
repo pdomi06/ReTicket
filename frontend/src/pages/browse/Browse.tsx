@@ -177,7 +177,7 @@ const Browse = () => {
     return (
         <main className={`container-fluid ${styles.browsePage}`}>
             <div className="row g-3">
-                <div className={`col-12 col-md-3 ${styles.sidebarColumn}`}>
+                <div className={`col-12 col-md-3 ${styles.sidebarColumn} sticky-top`}>
                     <header className={styles.pageHeader}>
                         <h1>Browse Event(s)</h1>
                         <p>Showing {events.length} events</p>
