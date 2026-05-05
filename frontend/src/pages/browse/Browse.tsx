@@ -197,6 +197,8 @@ const Browse = () => {
                                 {events.map((event) => (
                                     <Card
                                         key={event.id}
+                                        category={event.category}
+                                        basePrice={event.basePrice}
                                         title={event.name}
                                         description={event.description}
                                         buttonText="View Details"
