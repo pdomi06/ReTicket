@@ -204,6 +204,10 @@ const Browse = () => {
                                         buttonText="View Details"
                                         link={`/event?event=${event.id}`}
                                         imageUrl={event.imageUrl}
+                                        eventDate={event.eventDate}
+                                        city={event.city}
+                                        country={event.country}
+                                        isFeatured={event.isFeatured}
                                     />
                                 ))}
                             </div>
