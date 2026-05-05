@@ -1,5 +1,6 @@
 import { type IEvent } from "../../utils/interfaces"
 import Button from "../../components/ui/button/Button"
+import Badge from "../../components/ui/badge/Badge"
 import { toDateFromUnix } from "../../utils/dateTime"
 import style from "./Event.module.css"
 
@@ -23,7 +24,7 @@ const DateCard = ({ event: e }: DateCardProps) => {
                             <h5 className="mb-0 fw-bold fs-5 text-white">-</h5>
                         </div>
                         {e.category && (
-                            <span className={`badge ${style.categoryBadge} small fw-semibold`}>{e.category}</span>
+                            <Badge text={e.category} />
                         )}
                     </div>
                     <div className={`border-top border-white border-opacity-25 pt-3 mb-3 ${style.accentBorder}`}>
@@ -61,7 +62,7 @@ const DateCard = ({ event: e }: DateCardProps) => {
                         <h5 className="mb-0 fw-bold fs-5 text-white">{formattedDate}</h5>
                     </div>
                     {e.category && (
-                        <span className={`badge ${style.categoryBadge} small fw-semibold`}>{e.category}</span>
+                            <Badge text={e.category} />
                     )}
                 </div>
                 <div className={`border-top border-white border-opacity-25 pt-3 mb-3 ${style.accentBorder}`}>

@@ -1,4 +1,5 @@
 import { type IEvent } from "../../utils/interfaces"
+import Badge from "../../components/ui/badge/Badge"
 import { formatUnixDateTime } from "../../utils/dateTime"
 import style from "./Event.module.css"
 
@@ -21,9 +22,7 @@ const EventInfo = ({ event }: EventInfoProps) => {
             <div className={`${style.backgroundColorSecondary} p-4`}>
                 <div className="mb-3">
                     {event.category && (
-                        <span className={`badge ${style.categoryBadge} small fw-semibold mb-2 d-inline-block`}>
-                            {event.category}
-                        </span>
+                        <Badge text={event.category} />
                     )}
                 </div>
                 <h1 className={`fw-bold mb-3 lh-1 ${style.eventTitle}`}>{event.name}</h1>
