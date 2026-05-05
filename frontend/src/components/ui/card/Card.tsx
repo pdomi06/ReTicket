@@ -28,12 +28,18 @@ const formatCardDate = (value?: number) => {
     return `${datePart} · ${timePart}`;
 };
 
-const formatCardPrice = (value?: number) => {
-    if (typeof value !== 'number') {
+const formatCardPrice = (value?: number | string) => {
+    if (value === null || value === undefined || value === '') {
         return '';
     }
 
-    return value === 0 ? 'Free' : `From ${value.toFixed(0)} Ft`;
+    const numericValue = typeof value === 'number' ? value : Number(value);
+
+    if (!Number.isFinite(numericValue)) {
+        return '';
+    }
+
+    return numericValue === 0 ? 'Free' : `From $${numericValue.toFixed(2)}`;
 };
 
 const Card = ({category, basePrice, title, description, imageUrl, buttonText, link, onClick, eventDate, city, country, isFeatured}: CardProps) => {

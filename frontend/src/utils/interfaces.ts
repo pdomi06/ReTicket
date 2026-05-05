@@ -239,7 +239,7 @@ export interface SelectProps {
 
 export interface CardProps {
     category?: string;
-    basePrice?: number;
+  basePrice?: number | string;
     title: string;
     description: string;
     imageUrl?: string;
