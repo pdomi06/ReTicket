@@ -1,8 +1,5 @@
 .sidebarSticky {
-    position: sticky;
-    top: 1.5rem;
-    max-height: calc(100vh - 3rem);
-    overflow-y: auto;
+    position: static;
 }
 
 @media (max-width: 767px) {

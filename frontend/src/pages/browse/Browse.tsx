@@ -181,8 +181,8 @@ const Browse = () => {
                 <p>Showing {events.length} events</p>
             </header>
 
-            <div className="row g-3 align-items-start">
-                <div className="col-12 col-md-3">
+            <div className="row g-3">
+                <div className={`col-12 col-md-3 ${styles.sidebarColumn}`}>
                     <Sidebar isLoading={isLocalLoading} />
                 </div>
 

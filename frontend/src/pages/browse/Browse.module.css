@@ -6,6 +6,14 @@
     margin-bottom: 1.5rem;
 }
 
+.sidebarColumn {
+    position: sticky;
+    top: 1.5rem;
+    align-self: flex-start;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+}
+
 .pageHeader h1 {
     margin: 0;
     color: var(--color-text);
@@ -57,5 +65,11 @@
 @media (max-width: 767px) {
     .browsePage {
         padding: 1rem 0.5rem;
+    }
+
+    .sidebarColumn {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
     }
 }
